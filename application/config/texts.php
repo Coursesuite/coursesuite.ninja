@@ -39,6 +39,10 @@ return array(
 	"FEEDBACK_PASSWORD_TOO_SHORT" => "Password has a minimum length of 6 characters.",
 	"FEEDBACK_USERNAME_TOO_SHORT_OR_TOO_LONG" => "Username cannot be shorter than 2 or longer than 64 characters.",
 	"FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED" => "Your account has been created successfully and we have sent you an email. Please click the VERIFICATION LINK within that mail.",
+
+	// UserModel::saveUserActivationHash
+	"FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT" => "A verification mail has been resent (check your inbox or spam folder). You need to click the VERIFICATION LINK within that mail.",
+
 	"FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED" => "Sorry, we could not send you an verification mail. Your account has NOT been created.",
 	"FEEDBACK_ACCOUNT_CREATION_FAILED" => "Sorry, your registration failed. Please go back and try again.",
 	"FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR" => "Verification mail could not be sent due to: ",
@@ -72,4 +76,11 @@ return array(
 	"FEEDBACK_NOTE_DELETION_FAILED" => "Note deletion failed.",
 	"FEEDBACK_COOKIE_INVALID" => "Your remember-me-cookie is invalid.",
 	"FEEDBACK_COOKIE_LOGIN_SUCCESSFUL" => "You were successfully logged in via the remember-me-cookie.",
+
+// google captcha response error codes
+"missing-input-secret" => "The secret parameter is missing.",
+"invalid-input-secret" => "The secret parameter is invalid or malformed.",
+"missing-input-response" => "Apparently you're a robot. Did you forget to tick the box?", // The response parameter is missing.",
+"invalid-input-response" => "The verification images you chose didn't match. Try again?",
+
 );

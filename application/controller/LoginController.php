@@ -102,8 +102,12 @@ class LoginController extends Controller
      */
     public function requestPasswordReset_action()
     {
-        PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('captcha'));
-        Redirect::to('login/index');
+        $result = PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('g-recaptcha-response'));
+        if ($result === TRUE) { // all seemed to work; go back to the login page
+            Redirect::to('login/index');
+        } else { // stay here so they can fix it
+            Redirect::to("login/requestPasswordReset");
+        }
     }
 
     /**
@@ -141,4 +145,14 @@ class LoginController extends Controller
         );
         Redirect::to('login/index');
     }
+
+    // check a session to see if it's active
+    // http://auth.coursesuite.ninja.dev/login/validateSession/gpac1drc8g62cefakdd7r78737/docninja/
+    public function validateSession($encrypted_session_id, $app_id = null) {
+
+        $session_id = Encryption::decrypt($encrypted_session_id);
+
+        echo Session::isActiveSession($session_id, $app_id);
+    }
+
 }

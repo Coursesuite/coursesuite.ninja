@@ -37,10 +37,18 @@ class CaptchaModel
 	 */
 	public static function checkCaptcha($captcha)
 	{
-		if ($captcha == Session::get('captcha')) {
-			return true;
-		}
+		//if ($captcha == Session::get('captcha')) {
+		//	return true;
+		//}
 
-		return false;
+		//return false;
+		$recaptcha = new \ReCaptcha\ReCaptcha(Config::get('GOOGLE_CAPTCHA_SECRET'));
+		$resp = $recaptcha->verify($captcha, Environment::remoteIp());
+		if ($resp->isSuccess()) {
+			return TRUE;
+		} else {
+			return $resp->getErrorCodes();
+		}
 	}
 }
+

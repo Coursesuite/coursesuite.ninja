@@ -24,4 +24,8 @@ class Redirect
 	{
 		header("location: " . Config::get('URL') . $path);
 	}
+
+	public static function external($url) {
+		header("location: " . $url);
+	}
 }

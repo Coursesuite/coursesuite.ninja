@@ -174,6 +174,22 @@ class UserModel
         return false;
     }
 
+    // update the activation hash value in the db (e.g. re-send activation email)
+    public static function saveUserActivationHash($user_id, $activation_hash) {
+
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE users SET user_activation_hash = :activation_hash WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(':activation_hash' => $activation_hash, ':user_id' => $user_id));
+        $count = $query->rowCount();
+        if ($count == 1) {
+            // Session::add('feedback_positive', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL'));
+            return true;
+        }
+        return false;
+
+    }
+
     /**
      * Edit the user's name, provided in the editing form
      *

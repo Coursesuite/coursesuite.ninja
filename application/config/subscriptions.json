@@ -1,0 +1,14 @@
+[
+        {
+                "name": "free",
+                "app_ids": [100]
+        },
+        {
+                "name":"basic",
+                "app_ids": [100,200]
+        },
+        {
+                "name":"pro",
+                "app_ids": [100,200,300]
+        }
+]

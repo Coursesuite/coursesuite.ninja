@@ -123,6 +123,13 @@ class Mail
 		if (Config::get('EMAIL_USED_MAILER') == "native") {
 			return $this->sendMailWithNativeMailFunction();
 		}
+
+		if (Config::get('EMAIL_USED_MAILER') == "log") {
+			ob_start();
+			var_dump($user_email, $from_email, $from_name, $subject, $body);
+			$result = ob_get_clean();
+			return error_log($result);
+		}
 	}
 
     /**

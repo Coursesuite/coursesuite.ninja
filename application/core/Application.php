@@ -68,7 +68,7 @@ class Application
         if (Request::get('url')) {
 
             // split URL
-            $url = trim(Request::get('url'), '/');
+            $url = trim(Request::real_get('url'), '/'); // real_get replaces space with +, since $_GET urldecodes then converts plus to space automatically, which invalidates the base64 string
             $url = filter_var($url, FILTER_SANITIZE_URL);
             $url = explode('/', $url);
 

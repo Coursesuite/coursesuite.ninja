@@ -1,0 +1,28 @@
+[
+        {
+                "app_id": 100,
+                "name": "Document Ninja",
+                "icon": "/img/apps/app_tile2.png",
+                "logon_type": "digest",
+                "url": "http://document.scormification.ninja/",
+                "launch": "http://document.scormification.ninja.dev/app/?session={{SESSION_KEY}}",
+                "feed": "http://document.scormification.ninja.dev/feed/?session={{SESSION_KEY}}"
+        },
+        {
+                "app_id": 200,
+                "name": "Video Ninja",
+                "icon": "/img/apps/app_tile1.png",
+                "logon_type": "none",
+                "url": "http://media.scormification.ninja/",
+                "launch": "http://media.scormification.ninja/app/?session={{SESSION_KEY}}"
+        },
+        {
+                "app_id": 300,
+                "name": "CourseBuildr",
+                "icon": "/img/apps/app_tile3.png",
+                "logon_type": "digest",
+                "url": "http://coursebuildr.coursesuite.ninja/",
+                "launch": "http://coursebuildr.scormification.ninja/app/?session={{SESSION_KEY}}",
+                "feed": "http://coursebuildr.coursesuite.ninja/feed/?session={{SESSION_KEY}}"
+        }
+]

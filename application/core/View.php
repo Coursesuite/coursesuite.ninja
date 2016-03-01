@@ -6,6 +6,7 @@
  */
 class View
 {
+
     /**
      * simply includes (=shows) the view. this is done from the controller. In the controller, you usually say
      * $this->view->render('help/index'); to show (in this example) the view index.php in the folder help.
@@ -36,7 +37,7 @@ class View
     public function renderMulti($filenames, $data = null)
     {
         if (!is_array($filenames)) {
-            self::render($filenames, $data); 
+            self::render($filenames, $data);
             return false;
         }
 
@@ -47,11 +48,9 @@ class View
         }
 
         require Config::get('PATH_VIEW') . '_templates/header.php';
-
         foreach($filenames as $filename) {
             require Config::get('PATH_VIEW') . $filename . '.php';
         }
-
         require Config::get('PATH_VIEW') . '_templates/footer.php';
     }
 
@@ -162,7 +161,7 @@ class View
 
         return false;
     }
-    
+
     /**
      * Converts characters to HTML entities
      * This is important to avoid XSS attacks, and attempts to inject malicious code in your page.

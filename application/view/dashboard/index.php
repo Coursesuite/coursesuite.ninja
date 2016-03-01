@@ -1,15 +1,21 @@
 <div class="container">
-    <h1>DashboardController/index</h1>
+    <h1>My Apps</h1>
+    <div class="my-apps">
+    <?php foreach ($this->subscription->tier->apps as $app) { ?>
+        <div class="app-tile">
+            <figure>
+                <a href="<?= $app->launch . "?token=" . $this->token ?>" target="_blank"><img src="<?= $app->icon ?>"></a>
+                <figcaption><?= $app->name ?></figcaption>
+            </figure>
+        </div>
+    <?php } ?>
+    </div>
     <div class="box">
-
-        <!-- echo out the system feedback (error and success messages) -->
         <?php $this->renderFeedbackMessages(); ?>
-
-        <h3>What happens here ?</h3>
-        <p>
-            This is an area that's only visible for logged in users. Try to log out, an go to /dashboard/ again. You'll
-            be redirected to /index/ as you are not logged in. You can protect a whole section in your app within the
-            according controller by placing <i>Auth::handleLogin();</i> into the constructor.
-        <p>
+        <p>I think what we do is have a selection process so you can pick an app, then after a postback it shows the details and launch url here.</p>
+        <h3>What data do we have access to right now ?</h3>
+        <pre>
+        <?php print_r($this) ?>
+        </pre>
     </div>
 </div>

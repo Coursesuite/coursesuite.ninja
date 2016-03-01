@@ -52,6 +52,12 @@ return array(
 	'DEFAULT_CONTROLLER' => 'index',
 	'DEFAULT_ACTION' => 'index',
 	/**
+	 * Path for app JSON data
+	 */
+	'PATH_APP_JSON' => dirname(__FILE__) . '/apps.json',
+	'PATH_SUBSCRIPTIONS_JSON' => dirname(__FILE__) . '/subscriptions.json',
+
+	/**
 	 * Configuration for: Database
 	 * DB_TYPE The used database type. Note that other types than "mysql" might break the db construction currently.
 	 * DB_HOST The mysql hostname, usually localhost or 127.0.0.1
@@ -64,7 +70,7 @@ return array(
 	'DB_TYPE' => 'mysql',
 	'DB_HOST' => '127.0.0.1',
 	'DB_NAME' => 'huge',
-	'DB_USER' => 'root',
+	'DB_USER' => 'huge_root',
 	'DB_PASS' => '12345678',
 	'DB_PORT' => '3306',
 	'DB_CHARSET' => 'utf8',
@@ -75,6 +81,12 @@ return array(
 	 */
 	'CAPTCHA_WIDTH' => 359,
 	'CAPTCHA_HEIGHT' => 100,
+
+
+/* google captcha settings */
+'GOOGLE_CAPTCHA_SECRET' => '6LerkRcTAAAAAEUuS9ihNcY5m1cal1atUwl3iPTa',
+'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
+
 	/**
 	 * Configuration for: Cookies
 	 * 1209600 seconds = 2 weeks
@@ -107,7 +119,7 @@ return array(
 	 * AVATAR_SIZE set the pixel size of avatars/gravatars (will be 44x44 by default). Avatars are always squares.
 	 * AVATAR_DEFAULT_IMAGE is the default image in public/avatars/
 	 */
-	'USE_GRAVATAR' => false,
+	'USE_GRAVATAR' => true,
 	'GRAVATAR_DEFAULT_IMAGESET' => 'mm',
 	'GRAVATAR_RATING' => 'pg',
 	'AVATAR_SIZE' => 44,
@@ -132,25 +144,42 @@ return array(
 	 * EMAIL_USE_SMTP: Use SMTP or not
 	 * EMAIL_SMTP_AUTH: leave this true unless your SMTP service does not need authentication
 	 */
-	'EMAIL_USED_MAILER' => 'phpmailer',
-	'EMAIL_USE_SMTP' => false,
-	'EMAIL_SMTP_HOST' => 'yourhost',
+	'EMAIL_USED_MAILER' => 'log', // 'phpmailer',
+	'EMAIL_USE_SMTP' => true,
+	'EMAIL_SMTP_HOST' => 'mail.coursesuite.hosting24.com.au',
 	'EMAIL_SMTP_AUTH' => true,
-	'EMAIL_SMTP_USERNAME' => 'yourusername',
-	'EMAIL_SMTP_PASSWORD' => 'yourpassword',
-	'EMAIL_SMTP_PORT' => 465,
-	'EMAIL_SMTP_ENCRYPTION' => 'ssl',
+	'EMAIL_SMTP_USERNAME' => 'no.user',
+	'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
+	'EMAIL_SMTP_PORT' => 587, // 465,
+	'EMAIL_SMTP_ENCRYPTION' => 'tls', // 'ssl',
+
 	/**
 	 * Configuration for: Email content data
 	 */
 	'EMAIL_PASSWORD_RESET_URL' => 'login/verifypasswordreset',
-	'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@example.com',
-	'EMAIL_PASSWORD_RESET_FROM_NAME' => 'My Project',
-	'EMAIL_PASSWORD_RESET_SUBJECT' => 'Password reset for PROJECT XY',
+	'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@coursesuite.ninja',
+	'EMAIL_PASSWORD_RESET_FROM_NAME' => 'My Coursesuite',
+	'EMAIL_PASSWORD_RESET_SUBJECT' => 'Password reset for CourseSuite',
 	'EMAIL_PASSWORD_RESET_CONTENT' => 'Please click on this link to reset your password: ',
 	'EMAIL_VERIFICATION_URL' => 'register/verify',
-	'EMAIL_VERIFICATION_FROM_EMAIL' => 'no-reply@example.com',
-	'EMAIL_VERIFICATION_FROM_NAME' => 'My Project',
-	'EMAIL_VERIFICATION_SUBJECT' => 'Account activation for PROJECT XY',
+	'EMAIL_VERIFICATION_FROM_EMAIL' => 'no-reply@coursesuite.ninja',
+	'EMAIL_VERIFICATION_FROM_NAME' => 'CourseSuite',
+	'EMAIL_VERIFICATION_SUBJECT' => 'Account activation for CourseSuite',
 	'EMAIL_VERIFICATION_CONTENT' => 'Please click on this link to activate your account: ',
+
+
+	/*
+	 * digest authentication users
+	 *
+	 */
+
+	'DIGEST_USERS' => array(
+		'admin' => 'nT5YyYb233WB',
+		'apiuser' => 'rpxC5kCmYuFn',
+		'tokenuser' => 'GEv6mJ7wJgWR',
+		'fastspring' => 'e93NcNdpntFq',
+		'discourse' => '3kurpzSGRAq4',
+	),
+
+
 );

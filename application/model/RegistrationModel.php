@@ -22,8 +22,17 @@ class RegistrationModel
 		$user_password_new = Request::post('user_password_new');
 		$user_password_repeat = Request::post('user_password_repeat');
 
+                                                // tim
+                                                $fields = Array();
+                                                $fields['user_name'] = $user_name;
+                                                $fields['user_password_new'] = $user_password_new;
+                                                $fields['user_password_repeat'] = $user_password_repeat;
+                                                $fields['user_email'] = $user_email;
+                                                $fields['user_email_repeat'] = $user_email_repeat;
+                                                Session::set('form_data', $fields);
+
 		// stop registration flow if registrationInputValidation() returns false (= anything breaks the input check rules)
-		$validation_result = self::registrationInputValidation(Request::post('captcha'), $user_name, $user_password_new, $user_password_repeat, $user_email, $user_email_repeat);
+		$validation_result = self::registrationInputValidation(Request::post('g-recaptcha-response'), $user_name, $user_password_new, $user_password_repeat, $user_email, $user_email_repeat);
 		if (!$validation_result) {
 			return false;
 		}
@@ -96,9 +105,10 @@ class RegistrationModel
         $return = true;
 
 		// perform all necessary checks
-		if (!CaptchaModel::checkCaptcha($captcha)) {
-			Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
-            $return = false;
+		if (!($captcha_check = CaptchaModel::checkCaptcha($captcha)) === TRUE) {
+                                                        Session::add('feedback_negative', Text::get($captcha_check)); // text error codes
+			// Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
+                                                        $return = false;
 		}
 
         // if username, email and password are all correctly validated, but make sure they all run on first sumbit

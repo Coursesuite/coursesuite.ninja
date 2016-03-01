@@ -87,7 +87,7 @@ class LoginModel
 			Session::add('feedback_negative', Text::get('FEEDBACK_LOGIN_FAILED_3_TIMES'));
 			return false;
 		}
-		
+
 		// get all data of that user (to later check if password and password_hash fit)
 		$result = UserModel::getUserDataByUsername($user_name);
 
@@ -110,13 +110,25 @@ class LoginModel
 		// if hash of provided password does NOT match the hash in the database: +1 failed-login counter
 		if (!password_verify($user_password, $result->user_password_hash)) {
 			self::incrementFailedLoginCounterOfUser($result->user_name);
-			Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG')); 
+			Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
 			return false;
 		}
 
 		// if user is not active (= has not verified account by verification mail)
 		if ($result->user_active != 1) {
 			Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET'));
+
+                                    // resend activation mail
+                                    $user_activation_hash = sha1(uniqid(mt_rand(), true));
+                                    if (UserModel::saveUserActivationHash($result->user_id, $user_activation_hash)) {
+
+                                        // re-send verification email (invalidates the last one, but)
+                                        if (RegistrationModel::sendVerificationEmail($result->user_id, $result->user_email, $user_activation_hash)) {
+                                            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT'));
+                                        }
+
+                                    }
+
 			return false;
 		}
 
@@ -332,7 +344,7 @@ class LoginModel
         $cookie_string_first_part = Encryption::encrypt($user_id) . ':' . $random_token_string;
         $cookie_string_hash       = hash('sha256', $user_id . ':' . $random_token_string);
         $cookie_string            = $cookie_string_first_part . ':' . $cookie_string_hash;
-		
+
 		// set cookie, and make it available only for the domain created on (to avoid XSS attacks, where the
         // attacker could steal your remember-me cookie string and would login itself).
         // If you are using HTTPS, then you should set the "secure" flag (the second one from right) to true, too.

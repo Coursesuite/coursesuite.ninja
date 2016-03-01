@@ -49,6 +49,18 @@ class Request
             return $_GET[$key];
         }
     }
+    /**
+     * gets/returns the value of a specific key of the GET super-global, except it doesn't escape + to space
+     * @param mixed $key key
+     * @return mixed the key's value or nothing
+     */
+    public static function real_get($key)
+    {
+        if (isset($_GET[$key])) {
+            $raw = str_replace(' ', '+', $_GET[$key]); // space is supposed to be plus
+            return $raw;
+        }
+    }
 
     /**
      * gets/returns the value of a specific key of the COOKIE super-global

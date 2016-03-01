@@ -14,6 +14,9 @@ class DashboardController extends Controller
 
         // this entire controller should only be visible/usable by logged in users, so we put authentication-check here
         Auth::checkAuthentication();
+
+        // only let one use log on at a time
+        Auth::checkSessionConcurrency();
     }
 
     /**
@@ -21,6 +24,24 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $this->View->render('dashboard/index');
+
+        $sub = SubscriptionModel::getUserSubscriptions(Session::get('user_id'));
+        $data = array();
+        $data["subscription"] = $sub; // My Current Subscription -> Its Associated Tier -> Apps
+        $data["token"] = ApiModel::encodeToken(Session::CurrentId());
+
+        // you could do a multiview, but a view typically has its own wrapper element, so it's easier than having multiple stub views
+        // $this->View->renderMulti(Array('dashboard/myapps','dashboard/index'), $data);
+
+        $this->View->render('dashboard/index', $data);
     }
+
+    public function subscription()
+    {
+        $this->View->render('dashboard/subscription');
+    }
+
+    // self::app_data
+    // private function app_data() { }
+
 }

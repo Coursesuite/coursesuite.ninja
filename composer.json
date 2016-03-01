@@ -13,5 +13,9 @@
     },
     "autoload": {
         "psr-4": { "": ["application/core/", "application/model/"] }
+    },
+    "require": {
+        "rakshazi/digestauth": "dev-master",
+        "google/recaptcha": "~1.1"
     }
 }

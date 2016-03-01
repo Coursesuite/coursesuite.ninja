@@ -19,6 +19,10 @@ class Session
         }
     }
 
+    public static function CurrentId() {
+        return session_id();
+    }
+
     /**
      * sets a specific value to a specific key of the session
      *
@@ -123,6 +127,37 @@ class Session
 
         return false;
     }
+
+    /**
+     * Checks a session id to see if it exists for an activated user, current user
+     *
+     * Typically called by an external site which is checking to see if the user is logged on (without neccesarily knowing who it is)
+     * Posting data back (e.g. logging, etc) can therefore also pass the session_id which ties back to the account without exposing its internal id
+     *
+     * @access public
+     * @static static method
+     * @return bool
+     * @see Session::userIsLoggedIn()
+     */
+    public static function isActiveSession($session_id, $app_id = NULL) {
+        if (isset($session_id)) {
+
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $sql = "SELECT user_id FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
+            $query = $database->prepare($sql);
+            $query->execute(array(":session_id" => $session_id));
+            $session_user_id = $query->fetch();
+            $count = $query->rowCount();
+            if ($count == 1) {
+
+                // TODO: check $session_user_id has an active subscription to $app_id
+
+                return true; // this session exists
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Checks if the user is logged in or not
