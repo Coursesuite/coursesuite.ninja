@@ -18,6 +18,9 @@ class LoginModel
      */
     public static function login($user_name, $user_password, $set_remember_me_cookie = null)
     {
+
+		Session::set("feedback_area", "login");
+
         // we do negative-first checks here, for simplicity empty username and empty password in one line
         if (empty($user_name) OR empty($user_password)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_FIELD_EMPTY'));
@@ -80,6 +83,9 @@ class LoginModel
 	 */
 	private static function validateAndGetUser($user_name, $user_password)
 	{
+
+		Session::set("feedback_area", "login");
+
 		// brute force attack mitigation: use session failed login count and last failed login for not found users.
 		// block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
 		// (limits user searches in database)
@@ -169,6 +175,9 @@ class LoginModel
      */
     public static function loginWithCookie($cookie)
     {
+	    
+		Session::set("feedback_area", "login");
+
         // do we have a cookie ?
         if (!$cookie) {
             Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));

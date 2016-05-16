@@ -2,6 +2,37 @@
 
 class LoggingModel {
 
+	public static function systemLog($filter = "", $value = "") {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $clause = "";
+        $params = array();
+        switch ($filter) {
+	        case "user":
+	        	$clause = "WHERE digest_user = :digest_user";
+	        	$params[":digest_user"] = $value;
+	        	break;
+	        	
+	        case "date":
+	        	$clause = "WHERE added >= :added";
+	        	$params[":added"] = (new DateTime($value))->format("Y-m-d");
+	        	break;
+	        	
+        }
+        $sql = "SELECT method_name, digest_user, added, message, param0, param1, param2, param3 FROM applog $clause ORDER BY id DESC";
+        $query = $database->prepare($sql);
+        $query->execute($params);
+        return $query->fetchAll();
+    }
+    
+    public static function uniqueDigestUsers() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT DISTINCT(digest_user) as digest_user FROM applog WHERE NOT (digest_user IS NULL OR digest_user = '')";
+        $query = $database->prepare($sql);
+        $query->execute();
+        return $query->fetchAll();
+	    
+    }
+
     /**
      * logs the class/method, digest user and up to 10 parameters sent in, typically 2 or 3
      * @static static

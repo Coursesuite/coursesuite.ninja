@@ -15,6 +15,9 @@ class RegistrationModel
 	 */
 	public static function registerNewUser()
 	{
+		
+		Session::set("feedback_area", "registration");
+
 		// clean the input
 		$user_name = strip_tags(Request::post('user_name'));
 		$user_email = strip_tags(Request::post('user_email'));

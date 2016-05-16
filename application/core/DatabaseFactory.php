@@ -23,6 +23,7 @@ class DatabaseFactory
 {
     private static $factory;
     private $database;
+    private $mysqli;
 
     public static function getFactory()
     {
@@ -30,6 +31,14 @@ class DatabaseFactory
             self::$factory = new DatabaseFactory();
         }
         return self::$factory;
+    }
+
+    // the zebra_session manager requires a mysqli connection because it pings the database. don't use this for anything else.
+    public function getMysqli() {
+        if (!$this->mysqli) {
+            $this->mysqli = mysqli_connect(Config::get('DB_HOST'), Config::get('DB_USER'), Config::get('DB_PASS'), Config::get('DB_NAME')) or die('mysqli: Could not connect to database!');
+        }
+        return $this->mysqli;
     }
 
     public function getConnection() {
@@ -42,7 +51,14 @@ class DatabaseFactory
              * by throwing custom error message
              */
             try {
-                $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
+                $options = array(
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
+
+                    PDO::ATTR_STRINGIFY_FETCHES => false, // http://stackoverflow.com/a/10455228/1238884
+                    //PDO::ATTR_EMULATE_PREPARES => false, // This stops PDO from adding single quotes around integer values. https://bugs.php.net/bug.php?id=44639, but also breaks logon somehow .. hmm
+
+                );
                 $this->database = new PDO(
                    Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
                    Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),

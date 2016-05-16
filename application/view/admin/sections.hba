@@ -1,0 +1,33 @@
+<article class="system-sections">
+	{{#if action}}
+		<h3>Editing record {{id}}.</h3>
+		<form method="post" action="{{baseurl}}admin/editSections/{{id}}/save">
+		{{#with data}}
+			<div><label>Label: <input type="text" name="label" value="{{label}}"></label></div>
+			<div><label>Epiphet: <input type="text" name="epiphet" value="{{epiphet}}"></label></div>
+			<div><label>CSS Class: <input type="text" name="cssclass" value="{{cssclass}}"></label></div>
+			<div>It is:
+				<input type="radio" name="visible" value="1" {{#equals "1" visible}} checked{{/equals}} id="y"><label for="y">Visible</label>
+				<input type="radio" name="visible" value="0" {{#equals "0" visible}} checked{{/equals}} id="n"><label for="n">Hidden</label>
+			</div>
+			<div><label>Order: <input type="number" min="1" max="999" step="1" value="{{sort}}"></label></div>
+			<div><label for="htmlpre">HTML Pre</label><br><textarea name="html_pre" rows=10 cols=80>{{html_pre}}</textarea></div>
+			<div><label for="htmlpost">HTML Post</label><br><textarea name="html_post" rows=10 cols=80>{{html_post}}</textarea></div>
+			<div><input type="submit" value="Save & Return"></div>
+		{{/with}}
+		</form>
+	{{else}}
+	<h3>Store sections</h3>
+	<p>shown in current sort order; drag to change order, edit to change data</p>
+	<ul>
+		{{#each sections}}
+		<li><a href="{{../baseurl}}admin/editSections/{{id}}/edit">{{id}}. {{label}} ({{epiphet}})</a></li>
+		{{/each}}
+	</ul>
+	<p><a href="{{baseurl}}admin/editSections/0/new">Create a new section</a></p>
+	{{/if}}
+
+	<p><a href="{{baseurl}}admin/editSections/">Back to edit sections</a></p>
+	<p><a href="{{baseurl}}admin">Back to admin index</a></p>
+ 
+</article>

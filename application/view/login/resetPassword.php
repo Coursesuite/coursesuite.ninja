@@ -1,27 +1,19 @@
-<div class="container">
-    <h1>
-        Reset your password
-    </h1>
+    <div class="login-page-container">
 
-    <div class="login-page-box">
-        <div class="table-wrapper">
-            <div class="login-box">
-                <h2>
-                    Set new password
-                </h2>
-                <form method="post" action="<?php echo Config::get('URL'); ?>login/setNewPassword" name="new_password_form">
-                    <input type='hidden' name='user_name' value='<?php echo $this->user_name; ?>' />
-                    <input type='hidden' name='user_password_reset_hash' value='<?php echo $this->user_password_reset_hash; ?>' />
-                    <label for="reset_input_password_new">New password (min. 6 characters)</label>
-                    <input id="reset_input_password_new" class="reset_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
-                    <label for="reset_input_password_repeat">Repeat new password</label>
-                    <input id="reset_input_password_repeat" class="reset_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
-                    <input type="submit"  name="submit_new_password" value="Submit new password" />
-                </form>
-                <a href="<?php echo Config::get('URL'); ?>login/index">Back to Login Page</a>
-            </div>
-            <div class="feedback">
+        <div class="login-reset-box">
+	       	<header>Set new password</header>
+            <form method="post" action="<?php echo Config::get('URL'); ?>login/setNewPassword" name="new_password_form">
+                <input type='hidden' name='user_name' value='<?php echo $this->user_name; ?>' />
+                <input type='hidden' name='user_password_reset_hash' value='<?php echo $this->user_password_reset_hash; ?>' />
+                <label for="reset_input_password_new">New password (min. 6 characters)</label>
+                <input id="reset_input_password_new" class="reset_input" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
+                <label for="reset_input_password_repeat">Repeat new password</label>
+                <input id="reset_input_password_repeat" class="reset_input" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
                 <?php $this->renderFeedbackMessages(); ?>
+                <input type="submit"  name="submit_new_password" value="Submit new password" />
+            </form>
+            <div class="form-nav-link">
+                <a href="<?php echo Config::get('URL'); ?>login/index">Back to Login Page</a>
             </div>
         </div>
     </div>

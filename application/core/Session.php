@@ -34,6 +34,10 @@ class Session
         $_SESSION[$key] = $value;
     }
 
+    public static function remove($key)
+    {
+        unset($_SESSION[$key]);
+    }
     /**
      * gets/returns the value of a specific key of the session
      *
@@ -58,7 +62,10 @@ class Session
      */
     public static function add($key, $value)
     {
-        $_SESSION[$key][] = $value;
+	    $ar = $_SESSION[$key];
+	    if (!in_array($value, $ar)) { // TIM: don't re-add duplicate values
+        	$_SESSION[$key][] = $value;
+        }
     }
 
     /**
@@ -156,6 +163,24 @@ class Session
             }
         }
         return false;
+    }
+    
+    public static function CurrentUserId() {
+	    $session_id = session_id();
+	    $user_id = self::UserIdFromSession($session_id);
+	    return $user_id;
+    }
+
+    public static function UserIdFromSession($session_id) {
+        if (isset($session_id)) {
+
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $sql = "SELECT user_id FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
+            $query = $database->prepare($sql);
+            $query->execute(array(":session_id" => $session_id));
+            return $query->fetch()->user_id;
+        }
+        return -1;
     }
 
 

@@ -18,14 +18,14 @@ body {
     flex-direction: column;
 }
 
-header {
+body > header {
     -webkit-flex: 0 0 auto;
     -moz-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
 }
 
-section {
+body > section {
     -webkit-flex: 1 0 auto;
     -moz-flex: 1 0 auto;
     -ms-flex: 1 0 auto;
@@ -40,12 +40,12 @@ section {
     flex-direction: row;
 }
 
-article {
+/* article {
     -webkit-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
-}
+} */
 
 nav {
     -webkit-flex: 0 0 auto;
@@ -55,7 +55,7 @@ nav {
     order: -1;
 }
 
-footer {
+body > footer {
     -webkit-flex: 0 0 auto;
     -moz-flex: 0 0 auto;
     -ms-flex: 0 0 auto;

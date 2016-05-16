@@ -23,6 +23,11 @@ class Application
      */
     public function __construct()
     {
+        $mysqli = DatabaseFactory::getFactory()->getMySqli();
+
+        // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
+        $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT')); // , 30, true, false, 1, 20); // debugging: set timeout to 30 seconds, 5% chance for gc
+
         // create array with URL parts in $url
         $this->splitUrl();
 
@@ -35,7 +40,7 @@ class Application
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
             require Config::get('PATH_CONTROLLER') . $this->controller_name . '.php';
-            $this->controller = new $this->controller_name();
+            $this->controller = new $this->controller_name($this->action_name, $this->parameters); // pass in action name so the constructor can use it, constructor ok if param passed and not handled
 
             // check for method: does such a method exist in the controller ?
             if (method_exists($this->controller, $this->action_name)) {

@@ -1,0 +1,30 @@
+<article>
+{{#each section}}
+    {{#equals visible 1}}<section class='{{cssclass}}'>
+<div class="store-items">
+        {{#if label}}<h3>{{label}}</h3>{{/if}}
+        {{#if epiphet}}<h4>{{epiphet}}</h4>{{/if}}
+        {{#if html_pre}}{{{html_pre}}}{{/if}}
+        <nav class='app-section-names'>
+            {{#each apps}}
+            <div class='tile app'>
+                <figure style="background-image:url({{icon}})">
+                    <img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'>
+                    <figcaption>{{name}}</figcaption>
+                </figure>
+                {{#if tagline}}<div class='information'>
+                    {{tagline}}
+                </div>{{/if}}
+                <div class='actions'>
+                    {{#equals auth_type 1}}<a href='{{url}}' target='_blank'>Launch</a>{{else}}
+                    <a href='{{../../storeurl}}{{app_key}}'>More info</a>
+                    {{#if ../../token}}<a href='{{launch}}?token={{../../token}}' target='_blank' class='launch'>Launch</a>{{/if}}{{/equals}}
+                </div>
+            </div>
+            {{/each}}
+        </nav>
+        {{#if html_post}}{{{html_post}}}{{/if}}
+</div>
+    </section>{{/equals}}
+{{/each}}
+</article>

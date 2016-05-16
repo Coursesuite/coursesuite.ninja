@@ -16,6 +16,8 @@ class ApiController extends Controller
     {
         parent::__construct();
 
+	    // LoggingModel::logMessage("ApiController::__construct");
+
         $digest = new \Rakshazi\Digestauth;
         $valid = $digest->setUsers(Config::get('DIGEST_USERS'))->setRealm("CourseSuite")->enable();
         if (!$valid) {
@@ -24,6 +26,8 @@ class ApiController extends Controller
             die("Digest Authentication Failed");
         }
         $this->username = $digest->user;
+
+	    // LoggingModel::logMessage("ApiController::__constructed properly; user was ". $this->username);
 
     }
 
@@ -44,9 +48,15 @@ class ApiController extends Controller
     public function verifyToken($appkey, $token) {
             $session_id = ApiModel::decodeToken($token);
             $tokenIsValid = Session::isActiveSession($session_id, $appkey);
-            $data = array('authuser' => $this->username, 'appkey' => $appkey, 'valid' => $tokenIsValid);
-            LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $data);
-            $this->View->renderJSON($data);
+            $result = array(
+                'authuser' => $this->username,
+                'appkey' => $appkey,
+                'valid' => $tokenIsValid,
+                'api' => false,
+                'tier' => TierModel::getLevelForUser(Session::UserIdFromSession($session_id))
+            );
+            LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
+            $this->View->renderJSON($result);
     }
 
     /*
@@ -61,7 +71,14 @@ class ApiController extends Controller
 
     public function verifyApiKey($key) {
         $data = ApiModel::decodeApiToken($key);
-        $result = array("valid" => $data->valid);
+        $result = array(
+            'authuser' => $this->username,
+            'appkey' => $data->app,
+            'valid' => $data->valid,
+            'api' => true,
+            'tier' => 4,                             // some way of pulling this value?
+            'org' => $data->org
+        );
         LoggingModel::logMethodCall(__METHOD__, $this->username, $data->org, $data->app, $result);
         $this->View->renderJSON($result);
     }
@@ -94,33 +111,66 @@ class ApiController extends Controller
     public function appNames() {
         $this->View->renderJSON(AppModel::getAppKeys());  // Config::get('APP_NAMES')
     }
-
-
-    /* -------------------------------- FASTSPRING ----------------------------------- */
-
-
-    // FASTSPRING - User has bought a new subscription
-    public function subscriptionBuy(...$params) {
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $params);
-
+    
+    public function tasks() {
+		SubscriptionModel::validateSubscriptions();
     }
 
-    // FASTSPRING - User has cancelled their subscription
-    public function subscriptionCancel(...$params) {
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $params);
 
-    }
+    /* -------------------------------- FASTSPRING -----------------------------------
+	    
+	    Request all have these named parameters (post):
+	    
+	    accountUrl
+	    email
+	    productName
+	    referenceId
+	    referrer - Text::base64dec(value)
+	    status
+	    statusReason
+	    subscriptionEndDate
+	    subscriptionUrl
+	    testmode
+	    
+	    security_data
+	    security_hash
 
-    // FASTSPRING - User monthly payment failed
-    public function subscriptionUpdateFailed(...$params) {
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $params);
+    */
 
-    }
+	public function subscription(...$params) {
+        LoggingModel::logMethodCall(__METHOD__, $this->username, $params, Request::post_debug());
+	    extract ($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
+	    if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
+		    
+	    	$tierid = (int) TierModel::getTierIdByName(Request::post("productName")); // short name of subscription in fastspring system
+	    	$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
+	    	$endDate = Request::post("subscriptionEndDate"); // date | empty
+	    	$endDateSet = isset($endDate); // if set then the subscription is inactive after this date
+	    	$referenceId = Encryption::encrypt(Request::post("referenceId")); // unique order id for this transaction
+	    	$status = Request::post("status"); // active | inactive
+	    	$statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
+	    	$testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
 
-    // FASTSPRING - User monthly payment succeded
-    public function subscriptionUpdateSuccess(...$params) {
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $params);
+		    switch ($params[0]) {
+			    case "activated":
+				case "deactivated":
+			    	// normal new subscription or deactivation caused by cancellation, payment failure
+					SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $status, $statusReason, $testMode);
+			    	break;
 
-    }
+				case "failed":
+				case "changed":
+					// do we need to log any of these statuses?
+					if ($endDateSet) {
+						if ($status == "inactive") {} // has become inactive and will deactivate soon
+						if ($statusReason == "canceled") {} // we should next or soon see a deactivated
+					} else if ($status == "active") { 
+						// e.g. changed from failed back to active
+					}
+					break;
+		    }
+
+		}
+	}
 
 }

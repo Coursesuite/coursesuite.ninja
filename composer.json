@@ -15,7 +15,11 @@
         "psr-4": { "": ["application/core/", "application/model/"] }
     },
     "require": {
+        "ircmaxell/password-compat": "^1.0",
         "rakshazi/digestauth": "dev-master",
-        "google/recaptcha": "~1.1"
+        "google/recaptcha": "~1.1",
+        "zordius/lightncandy": "dev-master",
+        "swiftmailer/swiftmailer": "^5.4",
+        "ksubileau/color-thief-php": "^1.3"
     }
 }

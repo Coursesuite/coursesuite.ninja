@@ -19,29 +19,37 @@ class DashboardController extends Controller
         Auth::checkSessionConcurrency();
     }
 
-    /**
-     * This method controls what happens when you move to /dashboard/index in your app.
-     */
-    public function index()
-    {
-
+    private function dashboardData($current = "") {
         $sub = SubscriptionModel::getUserSubscriptions(Session::get('user_id'));
         $data = array();
         $data["subscription"] = $sub; // My Current Subscription -> Its Associated Tier -> Apps
         $data["token"] = ApiModel::encodeToken(Session::CurrentId());
+        $data["selected"] = $current;
+        $data["feed"] = "";
 
-        // you could do a multiview, but a view typically has its own wrapper element, so it's easier than having multiple stub views
-        // $this->View->renderMulti(Array('dashboard/myapps','dashboard/index'), $data);
+        $data["apikey"] = ApiModel::encodeApiToken("avide","docninja");
 
+        if (!empty($current)) {
+            // look up feeds and app info stuff
+            $data["feed"] = "here's where the app feeds and stuff for <b>$current</b> would go";
+        }
+        return $data;
+    }
+
+    /**
+     * This method controls what happens when you move to /dashboard/index in your app.
+     */
+    public function index() {
+        $this->View->render('dashboard/index', self::dashboardData());
+    }
+
+    public function app($app_key) {
+        $data = self::dashboardData($app_key);
         $this->View->render('dashboard/index', $data);
     }
 
-    public function subscription()
-    {
+    public function subscription() {
         $this->View->render('dashboard/subscription');
     }
-
-    // self::app_data
-    // private function app_data() { }
 
 }

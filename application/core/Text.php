@@ -30,14 +30,24 @@ class Text
 
     public static function output($ar, $key, $encode = FALSE) {
         if (is_array($ar)) {
-                $outp = $ar[$key];
-                if (isset($outp) && !empty($outp)) {
-                        if ($encode) {
-                            $outp = htmlentities($outp, ENT_QUOTES, 'UTF-8');
-                        }
-                        echo $outp;
+	        	if (in_array($key, $ar)) {
+	                $outp = $ar[$key];
+	                if (isset($outp) && !empty($outp)) {
+	                        if ($encode) {
+	                            $outp = htmlentities($outp, ENT_QUOTES, 'UTF-8');
+	                        }
+	                        echo $outp;
+	                }
                 }
         }
+    }
+
+	public static function base64enc($val) {
+        return strtr(base64_encode($val), '+/=', '-_,');
+    }
+    
+    public static function base64dec($val) {
+        return base64_decode(strtr($val, '-_,', '+/='));
     }
 
 }

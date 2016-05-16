@@ -10,6 +10,7 @@ class Controller
 {
     /** @var View View The view object */
     public $View;
+    public $ActionName;
 
     /**
      * Construct the (base) controller. This happens when a real controller is constructed, like in

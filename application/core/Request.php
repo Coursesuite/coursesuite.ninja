@@ -26,6 +26,10 @@ class Request
             return ($clean) ? trim(strip_tags($_POST[$key])) : $_POST[$key];
         }
     }
+    
+    public static function post_debug() {
+	    return print_r($_POST, true);
+    }
 
     /**
      * Returns the state of a checkbox.

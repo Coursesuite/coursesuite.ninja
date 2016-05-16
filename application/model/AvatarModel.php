@@ -20,7 +20,7 @@ class AvatarModel
      */
     public static function getGravatarLinkByEmail($email)
     {
-        return 'http://www.gravatar.com/avatar/' .
+        return 'https://www.gravatar.com/avatar/' .
         md5(strtolower(trim($email))) .
         '?s=' . Config::get('AVATAR_SIZE') . '&d=' . Config::get('GRAVATAR_DEFAULT_IMAGESET') . '&r=' . Config::get('GRAVATAR_RATING');
     }

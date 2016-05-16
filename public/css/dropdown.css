@@ -19,7 +19,7 @@
 .navigation .navigation-submenu {
     display: none;
 }
-header .navigation > li.active > a {
+header .navigation > li > a {
     color: #454545 !important;
 }
 .navigation li a {
@@ -27,8 +27,8 @@ header .navigation > li.active > a {
     text-decoration: none;
     padding: 10px 15px;
     border: 2px solid rgba(69,69,69,.5);
-    background: rgba(69,69,69,.5);
-    color: #fff;
+    blackground: rgba(69,69,69,.5);
+    border-radius: 4px;
     float:none;
     font-size: 10px;
     font-weight: bold;
@@ -36,10 +36,23 @@ header .navigation > li.active > a {
 .navigation li:hover .navigation-submenu {
     display: block;
     position: absolute;
-/*    left: auto;
-    right: 20px;
-    margin-top: -2px; */
+    right: 5px;
+    text-align: left;
 }
+.navigation li:hover .navigation-submenu li a {
+        border-radius: 0;
+}
+.navigation li:hover .navigation-submenu li:first-of-type a {
+        border-radius: 4px 4px 0 0;
+}
+.navigation li:hover .navigation-submenu li:last-of-type a {
+        border-radius: 0 0 4px 4px;
+        background-color: rgba(129,69,69,.75);
+}
+.navigation li:hover .navigation-submenu li:last-of-type a:hover {
+    color: #fff;
+}
+
 .navigation li:hover li,
 .navigation li:hover a {
     float: none;
@@ -53,6 +66,10 @@ header .navigation > li.active > a {
 .navigation li.seperator {
     border-bottom: 1px solid rgba(255,255,255,.25);
 }
+.navigation li.seperator-top {
+    border-top: 1px solid rgba(255,255,255,.25);
+}
+
 
 .navigation li:hover .navigation-submenu li a {
     white-space: nowrap;

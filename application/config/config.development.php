@@ -46,16 +46,19 @@ return array(
 	 */
 	'PATH_AVATARS' => realpath(dirname(__FILE__).'/../../') . '/public/avatars/',
 	'PATH_AVATARS_PUBLIC' => 'avatars/',
+
+	'PATH_APP_MEDIA' => realpath(dirname(__FILE__).'/../../') . '/public/img/apps/',
+
 	/**
 	 * Configuration for: Default controller and action
 	 */
-	'DEFAULT_CONTROLLER' => 'index',
+	'DEFAULT_CONTROLLER' => 'store',
 	'DEFAULT_ACTION' => 'index',
+
 	/**
-	 * Path for app JSON data
+	 * Path for PRECOMPILED PHP templates (e.g. from Handlebars)
 	 */
-	'PATH_APP_JSON' => dirname(__FILE__) . '/apps.json',
-	'PATH_SUBSCRIPTIONS_JSON' => dirname(__FILE__) . '/subscriptions.json',
+	'PATH_VIEW_PRECOMPILED' => realpath(dirname(__FILE__).'/../../') . '/precompiled/',
 
 	/**
 	 * Configuration for: Database
@@ -69,9 +72,9 @@ return array(
 	 */
 	'DB_TYPE' => 'mysql',
 	'DB_HOST' => '127.0.0.1',
-	'DB_NAME' => 'huge',
-	'DB_USER' => 'huge_root',
-	'DB_PASS' => '12345678',
+	'DB_NAME' => 'frumbert_cshuge',
+	'DB_USER' => 'frumbert_cshuge',
+	'DB_PASS' => 'qh+7$^kT(~sd',
 	'DB_PORT' => '3306',
 	'DB_CHARSET' => 'utf8',
 	/**
@@ -82,10 +85,10 @@ return array(
 	'CAPTCHA_WIDTH' => 359,
 	'CAPTCHA_HEIGHT' => 100,
 
-
-/* google captcha settings */
-'GOOGLE_CAPTCHA_SECRET' => '6LerkRcTAAAAAEUuS9ihNcY5m1cal1atUwl3iPTa',
-'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
+	/* google settings */
+	'GOOGLE_CAPTCHA_SECRET' => '6LerkRcTAAAAAEUuS9ihNcY5m1cal1atUwl3iPTa',
+	'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
+	'GOOGLE_ANALYTICS_ID' => null,
 
 	/**
 	 * Configuration for: Cookies
@@ -120,11 +123,21 @@ return array(
 	 * AVATAR_DEFAULT_IMAGE is the default image in public/avatars/
 	 */
 	'USE_GRAVATAR' => true,
-	'GRAVATAR_DEFAULT_IMAGESET' => 'mm',
+	'GRAVATAR_DEFAULT_IMAGESET' => 'wavatar',
 	'GRAVATAR_RATING' => 'pg',
 	'AVATAR_SIZE' => 44,
 	'AVATAR_JPEG_QUALITY' => 85,
 	'AVATAR_DEFAULT_IMAGE' => 'default.jpg',
+
+
+
+	// slideshow (app page) default sizes (affects thumbnail generation)
+	'SLIDE_PREVIEW_WIDTH' => 459,
+	'SLIDE_PREVIEW_HEIGHT' => 344,
+	'SLIDE_THUMB_WIDTH' => 120,
+	'SLIDE_THUMB_HEIGHT' => 90,
+
+
     /**
      * Configuration for: Encryption Keys
      * ENCRYPTION_KEY, HMAC_SALT: Currently used to encrypt and decrypt publicly visible values, like the user id in
@@ -144,13 +157,13 @@ return array(
 	 * EMAIL_USE_SMTP: Use SMTP or not
 	 * EMAIL_SMTP_AUTH: leave this true unless your SMTP service does not need authentication
 	 */
-	'EMAIL_USED_MAILER' => 'log', // 'phpmailer',
+	'EMAIL_USED_MAILER' => 'phpmailer', // 'log'
 	'EMAIL_USE_SMTP' => true,
-	'EMAIL_SMTP_HOST' => 'mail.coursesuite.hosting24.com.au',
+	'EMAIL_SMTP_HOST' => 'amethyst.relentlesshosting.com.au', // 'mail.coursesuite.hosting24.com.au',
 	'EMAIL_SMTP_AUTH' => true,
-	'EMAIL_SMTP_USERNAME' => 'no.user',
-	'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
-	'EMAIL_SMTP_PORT' => 587, // 465,
+	'EMAIL_SMTP_USERNAME' => 'no-reply@coursesuite.frumbert.org', // 'no.user',
+	'EMAIL_SMTP_PASSWORD' => 'fJ0b3=#U,ei7', // 'iuh@943^f',
+	'EMAIL_SMTP_PORT' => 465,
 	'EMAIL_SMTP_ENCRYPTION' => 'tls', // 'ssl',
 
 	/**
@@ -180,6 +193,10 @@ return array(
 		'fastspring' => 'e93NcNdpntFq',
 		'discourse' => '3kurpzSGRAq4',
 	),
+	
+	'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
 
+
+	'FORCE_HANDLEBARS_COMPILATION' => true // set to true to force recompilation of handlebars templates on the fly
 
 );

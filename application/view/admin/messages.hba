@@ -1,0 +1,33 @@
+<article class="system-log">
+
+	<form onsubmit="return false;">
+		<label>Digest user: <select onchange="document.location=this.value;"><option value="{{baseurl}}admin/showLog">any</option>
+		{{#each digest_users}}<option value="{{../baseurl}}admin/showLog/user/{{digest_user}}"{{#equals digest_user ../filter_value}} selected{{/equals}}>{{dump digest_user}}</option>{{/each}}
+		</select></label>
+		
+		<label>dates after: <input type="text" class=flatpickr data-maxdate=today value="{{filter_value}}" data-syslog=true>  
+	</form>
+
+	<table>
+		<thead>
+			<tr><th>method</th><th>digest user</th><th>date</th><th>message</th><th>param0</th><th>param1</th><th>param2</th><th>param3</th></tr>
+		</thead>
+		<tbody>
+		{{#each messages}}
+			<tr>
+				<td>{{method_name}}</td>
+				<td>{{digest_user}}</td>
+				<td>{{added}}</td>
+				<td>{{message}}</td>
+				<td class="pre">{{param0}}</td>
+				<td class="pre">{{param1}}</td>
+				<td class="pre">{{param2}}</td>
+				<td class="pre">{{param3}}</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+
+	<p><a href="{{baseurl}}admin">Back to admin index</a></p>
+ 
+</article>

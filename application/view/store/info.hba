@@ -1,0 +1,26 @@
+<section class="store-item-specific">
+
+<nav class="crumb">
+    <a href="/" title="Head back to the storefront"><i class="cs-shop"></i></a> &hellip;
+    <a href="/store/info/{{App.app_key}}">{{App.name}}</a>
+</nav>
+
+<section class="info">
+    {{#if App.media}}<div class="media">
+        <div class="slide-wrapper">
+        	<div class="current_slide viewport"><div id="current_slide">[no slides yet]</div></div>
+            <div class="slide_controls viewport"><nav id="slide_controls">[...]</nav></div>
+        </div>
+    </div>{{/if}}
+    {{#if AppTierFeatures}}<div class="tierinfo">
+        {{{View::AppMatrix App AppTierFeatures AppTiers UserSubscription}}}
+    </div>{{/if}}
+</section>
+
+</section>
+
+<section class="store-item-description app-{{App.app_key}}">
+<article>{{{App.description}}}</article>
+</section>
+
+<script type="text/javascript">var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>

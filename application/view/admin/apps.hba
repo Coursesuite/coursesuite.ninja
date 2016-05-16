@@ -1,0 +1,53 @@
+<article class="system-sections">
+	{{#if action}}
+		<h3>Editing record {{id}}.</h3>
+		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/save">
+		{{#with data}}
+			<div><label>App Key: <input type="text" name="app_key" value="{{app_key}}"></label></div>
+			<div><label>Name: <input type="text" name="name" value="{{name}}"></label></div>
+			<div><label>tagline: <input type="text" name="tagline" value="{{tagline}}"></label></div>
+			<div><label>icon: <input type="text" name="icon" value="{{icon}}"></label></div>
+			<div><label>domain url: <input type="text" name="url" value="{{url}}"></label></div>
+			<div><label>launch url: <input type="text" name="launch" value="{{launch}}"></label></div>
+			<div><label>feed url: <input type="text" name="feed" value="{{feed}}"></label></div>
+			<div><label>Auth type: <select name="auth_type">
+				<option value="0"{{#equals "0" auth_type}} selected{{/equals}}>Integrated</option>
+				<option value="1"{{#equals "1" auth_type}} selected{{/equals}}>None</option>
+				</select></label>
+			</div>
+			<div>It is:
+				<input type="radio" name="active" value="1" {{#equals "1" active}} checked{{/equals}} id="y"><label for="y">Visible</label>
+				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Hidden</label>
+			</div>
+			<div><label for="description">Description</label><br><textarea name="description" rows=10 cols=80>{{description}}</textarea></div>
+			<div><label for="media">Media</label><br><textarea name="media" rows=5 cols=80>{{media}}</textarea></div>
+			<div><input type="submit" value="Save & Return"></div>
+		{{/with}}
+		</form>
+		<h4>Media</h4>
+		<ul>
+			{{#unless files}}<li>No media found.</li>{{/unless}}
+			{{#each files}}<li><a href="{{../baseurl}}admin/editApps/{{../id}}/delete/{{.}}" title="Delete file now"><i class="cs-trash"></i></a>
+								<a href="{{../baseurl}}img/apps/{{../data.app_key}}/{{.}}" data-action="hover-thumb">{{.}}</a></li>{{/each}}
+		</ul>
+		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/upload" enctype="multipart/form-data">
+		    <div><label>Upload media: <input type="file" name="imageUpload"></label></div>
+		    <div><label>Or specify URL: <input type="text" name="url" placeholder="E.g. youtube url"></label></div>
+		    <div><label>Caption: <input type="text" name="caption" placeholder="short caption for media"></label></div>
+			<div><input type="submit" value="Upload" name="submit"></div>
+		</form>
+		{{dump data.media}}
+	{{else}}
+	<h3>Apps</h3>
+	<ul>
+		{{#each apps}}
+		<li><a href="{{../baseurl}}admin/editApps/{{app_id}}/edit">{{app_id}}. {{name}}</a></li>
+		{{/each}}
+	</ul>
+	<p><a href="{{baseurl}}admin/editApps/0/new">Create a new app</a></p>
+	{{/if}}
+
+	<p><a href="{{baseurl}}admin/editApps/">Back to edit apps</a></p>
+	<p><a href="{{baseurl}}admin">Back to admin index</a></p>
+ 
+</article>

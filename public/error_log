@@ -1,0 +1,158 @@
+[01-Apr-2016 16:33:10 Australia/Sydney] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'huge_root'@'localhost' (using password: YES) in /home/frumbert/coursesuite.frumbert.org/application/core/DatabaseFactory.php on line 39
+[01-Apr-2016 16:33:26 Australia/Sydney] PHP Parse error:  syntax error, unexpected '.', expecting '&' or variable (T_VARIABLE) in /home/frumbert/coursesuite.frumbert.org/application/controller/StoreController.php on line 9
+[01-Apr-2016 16:36:12 Australia/Sydney] PHP Parse error:  syntax error, unexpected '.', expecting '&' or variable (T_VARIABLE) in /home/frumbert/coursesuite.frumbert.org/application/controller/StoreController.php on line 9
+[07-Apr-2016 15:03:46 Australia/Sydney] PHP Parse error:  syntax error, unexpected '{' in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 127
+[07-Apr-2016 15:06:11 Australia/Sydney] PHP Parse error:  syntax error, unexpected '{' in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 127
+[07-Apr-2016 15:07:57 Australia/Sydney] PHP Parse error:  syntax error, unexpected '{' in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 129
+[07-Apr-2016 15:11:31 Australia/Sydney] PHP Parse error:  syntax error, unexpected '{' in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 131
+[07-Apr-2016 15:13:14 Australia/Sydney] PHP Parse error:  syntax error, unexpected '{' in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 131
+[08-Apr-2016 15:42:22 Australia/Sydney] PHP Notice:  Undefined index: tier in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 32
+[08-Apr-2016 15:42:22 Australia/Sydney] PHP Notice:  Undefined index: tier in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 32
+[08-Apr-2016 15:42:22 Australia/Sydney] PHP Notice:  Undefined index: tier in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 32
+[08-Apr-2016 15:42:44 Australia/Sydney] PHP Notice:  Undefined index: tier in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 35
+[08-Apr-2016 17:29:54 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 172
+[08-Apr-2016 17:29:54 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/model/TierModel.php on line 58
+[08-Apr-2016 17:29:54 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 172
+[08-Apr-2016 17:29:54 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/model/TierModel.php on line 58
+[11-Apr-2016 12:48:34 Australia/Sydney] PHP Notice:  Undefined index: price in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 33
+[11-Apr-2016 12:48:34 Australia/Sydney] PHP Notice:  Undefined index: period in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 33
+[11-Apr-2016 12:48:34 Australia/Sydney] PHP Notice:  Undefined index: price in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 33
+[11-Apr-2016 12:48:34 Australia/Sydney] PHP Notice:  Undefined index: period in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 33
+[11-Apr-2016 12:48:34 Australia/Sydney] PHP Notice:  Undefined index: price in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 33
+[11-Apr-2016 12:48:34 Australia/Sydney] PHP Notice:  Undefined index: period in /home/frumbert/coursesuite.frumbert.org/precompiled/fb258e209636a7a84ecdbec1b83c0832.php on line 33
+[11-Apr-2016 16:48:41 Australia/Sydney] PHP Notice:  Undefined variable: i in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 84
+[11-Apr-2016 16:48:41 Australia/Sydney] PHP Notice:  Undefined variable: i in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 84
+[11-Apr-2016 16:48:41 Australia/Sydney] PHP Notice:  Undefined variable: i in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 84
+[14-Apr-2016 13:34:04 Australia/Sydney] PHP Fatal error:  Cannot use isset() on the result of a function call (you can use "null !== func()" instead) in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 144
+[14-Apr-2016 13:34:04 Australia/Sydney] PHP Fatal error:  Cannot use isset() on the result of a function call (you can use "null !== func()" instead) in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 144
+[14-Apr-2016 14:48:35 Australia/Sydney] PHP Fatal error:  Cannot use isset() on the result of a function call (you can use "null !== func()" instead) in /home/frumbert/coursesuite.frumbert.org/application/controller/ApiController.php on line 148
+[14-Apr-2016 14:50:05 Australia/Sydney] PHP Parse error:  syntax error, unexpected '$run' (T_VARIABLE) in /home/frumbert/coursesuite.frumbert.org/application/model/SubscriptionModel.php on line 17
+[14-Apr-2016 14:50:41 Australia/Sydney] PHP Fatal error:  Call to a member function fetchColumn() on boolean in /home/frumbert/coursesuite.frumbert.org/application/model/SubscriptionModel.php on line 16
+[14-Apr-2016 14:51:04 Australia/Sydney] PHP Parse error:  syntax error, unexpected '->' (T_OBJECT_OPERATOR) in /home/frumbert/coursesuite.frumbert.org/application/model/SubscriptionModel.php on line 16
+[14-Apr-2016 15:01:34 Australia/Sydney] PHP Parse error:  syntax error, unexpected '{' in /home/frumbert/coursesuite.frumbert.org/application/model/SubscriptionModel.php on line 16
+[14-Apr-2016 16:04:18 Australia/Sydney] PHP Fatal error:  Call to undefined method PDOStatement::exec() in /home/frumbert/coursesuite.frumbert.org/application/model/SubscriptionModel.php on line 117
+[02-May-2016 11:51:33 Australia/Sydney] PHP Parse error:  syntax error, unexpected '<' in /home/frumbert/coursesuite.frumbert.org/application/view/login/index.php on line 3
+[02-May-2016 11:58:57 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 11:59:05 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 11:59:30 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 11:59:56 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:00:32 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:02:05 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:03:16 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:03:19 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:03:22 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:03:24 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 12:03:30 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:03:38 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:03:50 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:06:43 Australia/Sydney] PHP Notice:  Undefined index: user_name in /home/frumbert/coursesuite.frumbert.org/application/core/Text.php on line 33
+[02-May-2016 13:06:43 Australia/Sydney] PHP Notice:  Undefined index: user_email in /home/frumbert/coursesuite.frumbert.org/application/core/Text.php on line 33
+[02-May-2016 13:06:43 Australia/Sydney] PHP Notice:  Undefined index: user_email_repeat in /home/frumbert/coursesuite.frumbert.org/application/core/Text.php on line 33
+[02-May-2016 13:06:43 Australia/Sydney] PHP Notice:  Undefined index: user_password_new in /home/frumbert/coursesuite.frumbert.org/application/core/Text.php on line 33
+[02-May-2016 13:06:43 Australia/Sydney] PHP Notice:  Undefined index: user_password_repeat in /home/frumbert/coursesuite.frumbert.org/application/core/Text.php on line 33
+[02-May-2016 13:10:31 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:10:46 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:10:49 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:10:52 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:11:41 Australia/Sydney] string(22) "tim@coursesuite.com.au"
+string(26) "no-reply@coursesuite.ninja"
+string(11) "CourseSuite"
+string(34) "Account activation for CourseSuite"
+string(142) "Please click on this link to activate your account: http://coursesuite.frumbert.org/register/verify/4/5c1d14bf9270189f80329dd6ff1e938aaf107add"
+
+[02-May-2016 13:11:41 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 10
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 10
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 11
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 11
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 18
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 18
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 19
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 19
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 20
+[02-May-2016 13:24:30 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 20
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 10
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 10
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 11
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 11
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 18
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 18
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 19
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 19
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 20
+[02-May-2016 13:24:35 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 20
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 10
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 10
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 11
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 11
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 18
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 18
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 19
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 19
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Undefined variable: user in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 20
+[02-May-2016 13:24:59 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/view/user/index.php on line 20
+[02-May-2016 13:27:06 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[13-May-2016 14:15:13 Australia/Sydney] PHP Notice:  Undefined property: View::$users in /home/frumbert/coursesuite.frumbert.org/application/view/admin/allusers.php on line 24
+[13-May-2016 14:15:13 Australia/Sydney] PHP Warning:  Invalid argument supplied for foreach() in /home/frumbert/coursesuite.frumbert.org/application/view/admin/allusers.php on line 24
+[13-May-2016 14:23:00 Australia/Sydney] PHP Warning:  Missing argument 1 for AdminController::showLog(), called in /home/frumbert/coursesuite.frumbert.org/application/core/Application.php on line 52 and defined in /home/frumbert/coursesuite.frumbert.org/application/controller/AdminController.php on line 30
+[13-May-2016 14:23:00 Australia/Sydney] PHP Warning:  Missing argument 2 for AdminController::showLog(), called in /home/frumbert/coursesuite.frumbert.org/application/core/Application.php on line 52 and defined in /home/frumbert/coursesuite.frumbert.org/application/controller/AdminController.php on line 30
+[13-May-2016 14:23:00 Australia/Sydney] PHP Fatal error:  Call to undefined method LoggingModel::uniqueDigestUsers() in /home/frumbert/coursesuite.frumbert.org/application/controller/AdminController.php on line 33
+[13-May-2016 14:23:24 Australia/Sydney] PHP Fatal error:  Call to undefined method LoggingModel::uniqueDigestUsers() in /home/frumbert/coursesuite.frumbert.org/application/controller/AdminController.php on line 33
+[13-May-2016 14:32:34 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:32:34 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:32:34 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:32:34 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:32:34 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:34:55 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:34:55 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:34:55 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:35:28 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:35:28 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:35:28 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/precompiled/412cd7ebae37d27e24c2ebbc2eef2fb0.php on line 3
+[13-May-2016 14:41:13 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/controller/StoreController.php on line 32
+[13-May-2016 14:41:13 Australia/Sydney] PHP Notice:  Trying to get property of non-object in /home/frumbert/coursesuite.frumbert.org/application/controller/StoreController.php on line 33
+[13-May-2016 14:47:58 Australia/Sydney] PHP Notice:  Undefined index: feedback_negative in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 65
+[13-May-2016 14:47:58 Australia/Sydney] PHP Warning:  in_array() expects parameter 2 to be array, null given in /home/frumbert/coursesuite.frumbert.org/application/core/Session.php on line 66
+[13-May-2016 14:47:58 Australia/Sydney] PHP Warning:  PDOStatement::execute(): SQLSTATE[HY000]: General error: 2013 Lost connection to MySQL server during query in /home/frumbert/coursesuite.frumbert.org/application/model/RegistrationModel.php on line 249
+[13-May-2016 15:13:07 Australia/Sydney] PHP Notice:  Undefined variable: sheets in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 22
+[13-May-2016 15:13:07 Australia/Sydney] PHP Warning:  Invalid argument supplied for foreach() in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 22
+[13-May-2016 15:13:07 Australia/Sydney] PHP Notice:  Undefined variable: scripts in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/footer.php on line 19
+[13-May-2016 15:13:07 Australia/Sydney] PHP Warning:  Invalid argument supplied for foreach() in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/footer.php on line 19
+[13-May-2016 15:13:50 Australia/Sydney] PHP Notice:  Undefined variable: sheets in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 22
+[13-May-2016 15:13:50 Australia/Sydney] PHP Warning:  Invalid argument supplied for foreach() in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 22
+[13-May-2016 15:13:50 Australia/Sydney] PHP Notice:  Undefined variable: scripts in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/footer.php on line 19
+[13-May-2016 15:13:50 Australia/Sydney] PHP Warning:  Invalid argument supplied for foreach() in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/footer.php on line 19
+[13-May-2016 15:16:24 Australia/Sydney] PHP Notice:  Undefined variable: sheets in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 23
+[13-May-2016 15:16:24 Australia/Sydney] PHP Fatal error:  Cannot access empty property in /home/frumbert/coursesuite.frumbert.org/application/view/_templates/header.php on line 23
+[13-May-2016 15:40:25 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 22
+[13-May-2016 15:40:25 Australia/Sydney] PHP Warning:  PDOStatement::execute(): SQLSTATE[42S22]: Column not found: 1054 Unknown column 'date' in 'where clause' in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 22
+[13-May-2016 15:41:29 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 22
+[13-May-2016 15:42:12 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 22
+[13-May-2016 15:42:57 Australia/Sydney] PHP Notice:  Array to string conversion in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 24
+[13-May-2016 15:43:35 Australia/Sydney] PHP Fatal error:  Call to a member function format() on array in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 17
+[13-May-2016 15:43:48 Australia/Sydney] PHP Parse error:  syntax error, unexpected '->' (T_OBJECT_OPERATOR) in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 17
+[13-May-2016 15:44:58 Australia/Sydney] PHP Warning:  date_format() expects parameter 1 to be DateTimeInterface, array given in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 18
+[13-May-2016 15:50:00 Australia/Sydney] PHP Catchable fatal error:  Object of class DateTime could not be converted to string in /home/frumbert/coursesuite.frumbert.org/application/model/LoggingModel.php on line 24
+[13-May-2016 15:53:17 Australia/Sydney] PHP Warning:  file_get_contents(/home/frumbert/coursesuite.frumbert.org/application/view/admin/sections.hba): failed to open stream: No such file or directory in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 62
+[13-May-2016 16:22:07 Australia/Sydney] PHP Parse error:  syntax error, unexpected '->' (T_OBJECT_OPERATOR) in /home/frumbert/coursesuite.frumbert.org/application/controller/AdminController.php on line 50
+[13-May-2016 16:22:26 Australia/Sydney] PHP Parse error:  syntax error, unexpected '}' in /home/frumbert/coursesuite.frumbert.org/application/controller/AdminController.php on line 53
+[13-May-2016 16:22:39 Australia/Sydney] PHP Parse error:  syntax error, unexpected '$query' (T_VARIABLE) in /home/frumbert/coursesuite.frumbert.org/application/model/SectionsModel.php on line 24
+[13-May-2016 16:22:52 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:26:51 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:27:16 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:28:10 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:30:24 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:31:03 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:31:49 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:34:16 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:34:24 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:35:02 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[13-May-2016 16:36:54 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
+[13-May-2016 16:51:11 Australia/Sydney] PHP Notice:  Undefined index: data in /home/frumbert/coursesuite.frumbert.org/precompiled/649e3c2341d2e36b45a5f88499c57c14.php on line 39
+[13-May-2016 18:11:06 Australia/Sydney] PHP Fatal error:  Function name must be a string in /home/frumbert/coursesuite.frumbert.org/application/core/View.php on line 92
+[14-May-2016 21:00:53 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
+[15-May-2016 15:01:07 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
+[15-May-2016 23:12:05 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
+[16-May-2016 07:32:44 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
+[16-May-2016 09:30:34 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
+[16-May-2016 09:31:09 Australia/Sydney] PHP Fatal error:  Call to undefined method StoreModel::getAllStoreSections() in /home/frumbert/coursesuite.frumbert.org/application/model/StoreModel.php on line 25
