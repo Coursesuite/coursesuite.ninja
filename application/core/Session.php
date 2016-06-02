@@ -63,7 +63,11 @@ class Session
     public static function add($key, $value)
     {
 	    $ar = $_SESSION[$key];
-	    if (!in_array($value, $ar)) { // TIM: don't re-add duplicate values
+	    if (is_array($ar)) {
+		    if (!in_array($value, $ar)) { // TIM: don't re-add duplicate values
+	        	$_SESSION[$key][] = $value;
+	        }
+        } else {
         	$_SESSION[$key][] = $value;
         }
     }
@@ -178,7 +182,10 @@ class Session
             $sql = "SELECT user_id FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
             $query = $database->prepare($sql);
             $query->execute(array(":session_id" => $session_id));
-            return $query->fetch()->user_id;
+            $row = $query->fetch();
+            if ($query->rowcount() > 0) {
+	            return $row->user_id;
+            }
         }
         return -1;
     }

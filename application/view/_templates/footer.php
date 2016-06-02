@@ -15,10 +15,19 @@
     </footer>
 
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script>window.jQuery || document.write('<script src="<?=Config::get('URL')?>js/jquery-1.10.2.min.js"><\/script>')</script>
+
 <?php
 if (isset($this->scripts)) {
     foreach ($this->scripts as $script) {
 	    echo "    <script src='" . Config::get('URL') . "js/$script'></script>" . PHP_EOL;
+    }
+} ?>
+    <script src="<?php echo Config::get('URL'); ?>js/main.js"></script>
+
+</body>
+</html>'text/javascript'></script>" . PHP_EOL;
+		}
     }
 } ?>
     <script src="<?php echo Config::get('URL'); ?>js/main.js"></script>

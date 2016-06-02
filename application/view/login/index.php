@@ -1,4 +1,10 @@
-    <div class="login-page-container">
+<article class="register-login">
+	
+	<header class='common-header margin-below'>
+		<nav><a href="<?php echo Config::get('URL'); ?>">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>login/">Login or register</a></nav>
+	</header>
+	
+    <section class="login-page-container standard-width">
 
         <div class="login-box">
 	       	<header>Existing users</header>
@@ -41,4 +47,6 @@
             </main>
         </div>
 
-    </div>
+    </section>
+    
+</article>

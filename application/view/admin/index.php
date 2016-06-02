@@ -1,19 +1,21 @@
-<div class="container">
-    <h1>Admin/index</h1>
+<article class="system-index admin-tools">
+    <h3>Admin tools</h3>
 
-    <div class="box">
+    <?php $this->renderFeedbackMessages(); ?>
 
-        <!-- echo out the system feedback (error and success messages) -->
-        <?php $this->renderFeedbackMessages(); ?>
+    <p>I really haven't done much with the look of this page yet. Controllers will be linked as they are coded ...</p>
 
-        <h3>Wow, I really haven't done much with this page huh?</h3>
-        
-        <ul>
-	        <li><a href="<?= Config::get('URL')?>admin/allUsers">List all users</a></li>
-	        <li><a href="<?= Config::get('URL')?>admin/showLog">Show system log</a></li>
-	        <li><a href="<?= Config::get('URL')?>admin/editSections">Edit store sections</a></li>
-	        <li><a href="<?= Config::get('URL')?>admin/editApps">Edit apps</a></li>
-        </ul>
+    <ul>
+        <li><a href="<?= Config::get('URL')?>admin/allUsers">List all users</a></li>
+        <li>Send and manage user notifications</li>
+        <li><a href="<?= Config::get('URL')?>admin/editSections">Edit store sections</a></li>
+        <li><a href="<?= Config::get('URL')?>admin/editApps">Edit apps</a></li>
+        <li>Assign apps to store sections</li>
+        <li><a href="<?= Config::get('URL')?>admin/showLog">Show system log</a></li>
+        <li>Edit tiers</li>
+        <li>Manage app-tier feature matrix</li>
+        <li>Manage subscriptions</li>
+        <li><a href="<?= Config::get('URL')?>admin/manualSubscribe">Manually add a subscription</a></li>
+    </ul>
 
-    </div>
-</div>
+</article>

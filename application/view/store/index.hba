@@ -1,7 +1,10 @@
-<article>
+<article class='store-index'>
+	<header class='common-header'>
+		<nav><a href="{{baseurl}}">Home</a></nav>
+	</header>
 {{#each section}}
     {{#equals visible 1}}<section class='{{cssclass}}'>
-<div class="store-items">
+<div class="store-items standard-width">
         {{#if label}}<h3>{{label}}</h3>{{/if}}
         {{#if epiphet}}<h4>{{epiphet}}</h4>{{/if}}
         {{#if html_pre}}{{{html_pre}}}{{/if}}
@@ -18,7 +21,9 @@
                 <div class='actions'>
                     {{#equals auth_type 1}}<a href='{{url}}' target='_blank'>Launch</a>{{else}}
                     <a href='{{../../storeurl}}{{app_key}}'>More info</a>
-                    {{#if ../../token}}<a href='{{launch}}?token={{../../token}}' target='_blank' class='launch'>Launch</a>{{/if}}{{/equals}}
+                    {{#each ../../appTokens}}
+                    	{{#equals app_id ../app_id}}<a href='{{../launch}}?token={{token}}' target='_blank' class='launch'>Launch</a>{{/equals}}
+                    {{/each}}{{/equals}}
                 </div>
             </div>
             {{/each}}

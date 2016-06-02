@@ -9,6 +9,7 @@ return array(
 	"FEEDBACK_UNKNOWN_ERROR" => "Unknown error occurred!",
 
 	"FEEDBACK_DELETED" => "Your account has been deleted.",
+	"FEEDBACK_ADMIN_USER_DELETED" => "The account $id has been deleted.",
 
 	"FEEDBACK_CAPTCHA_WRONG" => "The entered captcha security characters were wrong.",
 
@@ -35,6 +36,8 @@ return array(
 	"FEEDBACK_EMAIL_DOES_NOT_FIT_PATTERN" => "Sorry, your chosen email does not fit into the email naming pattern.",
 	"FEEDBACK_EMAIL_SAME_AS_OLD_ONE" => "Sorry, that email address is the same as your current one. Please choose another one.",
 	"FEEDBACK_EMAIL_CHANGE_SUCCESSFUL" => "Your email address has been changed successfully.",
+	
+	"FEEDBACK_NO_DESTROY" => "Sorry, you need type the words exactly as shown",
 
 	"FEEDBACK_PASSWORD_WRONG_3_TIMES" => "You have typed in a wrong password 3 or more times already. Please wait 30 seconds to try again.",
 	"FEEDBACK_PASSWORD_FIELD_EMPTY" => "Password field was empty.",

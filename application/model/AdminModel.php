@@ -12,8 +12,7 @@ class AdminModel
 	 * @param $softDelete
 	 * @param $userId
 	 */
-	public static function setAccountSuspensionAndDeletionStatus($suspensionInDays, $softDelete, $userId)
-	{
+	public static function setAccountSuspensionAndDeletionStatus($userid, $suspensionInDays, $softDelete = "", $hardDelete = "", $makeActive = "") {
 
 		// Prevent to suspend or delete own account.
 		// If admin suspend or delete own account will not be able to do any action.
@@ -29,18 +28,17 @@ class AdminModel
 		}
 
         // FYI "on" is what a checkbox delivers by default when submitted. Didn't know that for a long time :)
-		if ($softDelete == "on") {
-			$delete = 1;
-		} else {
-			$delete = 0;
-		}
+
+		$delete = ($softDelete == "on") ? 1 : 0;
+		$destroy = ($hardDelete == "on") ? 1 : 0;
+		$activate = ($makeActive == "on") ? 1 : 0;
 
 		// write the above info to the database
-		self::writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete);
+		self::writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate);
 
 		// if suspension or deletion should happen, then also kick user out of the application instantly by resetting
 		// the user's session :)
-		if ($suspensionTime != null OR $delete = 1) {
+		if ($suspensionTime != null OR $delete = 1 OR $destroy = 1) {
 			self::resetUserSession($userId);
 		}
 	}
@@ -53,16 +51,28 @@ class AdminModel
 	 * @param $delete
 	 * @return bool
 	 */
-	private static function writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete)
+	private static function writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
-		$query = $database->prepare("UPDATE users SET user_suspension_timestamp = :user_suspension_timestamp, user_deleted = :user_deleted  WHERE user_id = :user_id LIMIT 1");
-		$query->execute(array(
+		if ($destroy == 1) {
+			Session::add('feedback_positive', Text::get('FEEDBACK_ADMIN_USER_DELETED', array("id" => $userId)));
+			return true;
+		}
+
+		$params = array(
 				':user_suspension_timestamp' => $suspensionTime,
 				':user_deleted' => $delete,
 				':user_id' => $userId
-		));
+		);
+		
+		$ACTIVATED = "";
+		if ($activate == 1) {
+			$ACTIVATED = ", user_active=1, user_activation_hash=NULL, user_password_reset_hash=NULL ";
+		}
+
+		$query = $database->prepare("UPDATE users SET user_suspension_timestamp = :user_suspension_timestamp, user_deleted = :user_deleted $ACTIVATED WHERE user_id = :user_id LIMIT 1");
+		$query->execute($params);
 
 		if ($query->rowCount() == 1) {
 			Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUSPENSION_DELETION_STATUS'));

@@ -76,7 +76,8 @@ class ApiController extends Controller
             'appkey' => $data->app,
             'valid' => $data->valid,
             'api' => true,
-            'tier' => 4,                             // some way of pulling this value?
+            'tier' => TierModel::getLevelForOrg($data->org),
+            'error' => '',                          // some kind of error we need to report to the user (e.g. service has been used too much this month)
             'org' => $data->org
         );
         LoggingModel::logMethodCall(__METHOD__, $this->username, $data->org, $data->app, $result);
@@ -111,16 +112,16 @@ class ApiController extends Controller
     public function appNames() {
         $this->View->renderJSON(AppModel::getAppKeys());  // Config::get('APP_NAMES')
     }
-    
+
     public function tasks() {
 		SubscriptionModel::validateSubscriptions();
     }
 
 
     /* -------------------------------- FASTSPRING -----------------------------------
-	    
+
 	    Request all have these named parameters (post):
-	    
+
 	    accountUrl
 	    email
 	    productName
@@ -131,7 +132,7 @@ class ApiController extends Controller
 	    subscriptionEndDate
 	    subscriptionUrl
 	    testmode
-	    
+
 	    security_data
 	    security_hash
 
@@ -141,21 +142,25 @@ class ApiController extends Controller
         LoggingModel::logMethodCall(__METHOD__, $this->username, $params, Request::post_debug());
 	    extract ($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
 	    if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
-		    
 	    	$tierid = (int) TierModel::getTierIdByName(Request::post("productName")); // short name of subscription in fastspring system
-	    	$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
+			$referrer = Request::post("referrer");
+			if (isset($referrer)) {
+		    	$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
+			} else {
+				$userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ?
+			}
 	    	$endDate = Request::post("subscriptionEndDate"); // date | empty
 	    	$endDateSet = isset($endDate); // if set then the subscription is inactive after this date
-	    	$referenceId = Encryption::encrypt(Request::post("referenceId")); // unique order id for this transaction
+	    	$referenceId = Request::post("referenceId"); // unique order id for fastspring dashboard use
+	    	$subscriptionUrl = Text::base64enc(Encryption::encrypt(Request::post("subscriptionUrl"))); // unique user-facing transaction id for users personal reference
 	    	$status = Request::post("status"); // active | inactive
 	    	$statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
 	    	$testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
-
 		    switch ($params[0]) {
 			    case "activated":
 				case "deactivated":
 			    	// normal new subscription or deactivation caused by cancellation, payment failure
-					SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $status, $statusReason, $testMode);
+					SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode);
 			    	break;
 
 				case "failed":
@@ -164,12 +169,11 @@ class ApiController extends Controller
 					if ($endDateSet) {
 						if ($status == "inactive") {} // has become inactive and will deactivate soon
 						if ($statusReason == "canceled") {} // we should next or soon see a deactivated
-					} else if ($status == "active") { 
+					} else if ($status == "active") {
 						// e.g. changed from failed back to active
 					}
 					break;
 		    }
-
 		}
 	}
 

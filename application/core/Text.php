@@ -11,9 +11,9 @@ class Text
 		    return null;
 	    }
 	    if ($data) {
-		foreach ($data as $var => $value) {
-		${$var} = $value;
-		}
+			foreach ($data as $var => $value) {
+				${$var} = $value;
+			}
 		}
 	    // load config file (this is only done once per application lifecycle)
         if (!self::$texts) {
@@ -44,6 +44,14 @@ class Text
 
 	public static function base64enc($val) {
         return strtr(base64_encode($val), '+/=', '-_,');
+    }
+    
+    public static function base64dec($val) {
+        return base64_decode(strtr($val, '-_,', '+/='));
+    }
+
+}
+;
     }
     
     public static function base64dec($val) {

@@ -65,6 +65,30 @@ class LoggingModel {
         return false;
     }
 
+
+    public static function logInternal($methodName, ...$args) {
+
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $params["method_name"] = $methodName;
+        for ($i = 0 ; $i < count($args) ; $i += 1) {
+            $params["param" . $i] = $args[$i];
+        }
+        $sql = "INSERT INTO applog(" . implode(", ", array_keys($params)) . ") VALUES (";
+        $modded = array();
+        foreach ($params as $param => $value) {
+            $modded[":$param"] = is_array($value) ? serialize($value) : $value;
+        }
+        unset($params);
+        $sql .= implode(", ", array_keys($modded)) . ")";
+        $query = $database->prepare($sql);
+        $query->execute($modded);
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+    }
+    
+    
     /**
      * logs a raw message
      * @static static

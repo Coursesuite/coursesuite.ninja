@@ -2,7 +2,7 @@
 
 	<header class='common-header margin-below'>
 		<nav>
-			<a href="<?php echo Config::get('URL'); ?>">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>user/">My Account</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>user/editUsername">Edit username</a>
+			<a href="<?php echo Config::get('URL'); ?>">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>user/">My Account</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>user/destroy">Delete my account</a>
 		</nav>
 	</header>
 
@@ -12,9 +12,9 @@
 
 	<section class="profile-display standard-width">
 
-        <form action="<?php echo Config::get('URL'); ?>user/editUserName_action" method="post">
+        <form action="<?php echo Config::get('URL'); ?>user/destroy_action" method="post">
             <label>
-                New username: <input type="text" name="user_name" required />
+                To delete your account forever, type <i class="unselectable" unselectable="on">delete me forever</i>: <input type="text" name="confirm_destroy" required />
             </label>
 			<!-- set CSRF token at the end of the form -->
 			<input type="hidden" name="csrf_token" value="<?= Csrf::makeToken(); ?>" />

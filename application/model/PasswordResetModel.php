@@ -26,7 +26,7 @@ class PasswordResetModel
 			Session::add('feedback_negative', Text::get($captcha_check[0])); // text error codes
 			return false;
 		}
-
+		
 		//if (!CaptchaModel::checkCaptcha($captcha)) {
 		//	Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
 		//	return false;
@@ -43,7 +43,7 @@ class PasswordResetModel
 			Session::add('feedback_negative', Text::get('FEEDBACK_USER_DOES_NOT_EXIST'));
 			return false;
 		}
-
+		
 		// generate integer-timestamp (to see when exactly the user (or an attacker) requested the password reset mail)
 		// generate random hash for email password reset verification (40 char string)
 		$temporary_timestamp = time();

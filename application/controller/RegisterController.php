@@ -51,9 +51,13 @@ class RegisterController extends Controller
      */
     public function verify($user_id, $user_activation_verification_code)
     {
+
+		Session::set("feedback_area", "registration");
+
         if (isset($user_id) && isset($user_activation_verification_code)) {
             RegistrationModel::verifyNewUser($user_id, $user_activation_verification_code);
-            $this->View->render('register/verify');
+            $this->View->render('login/index');
+            // $this->View->render('register/verify');
         } else {
             Redirect::to('login/index');
         }

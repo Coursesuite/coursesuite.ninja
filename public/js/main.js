@@ -29,12 +29,12 @@ var fastspring = function() {
         store: {
             show: function(options) {
                 var opt = extend(fastspring.settings, options || {});
-                
-                var iframe = document.createElement('iframe'), 
+
+                var iframe = document.createElement('iframe'),
                 	div = fastspring.store.div = document.createElement('div'),
 					idiv = fastspring.store.idiv = document.createElement('div'),
 					closer = fastspring.store.closer = document.createElement('a');
-                
+
                 closer.style.display = 'inline-block';
                 closer.style.background = '#fff';
                 closer.style.padding = '10px 20px 0';
@@ -50,12 +50,12 @@ var fastspring = function() {
                 closer.setAttribute('href', '#');
                 closer.style.top = '47px'; // top-offset + border-top-width + border-bottom-width
 				closer.style.right = '53px'; // left-offset + border-left-width + border-right-width
-                
+
                 div.style.background = '#1B7FCC';
                 div.style.opacity = 0.8;
                 div.style.filter = 'alpha(opacity=80)';
                 document.body.className += " no-scroll";
-                
+
                 if((bo.ie && bo.quirks) || bo.ie6) {
                     var size = windowSize();
                     div.style.position = 'absolute';
@@ -83,13 +83,13 @@ var fastspring = function() {
                 }
 
                 div.style.zIndex = 99997; // lightbox
-                idiv.style.zIndex = 99998; // iframe wrapper              
-                closer.style.zIndex = 99998; // close button         
-                
+                idiv.style.zIndex = 99998; // iframe wrapper
+                closer.style.zIndex = 99998; // close button
+
                 document.body.appendChild(div);
                 document.body.appendChild(idiv);
                 document.body.appendChild(closer);
-                
+
                 iframe.style.width = (div.offsetWidth - 110) +'px';
                 iframe.style.height = (div.offsetHeight - 150) +'px';
                 iframe.style.border = 'none';
@@ -97,7 +97,7 @@ var fastspring = function() {
                 iframe.style.display = 'block';
                 iframe.frameBorder = 0;
                 iframe.src = opt.url;
-                
+
                 idiv.appendChild(iframe);
             },
             hide: function(callback) {
@@ -273,9 +273,21 @@ addStyle();
 })(window, document);
 
 // TODO: fix slideshow hack
+var _currentSlide = 0;
 function slideshow(index) {
-    n = (index * 459); // TODO: read thumbnail widths from config
-    m = (index * 60); // HALF the thumbnail width
+	if (typeof index == "string") {
+		switch (index) {
+			case "precede":
+				index = Math.max(_currentSlide-1, 0);
+				break;
+			case "advance":
+				index = Math.min(_currentSlide+1, document.querySelectorAll("#slide_controls a").length-1);
+				break;
+		}
+		console.log("current slide", _currentSlide, "index", index);
+	}
+    var n = (index * 459), // TODO: read thumbnail widths from config
+          m = Math.max((index * 120) - 60, 0); // half a thumb on the left, plus a full thumb visible, no matter the index
     $("#current_slide").css({
 	    "transform": "translateX(-" + n + "px)"
     });
@@ -283,11 +295,14 @@ function slideshow(index) {
 	    "transform": "translateX(-" + m + "px)"
     }).find("a").removeClass("active");
     $("a:eq(" + index + ")", "#slide_controls").addClass("active");
+    // transition the background to match the content of the image/slide predominant colour (precalculated by thumbnailer)
+    $("section.info > div.media > div.slide-wrapper > .viewport.current_slide").css("box-shadow","0 0 25px " + slides[index].bgcolor);
+	_currentSlide = index;
 }
-    
+
 $(function () {
 
-	if (typeof flatpickr === "function") {	
+	if (typeof flatpickr === "function") {
 		flatpickr("input.flatpickr", {
 			onOpen: function () {
 				this.hasBeenShown = true;
@@ -299,12 +314,12 @@ $(function () {
 			}
 		});
 	}
-	
+
 	$("table.app-matrix").on("click", "a[href*='fastspring']", function (e) {
 		e.preventDefault();
 		fastspring.store.show({"url": this.getAttribute("href")});
 	});
-	
+
 	$("body").on("click", "#fastspring-close", function (e) {
 		e.preventDefault();
 		fastspring.store.hide();
@@ -320,7 +335,7 @@ $(function () {
                     return "<iframe width='459' height='344' src='" + obj.video + "' frameborder='0' allowfullscreen class='slide' style='background-color:" + obj.bgcolor + ";'></iframe>";
                 } else if (obj.hasOwnProperty("image")) {
                     return ["<figure class='slide' style='background-color:" + obj.bgcolor + ";'>",
-                    	"<img src='" + obj.preview + "'>", 
+                    	"<img src='" + obj.preview + "'>",
                     	"<a href='" + obj.image + "' target='_blank' title='Open in a new window'><i class='cs-camera'></i></a>",
                     	obj.caption ? "<figcaption>" + obj.caption + "</figcaption>" : "",
                     	"</figure>"].join("");
@@ -364,6 +379,17 @@ $(function () {
 			$("body").append(img);
 		}, function () {
 			$("#hoverThumb").remove();
+		})
+		.mousemove(function(e) {
+			$("#hoverThumb").css({
+				"top": (e.pageY+10) + "px",
+				"left": (e.pageX+10) + "px",
+			});
+		});
+
+});
+
+		$("#hoverThumb").remove();
 		})
 		.mousemove(function(e) {
 			$("#hoverThumb").css({

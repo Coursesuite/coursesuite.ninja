@@ -1,9 +1,9 @@
 @font-face {
     font-family: 'mycoursesuite';
     src:
-        url('fonts/mycoursesuite.ttf?u6mabe') format('truetype'),
-        url('fonts/mycoursesuite.woff?u6mabe') format('woff'),
-        url('fonts/mycoursesuite.svg?u6mabe#mycoursesuite') format('svg');
+        url('fonts/mycoursesuite.ttf?inj2s1') format('truetype'),
+        url('fonts/mycoursesuite.woff?inj2s1') format('woff'),
+        url('fonts/mycoursesuite.svg?inj2s1#mycoursesuite') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -23,6 +23,63 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.cs-eye2:before {
+    content: "\e000";
+}
+.cs-cog:before {
+    content: "\e023";
+}
+.cs-stack-2:before {
+    content: "\e033";
+}
+.cs-reply:before {
+    content: "\e039";
+}
+.cs-circle-plus:before {
+    content: "\e040";
+}
+.cs-circle-minus:before {
+    content: "\e041";
+}
+.cs-circle-check:before {
+    content: "\e042";
+}
+.cs-circle-cross:before {
+    content: "\e043";
+}
+.cs-rewind:before {
+    content: "\e051";
+}
+.cs-fast-forward:before {
+    content: "\e055";
+}
+.cs-cloud-upload:before {
+    content: "\e066";
+}
+.cs-cloud-download:before {
+    content: "\e067";
+}
+.cs-upload:before {
+    content: "\e068";
+}
+.cs-download:before {
+    content: "\e069";
+}
+.cs-arrow-right:before {
+    content: "\e095";
+}
+.cs-delete:before {
+    content: "\e119";
+}
+.cs-file:before {
+    content: "\e124";
+}
+.cs-file-add:before {
+    content: "\e125";
+}
+.cs-file-subtract:before {
+    content: "\e126";
+}
 .cs-heart:before {
     content: "\e90e";
 }

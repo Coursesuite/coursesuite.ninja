@@ -1,6 +1,22 @@
 <?php
-	
-class SectionsModel {
+
+class SectionsModel extends Model {
+
+    function __construct() {
+        parent::__construct();
+    }
+
+    public static function Make() {
+        return parent::Create("store_sections");
+    }
+
+     public static function Load($table, $where_clause, $fields) {
+        return parent::Read($table, $where_clause, $fields);
+     }
+
+     public static function Save($table, $idrow_name, $data_model) {
+        return parent::Update($table, $idrow_name, $data_model);
+     }
 
     public static function getAllStoreSections($basic = false) {
         $database = DatabaseFactory::getFactory()->getConnection();
@@ -15,7 +31,7 @@ class SectionsModel {
         $query->execute();
         return $query->fetchAll();
     }
-    
+
     public static function getStoreSection($id) {
 	    $id = intval($id,10);
 	    if ($id<1) return null;
@@ -27,11 +43,11 @@ class SectionsModel {
         $query->execute(array(":id" => $id));
         return $query->fetch();
     }
-    
+/*
     public static function setStoreSection($model) {
 
         $database = DatabaseFactory::getFactory()->getConnection();
-/*
+
         $params["method_name"] = $methodName;
         $params["digest_user"] = $digestUser;
         for ($i = 0 ; $i < count($args) ; $i += 1) {
@@ -49,8 +65,8 @@ class SectionsModel {
         if ($query->rowCount() == 1) {
             return true;
         }
-*/
-	    
+
+
     }
-    
+  */
 }

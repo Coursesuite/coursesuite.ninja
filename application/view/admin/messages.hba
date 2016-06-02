@@ -1,11 +1,16 @@
-<article class="system-log">
+<article class="system-log admin-tools">
+
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		System log
+	</h3>
 
 	<form onsubmit="return false;">
-		<label>Digest user: <select onchange="document.location=this.value;"><option value="{{baseurl}}admin/showLog">any</option>
+		<div><label>Digest user:</label> <select onchange="document.location=this.value;"><option value="{{baseurl}}admin/showLog">any</option>
 		{{#each digest_users}}<option value="{{../baseurl}}admin/showLog/user/{{digest_user}}"{{#equals digest_user ../filter_value}} selected{{/equals}}>{{dump digest_user}}</option>{{/each}}
-		</select></label>
-		
-		<label>dates after: <input type="text" class=flatpickr data-maxdate=today value="{{filter_value}}" data-syslog=true>  
+		</select></div>
+		<div><label>dates after:</label> <input type="text" class=flatpickr data-maxdate=today value="{{filter_value}}" data-syslog=true></div>
+		<div><label>order:</label> Newest at top</div>
 	</form>
 
 	<table>
@@ -28,6 +33,4 @@
 		</tbody>
 	</table>
 
-	<p><a href="{{baseurl}}admin">Back to admin index</a></p>
- 
 </article>

@@ -12,21 +12,32 @@ class TierModel {
      * get the tier record for a row id
      optional: include app model
      */
-    public static function getTierById($tier_id, $include_app_model = true) {
+    public static function getTierById($tier_id, $include_app_model = true, $include_pack_model = false) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT tier_level, app_ids, name, description, added, store_url, active
+        $sql = "SELECT tier_level, name, description, added, store_url, active, price, currency, pack_id
                 FROM tiers WHERE tier_id = :tier_id LIMIT 1";
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(':tier_id' => $tier_id));
         $result = $query->fetch();
         if (!empty($result)) {
             $return = new stdClass();
+            $sql = "SELECT app_id FROM app_tiers WHERE tier_id=:tier_id";
+            $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $query->execute(array(":tier_id" => $tier_id));
             if ($include_app_model) {
 	            $apps = array();
-	            foreach (explode(",", $result->app_ids) as $app_id) {
+	            foreach ($query->fetchAll() as $app_id) {
 	                $apps[$app_id] = AppModel::getAppById($app_id);
 	            }
 				$return->apps = $apps;
+            } else {
+	            $return->app_ids = $query->fetchAll(PDO::FETCH_COLUMN, 0);
+            }
+            if ($include_pack_model) {
+	            $sql = "SELECT id, name, kind FROM tier_packs WHERE id=:pack_id";
+	            $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	            $query->execute(array(":pack_id" => $result->pack_id));
+	            $return->pack = $query->fetchAll();
             }
             $return->tier_id = $tier_id;
             $return->tier_level = $result->tier_level;
@@ -39,14 +50,25 @@ class TierModel {
         }
         return false;
     }
-    
+
     public static function getTierIdByName($tier_name) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT tier_id FROM tiers WHERE name = :name";
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(':name' => $tier_name));
         return $query->fetchColumn();
-	    
+    }
+    
+    public static function getTierPackByName($tier_name, $include_app_model = false) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT tier_id FROM tiers WHERE pack_id IN (SELECT id FROM tier_packs WHERE name=:name) ORDER BY tier_level";
+        $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $query->execute(array(':name' => $tier_name));
+        $tiers = array();
+        foreach ($query->fetchAll() as $row) {
+	        $tiers[] = self::getTierById($row->tier_id, $include_app_model);
+       }
+       return $tiers;
     }
 
     /**
@@ -67,9 +89,13 @@ class TierModel {
         return $query->fetch()->tier_level;
     }
 
+    public static function getLevelForOrg($org) {
+        return 4;
+    }
+
     public static function getAllTiers($onlyactive = false) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT tier_id, tier_level, app_ids, name, description, store_url
+        $sql = "SELECT tier_id, tier_level, name, description, store_url, price, currency, period, pack_id
                     FROM tiers";
         if ($onlyactive == true) $sql .= " WHERE active = 1";
         $sql .= " ORDER BY tier_level, name";
@@ -86,30 +112,26 @@ class TierModel {
     public static function getAllAppTiers($app_id, $onlyactive = true) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $Active = ($onlyactive == true) ? "AND active = 1" : "";
+
         $sql = "SELECT tier_id, tier_level, name, description, store_url, price, period
                     FROM tiers
-                    WHERE (app_ids = :single
-                    OR app_ids LIKE :first
-                    OR app_ids LIKE :middle
-                    OR app_ids LIKE :last)
+                    WHERE tier_id IN (SELECT tier_id FROM app_tiers WHERE app_id = :app_id)
                     $Active
                     ORDER BY tier_level, name
         ";
+
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(
-            ":single" => (string)$app_id,
-            ":first" => (string)$app_id . ',%',
-            ":middle" => '%,' . (string)$app_id . ',%',
-            ":last" => '%,' . (string)$app_id,
+            ":app_id" => (string)$app_id
         ));
         return $query->fetchAll();
     }
 
-    public static function getAppTierFeatures($app_id) {
+    public static function getAppFeatures($app_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT level, feature, details, match_label, mismatch_label
-                    FROM app_tier_feature WHERE app = :app_id
-                    ORDER BY level, feature";
+        $sql = "SELECT min_tier_level, feature, details, match_label, mismatch_label
+                    FROM app_feature WHERE app_id = :app_id
+                    ORDER BY min_tier_level, feature";
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(':app_id' => $app_id));
         return $query->fetchAll();

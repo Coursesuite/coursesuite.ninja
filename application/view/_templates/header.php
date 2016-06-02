@@ -43,8 +43,9 @@ if (isset($google_analytics_id)) {
     <header>
         <div><a href="<?php echo Config::get('URL'); ?>" class="logo"><img src="<?php echo Config::get('URL'); ?>img/cs_logo_70px_colour.png"></a></div>
         <div><nav>
-        	<a href="<?php echo Config::get('URL'); ?>"><i class='cs-shop'></i></a>
+        	<a href="<?php echo Config::get('URL'); ?>">Home</a>
         	<a href="http://forum.coursesuite.ninja" target="_blank">Forum</a>
+        	<a href="http://buggr.coursesuite.ninja/" target="_bnlank">Buggr!</a>
         <?php if (!Session::userIsLoggedIn()) { ?>
             <a href="<?php echo Config::get('URL'); ?>login/"<?php if (View::checkForActiveControllerAndAction($filename, "login/index")) { echo ' class="active" '; } ?>>Login / Register</a>
             <!-- a href="<?php echo Config::get('URL'); ?>register/"<?php if (View::checkForActiveControllerAndAction($filename, "register/index")) { echo ' class="active" '; } ?>>Register</a -->
@@ -78,6 +79,13 @@ if (isset($google_analytics_id)) {
                 </ul><?php } ?>
         <?php if (Session::get("user_account_type") == 7) : ?>
             <a href="<?php echo Config::get('URL'); ?>admin/"<?php if (View::checkForActiveController($filename, "admin")) { echo ' class="active" '; } ?>>Admin</a>
+        <?php endif; ?>
+            <a href="<?php echo Config::get('URL'); ?>login/logout">Logout</a>
+        <?php } ?>
+        </ul></div>
+    </header>
+
+    <main>ass="active" '; } ?>>Admin</a>
         <?php endif; ?>
             <a href="<?php echo Config::get('URL'); ?>login/logout">Logout</a>
         <?php } ?>

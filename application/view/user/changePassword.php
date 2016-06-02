@@ -1,25 +1,33 @@
-<div class="container">
-    <h1>UserController/changePassword</h1>
+<article class="my-profile">
 
-    <!-- echo out the system feedback (error and success messages) -->
-    <?php $this->renderFeedbackMessages(); ?>
+	<header class='common-header margin-below'>
+		<nav>
+			<a href="<?php echo Config::get('URL'); ?>">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>user/">My Account</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>user/changePassword">Change password</a>
+		</nav>
+	</header>
 
-    <div class="box">
-        <h2>Set new password</h2>
+	<section class="profile-feedback standard-width">
+	    <?php $this->renderFeedbackMessages(); ?>
+	</section>
 
-        <!-- new password form box -->
-        <form method="post" action="<?php echo Config::get('URL'); ?>user/changePassword_action" name="new_password_form">
-            <label for="change_input_password_current">Enter Current Password:</label>
-            <p><input id="change_input_password_current" class="reset_input" type='password'
-                   name='user_password_current' pattern=".{6,}" required autocomplete="off"  /></p>
-            <label for="change_input_password_new">New password (min. 6 characters)</label>
-            <p><input id="change_input_password_new" class="reset_input" type="password"
-                   name="user_password_new" pattern=".{6,}" required autocomplete="off" /></p>
-            <label for="change_input_password_repeat">Repeat new password</label>
-            <p><input id="change_input_password_repeat" class="reset_input" type="password"
-                   name="user_password_repeat" pattern=".{6,}" required autocomplete="off" /></p>
-            <input type="submit"  name="submit_new_password" value="Submit new password" />
+	<section class="profile-display standard-width">
+
+        <form action="<?php echo Config::get('URL'); ?>user/changePassword_action" method="post" name="new_password_form">
+            <label>Enter current password:<label>
+            <input id="change_input_password_current" class="reset_input" type='password'
+                   name='user_password_current' pattern=".{6,}" required autocomplete="off"  />
+            </label>
+            <label>New password (min. 6 characters):</label>
+            <input id="change_input_password_new" class="reset_input" type="password"
+                   name="user_password_new" pattern=".{6,}" required autocomplete="off" />
+            <label>Repeat new password:</label>
+            <input id="change_input_password_repeat" class="reset_input" type="password"
+                   name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
+
+			<!-- set CSRF token at the end of the form -->
+			<input type="hidden" name="csrf_token" value="<?= Csrf::makeToken(); ?>" />
+            <p><input type="submit" name="submit_new_password" value="Submit" /> <a href="<?php echo Config::get('URL'); ?>user" class="cancel-link">Cancel</a></p>
         </form>
 
-    </div>
-</div>
+    </section>
+</article>

@@ -60,7 +60,7 @@ class Mail
 			// set PHPMailer to use SMTP
 			$mail->IsSMTP();
 			// 0 = off, 1 = commands, 2 = commands and data, perfect to see SMTP errors
-			$mail->SMTPDebug = 0;
+			$mail->SMTPDebug = 2;
 			// enable SMTP authentication
 			$mail->SMTPAuth = Config::get('EMAIL_SMTP_AUTH');
 			// encryption
@@ -83,6 +83,9 @@ class Mail
 		$mail->Subject = $subject;
 		$mail->Body = $body;
 
+		// hmm
+		LoggingModel::logInternal("sending mail",print_r($mail, true));
+
 		// try to send mail, put result status (true/false into $wasSendingSuccessful)
 		// I'm unsure if mail->send really returns true or false every time, tis method in PHPMailer is quite complex
 		$wasSendingSuccessful = $mail->Send();
@@ -92,6 +95,7 @@ class Mail
 		} else {
 			// if not successful, copy errors into Mail's error property
 			$this->error = $mail->ErrorInfo;
+			LoggingModel::logInternal("error sending mail", $this->error);
 			return false;
 		}
 	}
@@ -125,10 +129,14 @@ class Mail
 		}
 
 		if (Config::get('EMAIL_USED_MAILER') == "log") {
+			LoggingModel::logInternal("Send email", $user_email, $from_email, $from_name, $subject, $body);
+			return true;
+			/*
 			ob_start();
 			var_dump($user_email, $from_email, $from_name, $subject, $body);
 			$result = ob_get_clean();
 			return error_log($result);
+			*/
 		}
 	}
 

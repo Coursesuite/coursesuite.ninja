@@ -16,17 +16,21 @@ class Request
      *
      * @param mixed $key key
      * @param bool $clean marker for optional cleaning of the var
+     * @param mixed null or http://php.net/manual/en/filter.filters.sanitize.php
      * @return mixed the key's value or nothing
      */
-    public static function post($key, $clean = false)
+    public static function post($key, $clean = false, $filter = null)
     {
         if (isset($_POST[$key])) {
-            // we use the Ternary Operator here which saves the if/else block
-            // @see http://davidwalsh.name/php-shorthand-if-else-ternary-operators
-            return ($clean) ? trim(strip_tags($_POST[$key])) : $_POST[$key];
+            if ($filter !== null) {
+                $value = filter_input(INPUT_POST, $key, $filter);
+            } else {
+                $value = $_POST[$key];
+            }
+            return ($clean) ? trim(strip_tags($value)) : $value;
         }
     }
-    
+
     public static function post_debug() {
 	    return print_r($_POST, true);
     }
@@ -45,14 +49,20 @@ class Request
     /**
      * gets/returns the value of a specific key of the GET super-global
      * @param mixed $key key
+     * @param mixed null or http://php.net/manual/en/filter.filters.sanitize.php
      * @return mixed the key's value or nothing
      */
-    public static function get($key)
+    public static function get($key, $filter = null)
     {
         if (isset($_GET[$key])) {
+            if ($filter !== null) {
+                return filter_input(INPUT_GET, $key, $filter);
+            }
             return $_GET[$key];
         }
     }
+
+
     /**
      * gets/returns the value of a specific key of the GET super-global, except it doesn't escape + to space
      * @param mixed $key key

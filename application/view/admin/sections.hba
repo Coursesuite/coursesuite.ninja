@@ -1,33 +1,39 @@
-<article class="system-sections">
+<article class="system-sections admin-tools">
 	{{#if action}}
-		<h3>Editing record {{id}}.</h3>
+		<h3>
+			<a href="{{baseurl}}admin/editSections/" class="back button">Back to edit sections</a>
+			Editing record {{id}}.
+		</h3>
 		<form method="post" action="{{baseurl}}admin/editSections/{{id}}/save">
 		{{#with data}}
-			<div><label>Label: <input type="text" name="label" value="{{label}}"></label></div>
-			<div><label>Epiphet: <input type="text" name="epiphet" value="{{epiphet}}"></label></div>
-			<div><label>CSS Class: <input type="text" name="cssclass" value="{{cssclass}}"></label></div>
-			<div>It is:
+			<div><label for="label">Label:</label> <input type="text" id="label" name="label" value="{{label}}"></div>
+			<div><label for="epiphet">Epiphet:</label> <input type="text" id="epiphet" name="epiphet" value="{{epiphet}}"></div>
+			<div><label for="cssclass">CSS Class:</label> <input type="text" id="cssclass" name="cssclass" value="{{cssclass}}"></div>
+			<div><span>It is:</span>
 				<input type="radio" name="visible" value="1" {{#equals "1" visible}} checked{{/equals}} id="y"><label for="y">Visible</label>
 				<input type="radio" name="visible" value="0" {{#equals "0" visible}} checked{{/equals}} id="n"><label for="n">Hidden</label>
 			</div>
-			<div><label>Order: <input type="number" min="1" max="999" step="1" value="{{sort}}"></label></div>
-			<div><label for="htmlpre">HTML Pre</label><br><textarea name="html_pre" rows=10 cols=80>{{html_pre}}</textarea></div>
-			<div><label for="htmlpost">HTML Post</label><br><textarea name="html_post" rows=10 cols=80>{{html_post}}</textarea></div>
-			<div><input type="submit" value="Save & Return"></div>
+			<div><label for="sort">Order:</label> <input type="number" min="1" max="999" step="1" value="{{#if sort}}{{sort}}{{else}}999{{/if}}" name="sort" id="sort"></div>
+			<div><label for="htmlpre">HTML Pre</label><textarea name="html_pre" rows=10 cols=80>{{html_pre}}</textarea></div>
+			<div><label for="htmlpost">HTML Post</label><textarea name="html_post" rows=10 cols=80>{{html_post}}</textarea></div>
+			<div><span class="spacer"></span><input type="submit" value="Save & Return" class="submit button"></div>
 		{{/with}}
 		</form>
 	{{else}}
-	<h3>Store sections</h3>
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Store sections
+	</h3>
 	<p>shown in current sort order; drag to change order, edit to change data</p>
-	<ul>
+	<ul id="drag-sort" data-table="store_sections" data-field="sort">
 		{{#each sections}}
 		<li><a href="{{../baseurl}}admin/editSections/{{id}}/edit">{{id}}. {{label}} ({{epiphet}})</a></li>
 		{{/each}}
 	</ul>
-	<p><a href="{{baseurl}}admin/editSections/0/new">Create a new section</a></p>
+	<p><a href="{{baseurl}}admin/editSections/0/new" class="create button">Create a new section</a></p>
 	{{/if}}
 
-	<p><a href="{{baseurl}}admin/editSections/">Back to edit sections</a></p>
-	<p><a href="{{baseurl}}admin">Back to admin index</a></p>
- 
+</article>ons/0/new" class="create button">Create a new section</a></p>
+	{{/if}}
+
 </article>

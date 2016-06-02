@@ -1,0 +1,22 @@
+<article class='tier-pack-matrix'>
+
+<header class='common-header margin-below'>
+	<nav class="crumb">
+	    <a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}store/tiers/{{Name}}">Tier features for all {{Name}} apps</a>
+	</nav>
+</header>
+
+<section class='information standard-width'>
+	<p>Tiers are paid subscriptions that contain multiple products that you are able to launch from CourseSuite.
+		Higher tiers allow you to access more features or customise more options within the apps. As new apps are
+		added, you will automatically gain access if they are available at your current subscribed tier.</p>
+	<p>To change tiers, you must cancel your current subscription then purchase your new tier.
+		<a href="http://forum.coursesuite.ninja/" target="_blank">Check the forum</a> for more information about tiers
+		and subscriptions.</p>
+</section>
+
+<section class='feature-table standard-width'>
+	{{{StoreController::TierMatrix Tiers Apps UserSubscription}}}
+</section>
+
+</article>

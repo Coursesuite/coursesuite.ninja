@@ -5,7 +5,25 @@
  * @package default
  * @author
  **/
-class AppModel {
+class AppModel extends Model {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public static function Make() {
+        return parent::Create("apps");
+    }
+
+     public static function Load($table, $where_clause, $fields) {
+        return parent::Read($table, $where_clause, $fields);
+     }
+
+     public static function Save($table, $idrow_name, $data_model) {
+        return parent::Update($table, $idrow_name, $data_model);
+     }
+
 
     /**
      * get a list of the (active) appkeys (that have an api)
@@ -32,14 +50,6 @@ class AppModel {
         $query->execute();
         return $query->fetchAll();
     }
-    
-    /* save the media record for a given app as JSON */
-    public static function saveAppMedia($app_id, $data) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->prepare("UPDATE apps SET media = :media WHERE app_id = :app_id LIMIT 1");
-        $query->execute(array(':app_id' => $app_id, ':media' => json_encode($data)));
-    }
-
 
     /**
      * get an app by its key (string)
@@ -72,7 +82,7 @@ class AppModel {
         $query->execute(array(':section' => $section_id));
         return $query->fetchAll();
     }
-    
+
     public static function getLaunchUrl($app_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT launch

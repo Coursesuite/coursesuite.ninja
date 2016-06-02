@@ -27,7 +27,10 @@ class LoginController extends Controller
         } else {
             // echo "redirectto = " . Session::get("RedirectTo");
             // redirect might be set in querystring, or in session, or not at all
-            $data = array('redirect' => Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo") ? Session::get("RedirectTo") : NULL);
+            $data = array(
+            	'redirect' => Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo") ? Session::get("RedirectTo") : NULL,
+            	'baseurl' => Config::get('URL')
+            );
             $this->View->render('login/index', $data);
         }
     }
@@ -105,11 +108,12 @@ class LoginController extends Controller
     public function requestPasswordReset_action()
     {
         $result = PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('g-recaptcha-response'));
-        if ($result === TRUE) { // all seemed to work; go back to the login page
-            Redirect::to('login/index');
-        } else { // stay here so they can fix it
-            Redirect::to("login/requestPasswordReset");
-        }
+        //if ($result === TRUE) { // all seemed to work; go back to the login page
+	        $this->View->render('login/requestPasswordReset');
+           // Redirect::to('login/index');
+        //} else { // stay here so they can fix it
+        //    Redirect::to("login/requestPasswordReset");
+        //}
     }
 
     /**

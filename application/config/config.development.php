@@ -72,8 +72,8 @@ return array(
 	 */
 	'DB_TYPE' => 'mysql',
 	'DB_HOST' => '127.0.0.1',
-	'DB_NAME' => 'frumbert_cshuge',
-	'DB_USER' => 'frumbert_cshuge',
+	'DB_NAME' => 'csninja_huge',
+	'DB_USER' => 'csninja_huge',
 	'DB_PASS' => 'qh+7$^kT(~sd',
 	'DB_PORT' => '3306',
 	'DB_CHARSET' => 'utf8',
@@ -157,14 +157,14 @@ return array(
 	 * EMAIL_USE_SMTP: Use SMTP or not
 	 * EMAIL_SMTP_AUTH: leave this true unless your SMTP service does not need authentication
 	 */
-	'EMAIL_USED_MAILER' => 'phpmailer', // 'log'
-	'EMAIL_USE_SMTP' => true,
-	'EMAIL_SMTP_HOST' => 'amethyst.relentlesshosting.com.au', // 'mail.coursesuite.hosting24.com.au',
+	'EMAIL_USED_MAILER' => 'phpmailer',
+	'EMAIL_USE_SMTP' => false,
+	'EMAIL_SMTP_HOST' => 'mail.coursesuite.hosting24.com.au',
 	'EMAIL_SMTP_AUTH' => true,
-	'EMAIL_SMTP_USERNAME' => 'no-reply@coursesuite.frumbert.org', // 'no.user',
-	'EMAIL_SMTP_PASSWORD' => 'fJ0b3=#U,ei7', // 'iuh@943^f',
-	'EMAIL_SMTP_PORT' => 465,
-	'EMAIL_SMTP_ENCRYPTION' => 'tls', // 'ssl',
+	'EMAIL_SMTP_USERNAME' => 'no.user', // 'no.user',
+	'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
+	'EMAIL_SMTP_PORT' => 465, // 587, // 465
+	'EMAIL_SMTP_ENCRYPTION' => false, 'tls', // 'ssl',
 
 	/**
 	 * Configuration for: Email content data

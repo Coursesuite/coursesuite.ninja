@@ -43,6 +43,14 @@ class UserModel
 
         return $all_users_profiles;
     }
+    
+    public static function getAllUsers() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT user_id, user_name FROM users ORDER BY user_name";
+        $query = $database->prepare($sql);
+        $query->execute();
+        return $query->fetchAll();
+    }
 
     /**
      * Gets a user's profile data, according to the given $user_id
@@ -355,5 +363,13 @@ class UserModel
 
         // return one row (we only have one result or nothing)
         return $query->fetch();
+    }
+    
+    public static function destroyUserForever($user_id, $base_type_only = true) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $force = ($base_type_only) ? " AND user_account_type=1 " : "";
+        $query = $database->prepare("DELETE FROM users WHERE user_id=:user_id $force LIMIT 1");
+        $query->execute(array(":user_id" => $user_id));
+	    return ($query->rowCount() == 1);
     }
 }

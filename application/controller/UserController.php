@@ -21,15 +21,25 @@ class UserController extends Controller
     /**
      * Show user's PRIVATE profile
      */
-    public function index()
-    {
-        $this->View->render('user/index', array(
+    public function index() {
+	    
+	    $model = array(
             'user_name' => Session::get('user_name'),
             'user_email' => Session::get('user_email'),
-            'user_gravatar_image_url' => Session::get('user_gravatar_image_url'),
-            'user_avatar_file' => Session::get('user_avatar_file'),
-            'user_account_type' => Session::get('user_account_type')
-        ));
+            'user_account_type' => Session::get('user_account_type'),
+            'subscriptions' => SubscriptionModel::getAllSubscriptions(Session::get('user_id'), false, false, false, true),
+            'baseurl' => Config::get('URL')
+        );
+        
+        if (Config::get('USE_GRAVATAR')) {
+	        $model["user_avatar"] = Session::get('user_gravatar_image_url');
+	    } else {
+		    $model["user_avatar"] = Session::get('user_avatar_file') . '?' . rand(1000,99999);
+		    $model["edit_avatar"] = Config::get('URL') . 'user/editAvatar';
+		}
+		
+        $this->View->renderHandlebars("user/myProfile", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        
     }
 
     /**
@@ -38,6 +48,34 @@ class UserController extends Controller
     public function editUsername()
     {
         $this->View->render('user/editUsername');
+    }
+
+    public function destroy()
+    {
+        $this->View->render('user/destroy');
+    }
+
+    public function destroy_action()
+    {
+
+        // check if csrf token is valid
+        if (!Csrf::isTokenValid()) {
+            LoginModel::logout();
+            Redirect::home();
+            exit();
+        }
+        
+        if (Request::post("confirm_destroy") !== "delete me forever") {
+	        Session::add('feedback_negative', Text::get('FEEDBACK_NO_DESTROY'));
+	        Redirect::to("user/destroy");
+	        exit;
+        }
+        
+        LoginModel::logout();
+        UserModel::destroyUserForever(Session::get('user_id'));
+        Redirect::home();
+        exit();
+
     }
 
     /**

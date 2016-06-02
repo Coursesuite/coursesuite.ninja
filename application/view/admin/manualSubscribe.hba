@@ -1,0 +1,16 @@
+<article class="manual-subscribe admin-tools">
+
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Manual subscription tester
+	</h3>
+
+	<form action="{{baseurl}}admin/actionManualSubscribe" method="post">
+		<div><label>User: <select name="user_id">{{#each users}}<option value="{{user_id}}">{{user_name}}</option>{{/each}}</select></label></div>
+		<div><label>Tier: <select name="tier_id">{{#each tiers}}<option value="{{tier_id}}">{{name}}</option>{{/each}}</select></label></div>
+		<div><input type="submit" value="Update"></div>
+	</form>
+	
+	{{#each feedback}}<p>{{.}}</p>{{/each}}
+	
+</article>	
