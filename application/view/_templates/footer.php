@@ -20,13 +20,10 @@
 <?php
 if (isset($this->scripts)) {
     foreach ($this->scripts as $script) {
-	    echo "    <script src='" . Config::get('URL') . "js/$script'></script>" . PHP_EOL;
-    }
-} ?>
-    <script src="<?php echo Config::get('URL'); ?>js/main.js"></script>
-
-</body>
-</html>'text/javascript'></script>" . PHP_EOL;
+	    if (strpos($script, "//") === false) {
+		    echo "    <script src='" . Config::get('URL') . "js/$script'></script>" . PHP_EOL;
+		} else {
+		    echo "    <script src='$script' type='text/javascript'></script>" . PHP_EOL;
 		}
     }
 } ?>

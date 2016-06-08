@@ -21,7 +21,11 @@
 <?php
 if (isset($this->sheets)) {
     foreach ($this->sheets as $sheet) {
-	    echo "    <link rel='stylesheet' type='text/css' href='" . Config::get('URL') . "css/$sheet' />" . PHP_EOL;
+	    if (strpos($sheet, "//") === false) {
+		    echo "    <link rel='stylesheet' type='text/css' href='" . Config::get('URL') . "css/$sheet' />" . PHP_EOL;
+	    } else {
+		    echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
+		}
     }
 }
 $google_analytics_id = Config::get('GOOGLE_ANALYTICS_ID');
@@ -39,12 +43,12 @@ if (isset($google_analytics_id)) {
 }
 ?>
     </head>
-<body>
+<body id="<?php echo str_replace("/", "_", $filename); ?>">
     <header>
         <div><a href="<?php echo Config::get('URL'); ?>" class="logo"><img src="<?php echo Config::get('URL'); ?>img/cs_logo_70px_colour.png"></a></div>
         <div><nav>
         	<a href="<?php echo Config::get('URL'); ?>">Home</a>
-        	<a href="http://forum.coursesuite.ninja" target="_blank">Forum</a>
+        	<a href="http://forum.coursesuite.ninja/categories/" target="_blank">Forum</a>
         	<a href="http://buggr.coursesuite.ninja/" target="_bnlank">Buggr!</a>
         <?php if (!Session::userIsLoggedIn()) { ?>
             <a href="<?php echo Config::get('URL'); ?>login/"<?php if (View::checkForActiveControllerAndAction($filename, "login/index")) { echo ' class="active" '; } ?>>Login / Register</a>
@@ -85,11 +89,18 @@ if (isset($google_analytics_id)) {
         </ul></div>
     </header>
 
-    <main>ass="active" '; } ?>>Admin</a>
-        <?php endif; ?>
-            <a href="<?php echo Config::get('URL'); ?>login/logout">Logout</a>
-        <?php } ?>
-        </ul></div>
-    </header>
-
-    <main>
+    <main><?php
+	    
+	    // if the user has any messages that they haven't acknowledged, render them here using some kind of template
+	    // this is an example only, it needs to know about the kind of message so it can add a class to the acknowledgement-item box
+	    if (isset($this->messages)) {
+		    echo "<section class='user-acknowledgements'";
+		    foreach ($this->messages as $message) {
+			    echo "<div class='acknowledgement-item'><p class='body'>$message</p><a href='javascript:;'><i class='cs-circle-cross'></i></a></div>";
+		    }
+		    echo "</section>";
+		    // some way of registering a startup script event or handler file
+		    // e.g. $this->scripts .= 'acknowledge-ajax.js';
+	    }
+	    
+?>

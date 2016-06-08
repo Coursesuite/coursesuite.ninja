@@ -1,5 +1,5 @@
 <?php
-
+	
 class Text
 {
     private static $texts;
@@ -41,17 +41,14 @@ class Text
                 }
         }
     }
+    
+    public static function toHtml($string) {
+	    $PDE = new ParsedownExtra();
+	    return $PDE->text($string);
+    }
 
 	public static function base64enc($val) {
         return strtr(base64_encode($val), '+/=', '-_,');
-    }
-    
-    public static function base64dec($val) {
-        return base64_decode(strtr($val, '-_,', '+/='));
-    }
-
-}
-;
     }
     
     public static function base64dec($val) {

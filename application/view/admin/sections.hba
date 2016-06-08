@@ -14,8 +14,8 @@
 				<input type="radio" name="visible" value="0" {{#equals "0" visible}} checked{{/equals}} id="n"><label for="n">Hidden</label>
 			</div>
 			<div><label for="sort">Order:</label> <input type="number" min="1" max="999" step="1" value="{{#if sort}}{{sort}}{{else}}999{{/if}}" name="sort" id="sort"></div>
-			<div><label for="htmlpre">HTML Pre</label><textarea name="html_pre" rows=10 cols=80>{{html_pre}}</textarea></div>
-			<div><label for="htmlpost">HTML Post</label><textarea name="html_post" rows=10 cols=80>{{html_post}}</textarea></div>
+			<div class="no-flex"><label for="htmlpre">HTML Pre</label><textarea name="html_pre" rows="10" cols="80" data-markdown="true">{{html_pre}}</textarea></div>
+			<div class="no-flex"><label for="htmlpost">HTML Post</label><textarea name="html_post" rows="10" cols="80" data-markdown="true">{{html_post}}</textarea></div>
 			<div><span class="spacer"></span><input type="submit" value="Save & Return" class="submit button"></div>
 		{{/with}}
 		</form>
@@ -31,9 +31,6 @@
 		{{/each}}
 	</ul>
 	<p><a href="{{baseurl}}admin/editSections/0/new" class="create button">Create a new section</a></p>
-	{{/if}}
-
-</article>ons/0/new" class="create button">Create a new section</a></p>
 	{{/if}}
 
 </article>

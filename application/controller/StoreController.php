@@ -40,6 +40,9 @@ class StoreController extends Controller
 				$model["UserSubscription"] = $submodel;
 			}
 	    };
+	    if (Session::get("user_account_type") == 7) {
+		    $model["editlink"] =Config::get("URL") . 'admin/editApps/' . $app->app_id . '/edit';
+	    }
         $this->View->renderHandlebars("store/info", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
     
@@ -199,16 +202,6 @@ class StoreController extends Controller
 		                }
 		                $table[] = "<td class='tier-level-$tier_level'>$value</td>";
 		            }
-		            $table[] = '</tr>';
-		        }
-	        }
-		}		
-		$table[] = '</tbody></table>';
-		return implode('', $table);
-    }
-
-}
-            }
 		            $table[] = '</tr>';
 		        }
 	        }

@@ -23,7 +23,7 @@
 				<input type="radio" name="active" value="1" {{#equals "1" active}} checked{{/equals}} id="y"><label for="y">Visible</label>
 				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Hidden</label>
 			</div>
-			<div><label for="description">Description</label> <textarea id="description" name="description" rows=10 cols=80>{{description}}</textarea></div>
+			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
 			<div><label for="media">Slide data</label> <textarea id="media" name="media" rows=5 cols=80>{{media}}</textarea></div>
 			<div><span class="spacer"></span><input type="submit" value="Save" class="button"></div>
 		{{/with}}
@@ -53,10 +53,6 @@
 		{{/each}}
 	</ul>
 	<p><a href="{{baseurl}}admin/editApps/0/new" class="create button">Create a new app</a></p>
-	{{/if}}
-
-</article>
-ew app</a></p>
 	{{/if}}
 
 </article>

@@ -2,6 +2,7 @@
 
 	<header class='common-header margin-below'>
 		<nav>
+			{{#if editlink}}<a href="{{editlink}}" class="edit-icon"><i class="cs-pen"></i></a>{{/if}}
 		    <a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="/store/info/{{App.app_key}}">{{App.name}}</a>
 		</nav>
 	</header>
@@ -21,9 +22,9 @@
 	</section>
 	
 	<section class="store-item-description app-{{App.app_key}}">
-		<article class="standard-width">{{{App.description}}}</article>
+		<article class="standard-width">{{{htmlify App.description}}}</article>
 	</section>
 
 </article>
 
-<script type="text/javascript">var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>type="text/javascript">var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>
+<script type="text/javascript">var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>

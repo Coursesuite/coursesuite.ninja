@@ -37,8 +37,8 @@ class AdminController extends Controller
             "filter_value" => $value,
             "messages" => LoggingModel::systemLog($filter, $value),
             "baseurl" => Config::get('URL'),
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array("flatpickr.min.css"),
+            "scripts" => array("flatpickr.min.js"),
         );
         $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
@@ -48,8 +48,8 @@ class AdminController extends Controller
         $model = array(
             "baseurl" => Config::get("URL"),
             "sections" => SectionsModel::getAllStoreSections(true),
-            "sheets" => array("flatpickr.min.css"),
-            "scripts" => array("flatpickr.min.js"),
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
         );
         if (is_numeric($id) && intval($id) > 0) {
             $section = SectionsModel::getStoreSection($id);

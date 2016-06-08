@@ -83,7 +83,10 @@ class View
               },
               "escape" => function ($arg1) {
                 return rawurlencode($arg1);
-              },				
+              },
+              "htmlify" => function ($arg1) {
+	              return Text::toHtml($arg1);
+              }
   			);
 
 			// extend helpers by adding methods when particular controllers are loaded.
@@ -259,13 +262,6 @@ class View
      * @return string
      */
     public function encodeHTML($str){
-        return htmlentities($str, ENT_QUOTES, 'UTF-8');
-    }
-
- 
-
-}
-ublic function encodeHTML($str){
         return htmlentities($str, ENT_QUOTES, 'UTF-8');
     }
 
