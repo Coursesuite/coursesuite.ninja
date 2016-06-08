@@ -8,7 +8,7 @@ To make this project run:
 * make ./public/img/apps writable by the webserver user too
 * make ./precompiled writable by the webserver user
 * edit ./application/config/config.development.php. This uses the apache global environment variable so you may need to rename the file
-    1. install the database (frumbert_cshuge.sql)
+    1. install the database (a mysqldump is in the db/ folder)
     2. create a secure user for the db basic permissions
     3. put db params into the config file
     4. create very random keys for the HMAC and encryption key
