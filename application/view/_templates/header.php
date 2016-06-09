@@ -1,21 +1,23 @@
-<?php $start = microtime(true); ?><!doctype html>
+<?php
+$start = microtime(true);
+$meta_description = "CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses.";
+$meta_keywords = "";
+$meta_title = "CourseSuite";
+
+if (isset($this->App->meta_description) && !empty($this->App->meta_description)) { $meta_description = $this->App->meta_description; }
+if (isset($this->App->meta_keywords) && !empty($this->App->meta_keywords)) { $meta_keywords = $this->App->meta_keywords; }
+if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_title = $this->App->meta_title; }
+?><!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description" content="CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<?php echo $meta_description; ?>">
+    <meta name="keywords" content="<?php echo $meta_keywords; ?>">
     <meta name="author" content="Avide eLearning">
-
-
-    <title>My CourseSuite</title>
+    <title><?php echo $meta_title; ?></title>
     <link rel="icon" href="data:;base64,=">
-
-	<!-- link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" -->
-	<!-- link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css" -->
-	<!-- script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script -->
-
     <link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/style.css" />
 <?php
@@ -29,7 +31,7 @@ if (isset($this->sheets)) {
     }
 }
 $google_analytics_id = Config::get('GOOGLE_ANALYTICS_ID');
-if (isset($google_analytics_id)) {
+if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
     echo "<script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

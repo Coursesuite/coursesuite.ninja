@@ -65,7 +65,7 @@ class AdminController extends Controller
                     "visible" => Request::post("visible", false, FILTER_SANITIZE_NUMBER_INT),
                     "sort" => Request::post("sort", false, FILTER_SANITIZE_NUMBER_INT),
                     "html_pre" => Request::post("html_pre"),
-                    "html_post" => Request::post("html_post"),
+                    "html_post" => Request::post("html_post")
                 );
                 $id = SectionsModel::Save("store_sections", "id", $section);
                 // $model["action"] = "edit";
@@ -219,6 +219,9 @@ class AdminController extends Controller
                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
                     "description" => Request::post("description"),
                     "media" => Request::post("media"),
+                    "meta_description" => Request::post("meta_description"),
+                    "meta_title" => Request::post("meta_title"),
+                    "meta_keywords" => Request::post("meta_keywords"),
                 );
                 $id = AppModel::Save("apps", "app_id", $app);
                 $model["action"] = "edit";

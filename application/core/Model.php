@@ -9,6 +9,7 @@ class Model {
     /**
      * return an empty row containing all fields of a table
      * set default on fields that are nullable
+     * relies on the db user having describe capability
      */
     public static function Create($table) {
         $database = DatabaseFactory::getFactory()->getConnection();
