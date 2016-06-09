@@ -7,22 +7,21 @@
  **/
 class AppModel extends Model {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
     public static function Make() {
         return parent::Create("apps");
     }
-
-     public static function Load($table, $where_clause, $fields) {
-        return parent::Read($table, $where_clause, $fields);
-     }
-
-     public static function Save($table, $idrow_name, $data_model) {
-        return parent::Update($table, $idrow_name, $data_model);
-     }
+	
+	public static function Load($table, $where_clause, $fields) {
+		return parent::Read($table, $where_clause, $fields);
+	}
+	
+	public static function Save($table, $idrow_name, $data_model) {
+		return parent::Update($table, $idrow_name, $data_model);
+	}
 
 
     /**
@@ -42,9 +41,13 @@ class AppModel extends Model {
     public static function getAllApps($all_fields = true) {
         $database = DatabaseFactory::getFactory()->getConnection();
         if ($all_fields) {
-	        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media FROM apps ORDER BY name";
+	        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title
+	        		FROM apps
+	        		ORDER BY name";
         } else {
-	        $sql = "SELECT app_id, name FROM apps ORDER BY name";
+	        $sql = "SELECT app_id, name
+	        		FROM apps
+	        		ORDER BY name";
         }
         $query = $database->prepare($sql);
         $query->execute();
@@ -56,8 +59,10 @@ class AppModel extends Model {
      */
     public static function getAppByKey($app_key) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media
-                FROM apps WHERE app_key = :app_key LIMIT 1";
+        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title
+                FROM apps
+                WHERE app_key = :app_key
+                LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':app_key' => $app_key));
         return $query->fetch();
@@ -65,8 +70,10 @@ class AppModel extends Model {
 
     public static function getAppById($app_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media
-                FROM apps WHERE app_id = :app_id LIMIT 1";
+        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title
+                FROM apps
+                WHERE app_id = :app_id
+                LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':app_id' => $app_id));
         return $query->fetch();
@@ -77,7 +84,8 @@ class AppModel extends Model {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT a.app_id, a.app_key, a.name, a.tagline, a.icon, a.launch, a.active, a.status, a.auth_type, a.url
                 FROM apps a INNER JOIN store_section_apps s ON a.app_id = s.app
-                WHERE s.section = :section ORDER BY s.sort";
+                WHERE s.section = :section
+                ORDER BY s.sort";
         $query = $database->prepare($sql);
         $query->execute(array(':section' => $section_id));
         return $query->fetchAll();
@@ -86,7 +94,8 @@ class AppModel extends Model {
     public static function getLaunchUrl($app_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT launch
-        		FROM apps WHERE app_id = :app_id";
+        		FROM apps
+        		WHERE app_id = :app_id";
         $query = $database->prepare($sql);
         $query->execute(array(':app_id' => $app_id));
         $url = $query->fetchColumn();
