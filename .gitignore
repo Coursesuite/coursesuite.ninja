@@ -1,5 +1,18 @@
 # this is just a demo .gitignore file, put all the files and folders you want to be ignored by git inside
 # if you work with NetBeans: ignore NetBeans project files
 /nbproject/private/
+
+/public/img/apps/
+precompiled/
+/precompiled/
+/public/avatars/
+/public/css/mycoursesuite.zip
+/public/error_log
+/public/idx-render.php
+/publix/info.php
+
 # don't commit all the dependencies fetched via Composer
-/vendor/
+# /vendor/
+
+/application/_installation/
+application/_installation/
