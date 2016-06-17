@@ -54,6 +54,11 @@ return array(
 	 */
 	'DEFAULT_CONTROLLER' => 'store',
 	'DEFAULT_ACTION' => 'index',
+	
+	'DEFAULT_META_TITLE' => 'CourseSuite',
+	'DEFAULT_META_KEYWORDS' => 'coursesuite, coursesuite ninja, lms, online learning, html5 scorm, scorm package, scorm author, interactive learning, document conversion, courseware, moodle',
+	'DEFAULT_META_DESCRIPTION' => 'CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses.',
+	'DEFAULT_META_COPYRIGHT' => '&copy; <a href="http://coursesuite.ninja">CourseSuite</a> 2016-3016',
 
 	/**
 	 * Path for PRECOMPILED PHP templates (e.g. from Handlebars)

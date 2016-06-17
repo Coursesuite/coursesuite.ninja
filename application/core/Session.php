@@ -190,6 +190,20 @@ class Session
         return -1;
     }
 
+    public static function UserDetailsFromSession($session_id) {
+        if (isset($session_id)) {
+
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $sql = "SELECT user_id, user_name, user_email FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
+            $query = $database->prepare($sql);
+            $query->execute(array(":session_id" => $session_id));
+            $row = $query->fetch();
+            if ($query->rowcount() > 0) {
+	            return $row;
+            }
+        }
+        return null;
+    }
 
     /**
      * Checks if the user is logged in or not

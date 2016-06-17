@@ -8,6 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'ParsedownExtra' => array($vendorDir . '/erusev/parsedown-extra'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
-    'Mailchimp' => array($vendorDir . '/mailchimp/mailchimp/src'),
     'ColorThief' => array($vendorDir . '/ksubileau/color-thief-php/lib'),
 );

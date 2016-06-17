@@ -28,6 +28,11 @@ class StoreModel {
         }
         $model = new stdClass();
         $model->section = $sections;
+        if (Session::get("user_account_type") == 7) { // admin
+	        foreach ($sections as &$section) {
+		        $section->visible = 1; // can see all sections
+		    }
+        }
         $model->baseurl = Config::get("URL");
 
         if (Session::userIsLoggedIn()) { // associate the apps the user has subscribed to with the launch tokens for these apps

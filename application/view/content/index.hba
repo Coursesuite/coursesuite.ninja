@@ -1,0 +1,3 @@
+{{#with staticPage}}
+	{{{htmlify content}}}
+{{/with}}

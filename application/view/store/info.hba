@@ -2,7 +2,7 @@
 
 	<header class='common-header margin-below'>
 		<nav>
-			{{#if editlink}}<a href="{{editlink}}" class="edit-icon"><i class="cs-pen"></i></a>{{/if}}
+			{{#if editlink}}<a href="{{editlink}}" class="edit-icon" data-tooltip="Admin: Edit this app" target="{{App.app_key}}"><i class="cs-pen"></i></a>{{/if}}
 		    <a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="/store/info/{{App.app_key}}">{{App.name}}</a>
 		</nav>
 	</header>

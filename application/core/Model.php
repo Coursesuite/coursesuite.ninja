@@ -19,7 +19,7 @@ class Model {
         foreach ($rows as $row) {
            // if (!($row->Null == "NO" && $row->Default > "")) {
                 $key = $row->Field;
-                if ($row->Key == "PRI") {
+                if ($row->Key == "PRI") { // assuming numerical keys
                     $value = 0;
                 } else if ($row->Null == "YES") {
                     $value = null;
@@ -35,10 +35,24 @@ class Model {
         return $results;
     }
 
-    public static function Read($table, $where_clause, $fields) {
-        // for each fields
-            // these are the keys we want to populate
-        // return array
+    public static function Read($table, $where = "", $params = array(), $fields = array("*")) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        /*if ($fields == array("*")) {
+	        $fields = array();
+			$rs = $database->query("SELECT * FROM $table LIMIT 0");
+			for ($i = 0; $i < $rs->columnCount(); $i++) {
+			    $col = $rs->getColumnMeta($i);
+			    $fields[] = $col['name'];
+			}	        
+        }*/
+	    $sql = "SELECT ". implode(",",$fields) . " FROM $table ";
+	    if (!empty($where)) {
+		    $sql .= "WHERE $where";
+	    }
+        $query = $database->prepare($sql);
+        $query->execute($params);
+        $count = $query->rowCount();
+        return $query->fetchAll();
     }
 
     /**

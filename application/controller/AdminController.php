@@ -284,4 +284,49 @@ class AdminController extends Controller
 	    Session::add('feedback_positive', "user $userid was manually subscribed to tier $tierid in test mode; result: $value");
 	    Redirect::to("admin/manualSubscribe");
     }
+    
+    public function staticPage($id = 0, $action = "") {
+        $model = array(
+            "baseurl" => Config::get("URL"),
+            "action" => $action,
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+		);
+
+        if (is_numeric($id) && intval($id) > 0) {
+            $data = StaticPageModel::getRecord($id);
+	    } else {
+	    	$model["records"] = StaticPageModel::getAll();
+	    }
+
+	    switch ($action) {
+		    case "save":
+		    	$data = array(
+                	"id" => $id,
+                	"page_key" => Request::post("page_key", true, FILTER_SANITIZE_SPECIAL_CHARS),
+                	"body_classes" => Request::post("body_classes", true, FILTER_SANITIZE_STRING),
+                	"content" => Request::post("content"),
+                    "meta_description" => Request::post("meta_description"),
+                    "meta_title" => Request::post("meta_title"),
+                    "meta_keywords" => Request::post("meta_keywords"),
+                );
+                StaticPageModel::Save("id", $data);
+                $model["action"] = "edit";
+		    	break;
+
+            case "new":
+                $id = 0;
+                $model["action"] = "new";
+                $data = StaticPageModel::Make();
+                break;
+
+	    }
+
+        $model["id"] = $id;
+        if (isset($data)) {
+            $model["data"] = $data;
+        }
+
+	    $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
 }

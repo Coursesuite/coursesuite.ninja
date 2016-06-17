@@ -1,8 +1,8 @@
 <?php
 $start = microtime(true);
-$meta_description = "CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses.";
-$meta_keywords = "";
-$meta_title = "CourseSuite";
+$meta_description = Config::get('DEFAULT_META_DESCRIPTION');
+$meta_keywords = Config::get('DEFAULT_META_KEYWORDS');
+$meta_title = Config::get('DEFAULT_META_TITLE');
 
 if (isset($this->App->meta_description) && !empty($this->App->meta_description)) { $meta_description = $this->App->meta_description; }
 if (isset($this->App->meta_keywords) && !empty($this->App->meta_keywords)) { $meta_keywords = $this->App->meta_keywords; }

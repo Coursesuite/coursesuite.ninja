@@ -54,13 +54,6 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
         ),
-        'M' => 
-        array (
-            'Mailchimp' => 
-            array (
-                0 => __DIR__ . '/..' . '/mailchimp/mailchimp/src',
-            ),
-        ),
         'C' => 
         array (
             'ColorThief' => 

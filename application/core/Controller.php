@@ -11,7 +11,7 @@ class Controller
     /** @var View View The view object */
     public $View;
     public $ActionName;
-
+    
     /**
      * Construct the (base) controller. This happens when a real controller is constructed, like in
      * the constructor of IndexController when it says: parent::__construct();
@@ -20,7 +20,7 @@ class Controller
     {
         // always initialize a session
         Session::init();
-
+        
         // check session concurrency
         Auth::checkSessionConcurrency();
 

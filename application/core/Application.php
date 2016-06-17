@@ -1,5 +1,9 @@
 <?php
 
+DEFINE ('AUTH_TYPE_TOKEN', 0);
+DEFINE ('AUTH_TYPE_NONE', 1);
+DEFINE ('AUTH_TYPE_DIGEST', 2);
+
 /**
  * Class Application
  * The heart of the application
@@ -36,6 +40,12 @@ class Application
 
         // does such a controller exist ?
         if (file_exists(Config::get('PATH_CONTROLLER') . $this->controller_name . '.php')) {
+	        
+			// ContentController gets a different route handler, route everything through index() .. couldn't think of a better way to do this
+	        if ($this->controller_name == "ContentController") {
+		        $this->parameters = array($this->action_name);
+		        $this->action_name = "index";
+	        }
 
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
@@ -63,6 +73,9 @@ class Application
             $this->controller = new ErrorController;
             $this->controller->error404();
         }
+    }
+    public function override_action($action) {
+	    $action_name = $action;
     }
 
     /**

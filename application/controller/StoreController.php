@@ -41,6 +41,7 @@ class StoreController extends Controller
 			}
 	    };
 	    if (Session::get("user_account_type") == 7) {
+		    // $model["tokenlink"] = AppModel::getLaunchUrl($app->app_id); // because token verify checks the subscription
 		    $model["editlink"] =Config::get("URL") . 'admin/editApps/' . $app->app_id . '/edit';
 	    }
         $this->View->renderHandlebars("store/info", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
@@ -86,7 +87,7 @@ class StoreController extends Controller
 
         $table = array();
         $colspan = count($AppTiers);
-        $table[] = '<table class="app-matrix"><thead>';
+        $table[] = '<table class="app-matrix colspan-' . $colspan . '"><thead>';
         $table[] = "<tr><td></td><td colspan='$colspan'><div id='tier-bracket'>Tiers</div></td></tr>";
         $table[] = '<tr><td></td>';
         foreach ($AppTiers as $tier) {
@@ -96,7 +97,10 @@ class StoreController extends Controller
 
 		// app feature matrix
         foreach ($AppFeatures as $info) {
-            $table[] = '<tr><th>' . $info["feature"] . '</th>';
+	        $details = $info["details"];
+	        $feature = $info["feature"];
+	        if (isset($details) && !empty($details)) $feature = "<span data-tooltip='" . addslashes($details) . "'>$feature</span>"; 
+            $table[] = "<tr><th>$feature</th>";
             foreach ($AppTiers as $tier) {
                 $tier_level = (int)$tier["tier_level"];
                 $info_level = (int)$info["min_tier_level"];

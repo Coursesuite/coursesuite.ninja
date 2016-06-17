@@ -48,12 +48,15 @@ class ApiController extends Controller
     public function verifyToken($appkey, $token) {
             $session_id = ApiModel::decodeToken($token);
             $tokenIsValid = Session::isActiveSession($session_id, $appkey);
+            $userRow = Session::UserDetailsFromSession($session_id);
             $result = array(
                 'authuser' => $this->username,
                 'appkey' => $appkey,
                 'valid' => $tokenIsValid,
                 'api' => false,
-                'tier' => TierModel::getLevelForUser(Session::UserIdFromSession($session_id))
+                'tier' => TierModel::getLevelForUser(Session::UserIdFromSession($session_id)),
+                'username' => $userRow->user_name,
+                'useremail' => $userRow->user_email
             );
             LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
             $this->View->renderJSON($result);

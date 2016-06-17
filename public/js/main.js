@@ -300,6 +300,13 @@ function slideshow(index) {
 	_currentSlide = index;
 }
 
+if (document.querySelector("textarea[data-markdown]")) {
+	var simplemde = new SimpleMDE({
+		element: document.querySelector("textarea[data-markdown]"),
+		spellChecker: false,
+	});
+}
+
 $(function () {
 
 	if (typeof flatpickr === "function") {
@@ -379,17 +386,6 @@ $(function () {
 			$("body").append(img);
 		}, function () {
 			$("#hoverThumb").remove();
-		})
-		.mousemove(function(e) {
-			$("#hoverThumb").css({
-				"top": (e.pageY+10) + "px",
-				"left": (e.pageX+10) + "px",
-			});
-		});
-
-});
-
-		$("#hoverThumb").remove();
 		})
 		.mousemove(function(e) {
 			$("#hoverThumb").css({

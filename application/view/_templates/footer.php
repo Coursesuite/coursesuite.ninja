@@ -7,11 +7,11 @@
         printf("Page created in %.5f seconds.", $timestamp);
  ?></p>
  		<p>
-	 		<a href="#">Support</a>
-	 		<a href="#">Privacy</a>
-	 		<a href="#">Contact Us</a>
+	 		<a href="<?php echo Config::get('URL'); ?>content/support">Support</a>
+	 		<a href="<?php echo Config::get('URL'); ?>content/privacy">Privacy</a>
+	 		<a href="<?php echo Config::get('URL'); ?>content/about">About Us</a>
  		</p>
-        <p>&copy; <a href="http://coursesuite.ninja">CourseSuite</a> 2016-3016</p>
+        <p><?php echo Config::get('DEFAULT_META_COPYRIGHT');?></p>
     </footer>
 
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>

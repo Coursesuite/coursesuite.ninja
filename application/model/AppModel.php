@@ -29,7 +29,9 @@ class AppModel extends Model {
      */
     public static function getAppKeys() {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_key, launch FROM apps WHERE active = :active AND apienabled=1";
+        $sql = "SELECT app_key, launch
+        		FROM apps
+        		WHERE active = :active AND apienabled=1";
         $query = $database->prepare($sql);
         $query->execute(array(':active' => TRUE));
         return $query->fetchAll();
@@ -82,9 +84,12 @@ class AppModel extends Model {
     // not all the record, only that which is related to the app-by-section view
     public static function getAppsByStoreSection($section_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
+        $admin = (Session::get("user_account_type") == 7);
+        $active = ($admin == true) ? "" : "AND a.active = 1";
         $sql = "SELECT a.app_id, a.app_key, a.name, a.tagline, a.icon, a.launch, a.active, a.status, a.auth_type, a.url
                 FROM apps a INNER JOIN store_section_apps s ON a.app_id = s.app
                 WHERE s.section = :section
+                $active
                 ORDER BY s.sort";
         $query = $database->prepare($sql);
         $query->execute(array(':section' => $section_id));
@@ -93,13 +98,27 @@ class AppModel extends Model {
 
     public static function getLaunchUrl($app_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT launch
+        $sql = "SELECT launch, auth_type, app_key
         		FROM apps
         		WHERE app_id = :app_id";
         $query = $database->prepare($sql);
         $query->execute(array(':app_id' => $app_id));
-        $url = $query->fetchColumn();
-        return $url . "?token=" . ApiModel::encodeToken(Session::CurrentId());
+        $url = $query->fetchColumn(0);
+        $auth_type = intval($query->fetchColumn(1));
+        $launchurl = "";
+        switch ($auth_type) {
+	        case AUTH_TYPE_DIGEST:
+	        	$launchurl = Config::get("URL") . "launch/app/" . $query->fetchColumn(2); // unfinished
+	        	break;
+	        case AUTH_TYPE_TOKEN:
+		        $launchurl = $url . "?token=" . ApiModel::encodeToken(Session::CurrentId());
+	        	break;
+	        case AUTH_TYPE_NONE:
+	        	$launchurl = $url;
+	        	break;
+        }
+        // unset($query);
+        return $launchurl;
     }
 
 } // END class AppModel
