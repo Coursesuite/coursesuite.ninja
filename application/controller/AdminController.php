@@ -35,14 +35,14 @@ class AdminController extends Controller
         $model = array(
             "digest_users" => LoggingModel::uniqueDigestUsers(),
             "filter_value" => $value,
-            "messages" => LoggingModel::systemLog($filter, $value),
+            "syslog" => LoggingModel::systemLog($filter, $value),
             "baseurl" => Config::get('URL'),
             "sheets" => array("flatpickr.min.css"),
             "scripts" => array("flatpickr.min.js"),
         );
-        $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/syslog', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
-
+    
     public function editSections($id = 0, $action = "")
     {
         $model = array(
@@ -329,4 +329,5 @@ class AdminController extends Controller
 
 	    $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
+    
 }

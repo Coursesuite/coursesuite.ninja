@@ -178,12 +178,10 @@ return array(
 	'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@coursesuite.ninja',
 	'EMAIL_PASSWORD_RESET_FROM_NAME' => 'My Coursesuite',
 	'EMAIL_PASSWORD_RESET_SUBJECT' => 'Password reset for CourseSuite',
-	'EMAIL_PASSWORD_RESET_CONTENT' => 'Please click on this link to reset your password: ',
 	'EMAIL_VERIFICATION_URL' => 'register/verify',
 	'EMAIL_VERIFICATION_FROM_EMAIL' => 'no-reply@coursesuite.ninja',
 	'EMAIL_VERIFICATION_FROM_NAME' => 'CourseSuite',
 	'EMAIL_VERIFICATION_SUBJECT' => 'Account activation for CourseSuite',
-	'EMAIL_VERIFICATION_CONTENT' => 'Please click on this link to activate your account: ',
 
 
 	/*
@@ -200,6 +198,15 @@ return array(
 	),
 	
 	'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
+	'FASTSPRING_PARAM_APPEND' => '&mode=test',
+	
+	// store info pricing table may not be relevant or have other logic later on
+	'STORE_INFO_SHOW_PRICING' => false,
+
+	// footer info
+	'GLOBAL_FOOTER_COLUMN_1' => '<h3>About CourseSuite</h3><p>CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses. We also offer Open Source plugins for Moodle and downloadable online course content.</p>',
+	'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/support">Support</a> <a href="/content/privacy">Privacy</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
+	'GLOBAL_FOOTER_COLUMN_3' => '<p>&copy; CourseSuite 2016-3016</p>',
 
 
 	'FORCE_HANDLEBARS_COMPILATION' => true // set to true to force recompilation of handlebars templates on the fly

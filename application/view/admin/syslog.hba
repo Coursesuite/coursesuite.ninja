@@ -18,7 +18,7 @@
 			<tr><th>method</th><th>digest user</th><th>date</th><th>message</th><th>param0</th><th>param1</th><th>param2</th><th>param3</th></tr>
 		</thead>
 		<tbody>
-		{{#each messages}}
+		{{#each syslog}}
 			<tr>
 				<td>{{method_name}}</td>
 				<td>{{digest_user}}</td>

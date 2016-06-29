@@ -6,6 +6,11 @@
 # Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
 #</ifModule>
 
+# enable off-domain font loading (e.g. fastspring store)
+<FilesMatch ".(eot|ttf|otf|woff)">
+	Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+
 # Enable GZIP
 <ifmodule mod_deflate.c>
 AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript image/svg+xml application/json

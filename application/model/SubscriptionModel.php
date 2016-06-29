@@ -12,8 +12,8 @@ class SubscriptionModel
 	/*
 		tasks
 		-----
-		method 									| cooldown | lastrun | running
-		SubscriptionModel::validateSubscription                                                        | 1440 	      | 0 	        | 0
+		method 															| cooldown | lastrun | running
+		SubscriptionModel::validateSubscription                         | 1440 	   | 0 	     | 0
 	*/
 
 	// ensure that user subscription active statuses are persisted properly

@@ -60,7 +60,9 @@ class StoreController extends Controller
 			if (!empty($submodel)) {
 				$model["UserSubscription"] = $submodel;
 			}
-	    };
+	    } else {
+		    $model["notLoggedOn"] = true;
+	    }
         $this->View->renderHandlebars("store/tiers", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
         // $this->View->render("store/tiers", $model);
 	    
@@ -88,10 +90,11 @@ class StoreController extends Controller
         $table = array();
         $colspan = count($AppTiers);
         $table[] = '<table class="app-matrix colspan-' . $colspan . '"><thead>';
-        $table[] = "<tr><td></td><td colspan='$colspan'><div id='tier-bracket'>Tiers</div></td></tr>";
+        // $table[] = "<tr><td></td><td colspan='$colspan'><div id='tier-bracket'>Tiers</div></td></tr>";
+        $table[] = "<tr><td></td><td colspan='$colspan'>" . Text::get('TIER_MATRIX_HEADER') . "</td></tr>";
         $table[] = '<tr><td></td>';
         foreach ($AppTiers as $tier) {
-            $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'>" . $tier["name"] . "</th>";
+            $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'><i class='cs-" . strtolower($tier["name"]) . "-full'></i></th>";
         }
         $table[] = '</tr></thead><tbody>';
 
@@ -99,8 +102,9 @@ class StoreController extends Controller
         foreach ($AppFeatures as $info) {
 	        $details = $info["details"];
 	        $feature = $info["feature"];
-	        if (isset($details) && !empty($details)) $feature = "<span data-tooltip='" . addslashes($details) . "'>$feature</span>"; 
-            $table[] = "<tr><th>$feature</th>";
+	        $icon = "";
+	        if (isset($details) && !empty($details)) $icon = "<span data-tooltip='" . addslashes($details) . "'><i class='cs-help-with-circle cs-super cs-muted'></i></span>"; 
+            $table[] = "<tr><th>$feature $icon</th>";
             foreach ($AppTiers as $tier) {
                 $tier_level = (int)$tier["tier_level"];
                 $info_level = (int)$info["min_tier_level"];
@@ -115,18 +119,20 @@ class StoreController extends Controller
         $table[] = '</tbody><tfoot>';
 
 		// price in footer
-        $table[] = '<tr class="price fill"><th>Price (USD):</th>';
-        foreach ($AppTiers as $tier) {
-	        $table[] = '<td>$' . $tier["price"] . ' /' . $tier["period"] . '</td>';
+		if (Config::get('STORE_INFO_SHOW_PRICING') == true) {
+	        $table[] = '<tr class="price fill"><th>Price (USD):</th>';
+	        foreach ($AppTiers as $tier) {
+		        $table[] = '<td>$' . $tier["price"] . ' /' . $tier["period"] . '</td>';
+		    }
+		    $table[] = '</tr>';
 	    }
-	    $table[] = '</tr>';
 
 		// purchase / launch buttons
         $table[] = '<tr class="fill"><th></th>';
         if (Session::userIsLoggedIn()) {
             foreach ($AppTiers as $tier) {
 		        $label = 'Subscribe';
-		        $button_url = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . "&mode=test";
+		        $button_url = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
 		        $class_name = '';
 		        if (!empty($UserSubscription)) {
 			        $user_tier_level = $UserSubscription["tier"]["tier_id"];
@@ -142,7 +148,7 @@ class StoreController extends Controller
 			        }
 		        }
                 $table[] = "<td>";
-                if ($label != "") $table[]= "<a href='$button_url' class='$class_name'>$label</a>";
+                if ($label != "") $table[]= "<a href='$button_url' class='$class_name' target='_app'>$label</a>";
                 $table[] = "</td>";
             }
         } else {
@@ -151,7 +157,8 @@ class StoreController extends Controller
         $table[] = '</tr>';
 
         // caveat
-        $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'><p>This product is part of a paid subscription that offers multiple products (<a href='" . Config::get('URL') . "store/tiers/coursesuite'>details</a>).</p><p>Subscriptions are charged monthly until cancelled.</p><div class='text-center'><img src='/img/fastspring.png'></div></td></tr>";
+        $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'>" . Text::get("TIER_MATRIX_CAVEATS") . "</td></tr>";
+        // $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'><p>This product is part of a paid subscription that offers multiple products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).</p><p>Subscriptions are charged monthly until cancelled.</p><div class='text-center'><img src='/img/fastspring.png'></div></td></tr>";
         $table[] = '</tfoot></table>';
         return implode('', $table);
         
@@ -162,7 +169,7 @@ class StoreController extends Controller
 	    Renderer which is similar to an App Tier Matrix except that it is listing all matching tiers
 	*/
     
-    public static function TierMatrix($Tiers, $Apps, $UserSubscription, $options) {
+    public static function TierMatrix($Tiers, $Apps, $UserSubscription, $Name, $options) {
 
 		$table = array();
 		$colspan = count($Tiers) + 1;
@@ -170,8 +177,8 @@ class StoreController extends Controller
 		$table[] = "<tr><td></td>";
 		$tier_apps = array();
 		foreach ($Tiers as $tier) {
-		    $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'>" . $tier["name"];
-		    if (isset($tier["description"])) $table[] = "<br><small>" . $tier["description"] . "</small>";
+		    $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'><i class='cs-" . strtolower($tier["name"]) . "-full'></i>";
+		    // if (isset($tier["description"])) $table[] = "<br><small>" . $tier["description"] . "</small>";
 			if ($UserSubscription !== null) {
 				if ($UserSubscription["tier_id"] == $tier["tier_id"]) {
 					$table[] = '<p>(Your current tier)</p>';
@@ -210,7 +217,21 @@ class StoreController extends Controller
 		        }
 	        }
 		}		
-		$table[] = '</tbody></table>';
+		$table[] = '</tbody><tfoot>';
+        $table[] = '<tr class="fill"><th></th>';
+        if (Session::userIsLoggedIn()) {
+	        if ($UserSubscription === null) {
+				$AppTiers = TierModel::getAllAppTiersForPack($Name);
+	            foreach ($AppTiers as $tier) {
+			        $button_url = trim($tier->store_url) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+	                $table[] = "<td><a href='$button_url'>Subscribe</a></td>";
+	            }
+            }
+        } else {
+            $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
+        }
+        $table[] = '</tfoot></table>';
+
 		return implode('', $table);
     }
 

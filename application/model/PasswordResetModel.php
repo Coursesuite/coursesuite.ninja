@@ -17,13 +17,17 @@ class PasswordResetModel
 	 */
 	public static function requestPasswordReset($user_name_or_email, $captcha) {
 
-                                        	$fields = Array();
-                                                $fields['user_name_or_email'] = $user_name_or_email;
-                                                Session::set('form_data', $fields);
+        Session::set('form_data', array(
+	        'user_name_or_email' => $user_name_or_email
+        ));
 
 		$captcha_check = CaptchaModel::checkCaptcha($captcha);
 		if ($captcha_check !== TRUE) {
-			Session::add('feedback_negative', Text::get($captcha_check[0])); // text error codes
+			$text = Text::get('missing-input-response'); // default if nothing sent back
+			if (isset($captcha_check[0])) {
+				$text = Text::get($captcha_check[0]);
+			}
+			Session::add('feedback_negative', $text); // text error codes
 			return false;
 		}
 		
@@ -109,8 +113,10 @@ class PasswordResetModel
 	public static function sendPasswordResetMail($user_name, $user_password_reset_hash, $user_email)
 	{
 		// create email body
-		$body = Config::get('EMAIL_PASSWORD_RESET_CONTENT') . ' ' . Config::get('URL') .
-		        Config::get('EMAIL_PASSWORD_RESET_URL') . '/' . urlencode($user_name) . '/' . urlencode($user_password_reset_hash);
+		$body = Text::get('EMAIL_COMMON_CONTENT_INTRO') . 
+				Text::get('EMAIL_PASSWORD_RESET_CONTENT') . "\n\n" .
+				Config::get('URL') . Config::get('EMAIL_PASSWORD_RESET_URL') . '/' . urlencode($user_name) . '/' . urlencode($user_password_reset_hash) .
+		        Text::get('EMAIL_COMMON_CONTENT_SIG');
 
 		// create instance of Mail class, try sending and check
 		$mail = new Mail;

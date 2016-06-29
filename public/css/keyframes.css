@@ -1,3 +1,11 @@
+@keyframes boop {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(1.5);
+	}
+}
 @keyframes backchange {
   0% {
     background: rgba(191, 68, 64, 0.1);

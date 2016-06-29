@@ -18,7 +18,9 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
     <meta name="author" content="Avide eLearning">
     <title><?php echo $meta_title; ?></title>
     <link rel="icon" href="data:;base64,=">
-    <link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <!-- link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <link href='//r.coursesuite.ninja/mycoursesuite/style.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/style.css" />
 <?php
 if (isset($this->sheets)) {
@@ -47,11 +49,13 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
     </head>
 <body id="<?php echo str_replace("/", "_", $filename); ?>">
     <header>
-        <div><a href="<?php echo Config::get('URL'); ?>" class="logo"><img src="<?php echo Config::get('URL'); ?>img/cs_logo_70px_colour.png"></a></div>
+        <div><a href="<?php echo Config::get('URL'); ?>" class="logo"><img src="http://r.coursesuite.ninja/logo/cs_logo_70px_colour.png"></a></div>
         <div><nav>
         	<a href="<?php echo Config::get('URL'); ?>">Home</a>
         	<a href="http://forum.coursesuite.ninja/categories/" target="_blank">Forum</a>
-        	<a href="http://buggr.coursesuite.ninja/" target="_bnlank">Buggr!</a>
+        <?php if (Session::userIsLoggedIn()) { ?>
+        	<a href="http://buggr.coursesuite.ninja/" target="_blank" data-tooltip="Found a bug? Log it!">Buggr!</a>
+        <?php } ?>
         <?php if (!Session::userIsLoggedIn()) { ?>
             <a href="<?php echo Config::get('URL'); ?>login/"<?php if (View::checkForActiveControllerAndAction($filename, "login/index")) { echo ' class="active" '; } ?>>Login / Register</a>
             <!-- a href="<?php echo Config::get('URL'); ?>register/"<?php if (View::checkForActiveControllerAndAction($filename, "register/index")) { echo ' class="active" '; } ?>>Register</a -->

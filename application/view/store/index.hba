@@ -22,7 +22,7 @@
                     {{#equals auth_type 1}}<a href='{{url}}' target='_blank'>Launch</a>{{else}}
                     <a href='{{../../storeurl}}{{app_key}}'>More info</a>
                     {{#each ../../appTokens}}
-                    	{{#equals app_id ../app_id}}<a href='{{../launch}}?token={{token}}' target='_blank' class='launch'>Launch</a>{{/equals}}
+                    	{{#equals app_id ../app_id}}<a href='{{../launch}}?token={{token}}' target='_app' class='launch'>Launch</a>{{/equals}}
                     {{/each}}{{/equals}}
                 </div>
             </div>
@@ -32,4 +32,9 @@
 </div>
     </section>{{/equals}}
 {{/each}}
+	<section class='static-content'>
+		<div class='standard-width store-items how-else'>
+		{{{Text::StaticPageRenderer "howelse"}}}
+		</div>
+	</section>
 </article>

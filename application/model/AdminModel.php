@@ -56,7 +56,7 @@ class AdminModel
 		$database = DatabaseFactory::getFactory()->getConnection();
 
 		if ($destroy == 1) {
-			Session::add('feedback_positive', Text::get('FEEDBACK_ADMIN_USER_DELETED', array("id" => $userId)));
+			Session::add('feedback_positive', Text::get('FEEDBACK_ADMIN_USER_DELETED') . array("id" => $userId));
 			return true;
 		}
 

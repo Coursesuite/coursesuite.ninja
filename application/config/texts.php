@@ -9,7 +9,7 @@ return array(
 	"FEEDBACK_UNKNOWN_ERROR" => "Unknown error occurred!",
 
 	"FEEDBACK_DELETED" => "Your account has been deleted.",
-	"FEEDBACK_ADMIN_USER_DELETED" => "The account $id has been deleted.",
+	"FEEDBACK_ADMIN_USER_DELETED" => "The account " . (isset($id) ? $id : "") ." has been deleted",
 
 	"FEEDBACK_CAPTCHA_WRONG" => "The entered captcha security characters were wrong.",
 
@@ -90,11 +90,34 @@ return array(
 
 	"FEEDBACK_COOKIE_INVALID" => "Your remember-me-cookie is invalid.",
 	"FEEDBACK_COOKIE_LOGIN_SUCCESSFUL" => "You were successfully logged in via the remember-me-cookie.",
+	
+	"EMAIL_COMMON_CONTENT_INTRO" => "Hi!\n\n",
+	"EMAIL_COMMON_CONTENT_SIG" => "\n\nCheers,\nThe CourseSuite Team\ninfo@coursesuite.com.au\n",
+	"EMAIL_PASSWORD_RESET_CONTENT" => "Please click on this link to reset your password: ",
+	"EMAIL_VERIFICATION_CONTENT" => "Please click on this link to activate your account: ",
+	
+	"TIER_MATRIX_HEADER" => "<h4>One subscription <i class='cs-loader cs-super'></i>.</h4>
+							 <h3>Multiple products.</h3>",
+	"TIER_MATRIX_CAVEATS" => "<div class='fine-print'>
+								<p><i class='cs-loader cs-super'></i> This product is part of a paid subscription that offers multiple
+								products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>). 
+								Subscriptions are re-billed at the opted frequency until cancelled.
+								Discounts are available for longer subscriptions. 
+								</p>
+								<div class='text-center'><img src='/img/fastspring.png'></div>
+							</div>",
+
+
+	"TIER_MATRIX_CAVEATS_OLD" => "<p>This product is part of a paid subscription that offers multiple
+								products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).</p>
+								<p>Subscriptions are charged monthly until cancelled.</p>
+								<div class='text-center'><img src='/img/fastspring.png'></div>
+							",
 
 	// google captcha response error codes
 	"missing-input-secret" => "The secret parameter is missing.",
 	"invalid-input-secret" => "The secret parameter is invalid or malformed.",
-	"missing-input-response" => "Apparently you're a robot. Did you forget to tick the box?", // The response parameter is missing.",
+	"missing-input-response" => "Apparently you're a robot. All hail our new robot overlords / Did you forget to tick the box (please choose one)", // The response parameter is missing.",
 	"invalid-input-response" => "The verification images you chose didn't match. Try again?",
 
 );

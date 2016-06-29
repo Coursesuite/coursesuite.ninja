@@ -21,16 +21,24 @@ class Application
 
     /** @var string Just the name of the controller's method, useful for checks inside the view ("where am I ?") */
     private $action_name;
+    
+    private $session;
+    
+    public static function php_session() {
+	    global $session;
+	    return $session;
+    }
 
     /**
      * Start the application, analyze URL elements, call according controller/method or relocate to fallback location
      */
     public function __construct()
     {
+	    global $session;
         $mysqli = DatabaseFactory::getFactory()->getMySqli();
 
         // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
-        $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT')); // , 30, true, false, 1, 20); // debugging: set timeout to 30 seconds, 5% chance for gc
+        $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, TRUE, FALSE, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
 
         // create array with URL parts in $url
         $this->splitUrl();

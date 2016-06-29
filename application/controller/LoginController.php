@@ -29,7 +29,8 @@ class LoginController extends Controller
             // redirect might be set in querystring, or in session, or not at all
             $data = array(
             	'redirect' => Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo") ? Session::get("RedirectTo") : NULL,
-            	'baseurl' => Config::get('URL')
+            	'baseurl' => Config::get('URL'),
+            	'formdata' => Session::get('form_data'),
             );
             $this->View->render('login/index', $data);
         }

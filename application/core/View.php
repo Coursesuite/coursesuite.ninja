@@ -8,7 +8,7 @@ use LightnCandy\LightnCandy;
  */
 class View
 {
-
+	
     /**
      * simply includes (=shows) the view. this is done from the controller. In the controller, you usually say
      * $this->view->render('help/index'); to show (in this example) the view index.php in the folder help.
@@ -84,6 +84,7 @@ class View
 				$helper_functions[] = "StoreController::AppMatrix";
 				$helper_functions[] = "StoreController::TierMatrix";
 			}
+			$helper_functions[] = "Text::StaticPageRenderer";
             $phpStr = LightnCandy::compile($template, array(
               "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG,
               "helpers" => $helper_functions,
@@ -96,8 +97,10 @@ class View
         echo $renderer($assoc);
         if ($template_folder !== null) require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
 
-    }
+		self::destroyFeedbackMessages();
 
+    }
+    
     /**
      * Similar to render, but accepts an array of separate views to render between the header and footer. Use like
      * the following: $this->view->renderMulti(array('help/index', 'help/banner'));
@@ -165,14 +168,18 @@ class View
 	        // echo out the feedback messages (errors and success messages etc.),
 	        // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
 	        require Config::get('PATH_VIEW') . '_templates/feedback.php';
+	        
+	        self::destroyFeedbackMessages();
 
+        }
+
+    }
+    
+    static function destroyFeedbackMessages() {
 	        // delete these messages (as they are not needed anymore and we want to avoid to show them twice
 	        Session::set('feedback_positive', null);
 	        Session::set('feedback_negative', null);
-
-			Session::set('feedback_area', null);
-        }
-
+			Session::set('feedback_area', null);	    
     }
 
     /**

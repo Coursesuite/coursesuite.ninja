@@ -1,16 +1,6 @@
     </main>
 
-    <footer>
-	    <div class="standard-width">
-		    <div class="footer-columns">
-			    <div><?php echo Config::get('GLOBAL_FOOTER_COLUMN_1'); ?></div>
-			    <div><?php echo Config::get('GLOBAL_FOOTER_COLUMN_2'); ?></div>
-			    <div><?php echo Config::get('GLOBAL_FOOTER_COLUMN_3'); ?></div>
-		    </div>
-	    </div>
-    </footer>
-
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script>window.jQuery || document.write('<script src="<?=Config::get('URL')?>js/jquery-1.10.2.min.js"><\/script>')</script>
 
 <?php

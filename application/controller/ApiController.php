@@ -145,7 +145,7 @@ class ApiController extends Controller
         LoggingModel::logMethodCall(__METHOD__, $this->username, $params, Request::post_debug());
 	    extract ($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
 	    if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
-	    	$tierid = (int) TierModel::getTierIdByName(Request::post("productName")); // short name of subscription in fastspring system
+	    	$tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
 			$referrer = Request::post("referrer");
 			if (isset($referrer)) {
 		    	$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill

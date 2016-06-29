@@ -32,7 +32,7 @@
 			<tr>
 				<td>{{tier.name}} ({{tier.pack.0.name}})</td>
 				<td>{{added}}</td>
-				<td>{{endDate}}</td>
+				<td>{{#if endDate}}{{endDate}}{{else}}Never{{/if}}</td>
 				<td><a href="{{subscriptionUrl}}" target="_blank"><i class='cs-stack-2'></i> Show (in new window)</a></td>
 				<td>{{status}}<br>{{statusReason}}</td>
 			</tr>

@@ -6,12 +6,12 @@
 		</h3>
 		<form method="post" action="{{baseurl}}admin/staticPage/{{id}}/save">
 		{{#with data}}
-			<div><label for="page_key">path: /content/</label> <input type="text" id="page_key" name="page_key" value="{{page_key}}"></div>
+			<div><label for="page_key">path: /content/</label> <input type="text" id="page_key" name="page_key" value="{{page_key}}" pattern="[A-Za-z0-9]{5,}" placeholder="5 letters or more, no spaces or symbols"></div>
 			<div><label for="body_classes">CSS Classes</label> <input type="text" id="body_classes" name="body_classes" value="{{body_classes}}"></div>
 			<div><label for="content">Content</label> <div><textarea id="content" name="content" rows="10" cols="80" data-markdown="true">{{content}}</textarea></div></div>
 
 			<h4>SEO (Metadata)</h4>
-			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>.</div>
+			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>. None of these fields render to the screen, they are used by web crawlers and special indexers. If you don't know how to do proper SEO keywording and descriptors, LEAVE THESE BLANK.</div>
 			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
 			<div><label for="meta_description">descriptor:</label> <input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
 			<div><label for="meta_keywords">keywords:</label> <input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>

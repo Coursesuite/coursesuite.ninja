@@ -10,6 +10,8 @@ class DashboardController extends Controller
      */
     public function __construct()
     {
+	}
+/*		    
         parent::__construct();
 
         // this entire controller should only be visible/usable by logged in users, so we put authentication-check here
@@ -35,14 +37,11 @@ class DashboardController extends Controller
         }
         return $data;
     }
-
-    /**
-     * This method controls what happens when you move to /dashboard/index in your app.
-     */
+*/
     public function index() {
-        $this->View->render('dashboard/index', self::dashboardData());
+	    Redirect::to("store/index");
     }
-
+/*
     public function app($app_key) {
         $data = self::dashboardData($app_key);
         $this->View->render('dashboard/index', $data);
@@ -51,5 +50,7 @@ class DashboardController extends Controller
     public function subscription() {
         $this->View->render('dashboard/subscription');
     }
+
+*/
 
 }

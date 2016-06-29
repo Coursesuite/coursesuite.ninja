@@ -36,7 +36,9 @@ class Session
 
     public static function remove($key)
     {
-        unset($_SESSION[$key]);
+	    if (isset($_SESSION[$key])) {
+        	unset($_SESSION[$key]);
+        }
     }
     /**
      * gets/returns the value of a specific key of the session
@@ -78,6 +80,18 @@ class Session
     public static function destroy()
     {
         session_destroy();
+    }
+
+
+	/*
+	 * Clean up expired or invalid sessions
+	 * (Called from cron.php)
+	 */    
+    public static function clean() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->query("update users set session_id = null where session_id in (select session_id from session_data where session_expire < current_timestamp)");
+		$query = $database->query("update users set session_id = null where session_id not in (select session_id from session_data)");
+
     }
 
     /**

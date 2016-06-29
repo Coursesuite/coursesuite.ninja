@@ -58,6 +58,20 @@ class TierModel {
         $query->execute(array(':name' => $tier_name));
         return $query->fetchColumn();
     }
+
+    public static function getTierIdByProductName($product_name) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT tier_id FROM tiers WHERE (product_names LIKE :left OR product_names LIKE :mid OR product_names LIKE :right)";
+        $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $query->execute(array(
+        	':left' => $product_name . ',%',
+        	':mid' => '%,' . $product_name . ',%',
+        	':right' => '%,' . $product_name,
+        ));
+        return $query->fetchColumn();
+    }
+    
+    
     
     public static function getTierPackByName($tier_name, $include_app_model = false) {
         $database = DatabaseFactory::getFactory()->getConnection();
@@ -123,6 +137,24 @@ class TierModel {
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(
             ":app_id" => (string)$app_id
+        ));
+        return $query->fetchAll();
+    }
+    
+    public static function getAllAppTiersForPack($pack, $onlyactive = true) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $Active = ($onlyactive == true) ? "AND active = 1" : "";
+
+        $sql = "SELECT tier_id, tier_level, name, description, store_url, price, period
+                    FROM tiers
+                    WHERE pack_id IN (SELECT id FROM tier_packs WHERE name = :pack)
+                    $Active
+                    ORDER BY tier_level, name
+        ";
+
+        $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $query->execute(array(
+            ":pack" => (string)$pack
         ));
         return $query->fetchAll();
     }
