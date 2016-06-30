@@ -344,4 +344,12 @@ class AdminController extends Controller
 	    $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
     
+    public function testNotifies() {
+	    MessageModel::notify_user("You got a new notification from admin, and it's a good one", MESSAGE_LEVEL_HAPPY, 11);
+	    MessageModel::notify_user("Your credit card has expired and you're now booted out :(", MESSAGE_LEVEL_SAD, 11);
+	    MessageModel::notify_all("Hey, you are all a bunch of people.", MESSAGE_LEVEL_MEH, time() + 60);
+	    
+	    $this->View->output("I have added a couple of notifications...");
+    }
+    
 }

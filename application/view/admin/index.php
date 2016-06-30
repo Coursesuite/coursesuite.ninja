@@ -17,6 +17,7 @@
         <li>Manage app-tier feature matrix</li>
         <li>Manage subscriptions</li>
         <li><a href="<?= Config::get('URL')?>admin/manualSubscribe">Manually add a subscription</a></li>
+        <li><a href="<?= Config::get('URL')?>admin/testNotifies">Send test notifications to <b>qwerty</b></a></li>
     </ul>
 
 </article>

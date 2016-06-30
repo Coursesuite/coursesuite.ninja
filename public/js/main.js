@@ -196,6 +196,16 @@ function slideAdvance() {
 }
 
 $(function () {
+	
+	$("a[data-action='dismiss-message']").on("click", function(e) {
+		var $this = $(this);
+		$.getJSON("/message/done/" + this.getAttribute("data-action-id"), function (result) {
+			if (result.updated) {
+				console.log("updated", $this);
+				$this.closest("div.acknowledgement-item").fadeOut(250, function() { console.log("faded", this); $(this).remove() });
+			}
+		});
+	});
 
 	if (typeof flatpickr === "function") {
 		flatpickr("input.flatpickr", {

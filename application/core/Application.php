@@ -4,6 +4,10 @@ DEFINE ('AUTH_TYPE_TOKEN', 0);
 DEFINE ('AUTH_TYPE_NONE', 1);
 DEFINE ('AUTH_TYPE_DIGEST', 2);
 
+DEFINE ('MESSAGE_LEVEL_HAPPY', 2);
+DEFINE ('MESSAGE_LEVEL_MEH', 1);
+DEFINE ('MESSAGE_LEVEL_SAD', 0);
+
 /**
  * Class Application
  * The heart of the application

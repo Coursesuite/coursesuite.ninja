@@ -7,6 +7,7 @@
  */
 return array(
 	"FEEDBACK_UNKNOWN_ERROR" => "Unknown error occurred!",
+	"INCORRECT_USAGE" => "Incorrect usage",
 
 	"FEEDBACK_DELETED" => "Your account has been deleted.",
 	"FEEDBACK_ADMIN_USER_DELETED" => "The account " . (isset($id) ? $id : "") ." has been deleted",
