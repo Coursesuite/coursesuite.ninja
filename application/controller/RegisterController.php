@@ -52,7 +52,6 @@ class RegisterController extends Controller
      */
     public function verify($user_id, $user_activation_verification_code, $user_newsletter_subscribed)
     {
-
 		Session::set("feedback_area", "registration");
 
         if (isset($user_id) && isset($user_activation_verification_code)) {

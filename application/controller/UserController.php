@@ -209,7 +209,6 @@ class UserController extends Controller
         foreach (MailChimp::getListInterests() as $toplist) {
             array_push($model['list_ids'], $toplist[1]);
         }
-
         $this->View->renderHandlebars('user/changeNewsletterSubscription', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
@@ -231,9 +230,15 @@ class UserController extends Controller
                 Redirect::to('user/changeNewsletterSubscription');
             }
         }
+        // Subscribe / update interests
         elseif ($_POST['subscription'] == 'true'){
+            // Check if user is subbed or not (only really needed for people who have never subbed)
+            if (!MailChimp::isUserSubscribed(Session::get('user_email'))){
+                MailChimp::subscribe(Session::get('user_email'), Session::get('user_name'));
+            }
+            
             $newInterests = array();
-
+            // Remake users interests array based on selections
             for ($i = 0; $i < count(MailChimp::getListInterests()); $i++){
                 if(strpos($_POST['interestCheck'.$i], 'false') !== false){
                     $key = str_replace('false', '', $_POST['interestCheck'.$i]);
