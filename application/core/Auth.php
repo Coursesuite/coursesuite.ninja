@@ -47,7 +47,7 @@ class Auth
         // initialize the session (if not initialized yet)
         Session::init();
 
-        // self::checkSessionConcurrency();
+        // self::checkSessionConcurrency(); // nah, admins are cool
 
         // if user is not logged in or is not an admin (= not role type 7)
         if (!Session::userIsLoggedIn() || Session::get("user_account_type") != 7) {
@@ -69,6 +69,10 @@ class Auth
         if(Session::userIsLoggedIn()){
             if(Session::isConcurrentSessionExists()){
                 LoginModel::logout();
+                
+                Session::init(); // make a new session
+	            Session::set("concurrency_logout", "Another user with your details signed in from another location. You have both been logged out.");
+
                 Redirect::home();
                 exit();
             }

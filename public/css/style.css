@@ -159,6 +159,58 @@ body#login_timeout footer a.login-again-button:hover {
 
 /* ==============================================================================
 
+				Acknowledgement messages
+
+============================================================================== */
+
+section.user-acknowledgements {
+    position: fixed;
+    width: 50vw;
+    left: 25vw;
+    margin-top: -25px;
+}
+
+section.user-acknowledgements .acknowledgement-item {
+    color: #fff;
+    text-shadow: 1px 1px 0 black;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 25px rgba(0,0,0,0.25);
+    transform: translateY(0);
+    transition: transform .1s ease, box-shadow .1s ease;
+}
+section.user-acknowledgements .acknowledgement-item:hover {
+	transform: translateY(-5px);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+}
+section.user-acknowledgements .acknowledgement-item > p {
+	margin: 0;
+	padding: 0;
+}
+section.user-acknowledgements .acknowledgement-item > a {
+	color: inherit;
+	font-size: 2em;
+	text-shadow: none;
+	text-decoration: none;
+	line-height: 1em;
+	margin-left: 10px;
+}
+
+section.user-acknowledgements .acknowledgement-item.happy {
+    background-color: rgba(28, 165, 234, 0.5);
+}
+section.user-acknowledgements .acknowledgement-item.meh {
+    background-color: rgba(88, 234, 28, 0.5);
+}
+section.user-acknowledgements .acknowledgement-item.sad {
+    background-color: rgba(234, 28, 28, 0.5);
+}
+
+/* ==============================================================================
+
 				Tool Tips
 
 ============================================================================== */

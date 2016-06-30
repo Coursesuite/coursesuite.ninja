@@ -1,7 +1,18 @@
 <?php
-class LaunchController extends Controller {
-    public function __construct() {
+
+/**
+ * This controller shows an area that's only visible for logged in users (because of Auth::checkAuthentication(); in line 16)
+ */
+class LaunchController extends Controller
+{
+    /**
+     * Construct this object by extending the basic Controller class
+     */
+    public function __construct()
+    {
         parent::__construct();
+
+        // this entire controller should only be visible/usable by logged in users, so we put authentication-check here
         Auth::checkAuthentication();
     }
 

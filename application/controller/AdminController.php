@@ -42,7 +42,7 @@ class AdminController extends Controller
         );
         $this->View->renderHandlebars('admin/syslog', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
-    
+
     public function editSections($id = 0, $action = "")
     {
         $model = array(

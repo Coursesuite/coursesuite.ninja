@@ -97,12 +97,26 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
 
     <main><?php
 	    
+	    $cc_logout = Session::get("concurrency_logout");
+	    if (isset($cc_logout) && !empty($cc_logout)) {
+		    Session::remove("concurrency_logout");
+		    if (!isset($this->messages)) $this->messages = array();
+		    $this->messages[] = array(
+			    "level" => "sad",
+			    "text" => $cc_logout,
+			    "dismissable" => false
+		    );
+	    }
+	    
 	    // if the user has any messages that they haven't acknowledged, render them here using some kind of template
 	    // this is an example only, it needs to know about the kind of message so it can add a class to the acknowledgement-item box
 	    if (isset($this->messages)) {
-		    echo "<section class='user-acknowledgements'";
+		    echo "<section class='user-acknowledgements'>";
 		    foreach ($this->messages as $message) {
-			    echo "<div class='acknowledgement-item'><p class='body'>$message</p><a href='javascript:;'><i class='cs-circle-cross'></i></a></div>";
+			    echo "<div class='acknowledgement-item " . $message["level"] . "'>" .
+			    		"<p class='body'>" . $message["text"]. "</p>";
+			    if ($message["dismissable"] == true) echo "<a href='javascript:;'><i class='cs-circle-cross'></i></a>";
+			    echo "</div>";
 		    }
 		    echo "</section>";
 		    // some way of registering a startup script event or handler file

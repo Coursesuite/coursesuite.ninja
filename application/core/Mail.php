@@ -150,4 +150,5 @@ class Mail
 	{
 		return $this->error;
 	}
+
 }
