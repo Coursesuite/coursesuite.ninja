@@ -75,6 +75,10 @@ class View
               },
               "htmlify" => function ($arg1) {
 	              return Text::toHtml($arg1);
+              },
+              "jsonformat" => function ($arg1) {
+	              $json = json_decode($arg1);
+	              return json_encode($json, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
               }
   			);
 
