@@ -107,6 +107,56 @@ body > main {
     background-attachment: fixed;
 }
 
+
+/* ==============================================================================
+
+				Login Timeout Warning
+
+============================================================================== */
+
+body#login_timeout > main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body#login_timeout > main .info {
+	padding: 10px;
+	border: 1px solid #999;
+	max-width: 424px;
+	border-radius: 5px;
+	box-shadow: 0 10px 25px rgba(0,0,0,.125);
+	color: #333;
+	background-color: rgb(255,255,255);
+}
+body#login_timeout header {
+	padding: 10px;
+	background-color: #485872;
+}
+body#login_timeout footer,
+body#login_timeout article {
+	padding: 10px 0;
+}
+body#login_timeout article {
+	line-height: 2;
+}
+
+body#login_timeout footer a.login-again-button {
+	display: inline-block;
+	padding: .3em .7em;
+	text-decoration: none;
+	color: rgba(255,255,255,.8);
+	border: 1px solid rgba(255,255,255,.8);
+	border-radius: 2.5px;
+	transition: .3s border-radius ease, .3s background-color ease;
+}
+body#login_timeout footer a.login-again-button:hover {
+	border-radius: 5px;
+	background: rgba(255,255,255,.1);
+}
+
 /* ==============================================================================
 
 				Tool Tips
@@ -1343,6 +1393,12 @@ user-select: none;
 
 .admin-tools ul.media-select a {
     text-decoration: none;
+}
+.admin-tools ul.media-select code {
+	font-size: 12px;
+	background-color: #eee;
+	border: 1px solid #ddd;
+	padding: .3em;
 }
 
 .admin-tools .spacer {

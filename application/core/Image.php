@@ -2,16 +2,13 @@
 
 use ColorThief\ColorThief;
 
-class Image
-{
+class Image {
 
-    public static function getBaseColour($sourceImage)
-    {
+    public static function getBaseColour($sourceImage) {
         return ColorThief::getColor($sourceImage);
     }
 
-    public static function makeThumbnail($source_image, $destination, $final_width = 44, $final_height = 44, $bgcolour = array(224, 224, 228))
-    {
+    public static function makeThumbnail($source_image, $destination, $final_width = 44, $final_height = 44, $bgcolour = array(224, 224, 228), $center = true) {
 
         $imageData = getimagesize($source_image);
         $width     = $imageData[0];
@@ -41,6 +38,11 @@ class Image
             $horizontalCoordinateOfSource = 0;
             $verticalCoordinateOfSource   = ($height - $width) / 2;
             $smallestSide                 = $width;
+        }
+        
+        if (!$center) {
+	        $horizontalCoordinateOfSource = 0;
+	        $verticalCoordinateOfSource = 0;
         }
 
         // copying the part into thumbnail, maybe edit this for square avatars

@@ -98,9 +98,15 @@ class AppModel extends Model {
 
     public static function getLaunchUrl($app_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT launch, auth_type, app_key
-        		FROM apps
-        		WHERE app_id = :app_id";
+        if (is_string($app_id)) {
+	        $sql = "SELECT launch, auth_type, app_key
+	        		FROM apps
+	        		WHERE app_key = :app_id";
+        } else {
+	        $sql = "SELECT launch, auth_type, app_key
+	        		FROM apps
+	        		WHERE app_id = :app_id";
+        }
         $query = $database->prepare($sql);
         $query->execute(array(':app_id' => $app_id));
         $url = $query->fetchColumn(0);

@@ -35,6 +35,16 @@ class LoginController extends Controller
             $this->View->render('login/index', $data);
         }
     }
+    
+    public function timeout($appkey = "") {
+	    $model = array(
+		    'baseurl' => Config::get('URL'),
+	    );
+	    if (!empty($appkey)) {
+		    Session::set("RedirectTo", "launch/app/$appkey");
+	    }
+	    $this->View->renderHandlebars("login/timeout", $model, "_overlay", true);
+    }
 
     /**
      * The login action, when you do login/login

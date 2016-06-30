@@ -117,9 +117,12 @@ class AdminController extends Controller
 
                 $display_url = Request::post("url", true, FILTER_SANITIZE_URL);
                 $display_caption = Request::post("caption", true, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $make_thumbs = ((null !== Request::post("autothumb")) && (Request::post("autothumb") === "yes"));
+                $add_slide = ((null !== Request::post("addslide")) && (Request::post("addslide") === "yes"));
                 $media = json_decode($app->media);
 
-                if (isset($tmpname) && (getimagesize($tmpname) !== false) && ($image_ext == "jpg" || $image_ext == "png" || $image_ext == "jpeg" || $image_ext == "gif")) {
+                if (isset($tmpname) && !empty($tmpname) && (getimagesize($tmpname) !== false) && ($image_ext == "jpg" || $image_ext == "png" || $image_ext == "jpeg" || $image_ext == "gif")) {
+
                     // a file of acceptable type was uploaded
                     $diskname = md5($uplname) . "." . $image_ext;
                     $diskpath = $upload_dir . $diskname;
@@ -129,14 +132,17 @@ class AdminController extends Controller
                     if (file_exists($diskpath)) {
                         unlink($diskpath);
                     }
-                    // delete existing versions including thumbnails
-                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg')) {
-                        unlink($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg');
-                    }
-
-                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg')) {
-                        unlink($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg');
-                    }
+ 
+					if ($make_thumbs) {
+	                    // delete existing versions including thumbnails
+	                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg')) {
+	                        unlink($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg');
+	                    }
+	
+	                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg')) {
+	                        unlink($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg');
+	                    }
+	                }
 
                     // move the file upload into position, creating the position if required
                     if (!file_exists($upload_dir)) {
@@ -148,11 +154,7 @@ class AdminController extends Controller
                     // get base colour
                     $colour = Image::getBaseColour($diskpath);
 
-                    // generate standard sized thumbnails
-                    Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_HEIGHT'), $colour);
-                    Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_HEIGHT'), $colour);
-
-                    $media[] = array(
+					$media[] = array(
                         "image" => $displaypath,
                         "thumb" => $displaypath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg',
                         "preview" => $displaypath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg',
@@ -160,15 +162,25 @@ class AdminController extends Controller
                         "bgcolor" => "rgba(" . implode(",", $colour) . ",.5)",
                     );
 
+					if ($make_thumbs) {
+	                    // generate standard sized thumbnails
+	                    Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_HEIGHT'), $colour, false);
+	                    Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_HEIGHT'), $colour);
+	                }
+
                     // save media model
-                    AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
+                    if ($add_slide) {
+	                    AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
+	                }
 
                 } else if (isset($display_url)) {
                     $thumb = "/img/hqdefault.jpg";
                     if (strpos($display_url, "youtu") !== false) {
                         $json = json_decode(file_get_contents("http://www.youtube.com/oembed?url=" . $display_url . "&format=json"));
-                        preg_match('/[\\?\\&]v=([^\\?\\&]+)/', $display_url, $matches); // http://sourcey.com/youtube-html5-embed-from-url-with-php/
-                        $display_url = "https://www.youtube.com/embed/" . $matches[1] . "?rel=0&showinfo=0&iv_load_policy=3"; // https://developers.google.com/youtube/player_parameters
+                        // preg_match('/[\\?\\&]v=([^\\?\\&]+)/', $display_url, $matches); // http://sourcey.com/youtube-html5-embed-from-url-with-php/
+                        preg_match('/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/', $display_url, $matches);
+
+                        $display_url = "https://www.youtube.com/embed/" . $matches[1] . "?rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1"; // https://developers.google.com/youtube/player_parameters
                         $thumb = str_replace("hqdefault.jpg", "default.jpg", $json->thumbnail_url); // http://stackoverflow.com/a/2068371/1238884
 
                     } else if (strpos($display_url, "vimeo") !== false) {
@@ -195,7 +207,9 @@ class AdminController extends Controller
                         "bgcolor" => "rgba(" . implode(",", $colour) . ",.5)",
                     );
 
-                    AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
+                    if ($add_slide) {
+                    	AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
+					}
                 }
                 Redirect::to("admin/editApps/$id/edit");
                 break;

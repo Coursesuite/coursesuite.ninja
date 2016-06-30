@@ -24,7 +24,7 @@
 				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Hidden</label>
 			</div>
 			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
-			<div><label for="media">Slide data</label> <textarea id="media" name="media" rows=5 cols=80>{{media}}</textarea></div>
+			<div><label for="media">Slide data</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
 			<h4>SEO (Metadata)</h4>
 			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>.</div>
 			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
@@ -35,15 +35,20 @@
 		</form>
 		{{#gte id 1}}
 		<h4>Media file management</h4>
+		<p>Push the bin to immediately delete a file. Mouse over the eye icon preview that file. Copy the code block to use it in markdown.</p>
 		<ul class="media-select">
 			{{#unless files}}<li>No media found.</li>{{/unless}}
 			{{#each files}}<li><a href="{{../baseurl}}admin/editApps/{{../id}}/delete/{{.}}" title="Delete file now" class="inline-delete"><i class="cs-trash"></i></a>
-								<a href="{{../baseurl}}img/apps/{{../data.app_key}}/{{.}}" data-action="hover-thumb">{{.}}</a></li>{{/each}}
+								<a href="{{../baseurl}}img/apps/{{../data.app_key}}/{{.}}" data-action="hover-thumb" target="_blank"><i class='cs-eye'></i></a> 
+								<code>![image](/img/apps/{{../data.app_key}}/{{.}})</code></li>{{/each}}
 		</ul>
 		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/upload" enctype="multipart/form-data">
+		    <div><label>Specify URL:</label> <input type="text" name="url" id="url" placeholder="E.g. youtube url"></div>
+		    <div>- or -</div>
 		    <div><label>Upload media:</label> <input type="file" name="imageUpload" id="imageUpload"></div>
-		    <div><label>Or specify URL:</label> <input type="text" name="url" id="url" placeholder="E.g. youtube url"></div>
-		    <div><label>Caption:</label> <input type="text" name="caption" id="caption" placeholder="short caption for media"></div>
+		    <div><label>Make image thumbs?</label> <input type="checkbox" value="yes" name="autothumb" id="autoThumb" checked></div>
+		    <div><label>Slideshow caption:</label> <input type="text" name="caption" id="caption" placeholder="short caption for media"></div>
+		    <div><label>Add to Slideshow?</label> <input type="checkbox" value="yes" name="addslide" id="addSlide" checked></div>
 		    <div><span class="spacer"></span><input type="submit" value="Upload" name="submit" class="button"></div>
 		</form>
 		{{/gte}}
