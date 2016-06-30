@@ -54,7 +54,7 @@ return array(
 	 */
 	'DEFAULT_CONTROLLER' => 'store',
 	'DEFAULT_ACTION' => 'index',
-	
+
 	'DEFAULT_META_TITLE' => 'CourseSuite',
 	'DEFAULT_META_KEYWORDS' => 'coursesuite, coursesuite ninja, lms, online learning, html5 scorm, scorm package, scorm author, interactive learning, document conversion, courseware, moodle',
 	'DEFAULT_META_DESCRIPTION' => 'CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses.',
@@ -196,10 +196,10 @@ return array(
 		'fastspring' => 'e93NcNdpntFq',
 		'discourse' => '3kurpzSGRAq4',
 	),
-	
+
 	'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
 	'FASTSPRING_PARAM_APPEND' => '&mode=test',
-	
+
 	// store info pricing table may not be relevant or have other logic later on
 	'STORE_INFO_SHOW_PRICING' => false,
 
@@ -208,6 +208,14 @@ return array(
 	'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/support">Support</a> <a href="/content/privacy">Privacy</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
 	'GLOBAL_FOOTER_COLUMN_3' => '<p>&copy; CourseSuite 2016-3016</p>',
 
+    /*
+     * Mailchimp Configuration
+     */
+
+	'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
+	'MAILCHIMP_LIST_ID' => '2f5671f29b',
+	'MAILCHIMP_INTEREST_ID' => '3e1d42a267',
+	// interest ids app:d85d3fb037 plugin:986db51105 course catalouge:5c3fa3caed (i think) change from null to 1 to sub to interest
 
 	'FORCE_HANDLEBARS_COMPILATION' => true // set to true to force recompilation of handlebars templates on the fly
 

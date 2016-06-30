@@ -91,6 +91,7 @@ class UserController extends Controller
         }
 
         UserModel::editUserName(Request::post('user_name'));
+        MailChimp::updateUserInfo(Session::get('user_email'), Request::post('user_name'), NULL, 'subscribed');
         Redirect::to('user/editUsername');
     }
 
@@ -192,4 +193,67 @@ class UserController extends Controller
         else
             Redirect::to('user/changePassword');
     }
+
+    /**
+     * Update newsletter subscription details page
+     */
+    public function changeNewsletterSubscription()
+    {
+        $model = array(
+            'baseurl' => Config::get('URL'),
+            'user_subbed' => MailChimp::isUserSubscribed(Session::get('user_email')),
+            'list_interests' => MailChimp::getListInterests(),
+            'user_interests' => MailChimp::getUserInterests(Session::get('user_email'))
+        );
+        $model['list_ids'] = array();
+        foreach (MailChimp::getListInterests() as $toplist) {
+            array_push($model['list_ids'], $toplist[1]);
+        }
+
+        $this->View->renderHandlebars('user/changeNewsletterSubscription', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    /**
+     * Newsletter subscription settings change action
+     *
+     * Checks which interests catagories you have selected and updates you on the mailchimp mailinglist
+     */
+    public function changeNewsletterSubscription_action()
+    {
+        // Unsubscribe from newsletter
+        if ($_POST['subscription'] == 'false'){
+            if (MailChimp::unsubscribe(Session::get('user_email'))){
+                Session::add('feedback_positive', Text::get('FEEDBACK_MAILCHIMP_UNSUBSCRIBED_SUCCESSFUL'));
+                Redirect::to('user/index');
+            }
+            else{
+                Session::add('feedback_negative', Text::get('FEEDBACK_MAILCHIMP_UNSUBSCRIBED_FAILED'));
+                Redirect::to('user/changeNewsletterSubscription');
+            }
+        }
+        elseif ($_POST['subscription'] == 'true'){
+            $newInterests = array();
+
+            for ($i = 0; $i < count(MailChimp::getListInterests()); $i++){
+                if(strpos($_POST['interestCheck'.$i], 'false') !== false){
+                    $key = str_replace('false', '', $_POST['interestCheck'.$i]);
+                    $newInterests[$key] = false;
+                }
+                else{
+                    $newInterests[$_POST['interestCheck'.$i]] = true;
+                }
+            }
+
+            if (MailChimp::updateUserInfo(Session::get('user_email'), NULL, $newInterests)){
+                Session::add('feedback_positive', Text::get('FEEDBACK_MAILCHIMP_UPDATE_SUCCESS')); //Not sure how to make this work
+                Redirect::to('user/index');
+            }
+            else{
+                Session::add('feedback_negative', Text::get('FEEDBACK_MAILCHIMP_UPDATE_FAILED')); //Not sure how to make this work
+                Redirect::to('user/changeNewsletterSubscription');
+            }
+
+        }
+    }
+
 }

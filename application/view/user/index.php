@@ -18,5 +18,6 @@
          <a href="<?= Config::get('URL') . 'user/editAvatar'; ?>">Edit</a></div>
         <div>Your account type is: <?= $this->user_account_type; ?>  <a href="<?= Config::get('URL') . 'user/changeUserRole'; ?>">Edit</a></div>
         <div> <a href="<?= Config::get('URL') . 'user/changePassword'; ?>">Change password</a> </div>
+        <div> <a href="<?= Config::get('URL') . 'user/changeNewsletterSubscription'; ?>">Update newsletter subscription</a></div>
     </div>
 </div>

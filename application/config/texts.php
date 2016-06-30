@@ -44,7 +44,7 @@ return array(
 	"FEEDBACK_PASSWORD_REPEAT_WRONG" => "Password and password repeat are not the same.",
 	"FEEDBACK_PASSWORD_TOO_SHORT" => "Password has a minimum length of 6 characters.",
 
-	"FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED" => "Sorry, we could not send you an verification mail. Your account has NOT been created.",
+	"FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED" => "Sorry, we could not send you a verification mail. Your account has NOT been created.",
 	"FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR" => "Verification mail could not be sent due to: ",
 	"FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL" => "A verification mail has been sent successfully.",
 
@@ -119,5 +119,11 @@ return array(
 	"invalid-input-secret" => "The secret parameter is invalid or malformed.",
 	"missing-input-response" => "Apparently you're a robot. All hail our new robot overlords / Did you forget to tick the box (please choose one)", // The response parameter is missing.",
 	"invalid-input-response" => "The verification images you chose didn't match. Try again?",
+
+	//Mailchimp feedback
+	"FEEDBACK_MAILCHIMP_UPDATE_FAILED" => "Something went wrong while updating your settings.",
+	"FEEDBACK_MAILCHIMP_UPDATE_SUCCESS" => "Successfully update newsletter settings",
+	"FEEDBACK_MAILCHIMP_UNSUBSCRIBE_FAILED" => "Something went wrong, failed to unscubscribe from mailing list",
+	"FEEDBACK_MAILCHIMP_UNSUBSCRIBE_SUCCESS" => "Successfully unsubscribed from mailing list",
 
 );

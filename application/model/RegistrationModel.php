@@ -15,7 +15,7 @@ class RegistrationModel
 	 */
 	public static function registerNewUser()
 	{
-		
+
 		Session::set("feedback_area", "registration");
 
 		// clean the input
@@ -24,6 +24,7 @@ class RegistrationModel
 		$user_email_repeat = strip_tags(Request::post('user_email_repeat'));
 		$user_password_new = Request::post('user_password_new');
 		$user_password_repeat = Request::post('user_password_repeat');
+		$user_newsletter_subscribed = Request::post('user_newsletter_subscribed');
 
         // tim
         Session::set('form_data', array(
@@ -65,8 +66,15 @@ class RegistrationModel
 		// generate random hash for email verification (40 char string)
 		$user_activation_hash = sha1(uniqid(mt_rand(), true));
 
+		// Fix newsletter subscription variable
+		if (!$user_newsletter_subscribed){
+			$user_newsletter_subscribed = 0;
+		} else {
+			$user_newsletter_subscribed = 1;
+		}
+
 		// write user data to database
-		if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash)) {
+		if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash, $user_newsletter_subscribed)) {
 			Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
             return false; // no reason not to return false here
 		}
@@ -80,7 +88,7 @@ class RegistrationModel
 		}
 
 		// send verification email
-		if (self::sendVerificationEmail($user_id, $user_email, $user_activation_hash)) {
+		if (self::sendVerificationEmail($user_id, $user_email, $user_activation_hash, $user_newsletter_subscribed)) {
 			Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
 			return true;
 		}
@@ -213,20 +221,21 @@ class RegistrationModel
 	 *
 	 * @return bool
 	 */
-	public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash)
+	public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash, $user_newsletter_subscribed)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
 		// write new users data into database
-		$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_activation_hash, user_provider_type)
-                    VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_activation_hash, :user_provider_type)";
+		$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_activation_hash, user_provider_type, user_newsletter_subscribed)
+                    VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_activation_hash, :user_provider_type, :user_newsletter_subscribed)";
 		$query = $database->prepare($sql);
 		$query->execute(array(':user_name' => $user_name,
 		                      ':user_password_hash' => $user_password_hash,
 		                      ':user_email' => $user_email,
 		                      ':user_creation_timestamp' => $user_creation_timestamp,
 		                      ':user_activation_hash' => $user_activation_hash,
-		                      ':user_provider_type' => 'DEFAULT'));
+		                      ':user_provider_type' => 'DEFAULT',
+		                      ':user_newsletter_subscribed' => $user_newsletter_subscribed));
 		$count =  $query->rowCount();
 		if ($count == 1) {
 			return true;
@@ -259,11 +268,11 @@ class RegistrationModel
 	 *
 	 * @return boolean gives back true if mail has been sent, gives back false if no mail could been sent
 	 */
-	public static function sendVerificationEmail($user_id, $user_email, $user_activation_hash)
+	public static function sendVerificationEmail($user_id, $user_email, $user_activation_hash, $user_newsletter_subscribed)
 	{
-		$body = Text::get('EMAIL_COMMON_CONTENT_INTRO') . 
+		$body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
 				Text::get('EMAIL_VERIFICATION_CONTENT') . "\n\n" .
-				Config::get('URL') . Config::get('EMAIL_VERIFICATION_URL') . '/' . urlencode($user_id) . '/' . urlencode($user_activation_hash) .
+				Config::get('URL') . Config::get('EMAIL_VERIFICATION_URL') . '/' . urlencode($user_id) . '/' . urlencode($user_activation_hash) . '/' . urlencode($user_newsletter_subscribed) .
 				Text::get('EMAIL_COMMON_CONTENT_SIG');
 
 		$mail = new Mail;
@@ -285,17 +294,38 @@ class RegistrationModel
 	 *
 	 * @param int $user_id user id
 	 * @param string $user_activation_verification_code verification token
+	 * @param string $user_newsletter_subscribed
 	 *
 	 * @return bool success status
 	 */
-	public static function verifyNewUser($user_id, $user_activation_verification_code)
+	public static function verifyNewUser($user_id, $user_activation_verification_code, $user_newsletter_subscribed)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
-		$sql = "UPDATE users SET user_active = 1, user_activation_hash = NULL
-                WHERE user_id = :user_id AND user_activation_hash = :user_activation_hash LIMIT 1";
+		$sql = "UPDATE users
+                                    SET user_active = 1, user_activation_hash = NULL
+                                    WHERE user_id = :user_id AND user_activation_hash = :user_activation_hash
+                                    LIMIT 1";
 		$query = $database->prepare($sql);
-		$query->execute(array(':user_id' => $user_id, ':user_activation_hash' => $user_activation_verification_code));
+		$query->execute(array(
+                            ':user_id' => $user_id,
+                            ':user_activation_hash' => $user_activation_verification_code
+                        ));
+
+		// Get user name and email
+		$sql = "SELECT user_email, user_name
+                                    FROM users
+                                    WHERE user_id = :user_id
+                                    LIMIT 1";
+                        $userInfoQuery = $database->prepare($sql);
+		$userInfoQuery->execute(array(
+                            ':user_id' => $user_id
+                        ));
+		$userInfo = $userInfoQuery->fetchAll(); // PDO::FETCH_ASSOC
+
+		if ($user_newsletter_subscribed == 1){
+			MailChimp::subscribe($userInfo[0]['user_email'], $userInfo[0]['user_name']);
+		}
 
 		if ($query->rowCount() == 1) {
 			Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_ACTIVATION_SUCCESSFUL'));

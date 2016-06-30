@@ -18,6 +18,7 @@
 			<div class="user-name">{{user_name}} <a href="{{baseurl}}user/editUsername"><i class='cs-pen'></i></a></div>
 			<div class="user-email">{{user_email}} <a href="{{baseurl}}user/editUserEmail"><i class='cs-pen'></i></a></div>
 			<div class="user-password"><a href="{{baseurl}}user/changePassword">Change password</a></div>
+			<div><a href="{{baseurl}}user/changeNewsletterSubscription">Update newsletter subscription</a></div>
 			<div class="user-destroy"><a href="{{baseurl}}user/destroy">Delete account <i class='cs-delete'></i></a></div>
 		</div>
 	

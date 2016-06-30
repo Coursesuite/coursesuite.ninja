@@ -39,6 +39,7 @@
 	                <input type="text" name="user_email_repeat" placeholder="repeat email address (to prevent typos)" required value="<?php Text::output($rego, 'user_email_repeat'); ?>" />
 	                <input type="password" name="user_password_new" pattern=".{6,}" placeholder="Password (6+ characters)" required autocomplete="off" value="<?php Text::output($rego, 'user_password_new'); ?>" />
 	                <input type="password" name="user_password_repeat" pattern=".{6,}" required placeholder="Repeat your password" autocomplete="off" value="<?php Text::output($rego, 'user_password_repeat'); ?>" />
+	                <label><input type="checkbox" name="user_newsletter_subscribed" checked="checked" value="true"/>Signup for CourseSuite newsletter</label>
 	                <div class="g-recaptcha" data-sitekey="<?php echo Config::get('GOOGLE_CAPTCHA_SITEKEY'); ?>"></div>
 	                <script type="text/javascript" src="//www.google.com/recaptcha/api.js?hl=en"></script>
 	                <?php $this->renderFeedbackMessages('registration'); ?>
