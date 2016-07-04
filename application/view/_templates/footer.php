@@ -29,5 +29,8 @@ if (isset($this->scripts)) {
         $timestamp = ($end - $start);
         printf("<!-- Page created in %.5f seconds. -->", $timestamp);
 	?>
+
+    <div class="conditional-ie"><i class='cs-heart'></i> We know you love Internet Explorer, but it just isn't supported anymore. Please use a modern browser instead.</div>
+
 </body>
 </html>

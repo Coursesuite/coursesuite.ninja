@@ -1,0 +1,70 @@
+  <article class="system-sections admin-tools">
+	{{#equals action "edit"}}
+		<h3>
+			<a href="{{baseurl}}admin/messages/" class="back button">Back to manage messages</a>
+			Editing record {{id}}.
+		</h3>
+		<form method="post" action="{{baseurl}}admin/messages/{{id}}/save">
+		{{#with data}}
+			<div><label for="page_key">path: /content/</label> <input type="text" id="page_key" name="page_key" value="{{page_key}}" pattern="[A-Za-z0-9]{5,}" placeholder="5 letters or more, no spaces or symbols"></div>
+			<div><label for="body_classes">CSS Classes</label> <input type="text" id="body_classes" name="body_classes" value="{{body_classes}}"></div>
+			<div><label for="content">Content</label> <div><textarea id="content" name="content" rows="10" cols="80" data-markdown="true">{{content}}</textarea></div></div>
+
+			<h4>SEO (Metadata)</h4>
+			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>. None of these fields render to the screen, they are used by web crawlers and special indexers. If you don't know how to do proper SEO keywording and descriptors, LEAVE THESE BLANK.</div>
+			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
+			<div><label for="meta_description">descriptor:</label> <input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
+			<div><label for="meta_keywords">keywords:</label> <input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>
+
+			<div><span class="spacer"></span><input type="submit" value="Save & Return" class="submit button"></div>
+		{{/with}}
+		</form>
+	{{else}}
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Manage messages
+	</h3>
+
+	<p>Users can be notified of things. Some of these are automated such as when a subscription is expiring. Users can dismiss most types of message themselves, but there are also internal messages such as a concurrency logout which the user has no control over and won't show up here. You can also send specific users messages, send global messages (to all users), or remove messages.</p>
+
+	<form method="post" action="{{baseurl}}admin/messages/0/search">
+		<div><label for="q">Start with a user:</label> <input type="text" id="q" name="q" value="{{q}}"> <input type="submit" value="search"></div>
+		<div><span>- or -</span><a href="{{baseurl}}admin/messages/0/select/0" class="create">Create messages for all users</a></div>
+	</form>
+
+	{{#equals action "search"}}
+	<h4>Search Results</h4>
+	<ul>
+		{{#if results}}{{#each results}}
+		<li><a href="{{baseurl}}/admin/messages/0/select/{{user_id}}">{{user_name}} &lt;{{user_email}}&gt;</a></li>
+		{{/each}}{{else}}
+	    <li>no results.</li>
+	    {{/if}}
+	</ul>
+	{{/equals}}
+	
+	{{#equals action "select"}}
+	{{#if user_messages}}
+	<h4>Existing user messages that they have not yet dismissed</h4>
+	<table class=
+	
+	{{/if}}
+	<h4>Create a new message</h4>
+	
+	<form method="post" action="{{baseurl}}admin/messages/0/send/{{user.user_id}}">
+		<div><label for="user">Target user:</label> {{#equals user.user_id 0}}All users{{else}}<output id="user">{{user.user_name}}{{#if user.user_email}} &lt;{{user.user_email}}&gt;{{/if}}{{/equals}}</div>
+		<div><label for="level">Importance:</label> <select name="level" id="level">
+			<option value="0">Sad (0 - Red)</option>
+			<option value="1">Meh (1 - Orange)</option>
+			<option value="2" selected>Happy (2 - Blue)</option></select></div>
+		<div><label for="text">Content</label> <div><textarea name="text" id="text" rows="10" cols="80" placeholder="Enter your message here (shorter is better, but what would I know)" data-markdown="true"></textarea></div></div>
+		<div><label for="expires">Expires</label> <input type="datetime" data-enabletime="true" name="expires" id="expires" title="Leave this empty, use the date-time picker, or enter a value like +1 week 2 days 4 hours 2 seconds"> (default: not set)</div>
+		<div><span class="spacer"></span><input type="submit" value="Save" class="submit button"> &nbsp; <a href="{{baseurl}}admin/messages/" class="cancel">Cancel and return to messages</a></div>
+	</form>
+
+	{{/equals}}
+
+
+	{{/equals}}
+</article>
+

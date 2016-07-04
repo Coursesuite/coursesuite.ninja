@@ -94,7 +94,7 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
         <?php } ?>
         </ul></div>
     </header>
-
+    
     <main><?php
 	    
 	    $cc_logout = Session::get("concurrency_logout");
@@ -114,8 +114,8 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
 		    echo "<section class='user-acknowledgements'>";
 		    foreach ($this->SystemMessages as $message) {
 			    echo "<div class='acknowledgement-item level-" . $message["level"] . "'>" .
-			    		"<p class='body'>" . $message["text"]. "</p>";
-			    if (!isset($message["dismissable"])) echo "<a href='javascript:;' data-action='dismiss-message' data-action-id='" . $message["message_id"]. "'><i class='cs-circle-cross'></i></a>";
+			    		"<div class='content-container'>" . Text::toHtml($message["text"]). "</div>";
+			    if (!isset($message["dismissable"])) echo "<a href='javascript:;' data-action='dismiss-message' data-action-id='" . $message["message_id"] . "' title='Dismiss this message'><i class='cs-cross'></i></a>";
 			    echo "</div>";
 		    }
 		    echo "</section>";

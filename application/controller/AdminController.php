@@ -344,6 +344,53 @@ class AdminController extends Controller
 	    $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
     
+    public function messages($message_id = 0, $action = "", $user_id = 0) {
+	    
+	    $baseurl = Config::get("URL");
+	    $model = array(
+		    "baseurl" => $baseurl,
+		    "action" => $action,
+		    "message_id" => $message_id,
+		    "user_id" => $user_id,
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css", "$baseurl/css/flatpickr.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", "$baseurl/js/flatpickr.min.js"),
+	    );
+	    
+	    switch ($action) {
+		    case "send":
+		    	$text = Request::post("text",true);
+		    	$level = intval(Request::post("level"));
+		    	$expires = Request::post("expires");
+		    	if (!empty($expires)) $expires = strtotime($expires);
+		    	$message_id = MessageModel::notify_user($text, $level, $user_id, $expires);
+		    	Redirect::to("admin/messages/$message_id/edit");
+		    	break;
+
+		    case "search":
+		    	$q = Request::post("q",true);
+		    	$model["q"] = $q;
+		    	$model["results"] = UserModel::getUserDataByUserNameOrEmail($q,false,true);
+		    	break;
+
+		    case "select":
+		    	$u = UserModel::getPublicProfileOfUser($user_id);
+		    	if (empty($u)) {
+			    	$u = new stdClass();
+			    	$u->user_id =0;
+			    	$u->user_name = "All users";
+		    	}
+		    	$model["q"] = $u->user_name;
+		    	$model["user"] = $u;
+		    	break;
+		    	
+	    }
+	    
+//	    $this->View->renderJSON($model);
+	    
+	    $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+	    
+    }
+    
     public function testNotifies() {
 	    MessageModel::notify_user("You got a new notification from admin, and it's a good one", MESSAGE_LEVEL_HAPPY, 11);
 	    MessageModel::notify_user("Your credit card has expired and you're now booted out :(", MESSAGE_LEVEL_SAD, 11);

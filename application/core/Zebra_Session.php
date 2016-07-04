@@ -45,6 +45,7 @@ class Zebra_Session
     private $lock_to_ip;
     private $lock_to_user_agent;
     private $table_name;
+    private $useragent;
 
     /**
      *  Constructor of class. Initializes the class and automatically calls
@@ -229,7 +230,7 @@ class Zebra_Session
 
         // store the connection link
         $this->link = $link;
-
+        
         // continue if there is an active MySQL connection
         if ($this->_mysql_ping()) {
 
@@ -670,6 +671,9 @@ class Zebra_Session
      */
     function write($session_id, $session_data)
     {
+	    
+	    $ua = empty($_SERVER['HTTP_USER_AGENT']) ? isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "unknown" : $_SERVER['HTTP_USER_AGENT'];
+
 
         // insert OR update session's data - this is how it works:
         // first it tries to insert a new row in the database BUT if session_id is already in the database then just
@@ -682,13 +686,15 @@ class Zebra_Session
                     session_id,
                     hash,
                     session_data,
-                    session_expire
+                    session_expire,
+                    useragent
                 )
             VALUES (
                 "' . $this->_mysql_real_escape_string($session_id) . '",
                 "' . $this->_mysql_real_escape_string(md5(($this->lock_to_user_agent && isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '') . ($this->lock_to_ip && isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '') . $this->security_code)) . '",
                 "' . $this->_mysql_real_escape_string($session_data) . '",
-                "' . $this->_mysql_real_escape_string(time() + $this->session_lifetime) . '"
+                "' . $this->_mysql_real_escape_string(time() + $this->session_lifetime) . '",
+                "' . $this->_mysql_real_escape_string($ua) . '"
             )
             ON DUPLICATE KEY UPDATE
                 session_data = "' . $this->_mysql_real_escape_string($session_data) . '",

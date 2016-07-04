@@ -66,16 +66,16 @@ class Auth
      * If so, then logout.
      */
     public static function checkSessionConcurrency(){
-        if(Session::userIsLoggedIn()){
-            if(Session::isConcurrentSessionExists()){
-                LoginModel::logout();
-                
-                Session::init(); // make a new session
-	            Session::set("concurrency_logout", "Another user with your details signed in from another location. You have both been logged out.");
+	    if (!Session::userIsLoggedIn()) return;
+	    if (intval(Session::get("user_account_type")) == 7) return;
+        if(Session::isConcurrentSessionExists()){
+            LoginModel::logout();
+            
+            Session::init(); // make a new session
+            Session::set("concurrency_logout", "Another user with your details signed in from another location. You have both been logged out.");
 
-                Redirect::home();
-                exit();
-            }
+            Redirect::home();
+            exit();
         }
     }
 }

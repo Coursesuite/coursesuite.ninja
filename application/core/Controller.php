@@ -20,7 +20,7 @@ class Controller
     {
         // always initialize a session
         Session::init();
-        
+
         // check session concurrency
         Auth::checkSessionConcurrency();
 

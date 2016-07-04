@@ -28,7 +28,14 @@ class ApiController extends Controller
         $this->username = $digest->user;
 
 	    // LoggingModel::logMessage("ApiController::__constructed properly; user was ". $this->username);
-
+    }
+    
+    /*
+	 * An Api call will create a sessionid, which puts a row in the session_data table. We don't want to persist this, so delete it afterwards
+	 */
+    public function __destruct() {
+	    Session::clean();
+	    Session::destroy();
     }
 
     /*
@@ -41,22 +48,22 @@ class ApiController extends Controller
      * @return JSON
      * @see Session::isActiveSession()
 
-    * input is urlencoded/base64/encrypted: YWUxYjU4NjhjMzFmMDZhYjFjN2VkNDViZmYyM2JmNDMwNzRmYjI4MjEwYWM0NTlmZjMyOTE2NWQxN2E2NzZhYWIPdmxq1G3BhkCE8wKCcKmr5E3%2BdJ89p1wvoX2PAPRivtX1BSmIVoQAMe6f5lV3UQ%3D%3D
+    * input is bin2hex/encrypted: 663762623633626661393032373166353964393935333862313135336463386537646230636138336133343861633062323163343631643039386439353461334812d03b8951695b359bfbb7b8833e23684aea24450339659f1d02842e7c65abd49ed70ca651bb871aafecb74fbc145e 
     * output is a php session id, e.g. mog1suctkfbm5rii8fo2pla8j6
 
      */
     public function verifyToken($appkey, $token) {
             $session_id = ApiModel::decodeToken($token);
             $tokenIsValid = Session::isActiveSession($session_id, $appkey);
-            $userRow = Session::UserDetailsFromSession($session_id);
+            $userObj = Session::UserDetailsFromSession($session_id);
             $result = array(
                 'authuser' => $this->username,
                 'appkey' => $appkey,
                 'valid' => $tokenIsValid,
                 'api' => false,
-                'tier' => TierModel::getLevelForUser(Session::UserIdFromSession($session_id)),
-                'username' => $userRow->user_name,
-                'useremail' => $userRow->user_email
+                'tier' => TierModel::getLevelForUser($userObj->user_id),
+                'username' => $userObj->user_name,
+                'useremail' => $userObj->user_email
             );
             LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
             $this->View->renderJSON($result);

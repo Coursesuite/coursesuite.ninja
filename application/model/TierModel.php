@@ -89,6 +89,7 @@ class TierModel {
      * get the tier level (int) for a user by id
      */
     public static function getLevelForUser($user_id) {
+	    if (intval($user_id) < 1) return;
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT T.tier_level FROM
             tiers T INNER JOIN

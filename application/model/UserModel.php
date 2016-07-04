@@ -57,9 +57,10 @@ class UserModel
      * @param int $user_id The user's id
      * @return mixed The selected user's profile
      */
-    public static function getPublicProfileOfUser($user_id)
-    {
+    public static function getPublicProfileOfUser($user_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
+        
+        if (intval($user_id) == 0) return false;
 
         $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted
                 FROM users WHERE user_id = :user_id LIMIT 1";
@@ -85,22 +86,47 @@ class UserModel
 
         return $user;
     }
+    
+    public static function getActiveUser($user_id) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT user_id, user_name, user_email
+				FROM users
+				WHERE user_id = :user_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL
+				LIMIT 1";
+		$query = $database->prepare($sql);
+		$query->execute(array(":user_id" => $user_id));
+		return $query->fetch();
+    }
 
     /**
      * @param $user_name_or_email
      *
      * @return mixed
      */
-    public static function getUserDataByUserNameOrEmail($user_name_or_email)
+    public static function getUserDataByUserNameOrEmail($user_name_or_email, $applyLimit = true, $likeMatching = false)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
+        $matcher = "=";
+        if ($likeMatching == true) {
+	        $matcher = "LIKE";
+	        $user_name_or_email = "%" . $user_name_or_email . "%";
+        }
+        $sql = "SELECT user_id, user_name, user_email
+        		FROM users
+				WHERE (user_name $matcher :user_name_or_email OR user_email $matcher :user_name_or_email)
+				AND user_provider_type = :provider_type";
+        if ($applyLimit) $sql .= " LIMIT 1";
 
-        $query = $database->prepare("SELECT user_id, user_name, user_email FROM users
-                                     WHERE (user_name = :user_name_or_email OR user_email = :user_name_or_email)
-                                           AND user_provider_type = :provider_type LIMIT 1");
-        $query->execute(array(':user_name_or_email' => $user_name_or_email, ':provider_type' => 'DEFAULT'));
-
-        return $query->fetch();
+        $query = $database->prepare($sql);
+        $query->execute(array(
+        	':user_name_or_email' => $user_name_or_email,
+        	':provider_type' => 'DEFAULT'
+        ));
+        if ($applyLimit) {
+	        return $query->fetch();
+	    } else {
+	        return $query->fetchAll();
+	    }
     }
 
     /**

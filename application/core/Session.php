@@ -8,6 +8,7 @@
  */
 class Session
 {
+
     /**
      * starts the session
      */
@@ -81,14 +82,14 @@ class Session
     {
         session_destroy();
     }
-
-
+    
 	/*
 	 * Clean up expired or invalid sessions
 	 * (Called from cron.php)
 	 */    
     public static function clean() {
         $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->query("delete from session_data where hash = 'f628356cee6cf4cf5249828feed7fcb3'");
 		$query = $database->query("update users set session_id = null where session_id in (select session_id from session_data where session_expire < current_timestamp)");
 		$query = $database->query("update users set session_id = null where session_id not in (select session_id from session_data)");
 
@@ -145,7 +146,7 @@ class Session
             $query->execute(array(":user_id" => $userId));
 
             $result = $query->fetch();
-            $userSessionId = !empty($result)? $result->session_id: null;
+            $userSessionId = !empty($result) ? $result->session_id: null;
 
             return $session_id !== $userSessionId;
         }
@@ -154,10 +155,9 @@ class Session
     }
 
     /**
-     * Checks a session id to see if it exists for an activated user, current user
+     * Checks a session id to see if it exists in the database
      *
      * Typically called by an external site which is checking to see if the user is logged on (without neccesarily knowing who it is)
-     * Posting data back (e.g. logging, etc) can therefore also pass the session_id which ties back to the account without exposing its internal id
      *
      * @access public
      * @static static method
@@ -166,57 +166,67 @@ class Session
      */
     public static function isActiveSession($session_id, $app_id = NULL) {
         if (isset($session_id)) {
-
             $database = DatabaseFactory::getFactory()->getConnection();
-            $sql = "SELECT user_id FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
+            $sql = "SELECT count(1) FROM session_data WHERE session_id = :sid AND session_expire < current_timestamp";
             $query = $database->prepare($sql);
-            $query->execute(array(":session_id" => $session_id));
-            $session_user_id = $query->fetch();
-            $count = $query->rowCount();
-            if ($count == 1) {
-
-                // TODO: check $session_user_id has an active subscription to $app_id
-
-                return true; // this session exists
-            }
+            $query->execute(array(":sid" => $session_id));
+            return ($query->fetchColumn() > 0);
         }
         return false;
     }
+
+	// equivalent to http://php.net/manual/en/function.session-decode.php except doesn't populate $_SESSION - we can pluck results
+	private static function unserialize_session($session_data, $start_index=0, &$dict=null) {
+	   isset($dict) or $dict = array();
+	   $name_end = strpos($session_data, "|", $start_index); // standard delimeter
+	   if ($name_end !== FALSE) {
+	       $name = substr($session_data, $start_index, $name_end - $start_index);
+	       $rest = substr($session_data, $name_end + 1);
+	
+	       $value = unserialize($rest);      // PHP will unserialize up to "|" delimiter.
+	       $dict[$name] = $value;
+	
+	       return self::unserialize_session($session_data, $name_end + 1 + strlen(serialize($value)), $dict);
+	   }
+	
+	   return $dict;
+	}
+
+	// decode the data that is stored in [session_data].`session_data` - as an array
+    private static function SessionData($session_id, $asObject = false) {
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $query = $database->prepare("SELECT session_data FROM session_data WHERE session_id = :sid");
+            $query->execute(array(":sid" => $session_id));
+            $data = $query->fetchColumn();
+            return (true == $asObject) ? (object) self::unserialize_session($data) : self::unserialize_session($data);
+    }
     
+    // return the userid that is stored in session
     public static function CurrentUserId() {
-	    $session_id = session_id();
-	    $user_id = self::UserIdFromSession($session_id);
-	    return $user_id;
+	     return Session::get('user_id');
     }
 
+	// return the userid that is stored BY session in the database (but not neccesarily in $_SESSION)
     public static function UserIdFromSession($session_id) {
         if (isset($session_id)) {
-
-            $database = DatabaseFactory::getFactory()->getConnection();
-            $sql = "SELECT user_id FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
-            $query = $database->prepare($sql);
-            $query->execute(array(":session_id" => $session_id));
-            $row = $query->fetch();
-            if ($query->rowcount() > 0) {
-	            return $row->user_id;
-            }
-        }
-        return -1;
+	        $data = self::SessionData($session_id);
+	        return (isset($data["user_id"])) ? $data["user_id"] : -1;
+	    }
     }
 
+	// return the useful parts of a user record that is stored BY session in the database (but not neccesarily in $_SESSION)
     public static function UserDetailsFromSession($session_id) {
+        $obj = (object) array("user_id" => -1, "user_name" => "", "user_email" => "", "user_account_type" => -1); // new stdClass();
         if (isset($session_id)) {
-
-            $database = DatabaseFactory::getFactory()->getConnection();
-            $sql = "SELECT user_id, user_name, user_email FROM users WHERE session_id = :session_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL LIMIT 1";
-            $query = $database->prepare($sql);
-            $query->execute(array(":session_id" => $session_id));
-            $row = $query->fetch();
-            if ($query->rowcount() > 0) {
-	            return $row;
-            }
+	        $data = self::SessionData($session_id, true);
+	        if (isset($data->user_logged_in)) { // we assume the rest is also built
+		        $obj->user_id = $data->user_id;
+			    $obj->user_name = $data->user_name;
+				$obj->user_email = $data->user_email;
+				$obj->account_type = $data->user_account_type;
+	        }
         }
-        return null;
+        return $obj;
     }
 
     /**
