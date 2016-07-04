@@ -34,8 +34,8 @@ class ApiController extends Controller
 	 * An Api call will create a sessionid, which puts a row in the session_data table. We don't want to persist this, so delete it afterwards
 	 */
     public function __destruct() {
-	    Session::clean();
-	    Session::destroy();
+		//	Session::clean();
+	 //   Session::destroy();
     }
 
     /*

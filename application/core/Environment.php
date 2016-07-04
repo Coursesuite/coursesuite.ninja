@@ -13,7 +13,11 @@ class Environment {
 		return (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : "development");
 	}
 
-            public static function remoteIp() {
-                    return $_SERVER['REMOTE_ADDR'];
-            }
+    public static function remoteIp() {
+            return $_SERVER['REMOTE_ADDR'];
+    }
+    
+    public static function NinjaValidator() {
+	    return (isset($_SERVER["HTTP_X_NINJAVALIDATOR"]));
+    }
 }

@@ -88,11 +88,21 @@ class Session
 	 * (Called from cron.php)
 	 */    
     public static function clean() {
+	    echo "static clean";
+	    return;
+	    
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->query("delete from session_data where hash = 'f628356cee6cf4cf5249828feed7fcb3'");
 		$query = $database->query("update users set session_id = null where session_id in (select session_id from session_data where session_expire < current_timestamp)");
 		$query = $database->query("update users set session_id = null where session_id not in (select session_id from session_data)");
 
+    }
+    
+    public static function manual_session_record_remove($session_id) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		echo "<p>delete from session_data where session_id = '$session_id'</p>";
+        $query = $database->prepare("delete from session_data where session_id = :session_id");
+        $query->execute(array(":session_id" => $session_id));
     }
 
     /**

@@ -41,8 +41,17 @@ class Application
 	    global $session;
         $mysqli = DatabaseFactory::getFactory()->getMySqli();
 
-        // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
-        $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, TRUE, FALSE, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
+		// IF the request is coming from a validator-request (CURL call from an external site) then we DO NOT want a new session record
+        if (Environment::NinjaValidator()) {
+
+	        // header_remove('Set-Cookie');
+
+	    } else {
+
+	        // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
+	        $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, TRUE, FALSE, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
+
+		}
 
         // create array with URL parts in $url
         $this->splitUrl();
