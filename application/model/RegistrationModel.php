@@ -36,6 +36,7 @@ class RegistrationModel
 		));
 
 		// stop registration flow if registrationInputValidation() returns false (= anything breaks the input check rules)
+		
 		$validation_result = self::registrationInputValidation(Request::post('g-recaptcha-response'), $user_name, $user_password_new, $user_password_repeat, $user_email, $user_email_repeat);
 		if (!$validation_result) {
 			return false;

@@ -4,9 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2eef29d72db65f8289bb14c221e86024",
-    "content-hash": "f8136697341b6965f93207daee4430ad",
+    "hash": "28cdf3b2c86d1f81ac32e1f563a56b02",
+    "content-hash": "354080b0d787e80aba3ecadd01961881",
     "packages": [
+        {
+            "name": "cviebrock/discourse-php",
+            "version": "0.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cviebrock/discourse-php.git",
+                "reference": "c18670ee8558f790dba3148367fceb811daf1f33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cviebrock/discourse-php/zipball/c18670ee8558f790dba3148367fceb811daf1f33",
+                "reference": "c18670ee8558f790dba3148367fceb811daf1f33",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cviebrock\\DiscoursePHP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Colin Viebrock",
+                    "email": "colin@viebrock.ca"
+                },
+                {
+                    "name": "Johan Jatko"
+                }
+            ],
+            "description": "Helper class for building a single sign-on source for Discourse forums",
+            "homepage": "https://github.com/cviebrock/discourse-php",
+            "keywords": [
+                "discourse",
+                "forum"
+            ],
+            "time": "2015-01-20 20:20:30"
+        },
         {
             "name": "erusev/parsedown",
             "version": "1.6.0",

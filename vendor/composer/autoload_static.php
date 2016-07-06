@@ -20,6 +20,10 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         array (
             'LightnCandy\\' => 12,
         ),
+        'C' => 
+        array (
+            'Cviebrock\\DiscoursePHP\\' => 23,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -34,6 +38,10 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         'LightnCandy\\' => 
         array (
             0 => __DIR__ . '/..' . '/zordius/lightncandy/src',
+        ),
+        'Cviebrock\\DiscoursePHP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cviebrock/discourse-php/src',
         ),
     );
 
@@ -52,6 +60,13 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
             'Parsedown' => 
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
+            ),
+        ),
+        'M' => 
+        array (
+            'Mailchimp' => 
+            array (
+                0 => __DIR__ . '/..' . '/mailchimp/mailchimp/src',
             ),
         ),
         'C' => 

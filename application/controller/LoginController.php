@@ -60,12 +60,14 @@ class LoginController extends Controller
 
         // perform the login method, put result (true or false) into $login_successful
         $login_successful = LoginModel::login(
-            Request::post('user_name'), Request::post('user_password'), Request::post('set_remember_me_cookie')
+            Request::post('user_name'), Request::post('user_password'), Request::post('set_remember_me_cookie'), Session::get('discourse_sso'), Session::get('discourse_payload'), Session::get('discourse_signature')
         );
 
         // check login status: if true, then redirect user to user/index, if false, then to login form again
         if ($login_successful) {
-            if (Request::post('redirect')) {
+            if (Session::get('discourse_sso')) {
+                Redirect::to('login/discourseSSO');
+            } elseif (Request::post('redirect')) {
                 Redirect::to(ltrim(urldecode(Request::post('redirect')), '/'));
             } else {
                 Redirect::to('user/index');
@@ -170,6 +172,24 @@ class LoginController extends Controller
         $session_id = Encryption::decrypt($encrypted_session_id);
 
         echo Session::isActiveSession($session_id, $app_id);
+    }
+
+    public function discourseSSO($skipGet = false){
+        Session::set('discourse_sso', true);
+        // not sure how secure this is
+        if ($_SERVER['HTTP_REFERER'] == 'http://forum.coursesuite.ninja/'){
+            Session::set('discourse_payload', $_GET['sso']);
+            Session::set('discourse_signature', $_GET['sig']);
+        }
+
+        if (LoginModel::isUserLoggedIn()) {
+            $userInfo = LoginModel::discourseSSO();
+            Discourse::login($userInfo->user_id, $userInfo->user_email, $userInfo->user_name, Session::get('discourse_payload'), Session::get('discourse_signature'));
+        } else {
+            Redirect::to('login/index');
+        }
+        
+
     }
 
 }

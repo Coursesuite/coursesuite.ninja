@@ -11,7 +11,7 @@
 	</section>
 
 	<section class="profile-display standard-width">
-
+ 
         <form action="<?php echo Config::get('URL'); ?>user/changePassword_action" method="post" name="new_password_form">
             <label>Enter current password:<label>
             <input id="change_input_password_current" class="reset_input" type='password'

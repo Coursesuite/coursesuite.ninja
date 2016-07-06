@@ -36,35 +36,7 @@ BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 </ifmodule>
 
 # Cache Headers
-<ifmodule mod_headers.c>
 
-  # Cache specified files for 31 days
-  <filesmatch "\.(ico|flv|jpg|jpeg|png|gif|css|swf|svg)$">
-  Header set Cache-Control "max-age=2678400, public"
-  </filesmatch>
-
-  # Cache HTML files for a couple hours
-  <filesmatch "\.(html|htm)$">
-  Header set Cache-Control "max-age=7200, private, must-revalidate"
-  </filesmatch>
-
-  # Cache PDFs for a day
-  <filesmatch "\.(pdf)$">
-  Header set Cache-Control "max-age=86400, public"
-  </filesmatch>
-
-  # Cache Javascripts for 1 year
-  <filesmatch "\.(js)$">
-  Header set Cache-Control "max-age=31536000, private"
-  </filesmatch>
-
-  # unset cookies from filetypes that don't need them
-  <filesmatch "\.(svg|css)$">
-    Header unset Cookie
-    Header unset Set-Cookie
-  </filesmatch>
-
-</ifmodule>
 
 
 # Necessary to prevent problems when using a controller named "index" and having a root index.php

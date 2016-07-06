@@ -9,5 +9,6 @@ return array(
     'ReCaptcha\\' => array($vendorDir . '/google/recaptcha/src/ReCaptcha'),
     'Rakshazi\\' => array($vendorDir . '/rakshazi/digestauth/Rakshazi'),
     'LightnCandy\\' => array($vendorDir . '/zordius/lightncandy/src'),
+    'Cviebrock\\DiscoursePHP\\' => array($vendorDir . '/cviebrock/discourse-php/src'),
     '' => array($baseDir . '/application/core', $baseDir . '/application/model'),
 );
