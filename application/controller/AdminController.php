@@ -68,7 +68,6 @@ class AdminController extends Controller
                     "html_post" => Request::post("html_post")
                 );
                 $id = SectionsModel::Save("store_sections", "id", $section);
-                print_r($model["action"]);
                 // $model["action"] = "edit";
                 // could do this to change the url, but whatever
                 Redirect::to("admin/editSections");
