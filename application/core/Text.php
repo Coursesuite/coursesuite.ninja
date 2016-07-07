@@ -57,7 +57,7 @@ class Text
     
     public static function StaticPageRenderer($route) {
 	    $page = StaticPageModel::getRecordByKey($route);
-	    if (isset($page)) {
+	    if (isset($page) && $page !== false) {
 		    $PDE = new ParsedownExtra();
 		    return $PDE->text($page->content);
 	    }
