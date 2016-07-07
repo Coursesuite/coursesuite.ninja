@@ -117,6 +117,12 @@ class AdminController extends Controller
                  $id = TierModel::save("tiers", "tier_id", $tier);
                  Redirect::to("admin/editTiers");
                  break;
+
+            case 'new':
+                $id = 0;
+                $model["action"] = "new";
+                $tier = TierModel::make('tiers');
+                break;
          }
 
         $model["id"] = $id;

@@ -15,6 +15,9 @@ class TierModel extends Model{
     public static function save($table, $idrow_name, $data_model) {
         return parent::update($table, $idrow_name, $data_model);
     }
+    public static function make($table) {
+        return parent::create($table);
+    }
 
     /**
      * get the tier record for a row id
