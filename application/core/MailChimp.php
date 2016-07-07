@@ -31,7 +31,7 @@ class MailChimp
 					'LNAME'=>'.'
 				]
 			]);
-		return Curl::mailChimpCurl($url, $apiKey, 'PUT', false, $json);
+		return Curl::mailChimpCurl($url, $apiKey, 'PUT', true, $json);
 	}
 
 	/**
