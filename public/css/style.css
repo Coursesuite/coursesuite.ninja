@@ -1645,4 +1645,60 @@ and (-webkit-min-device-pixel-ratio: 2) {
 	body > main {
 	    background-image: url(subtle_dots_@2X.png);
 	}
+}idth: 768px) and (device-height: 1024px) and (orientation:portrait){
+	body {
+		min-height: 1024px;
+	}
+	body > header > div > img {
+		max-width: 192px;
+	}
+}
+@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:landscape){
+	body {
+		min-height: 768px;
+	}
+	body,
+	div.store-items,
+	.store-item-specific nav.crumb,
+	.store-item-specific section.info,
+	.store-item-description > article {
+	    width: 1024px;
+	}
+}
+
+@media only screen and (max-width: 960px) {
+	body > header > div img {
+		max-width: 288px;
+	}
+	.tile {
+	    width: calc(50% - 10px);
+	}
+}
+@media only screen and (max-width: 1024px) {
+	footer .standard-width,
+	.store-item-specific nav.crumb,
+	.store-item-specific section.info,
+	div.store-items {
+    	width: 100%;
+    }
+}
+
+@media only screen and (max-width: 704px) {
+	body > header > div img {
+		max-width: 192px;
+	}
+	.tile {
+	    width: 100%;
+	}
+}
+
+
+
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (-webkit-min-device-pixel-ratio: 2) {
+	body > main {
+	    background-image: url(subtle_dots_@2X.png);
+	}
 }

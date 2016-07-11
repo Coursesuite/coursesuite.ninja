@@ -218,6 +218,8 @@ $(function () {
 				}
 			}
 		});
+		flatpickr("input[type='datetime']");
+
 	}
 
 	/* $("table.app-matrix").on("click", "a[href*='fastspring']", function (e) {
