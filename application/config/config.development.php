@@ -76,7 +76,7 @@ return array(
 	 * DB_CHARSET The charset, necessary for security reasons. Check Database.php class for more info.
 	 */
 	'DB_TYPE' => 'mysql',
-	'DB_HOST' => '127.0.0.1',
+	'DB_HOST' => 'coursesuite.ninja', // 127.0.0.1',
 	'DB_NAME' => 'csninja_huge',
 	'DB_USER' => 'csninja_huge',
 	'DB_PASS' => 'qh+7$^kT(~sd',

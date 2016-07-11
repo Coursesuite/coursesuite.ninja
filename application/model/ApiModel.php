@@ -35,8 +35,12 @@ class ApiModel
             date_default_timezone_set(self::API_TIMEZONE);
             $str = self::decodeToken($token);
             $arr = explode("|", $str);
+            
+            $org = OrgModel::getApiModel($arr[0]);
+            $valid = true; // TODO look at $org->tier and calculate the usage cap
+            
             $result = new stdClass();
-            $result->org = $arr[0];
+            $result->org = $org;
             $result->timestamp = intval ( isset($arr[1]) ? $arr[1] : 0 );
             $result->app = isset($arr[2]) ? $arr[2] : "";
             $result->valid = ($result->timestamp > strtotime(self::API_VALID_TIMEFRAME));
