@@ -12,7 +12,7 @@
         <li><a href="<?= Config::get('URL')?>admin/editApps">Edit apps</a></li>
         <li>Assign apps to store sections</li>
         <li><a href="<?= Config::get('URL')?>admin/showLog">Show system log</a></li>
-        <li>Edit tiers</li>
+        <li><a href="<?= Config::get('URL')?>admin/editTiers">Edit tiers</li>
         <li>Manage app-tier feature matrix</li>
         <li>Manage subscriptions</li>
         <li><a href="<?= Config::get('URL')?>admin/manualSubscribe">Manually add a subscription</a></li>

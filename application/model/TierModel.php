@@ -6,7 +6,18 @@
  * @package default
  * @author
  **/
-class TierModel {
+class TierModel extends Model{
+
+    function __construct() {
+        parent::__construct();
+    }
+
+    public static function save($table, $idrow_name, $data_model) {
+        return parent::update($table, $idrow_name, $data_model);
+    }
+    public static function make($table) {
+        return parent::create($table);
+    }
 
     /**
      * get the tier record for a row id
@@ -45,7 +56,7 @@ class TierModel {
             $return->description = $result->description;
             $return->added = $result->added;
             $return->store_url = $result->store_url;
-            $return->active = ($result->active === 1);
+            $return->active = ((int) $result->active === 1);
             return $return;
         }
         return false;

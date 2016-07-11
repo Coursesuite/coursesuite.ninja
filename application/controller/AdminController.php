@@ -87,6 +87,50 @@ class AdminController extends Controller
         $this->View->renderHandlebars('admin/sections', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
+    public function editTiers($id = 0, $action = "")
+    {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "tiers" => TierModel::getAllTiers(),
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
+            );
+        if (is_numeric($id) && intval($id) > 0) {
+            $tier = TierModel::getTierById($id, false);
+            $model["action"] = $action;
+        }
+         switch ($action) {
+             case 'save':
+                 $tier = array(
+                     "tier_id" => $id,
+                     "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_STRING),
+                     "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                     "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
+                     "store_url" => Request::post("store_url", false, FILTER_SANITIZE_STRING),
+                     "active" => Request::post("active", false, FILTER_SANITIZE_STRING),
+                     "price" => Request::post("price", false, FILTER_SANITIZE_STRING),
+                     "currency" => Request::post("currency", false, FILTER_SANITIZE_STRING),
+                     "period" =>Request::post("period", false, FILTER_SANITIZE_STRING),
+                     "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_STRING)
+                     );
+                 $id = TierModel::save("tiers", "tier_id", $tier);
+                 Redirect::to("admin/editTiers");
+                 break;
+
+            case 'new':
+                $id = 0;
+                $model["action"] = "new";
+                $tier = TierModel::make('tiers');
+                break;
+         }
+
+        $model["id"] = $id;
+        if (isset($tier)) {
+            $model["data"] = $tier;
+        }
+        $this->View->renderHandlebars('admin/tiers', $model, "_templates", config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
     public function editApps($id = 0, $action = "", $filename = "")
     {
 
