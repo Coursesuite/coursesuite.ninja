@@ -136,6 +136,7 @@ class AdminController extends Controller
         $model = array(
             "baseurl" => Config::get('URL'),
             "products" => ProductModel::getAllProducts(),
+            "categories" => CategoryModel::getAllCategories(),
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
             "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
             );
@@ -150,7 +151,8 @@ class AdminController extends Controller
                     "display_name" => Request::post("display_name", false, FILTER_SANITIZE_STRING),
                     "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
                     "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
-                    "type" => Request::post("type", false, FILTER_SANITIZE_NUMBER_INT)
+                    "type" => Request::post("type", false, FILTER_SANITIZE_NUMBER_INT),
+                    "category" => Request::post("category", false, FILTER_SANITIZE_STRING)
                     );
                 $id = ProductModel::save("products", "product_id", $product);
                 Redirect::to("admin/editAllProducts");

@@ -19,7 +19,7 @@ class ProductModel extends Model
 
 	public static function getProductById($product_id){
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT product_id, display_name, description, link_id, type FROM products WHERE product_id = :product_id LIMIT 1";
+		$sql = "SELECT product_id, display_name, description, link_id, type, category FROM products WHERE product_id = :product_id LIMIT 1";
 		$query = $database->prepare($sql);
 		$query->execute(array(":product_id" => $product_id));
 		return $query->fetch();
