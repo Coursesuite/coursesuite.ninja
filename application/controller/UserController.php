@@ -28,7 +28,8 @@ class UserController extends Controller
             'user_email' => Session::get('user_email'),
             'user_account_type' => Session::get('user_account_type'),
             'subscriptions' => SubscriptionModel::getAllSubscriptions(Session::get('user_id'), false, false, false, true),
-            'baseurl' => Config::get('URL')
+            'baseurl' => Config::get('URL'),
+            'products' => ProductModel::getAllSubscriptionProducts()
         );
         
         if (Config::get('USE_GRAVATAR')) {
@@ -37,7 +38,16 @@ class UserController extends Controller
 		    $model["user_avatar"] = Session::get('user_avatar_file') . '?' . rand(1000,99999);
 		    $model["edit_avatar"] = Config::get('URL') . 'user/editAvatar';
 		}
-		
+        
+        if (isset($model["subscriptions"]) && sizeof($model["subscriptions"]) > 0) {
+            $fsprg = new FastSpring('coursesuite', Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
+            try {
+                $model["subscription_type"] = $fsprg->getSubscription($model['subscriptions'][0]->referenceId)->productName;
+            } catch (Exception $e) {
+                echo($e->getMessage());
+            }
+        }
+		echo('fuck off');
         $this->View->renderHandlebars("user/myProfile", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
         
     }
