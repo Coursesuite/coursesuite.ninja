@@ -128,7 +128,44 @@ class AdminController extends Controller
         if (isset($tier)) {
             $model["data"] = $tier;
         }
-        $this->View->renderHandlebars('admin/tiers', $model, "_templates", config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/tiers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function editAllProducts($id = 0, $action = "") 
+    {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "products" => ProductModel::getAllProducts(),
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
+            );
+        if (is_numeric($id) && intval($id) > 0) {
+            $product = ProductModel::getProductById($id);
+            $model["action"] = $action;
+        }
+        switch ($action) {
+            case 'save':
+                $product = array(
+                    "product_id" => $id,
+                    "display_name" => Request::post("display_name", false, FILTER_SANITIZE_STRING),
+                    "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
+                    "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
+                    "type" => Request::post("type", false, FILTER_SANITIZE_STRING)
+                    );
+                $id = ProductModel::save("products", "product_id", $product);
+                Redirect::to("admin/editAllProducts");
+                break;
+            case 'new':
+                $id = 0;
+                $model["action"] = "new";
+                $product = ProductModel::make("products");
+                break;
+        }
+        $model["id"] = $id;
+        if (isset($product)) {
+            $model["data"] = $product;
+        }
+        $this->View->renderHandlebars('admin/products', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
     public function editApps($id = 0, $action = "", $filename = "")

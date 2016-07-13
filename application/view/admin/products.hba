@@ -1,0 +1,33 @@
+<article class="system-sections admin-tools">
+	{{#if action}}
+		<h3>
+		<a href="{{baseurl}}admin/editAllProducts/" class="back button">Back to edit products</a>
+		Editing product {{id}}.
+		</h3>
+		
+		<form method="post" action="{{baseurl}}admin/editAllProducts/{{id}}/save">
+		{{#with data}}
+			<div><label for="display_name">Display Name:</label><input type="text" id="display_name" name="display_name" value="{{display_name}}"></div>
+			<div class="no-flex"><label for="description">Description</label><textarea name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div>
+			<div><label for="link_id">Link ID:</label><input type="text" id="link_id" name="link_id" placeholder="e.g bronze-1" value="{{link_id}}"></div>
+			<div><label for="type">Type:</label><input type="text" id="type" name="type" value="{{type}}"></div>
+			<div><input type="submit" value="Save &amp; Return" class="submit button"></div>
+		{{/with}}
+		</form>
+	{{else}}
+		<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Products
+		</h3>
+		<h4>Subscriptions</h4>	
+		{{#each products}}
+			{{#equals "1" type}}<li><a href="{{../baseurl}}admin/editAllProducts/{{product_id}}/edit">{{display_name}}</a></li>{{/equals}}
+		{{/each}}
+		<h4>Courses</h4>
+		{{#each products}}
+			{{#equals "2" type}}<li><a href="{{../baseurl}}admin/editAllProducts/{{product_id}}/edit">{{display_name}}</a></li>{{/equals}}
+		{{/each}}
+		<br/>
+		<a href="{{baseurl}}admin/editAllProducts/0/new" class="submit button">Create new product</a>
+	{{/if}}
+</article>
