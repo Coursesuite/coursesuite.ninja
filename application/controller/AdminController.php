@@ -151,8 +151,9 @@ class AdminController extends Controller
                     "display_name" => Request::post("display_name", false, FILTER_SANITIZE_STRING),
                     "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
                     "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
-                    "type" => Request::post("type", false, FILTER_SANITIZE_NUMBER_INT),
-                    "category" => Request::post("category", false, FILTER_SANITIZE_STRING)
+                    "type" => Request::post("type", false, FILTER_SANITIZE_STRING),
+                    "category" => Request::post("category", false, FILTER_SANITIZE_STRING),
+                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT)
                     );
                 $id = ProductModel::save("products", "product_id", $product);
                 Redirect::to("admin/editAllProducts");

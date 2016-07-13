@@ -11,7 +11,7 @@ class ProductModel extends Model
 
 	public static function getAllProducts(){
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT product_id, display_name, description, link_id, type FROM products";
+		$sql = "SELECT product_id, display_name, description, link_id, type, category, price FROM products";
 		$query = $database->prepare($sql);
 		$query->execute();
 		return $query->fetchAll();
@@ -19,7 +19,7 @@ class ProductModel extends Model
 
 	public static function getProductById($product_id){
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT product_id, display_name, description, link_id, type, category FROM products WHERE product_id = :product_id LIMIT 1";
+		$sql = "SELECT product_id, display_name, description, link_id, type, category, price FROM products WHERE product_id = :product_id LIMIT 1";
 		$query = $database->prepare($sql);
 		$query->execute(array(":product_id" => $product_id));
 		return $query->fetch();
