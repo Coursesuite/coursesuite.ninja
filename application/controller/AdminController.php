@@ -103,15 +103,15 @@ class AdminController extends Controller
              case 'save':
                  $tier = array(
                      "tier_id" => $id,
-                     "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_STRING),
+                     "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_NUMBER_INT),
                      "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
                      "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
-                     "store_url" => Request::post("store_url", false, FILTER_SANITIZE_STRING),
-                     "active" => Request::post("active", false, FILTER_SANITIZE_STRING),
-                     "price" => Request::post("price", false, FILTER_SANITIZE_STRING),
+                     "store_url" => Request::post("store_url", false, FILTER_SANITIZE_URL),
+                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
+                     "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_INT),
                      "currency" => Request::post("currency", false, FILTER_SANITIZE_STRING),
                      "period" =>Request::post("period", false, FILTER_SANITIZE_STRING),
-                     "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_STRING)
+                     "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_NUMBER_INT)
                      );
                  $id = TierModel::save("tiers", "tier_id", $tier);
                  Redirect::to("admin/editTiers");
@@ -150,7 +150,7 @@ class AdminController extends Controller
                     "display_name" => Request::post("display_name", false, FILTER_SANITIZE_STRING),
                     "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
                     "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
-                    "type" => Request::post("type", false, FILTER_SANITIZE_STRING)
+                    "type" => Request::post("type", false, FILTER_SANITIZE_NUMBER_INT)
                     );
                 $id = ProductModel::save("products", "product_id", $product);
                 Redirect::to("admin/editAllProducts");
