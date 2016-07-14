@@ -196,6 +196,7 @@ return array(
 		'fastspring' => 'e93NcNdpntFq',
 		'discourse' => '3kurpzSGRAq4',
 	),
+	'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
 
 	'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
 	'FASTSPRING_PARAM_APPEND' => '&mode=test',
