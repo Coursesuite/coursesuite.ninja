@@ -17,6 +17,14 @@ class ProductModel extends Model
 		return $query->fetchAll();
 	}
 
+	public static function getAllSubscriptionProducts(){
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT product_id, display_name, description, link_id, type, category, price FROM products WHERE type = 'subscription'";
+		$query = $database->prepare($sql);
+		$query->execute();
+		return $query->fetchAll();		
+	}
+
 	public static function getProductById($product_id){
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT product_id, display_name, description, link_id, type, category, price FROM products WHERE product_id = :product_id LIMIT 1";

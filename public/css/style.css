@@ -1288,6 +1288,10 @@ article.my-profile section.subscription-display table td {
 	padding: 10px;
 }
 
+article.my-profile section.subscription-display div.product-subscribed{
+    color: red;
+}
+
 
 .unselectable {
 -webkit-user-select: none; /* Chrome/Safari */        

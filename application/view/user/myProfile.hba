@@ -25,7 +25,7 @@
 	</section>
 	
 	<section class="subscription-display">
-
+	{{#dump user_name}}{{/dump}}
 	<h4>Subscriptions:</h4>
 	<table border=1>
 		<thead><th>Tier</th><th>Added</th><th>Expires</th><th>Order details</th><th>Status</th></tr></thead>
@@ -39,7 +39,24 @@
 			</tr>
 		{{/each}}</tbody>
 	</table>
-	
+	{{#if subscriptions}}
+	<h4>All Subscriptions</h4>
+	<div class="products-bronze" id="bronze"><h5>Bronze</h5>
+		{{#each products}}
+		{{#equals category "Bronze"}}<div id="{{product_id}}" name="{{link_id}}" {{#equals link_id ../subscription_type}}class="product-subscribed"{{/equals}}>{{display_name}}</div>{{/equals}}
+		{{/each}}
+	</div>
+	<div class="products-silver" id="silver"><h5>Silver</h5>
+		{{#each products}}
+		{{#equals category "Silver"}}<div id="{{product_id}}" name="{{link_id}}" {{#equals link_id ../subscription_type}}class="product-subscribed"{{/equals}}>{{display_name}}</div>{{/equals}}
+		{{/each}}
+	</div>
+	<div class="products-gold" id="gold"><h5>Gold</h5>
+		{{#each products}}
+		{{#equals category "Gold"}}<div id="{{product_id}}" name="{{link_id}}" {{#equals link_id ../subscription_type}}class="product-subscribed"{{/equals}}>{{display_name}}</div>{{/equals}}
+		{{/each}}	
+	</div>
+	{{/if}}
 	</section>
 	
 </article>
