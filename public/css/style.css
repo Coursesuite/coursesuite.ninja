@@ -38,6 +38,23 @@ body>header {height: 175px; }
 	background-color: #fff;
 }
 
+.conditional-ie {
+    display: none;
+}
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .conditional-ie {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color:  rgb(243, 234, 169);
+        color: rgb(0,0,0);
+        padding: 5px;
+        border-bottom: 1px solid #ccc;
+    }
+}
+
 /*
 body > header
 body > main > div.store-items > article
@@ -1138,7 +1155,7 @@ footer p, footer h3 {
 	font-weight: 300;
 	line-height: 1.5;
 }
-    
+
 footer a {
     color: inherit;
 }
@@ -1294,7 +1311,7 @@ article.my-profile section.subscription-display div.product-subscribed{
 
 
 .unselectable {
--webkit-user-select: none; /* Chrome/Safari */        
+-webkit-user-select: none; /* Chrome/Safari */
 -moz-user-select: none; /* Firefox */
 -ms-user-select: none; /* IE10+ */
 

@@ -61,6 +61,10 @@ class Request
             return $_GET[$key];
         }
     }
+    
+    public static function exists($key) {
+	    return (isset($_GET[$key]) || isset($_POST[$key]));
+    }
 
 
     /**

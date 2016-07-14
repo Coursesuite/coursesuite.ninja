@@ -176,10 +176,15 @@ class LoginController extends Controller
 
     public function discourseSSO($skipGet = false){
         Session::set('discourse_sso', true);
+
         // not sure how secure this is
-        if ($_SERVER['HTTP_REFERER'] == 'http://forum.coursesuite.ninja/'){
+        // if ($_SERVER['HTTP_REFERER'] == 'http://forum.coursesuite.ninja/'){
+
+	    if (Request::exists("sso") && Request::exists("sig")) {
             Session::set('discourse_payload', $_GET['sso']);
             Session::set('discourse_signature', $_GET['sig']);
+        } else {
+	        throw new Exception(Text::get("INCORRECT_USAGE"));
         }
 
         if (LoginModel::isUserLoggedIn()) {
