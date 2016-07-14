@@ -1,0 +1,34 @@
+<article class="system-sections admin-tools">
+	{{#if action}}
+		<h3>
+		<a href="{{baseurl}}admin/editAllProducts/" class="back button">Back to edit products</a>
+		Editing product {{id}}.
+		</h3>
+		<form method="post" action="{{baseurl}}admin/editAllProducts/{{id}}/save">
+			<div><label for="display_name">Display Name:</label><input type="text" id="display_name" name="display_name" value="{{data.display_name}}"></div>
+			<div class="no-flex"><label for="description">Description</label><textarea name="description" rows="3" cols="80" data-markdown="true">{{data.description}}</textarea></div>
+			<div><label for="link_id">Link ID:</label><input type="text" id="link_id" name="link_id" placeholder="Fastspring product id e.g bronze-1 Dont fuck this up." value="{{data.link_id}}"></div>
+			<div><label>Type:</label><select name="type">
+			<option {{#equals data.type "subscription"}} selected{{/equals}} value="subscription">Subscription</option>
+			<option {{#equals data.type "course"}} selected{{/equals}} value="course">Course</option>
+			</select></div>
+			<div><label>Category:</label><select name="category">{{#each categories}}<option value="{{name}}" {{#equals ../data.category name}} selected="selected"{{/equals}}>{{name}}</option>{{/each}}</select></div>
+			<div><input type="submit" value="Save &amp; Return" class="submit button"></div>
+		</form>
+	{{else}}
+		<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Products
+		</h3>
+		<h4>Subscriptions</h4>	
+		{{#each products}}
+			{{#equals "subscription" type}}<li><a href="{{../baseurl}}admin/editAllProducts/{{product_id}}/edit">{{display_name}}</a></li>{{/equals}}
+		{{/each}}
+		<h4>Courses</h4>
+		{{#each products}}
+			{{#equals "course" type}}<li><a href="{{../baseurl}}admin/editAllProducts/{{product_id}}/edit">{{display_name}}</a></li>{{/equals}}
+		{{/each}}
+		<br/>
+		<a href="{{baseurl}}admin/editAllProducts/0/new" class="submit button">Create new product</a>
+	{{/if}}
+</article>

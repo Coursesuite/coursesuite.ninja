@@ -103,15 +103,15 @@ class AdminController extends Controller
              case 'save':
                  $tier = array(
                      "tier_id" => $id,
-                     "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_STRING),
+                     "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_NUMBER_INT),
                      "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
                      "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
-                     "store_url" => Request::post("store_url", false, FILTER_SANITIZE_STRING),
-                     "active" => Request::post("active", false, FILTER_SANITIZE_STRING),
-                     "price" => Request::post("price", false, FILTER_SANITIZE_STRING),
+                     "store_url" => Request::post("store_url", false, FILTER_SANITIZE_URL),
+                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
+                     "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_INT),
                      "currency" => Request::post("currency", false, FILTER_SANITIZE_STRING),
                      "period" =>Request::post("period", false, FILTER_SANITIZE_STRING),
-                     "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_STRING)
+                     "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_NUMBER_INT)
                      );
                  $id = TierModel::save("tiers", "tier_id", $tier);
                  Redirect::to("admin/editTiers");
@@ -128,7 +128,47 @@ class AdminController extends Controller
         if (isset($tier)) {
             $model["data"] = $tier;
         }
-        $this->View->renderHandlebars('admin/tiers', $model, "_templates", config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/tiers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function editAllProducts($id = 0, $action = "") 
+    {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "products" => ProductModel::getAllProducts(),
+            "categories" => CategoryModel::getAllCategories(),
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
+            );
+        if (is_numeric($id) && intval($id) > 0) {
+            $product = ProductModel::getProductById($id);
+            $model["action"] = $action;
+        }
+        switch ($action) {
+            case 'save':
+                $product = array(
+                    "product_id" => $id,
+                    "display_name" => Request::post("display_name", false, FILTER_SANITIZE_STRING),
+                    "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
+                    "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
+                    "type" => Request::post("type", false, FILTER_SANITIZE_STRING),
+                    "category" => Request::post("category", false, FILTER_SANITIZE_STRING),
+                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT)
+                    );
+                $id = ProductModel::save("products", "product_id", $product);
+                Redirect::to("admin/editAllProducts");
+                break;
+            case 'new':
+                $id = 0;
+                $model["action"] = "new";
+                $product = ProductModel::make("products");
+                break;
+        }
+        $model["id"] = $id;
+        if (isset($product)) {
+            $model["data"] = $product;
+        }
+        $this->View->renderHandlebars('admin/products', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
     public function editApps($id = 0, $action = "", $filename = "")
