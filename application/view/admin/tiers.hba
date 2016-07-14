@@ -1,0 +1,39 @@
+<article class="system-sections admin-tools">
+	{{#if action}}
+		<h3>
+		<a href="{{baseurl}}admin/editTiers/" class="back button">Back to edit tiers</a>
+		Editing tier {{id}}.
+		</h3>
+		
+		<form method="post" action="{{baseurl}}admin/editTiers/{{id}}/save">
+		{{#with data}}
+			<div><label for="tier_level">Tier Level:</label><input type="text" id="tier_level" name="tier_level" value="{{tier_level}}"></div>
+			<div><label for="name">Name:</label><input type="text" id="name" name="name" value="{{name}}"></div>
+			<div><label for="description">Description:</label><input type="text" id="description" name="description" value="{{description}}"></div>
+			<div><label for="store_url">Store URL:</label><input type="text" id="store_url" name="store_url" value="{{store_url}}"></div>
+			<div><span>It is:</span>
+				<input type="radio" name="active" value="1" {{#equals "1" active}} checked{{/equals}} id="y"><label for="y">Active</label>
+				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Inactive</label>
+			</div>
+			<div><label for="price">Price:</label><input type="text" id="price" name="price" value="{{price}}"></div>
+			<div><label for="currency">Currency:</label><input type="text" id="Currency" name="Currency" value="{{Currency}}"></div>
+			<div><label for="period">Period:</label><input type="text" id="period" name="period" value="{{period}}"></div>
+			<div><label for="pack_id">Pack ID:</label><input type="text" id="pack_id" name="pack_id" value="{{pack_id}}"></div>
+			<div><input type="submit" value="Save &amp; Return" class="submit button"></div>
+		{{/with}}
+		</form>
+		
+
+	{{else}}
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Tiers
+	</h3>	
+	{{#each tiers}}
+		<li><a href="{{../baseurl}}admin/editTiers/{{tier_id}}/edit">{{name}}</a></li>
+	{{/each}}
+	<br/>
+	<a href="{{baseurl}}admin/editTiers/0/new" class="submit button">Create new tier</a>
+	{{/if}}
+
+</article>
