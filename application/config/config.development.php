@@ -201,6 +201,9 @@ return array(
 	'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
 	'FASTSPRING_PARAM_APPEND' => '&mode=test',
 
+	'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
+	'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
+
 	// store info pricing table may not be relevant or have other logic later on
 	'STORE_INFO_SHOW_PRICING' => false,
 

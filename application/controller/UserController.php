@@ -47,7 +47,6 @@ class UserController extends Controller
                 echo($e->getMessage());
             }
         }
-		echo('fuck off');
         $this->View->renderHandlebars("user/myProfile", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
         
     }
