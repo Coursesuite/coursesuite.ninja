@@ -7,7 +7,7 @@
 
     <ul>
         <li><a href="<?= Config::get('URL')?>admin/staticPage">Edit static pages</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/allUsers">List all users</a></li>
+        <li><a href="<?= Config::get('URL')?>admin/allUsers">List users</a></li>
         <li><a href="<?= Config::get('URL')?>admin/editSections">Edit store sections</a></li>
         <li><a href="<?= Config::get('URL')?>admin/editApps">Edit apps</a></li>
         <li>Assign apps to store sections</li>

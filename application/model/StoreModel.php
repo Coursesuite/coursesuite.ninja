@@ -44,14 +44,15 @@ class StoreModel {
 					// match the ids in my current subscription on the apps we are rendering;
 					// apply tokens for the app ids that we are subscribed to
 					// TODO: crawl under a rock after coding this ...
-					if (isset($current_sub->tier->app_ids)) { // unfortunately, you may have an active subscription which has detached from a tier somehow... this will break the model
+				if (isset($current_sub->tier->app_ids)) { // unfortunately, you may have an active subscription which has detached from a tier somehow... this will break the model
 				        foreach ($current_sub->tier->app_ids as $tier) {
 					        foreach ($model->section as $sec) {
 						        foreach($sec->apps as $ap) {
 							        if ($ap->app_id == $tier) {
 								        $appTokens[] = array(
 								        	"app_id" => $tier,
-								        	"token" => $token
+								        	"token" => $token,
+                                                                                                            "launchurl" => Config::get("URL") .  "launch/app/" . $ap->app_key
 								        );
 							        }
 						        }

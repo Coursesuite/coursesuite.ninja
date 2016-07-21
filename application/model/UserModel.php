@@ -15,13 +15,20 @@ class UserModel
      *
      * @return array The profiles of all users
      */
-    public static function getPublicProfilesOfAllUsers()
+    public static function getPublicProfilesOfAllUsers($search = null)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted FROM users";
+        $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap FROM users";
+        $params = array();
+        if ($search != null) {
+            $sql .= " WHERE (user_name like :search OR user_email like :search)";
+            $params = array(
+                ":search" => "%$search%"
+            );
+        }
         $query = $database->prepare($sql);
-        $query->execute();
+        $query->execute($params);
 
         $all_users_profiles = array();
 
@@ -38,12 +45,14 @@ class UserModel
             $all_users_profiles[$user->user_id]->user_email = $user->user_email;
             $all_users_profiles[$user->user_id]->user_active = $user->user_active;
             $all_users_profiles[$user->user_id]->user_deleted = $user->user_deleted;
+            $all_users_profiles[$user->user_id]->logon_cap = $user->user_logon_cap;
+            $all_users_profiles[$user->user_id]->logon_count = $user->user_logon_count;
             $all_users_profiles[$user->user_id]->user_avatar_link = (Config::get('USE_GRAVATAR') ? AvatarModel::getGravatarLinkByEmail($user->user_email) : AvatarModel::getPublicAvatarFilePathOfUser($user->user_has_avatar, $user->user_id));
         }
 
         return $all_users_profiles;
     }
-    
+
     public static function getAllUsers() {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT user_id, user_name FROM users ORDER BY user_name";
@@ -59,7 +68,7 @@ class UserModel
      */
     public static function getPublicProfileOfUser($user_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        
+
         if (intval($user_id) == 0) return false;
 
         $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted
@@ -86,7 +95,7 @@ class UserModel
 
         return $user;
     }
-    
+
     public static function getActiveUser($user_id) {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT user_id, user_name, user_email
@@ -390,12 +399,50 @@ class UserModel
         // return one row (we only have one result or nothing)
         return $query->fetch();
     }
-    
+
     public static function destroyUserForever($user_id, $base_type_only = true) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $force = ($base_type_only) ? " AND user_account_type=1 " : "";
         $query = $database->prepare("DELETE FROM users WHERE user_id=:user_id $force LIMIT 1");
         $query->execute(array(":user_id" => $user_id));
-	    return ($query->rowCount() == 1);
+        return ($query->rowCount() == 1);
+    }
+
+    /**
+     * Check to see if a user record has reached its alloted usage cap
+     *
+     * @param $user_id - (int) user that you want to check
+     *
+     * @return boolean - truthy if user is still able to log in
+     *
+     */
+    public static function checkLogonCap($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT COUNT(1) FROM users
+                                                        WHERE user_id = :userid
+                                                        AND (user_logon_count <= user_logon_cap OR user_logon_cap = -1)
+                                                        LIMIT 1");
+        $query->execute(array(
+            ":userid" => $user_id,
+        ));
+        $result = (bool) $query->fetchColumn(0);
+        return $result;
+    }
+
+    /**
+     * Increment a user logon count
+     *
+     * @param $user_id - (int) user that you want to increment
+     *
+     */
+    public static function incrementLoginCounter($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("UPDATE users
+                                                        SET user_logon_count = (user_logon_count + 1)
+                                                        WHERE user_id = :userid
+                                                        LIMIT 1");
+        $query->execute(array(
+            ":userid" => $user_id,
+        ));
     }
 }

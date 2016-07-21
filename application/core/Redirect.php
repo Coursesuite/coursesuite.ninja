@@ -26,6 +26,7 @@ class Redirect
 	}
 
 	public static function external($url) {
-		header("location: " . $url);
+		$rd = "location: " . $url . Environment::suffix();
+		header($rd);
 	}
 }

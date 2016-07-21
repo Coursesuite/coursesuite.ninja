@@ -37,7 +37,7 @@ return array(
 	"FEEDBACK_EMAIL_DOES_NOT_FIT_PATTERN" => "Sorry, your chosen email does not fit into the email naming pattern.",
 	"FEEDBACK_EMAIL_SAME_AS_OLD_ONE" => "Sorry, that email address is the same as your current one. Please choose another one.",
 	"FEEDBACK_EMAIL_CHANGE_SUCCESSFUL" => "Your email address has been changed successfully.",
-	
+
 	"FEEDBACK_NO_DESTROY" => "Sorry, you need type the words exactly as shown",
 
 	"FEEDBACK_PASSWORD_WRONG_3_TIMES" => "You have typed in a wrong password 3 or more times already. Please wait 30 seconds to try again.",
@@ -51,7 +51,7 @@ return array(
 
 	"FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET" => "Your account is not activated yet. Please click on the confirm link in the mail.",
 	"FEEDBACK_ACCOUNT_SUSPENDED" => "Account Suspended for ",
-	"FEEDBACK_ACCOUNT_SUSPENSION_DELETION_STATUS" => "This user's suspension / deletion status has been edited.",
+	"FEEDBACK_ACCOUNT_SUSPENSION_DELETION_STATUS" => "This user's suspension / deletion / logon cap has been edited.",
 	"FEEDBACK_ACCOUNT_CANT_DELETE_SUSPEND_OWN" => "You can not delete or suspend your own account.",
 	"FEEDBACK_ACCOUNT_USER_SUCCESSFULLY_KICKED" => "The selected user has been successfully kicked out of the system (by resetting this user's session)",
 	"FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED" => "Your account has been created successfully and we have sent you an email. Please click the VERIFICATION LINK within that mail.",
@@ -59,6 +59,7 @@ return array(
 	"FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT" => "A verification mail has been resent (check your inbox or spam folder). You need to click the VERIFICATION LINK within that mail.",
 	"FEEDBACK_ACCOUNT_ACTIVATION_SUCCESSFUL" => "Activation was successful! You can now log in.",
 	"FEEDBACK_ACCOUNT_ACTIVATION_FAILED" => "Sorry, no such id/verification code combination here! It might be possible that your mail provider (Yahoo? Hotmail?) automatically visits links in emails for anti-scam scanning, so this activation link might been clicked without your action. Please try to log in on the main page.",
+	"FEEDBACK_ACCOUNT_USAGE_CAP" => "Sorry, this account has reached its usage quota and can no longer be used.",
 
 	"FEEDBACK_AVATAR_UPLOAD_SUCCESSFUL" => "Avatar upload was successful.",
 	"FEEDBACK_AVATAR_UPLOAD_WRONG_TYPE" => "Only JPEG and PNG files are supported.",
@@ -91,19 +92,19 @@ return array(
 
 	"FEEDBACK_COOKIE_INVALID" => "Your remember-me-cookie is invalid.",
 	"FEEDBACK_COOKIE_LOGIN_SUCCESSFUL" => "You were successfully logged in via the remember-me-cookie.",
-	
+
 	"EMAIL_COMMON_CONTENT_INTRO" => "Hi!\n\n",
 	"EMAIL_COMMON_CONTENT_SIG" => "\n\nCheers,\nThe CourseSuite Team\ninfo@coursesuite.com.au\n",
 	"EMAIL_PASSWORD_RESET_CONTENT" => "Please click on this link to reset your password: ",
 	"EMAIL_VERIFICATION_CONTENT" => "Please click on this link to activate your account: ",
-	
+
 	"TIER_MATRIX_HEADER" => "<h4>One subscription <i class='cs-loader cs-super'></i>.</h4>
 							 <h3>Multiple products.</h3>",
 	"TIER_MATRIX_CAVEATS" => "<div class='fine-print'>
 								<p><i class='cs-loader cs-super'></i> This product is part of a paid subscription that offers multiple
-								products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>). 
+								products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).
 								Subscriptions are re-billed at the opted frequency until cancelled.
-								Discounts are available for longer subscriptions. 
+								Discounts are available for longer subscriptions.
 								</p>
 								<div class='text-center'><img src='/img/fastspring.png'></div>
 							</div>",

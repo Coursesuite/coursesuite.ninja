@@ -7,6 +7,10 @@
 
     <?php $this->renderFeedbackMessages(); ?>
 
+    <form method="get" action="<?= Config::get('URL') ?>admin/allUsers">
+        <input type="text" name="q" value="<?php $q= Request::get("q"); echo isset($q) ? $q : ""; ?>" placeholder="Enter a username/email, or blank for all"><input type="submit">
+    </form>
+
     <table>
         <thead>
         <tr>
@@ -15,6 +19,7 @@
             <td>Username</td>
             <td>User's email</td>
             <td>Activated ?</td>
+            <td>Logons/Cap</td>
             <td>Suspension time in days</td>
             <td>Action</td>
             <td>Submit</td>
@@ -32,6 +37,7 @@
                 <td><?= $user->user_email; ?></td>
                 <form action="<?= config::get("URL"); ?>admin/actionAccountSettings" method="post">
                     <td><?= ($user->user_active == 0) ? "No" : "Yes" ?></td>
+                    <td><?php echo (isset($user->logon_count) ? $user->logon_count : "?"); ?> / <input type="number" name="logonCap" size="3" min="-1" max="65534" value="<?php echo (isset($user->logon_cap) ? $user->logon_cap : '-1'); ?>"></td>
                     <td><input type="number" name="suspension" size="3" min="0" max="365" value="0" /></td>
                     <td>
                         <label><input type="checkbox" name="softDelete" <?php if ($user->user_deleted) { ?> checked <?php } ?> /> Soft Delete</label>

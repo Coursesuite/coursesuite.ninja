@@ -28,25 +28,25 @@ class StoreController extends Controller
     public function info($app_key) {
         $app = AppModel::getAppByKey($app_key);
         $model = array(
-	        "baseurl" => Config::get("URL"),
+	"baseurl" => Config::get("URL"),
             "App" => $app,
             "AppFeatures" => TierModel::getAppFeatures((int)$app->app_id),
             "AppTiers" => TierModel::getAllAppTiers((int)$app->app_id),
             "UserSubscription" => null
         );
-		if (Session::currentUserId() > 0) {
-			$submodel = SubscriptionModel::getAllSubscriptions(Session::currentUserId(), false, true);
-			if (!empty($submodel)) {
-				$model["UserSubscription"] = $submodel;
-			}
-	    };
-	    if (Session::get("user_account_type") == 7) {
-		    // $model["tokenlink"] = AppModel::getLaunchUrl($app->app_id); // because token verify checks the subscription
-		    $model["editlink"] =Config::get("URL") . 'admin/editApps/' . $app->app_id . '/edit';
-	    }
+        if (Session::currentUserId() > 0) {
+            $submodel = SubscriptionModel::getAllSubscriptions(Session::currentUserId(), false, true);
+            if (!empty($submodel)) {
+            	$model["UserSubscription"] = $submodel;
+            }
+        };
+        if (Session::get("user_account_type") == 7) {
+    	    // $model["tokenlink"] = AppModel::getLaunchUrl($app->app_id); // because token verify checks the subscription
+    	    $model["editlink"] =Config::get("URL") . 'admin/editApps/' . $app->app_id . '/edit';
+        }
         $this->View->renderHandlebars("store/info", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
-    
+
     public function tiers($name) {
 	    $model = array(
 	        "baseurl" => Config::get("URL"),
@@ -65,7 +65,7 @@ class StoreController extends Controller
 	    }
         $this->View->renderHandlebars("store/tiers", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
         // $this->View->render("store/tiers", $model);
-	    
+
     }
 
    /**
@@ -75,7 +75,7 @@ class StoreController extends Controller
     each feature requires a minimum tier level, and has a true/false label
     a user is subscribed to a tier, and we can offer upgrades to get to a higher tier
     if the user tier allows access to that app
-    
+
 	// look into
     // https://support.fastspring.com/hc/en-us/articles/207436046-Retrieving-Localized-Store-Pricing
 
@@ -103,7 +103,7 @@ class StoreController extends Controller
 	        $details = $info["details"];
 	        $feature = $info["feature"];
 	        $icon = "";
-	        if (isset($details) && !empty($details)) $icon = "<span data-tooltip='" . addslashes($details) . "'><i class='cs-help-with-circle cs-super cs-muted'></i></span>"; 
+	        if (isset($details) && !empty($details)) $icon = "<span data-tooltip='" . addslashes($details) . "'><i class='cs-help-with-circle cs-super cs-muted'></i></span>";
             $table[] = "<tr><th>$feature $icon</th>";
             foreach ($AppTiers as $tier) {
                 $tier_level = (int)$tier["tier_level"];
@@ -140,7 +140,7 @@ class StoreController extends Controller
 			        if ($tier["tier_id"] == $user_tier_level) {
 				        $label = 'Launch App';
 				        $class_name = 'current-tier';
-				        $button_url = AppModel::getLaunchUrl($App["app_id"]);
+				        $button_url = Config::get("URL") . "launch/" . $App["app_id"]; //    AppModel::getLaunchUrl($App["app_id"]);
 			        } else if ($tier["tier_id"] < $user_tier_level) {
 				        // $label = 'Downgrade';
 			        } else if ($tier["tier_id"] > $user_tier_level) {
@@ -161,14 +161,14 @@ class StoreController extends Controller
         // $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'><p>This product is part of a paid subscription that offers multiple products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).</p><p>Subscriptions are charged monthly until cancelled.</p><div class='text-center'><img src='/img/fastspring.png'></div></td></tr>";
         $table[] = '</tfoot></table>';
         return implode('', $table);
-        
+
     }
-    
-    
+
+
     /*
 	    Renderer which is similar to an App Tier Matrix except that it is listing all matching tiers
 	*/
-    
+
     public static function TierMatrix($Tiers, $Apps, $UserSubscription, $Name, $options) {
 
 		$table = array();
@@ -183,7 +183,7 @@ class StoreController extends Controller
 				if ($UserSubscription["tier_id"] == $tier["tier_id"]) {
 					$table[] = '<p>(Your current tier)</p>';
 				}
-			}	    
+			}
 		    $table[] = "</th>";
 		    $tier_apps = array_merge($tier_apps, $tier["app_ids"]);
 		}
@@ -216,7 +216,7 @@ class StoreController extends Controller
 		            $table[] = '</tr>';
 		        }
 	        }
-		}		
+		}
 		$table[] = '</tbody><tfoot>';
         $table[] = '<tr class="fill"><th></th>';
         if (Session::userIsLoggedIn()) {

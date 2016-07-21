@@ -12,7 +12,7 @@ class AdminModel
 	 * @param $softDelete
 	 * @param $userId
 	 */
-	public static function setAccountSuspensionAndDeletionStatus($userid, $suspensionInDays, $softDelete = "", $hardDelete = "", $makeActive = "") {
+	public static function setAccountSuspensionAndDeletionStatus($userId, $suspensionInDays, $softDelete = "", $hardDelete = "", $makeActive = "", $logonCap = -1) {
 
 		// Prevent to suspend or delete own account.
 		// If admin suspend or delete own account will not be able to do any action.
@@ -33,8 +33,9 @@ class AdminModel
 		$destroy = ($hardDelete == "on") ? 1 : 0;
 		$activate = ($makeActive == "on") ? 1 : 0;
 
+
 		// write the above info to the database
-		self::writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate);
+		self::writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate, $logonCap);
 
 		// if suspension or deletion should happen, then also kick user out of the application instantly by resetting
 		// the user's session :)
@@ -51,7 +52,7 @@ class AdminModel
 	 * @param $delete
 	 * @return bool
 	 */
-	private static function writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate)
+	private static function writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate, $logonCap)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
@@ -63,15 +64,16 @@ class AdminModel
 		$params = array(
 				':user_suspension_timestamp' => $suspensionTime,
 				':user_deleted' => $delete,
-				':user_id' => $userId
+				':user_id' => $userId,
+				':logoncap' => $logonCap,
 		);
-		
+
 		$ACTIVATED = "";
 		if ($activate == 1) {
 			$ACTIVATED = ", user_active=1, user_activation_hash=NULL, user_password_reset_hash=NULL ";
 		}
 
-		$query = $database->prepare("UPDATE users SET user_suspension_timestamp = :user_suspension_timestamp, user_deleted = :user_deleted $ACTIVATED WHERE user_id = :user_id LIMIT 1");
+		$query = $database->prepare("UPDATE users SET user_suspension_timestamp = :user_suspension_timestamp, user_deleted = :user_deleted, user_logon_cap = :logoncap $ACTIVATED WHERE user_id = :user_id LIMIT 1");
 		$query->execute($params);
 
 		if ($query->rowCount() == 1) {

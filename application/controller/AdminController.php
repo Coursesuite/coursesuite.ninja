@@ -22,10 +22,9 @@ class AdminController extends Controller
         $this->View->render('admin/index');
     }
 
-    public function allUsers()
-    {
+    public function allUsers($search = null) {
         $this->View->render('admin/allusers', array(
-            'users' => UserModel::getPublicProfilesOfAllUsers())
+            'users' => UserModel::getPublicProfilesOfAllUsers($search))
         );
     }
 
@@ -131,7 +130,7 @@ class AdminController extends Controller
         $this->View->renderHandlebars('admin/tiers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function editAllProducts($id = 0, $action = "") 
+    public function editAllProducts($id = 0, $action = "")
     {
         $model = array(
             "baseurl" => Config::get('URL'),
@@ -216,13 +215,13 @@ class AdminController extends Controller
                     if (file_exists($diskpath)) {
                         unlink($diskpath);
                     }
- 
+
 					if ($make_thumbs) {
 	                    // delete existing versions including thumbnails
 	                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg')) {
 	                        unlink($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg');
 	                    }
-	
+
 	                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg')) {
 	                        unlink($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg');
 	                    }
@@ -347,14 +346,15 @@ class AdminController extends Controller
         AdminModel::setAccountSuspensionAndDeletionStatus(
 	        Request::post('user_id'),
             Request::post('suspension'),
-            Request::post('softDelete'), 
-            Request::post('hardDelete'), 
-            Request::post('manualActivation')
+            Request::post('softDelete'),
+            Request::post('hardDelete'),
+            Request::post('manualActivation'),
+            Request::post('logonCap')
         );
 
-        Redirect::to("admin");
+        Redirect::to("admin/allUsers");
     }
-    
+
     public function manualSubscribe() {
         $model = array(
             "baseurl" => Config::get("URL"),
@@ -364,9 +364,9 @@ class AdminController extends Controller
         );
 		Session::set("feedback_positive", null);
         $this->View->renderHandlebars('admin/manualSubscribe', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-	    
+
     }
-    
+
     public function actionManualSubscribe() {
 	    // addSubscription($userid, $tierid, $endDate, $referenceId, $status, $statusReason, $testMode);
 	    $userid = (int) Request::post('user_id');
@@ -382,7 +382,7 @@ class AdminController extends Controller
 	    Session::add('feedback_positive', "user $userid was manually subscribed to tier $tierid in test mode; result: $value");
 	    Redirect::to("admin/manualSubscribe");
     }
-    
+
     public function staticPage($id = 0, $action = "") {
         $model = array(
             "baseurl" => Config::get("URL"),
@@ -427,9 +427,9 @@ class AdminController extends Controller
 
 	    $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
-    
+
     public function messages($message_id = 0, $action = "", $user_id = 0) {
-	    
+
 	    $baseurl = Config::get("URL");
 	    $model = array(
 		    "baseurl" => $baseurl,
@@ -439,7 +439,7 @@ class AdminController extends Controller
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css", "$baseurl/css/flatpickr.min.css"),
             "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", "$baseurl/js/flatpickr.min.js"),
 	    );
-	    
+
 	    switch ($action) {
 		    case "send":
 		    	$text = Request::post("text",true);
@@ -466,21 +466,21 @@ class AdminController extends Controller
 		    	$model["q"] = $u->user_name;
 		    	$model["user"] = $u;
 		    	break;
-		    	
+
 	    }
-	    
+
 //	    $this->View->renderJSON($model);
-	    
+
 	    $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-	    
+
     }
-    
+
     public function testNotifies() {
 	    MessageModel::notify_user("You got a new notification from admin, and it's a good one", MESSAGE_LEVEL_HAPPY, 11);
 	    MessageModel::notify_user("Your credit card has expired and you're now booted out :(", MESSAGE_LEVEL_SAD, 11);
 	    MessageModel::notify_all("Hey, you are all a bunch of people.", MESSAGE_LEVEL_MEH, time() + 60);
-	    
+
 	    $this->View->output("I have added a couple of notifications...");
     }
-    
+
 }

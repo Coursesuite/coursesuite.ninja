@@ -19,7 +19,7 @@ class LoginModel
     public static function login($user_name, $user_password, $set_remember_me_cookie = null, $discourse_sso = false, $discourse_payload = null, $discourse_signature = null)
     {
 
-		Session::set("feedback_area", "login");
+        Session::set("feedback_area", "login");
 
         // we do negative-first checks here, for simplicity empty username and empty password in one line
         if (empty($user_name) OR empty($user_password)) {
@@ -27,8 +27,8 @@ class LoginModel
             return false;
         }
 
-	    // checks if user exists, if login is not blocked (due to failed logins) and if password fits the hash
-	    $result = self::validateAndGetUser($user_name, $user_password);
+        // checks if user exists, if login is not blocked (due to failed logins) and if password fits the hash
+        $result = self::validateAndGetUser($user_name, $user_password);
 
         // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
         if (!$result) {
@@ -67,6 +67,9 @@ class LoginModel
             $result->user_id, $result->user_name, $result->user_email, $result->user_account_type, $discourse_sso, $discourse_payload, $discourse_signature
         );
 
+        // record how many logins by this user
+        UserModel::incrementLoginCounter($result->user_id);
+
         // return true to make clear the login was successful
         // maybe do this in dependence of setSuccessfulLoginIntoSession ?
         return true;
@@ -97,13 +100,13 @@ class LoginModel
 		// get all data of that user (to later check if password and password_hash fit)
 		$result = UserModel::getUserDataByUsername($user_name);
 
-        // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
-        // brute force attack mitigation: reset failed login counter because of found user
-        if (!$result){
-            // increment the user not found count, helps mitigate user enumeration
-            self::incrementUserNotFoundCounter();
-            // user does not exist, but we won't to give a potential attacker this details, so we just use a basic feedback message
-            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
+                        // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
+                        // brute force attack mitigation: reset failed login counter because of found user
+                        if (!$result){
+                            // increment the user not found count, helps mitigate user enumeration
+                            self::incrementUserNotFoundCounter();
+                            // user does not exist, but we won't to give a potential attacker this details, so we just use a basic feedback message
+                            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
 			return false;
 		}
 
@@ -137,6 +140,12 @@ class LoginModel
 
 			return false;
 		}
+
+                        // if the user has exceeded their configured usage cap (e.g. demo or nuisance accounts)
+                        if (!UserModel::checkLogonCap($result->user_id)) {
+                            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_USAGE_CAP'));
+                            return false;
+                        }
 
         // reset the user not found counter
         self::resetUserNotFoundCounter();
@@ -175,7 +184,7 @@ class LoginModel
      */
     public static function loginWithCookie($cookie)
     {
-	    
+
 		Session::set("feedback_area", "login");
 
         // do we have a cookie ?
@@ -411,6 +420,6 @@ class LoginModel
         $sql = "SELECT user_id, user_email, user_name FROM users WHERE user_name = :user_name";
         $query = $database->prepare($sql);
         $query->execute(array(':user_name' => Session::get('user_name')));
-        return $query->fetch();     
+        return $query->fetch();
     }
 }

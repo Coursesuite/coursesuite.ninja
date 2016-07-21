@@ -25,9 +25,9 @@ class Application
 
     /** @var string Just the name of the controller's method, useful for checks inside the view ("where am I ?") */
     private $action_name;
-    
+
     private $session;
-    
+
     public static function php_session() {
 	    global $session;
 	    return $session;
@@ -61,7 +61,7 @@ class Application
 
         // does such a controller exist ?
         if (file_exists(Config::get('PATH_CONTROLLER') . $this->controller_name . '.php')) {
-	        
+
 			// ContentController gets a different route handler, route everything through index() .. couldn't think of a better way to do this
 	        if ($this->controller_name == "ContentController") {
 		        $this->parameters = array($this->action_name);
@@ -108,8 +108,12 @@ class Application
 
             // split URL
             $url = trim(Request::real_get('url'), '/'); // real_get replaces space with +, since $_GET urldecodes then converts plus to space automatically, which invalidates the base64 string
+
             $url = filter_var($url, FILTER_SANITIZE_URL);
             $url = explode('/', $url);
+
+            $q = trim(Request::real_get('q')); // FORM GET creates a ?, so if we always use "q" for queries, we can hack it. Don't form get.
+            if (isset($q)) $url[] = $q;
 
             // put URL parts into according properties
             $this->controller_name = isset($url[0]) ? $url[0] : null;
