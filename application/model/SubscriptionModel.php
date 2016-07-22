@@ -41,15 +41,17 @@ class SubscriptionModel
 	    }
 	}
 
-    public static function getAllSubscriptions($userid = 0, $include_app_model = false, $limit = false, $include_user = true, $include_pack = false) {
+    public static function getAllSubscriptions($userid = 0, $include_app_model = false, $limit = false, $include_user = true, $include_pack = false, $order = 'added') {
 
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT subscription_id, tier_id, user_id, added, endDate, referenceId, subscriptionUrl, status, statusReason, testMode, active FROM subscriptions";
+        $sql = "SELECT subscription_id, tier_id, user_id, added, endDate, referenceId, subscriptionUrl, status, statusReason, testMode, active, info FROM subscriptions";
         $params = array();
         if ($userid > 0) {
 	        $sql .= " WHERE user_id = :user_id";
+	        $sql .= " ORDER BY :order";
 	        $params[":user_id"] = $userid;
+	        $params[":order"] = $order;
 	    }
 	    if ($limit == true) $sql .= " LIMIT 1";
         $query = $database->prepare($sql);
@@ -62,6 +64,25 @@ class SubscriptionModel
         }
         if ($limit == true && count($subscriptions) > 0) return $subscriptions[0];
         return $subscriptions;
+    }
+
+    // Gets the users currently active subscription 
+    // Returns PDO Object
+    public static function getCurrentSubscription($userid) {
+    	$database = DatabaseFactory::getFactory()->getConnection();
+    	$sql = "SELECT subscription_id, tier_id, user_id, added, endDate, referenceId, subscriptionUrl, status, statusReason, testMode, active FROM subscriptions WHERE user_id = :userid";
+    	$params = array(
+    		":userid" => $userid
+    		);
+    	$query = $database->prepare($sql);
+    	$query->execute($params);
+    	$result = $query->fetchAll();
+    	if (count($result) > 1) {
+    		return $result[count($result)-1];
+    	}
+    	else {
+    		return $result;
+    	}
     }
 
     public static function addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode) {
@@ -82,6 +103,53 @@ class SubscriptionModel
         );
 		// LoggingModel::logInternal("addSubscription Query", $sql, print_r($params, true));
         return $query->execute($params);
+    }
+
+    public static function removeSubscription($referenceId) {
+    	$database = DatabaseFactory::getFactory()->getConnection();
+    	$sql = "DELETE FROM subscriptions WHERE referenceId = :referenceId LIMIT 1";
+    	$query = $database->prepare($sql);
+    	$params = array(
+    		":referenceId" => $referenceId
+    		);
+    	$query->execute($params);
+    }
+
+    public static function updateSubscriptionTier($referenceId, $newTier, $oldTier) {
+    	$database = DatabaseFactory::getFactory()->getConnection();
+    	$sql = "UPDATE subscriptions SET tier_id = :newTier, info = :oldTier WHERE referenceId = :referenceId";
+    	$query = $database->prepare($sql);
+    	$params = array(
+    		":referenceId" => $referenceId,
+    		":newTier" => $newTier,
+    		":oldTier" => 'Changed from ' . TierModel::getTierNameById($oldTier)
+		);
+    	$query->execute($params);
+    }
+
+    public static function updateSubscriptionStatus($referenceId, $status) {
+    	$database = DatabaseFactory::getFactory()->getConnection();
+    	$sql = "UPDATE subscriptions SET status = :status WHERE referenceId = :referenceId";
+    	$query = $database->prepare($sql);
+    	$params = array(
+    		":status" => $status,
+    		":referenceId" => $referenceId
+    		);
+    	$query->execute($params);
+    }
+
+    public static function previouslySubscribed($user_id) {
+    	$database = DatabaseFactory::getFactory()->getConnection();
+    	$sql = "SELECT tier_id FROM subscriptions WHERE user_id = :user_id AND status = 'inactive'";
+    	$query = $database->prepare($sql);
+    	$params = array(
+    		":user_id" => $user_id
+    		);
+    	$query->execute($params);
+    	$result = $query->fetchAll();
+    	if (count($result) > 0) {
+			return $result[count($result)-1]->tier_id;
+		}	
     }
 
 } // END class SubscriptionModel

@@ -57,6 +57,7 @@ class TierModel extends Model{
             $return->added = $result->added;
             $return->store_url = $result->store_url;
             $return->active = ((int) $result->active === 1);
+            $return->price = $result->price;
             return $return;
         }
         return false;
@@ -82,7 +83,16 @@ class TierModel extends Model{
         return $query->fetchColumn();
     }
     
-    
+    public static function getTierNameById($tier_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT name FROM tiers WHERE tier_id = :tier_id";
+        $params = array(
+            ":tier_id" => $tier_id
+            );
+        $query = $database->prepare($sql);
+        $query->execute($params);
+        return $query->fetchColumn();
+    }
     
     public static function getTierPackByName($tier_name, $include_app_model = false) {
         $database = DatabaseFactory::getFactory()->getConnection();

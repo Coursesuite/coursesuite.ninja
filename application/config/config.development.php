@@ -183,6 +183,10 @@ return array(
 	'EMAIL_VERIFICATION_FROM_NAME' => 'CourseSuite',
 	'EMAIL_VERIFICATION_SUBJECT' => 'Account activation for CourseSuite',
 
+	//mailto
+	'EMAIL_ADMIN' => 'admin@coursesuite.ninja',
+	'EMAIL_SUBSCRIPTION' => 'info@coursesuite.com.au',
+
 
 	/*
 	 * digest authentication users
@@ -201,8 +205,12 @@ return array(
 	'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
 	'FASTSPRING_PARAM_APPEND' => '&mode=test',
 
+	'FASTSPRING_STORE' => 'coursesuite',
+	'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
+	'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
+
 	// store info pricing table may not be relevant or have other logic later on
-	'STORE_INFO_SHOW_PRICING' => false,
+	'STORE_INFO_SHOW_PRICING' => true,
 
 	// footer info
 	'GLOBAL_FOOTER_COLUMN_1' => '<h3>About CourseSuite</h3><p>CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses. We also offer Open Source plugins for Moodle and downloadable online course content.</p>',
