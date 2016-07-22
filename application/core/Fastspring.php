@@ -65,19 +65,57 @@ class FastSpring {
 		
   		return $sub;
 	}
+
+	// $productPath - e.g /gold-1-month
+	public function updateSubscriptionXML($productPath, $proration, $tags = Null, $noEndDate = Null, $coupon = Null, $discountDuration = Null){	
+		$quantity = '1';
+
+		$xmlResult = new SimpleXMLElement("<subscription></subscription>");
+		
+		if ($productPath) {
+			$xmlResult->productPath = $productPath;
+		}
+		if ($quantity) {
+			$xmlResult->quantity = $quantity;
+		}
+		if ($tags) {
+			$xmlResult->tags = $tags;
+		}
+		if (isset($noEndDate) && $noEndDate) {
+			$xmlResult->addChild("no-end-date", null);
+		}
+		if ($coupon) {
+			$xmlResult->coupon = $coupon;
+		}
+		if ($discountDuration) {
+			$xmlResult->addChild("discount-duration", $discountDuration);
+		}
+		if (isset($proration)) {
+			if ($proration) {
+				$xmlResult->addChild("proration", true);
+			} else {
+				$xmlResult->proration = "false";
+			} 
+		}
+		print_r($xmlResult);
+		return $xmlResult->asXML();
+	}
+
 	
 	/**
 	 * update an existing subscription to fastspring API
+	 * $reference - users subscription reference
+	 * $subscriptionUpdate - XML object containing the new susbcriptino info (see updateSubscriptionXML)
 	 */
-	public function updateSubscription($subscriptionUpdate) {
-		$url = $this->getSubscriptionUrl($subscriptionUpdate->reference);
+	public function updateSubscription($reference, $subscriptionUpdate) {
+		$url = $this->getSubscriptionUrl($reference);
 		
 		$ch = curl_init($url);
 		
 		curl_setopt($ch, CURLOPT_USERPWD, $this->api_username . ":" . $this->api_password);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/xml"));
 		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $subscriptionUpdate->toXML());
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $subscriptionUpdate);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		
@@ -101,6 +139,7 @@ class FastSpring {
 		} else {
 			$fsprgEx = new FsprgException("An error occurred calling the FastSpring subscription service");
 			$fsprgEx->httpStatusCode = $info["http_code"];
+			print_r($info['http_code']);
 		}
 	  	
 	  	curl_close($ch);
@@ -283,52 +322,7 @@ class FsprgCustomer {
 	public $phoneNumber;
 }
 
-class FsprgSubscriptionUpdate {
-	public $reference;
-	public $productPath;
-	public $quantity;
-	public $tags;
-	public $noEndDate;
-	public $coupon;
-	public $discountDuration;
-	public $proration;
-	
-	public function __construct($subscription_ref) {
-		$this->reference = $subscription_ref;
-	}
-	
-	public function toXML() {
-		$xmlResult = new SimpleXMLElement("<subscription></subscription>");
-		
-		if ($this->productPath) {
-			$xmlResult->productPath = $this->productPath;
-		}
-		if ($this->quantity) {
-			$xmlResult->quantity = $this->quantity;
-		}
-		if ($this->tags) {
-			$xmlResult->tags = $this->tags;
-		}
-		if (isset($this->noEndDate) && $this->noEndDate) {
-			$xmlResult->addChild("no-end-date", null);
-		}
-		if ($this->coupon) {
-			$xmlResult->coupon = $this->coupon;
-		}
-		if ($this->discountDuration) {
-			$xmlResult->addChild("discount-duration", $this->discountDuration);
-		}
-		if (isset($this->proration)) {
-			if ($this->proration) {
-				$xmlResult->proration = "true";
-			} else {
-				$xmlResult->proration = "false";
-			} 
-		}
-		
-		return $xmlResult->asXML();
-	}
-}
+
 
 class FsprgCancelSubscriptionResponse {
 	public $subscription;
