@@ -1096,9 +1096,10 @@ table.app-matrix > tfoot > tr.price {
 	text-shadow: none;
 	color: #333;
 }
+*/
 table.app-matrix > tfoot > tr.price > th {
 	text-align: right;
-} */
+} 
 
 .tier-pack-matrix table {
 	width: 100%;

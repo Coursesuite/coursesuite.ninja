@@ -100,13 +100,13 @@ class LoginModel
 		// get all data of that user (to later check if password and password_hash fit)
 		$result = UserModel::getUserDataByUsername($user_name);
 
-                        // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
-                        // brute force attack mitigation: reset failed login counter because of found user
-                        if (!$result){
-                            // increment the user not found count, helps mitigate user enumeration
-                            self::incrementUserNotFoundCounter();
-                            // user does not exist, but we won't to give a potential attacker this details, so we just use a basic feedback message
-                            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
+        // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
+        // brute force attack mitigation: reset failed login counter because of found user
+        if (!$result){
+            // increment the user not found count, helps mitigate user enumeration
+            self::incrementUserNotFoundCounter();
+            // user does not exist, but we won't to give a potential attacker this details, so we just use a basic feedback message
+            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
 			return false;
 		}
 

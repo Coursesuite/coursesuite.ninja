@@ -157,7 +157,7 @@ class ApiController extends Controller
 			if (isset($referrer)) {
 		    	$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
 			} else {
-				$userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ?
+				$userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ? wrong email entered during checkout could mess with this
 			}
 	    	$endDate = Request::post("subscriptionEndDate"); // date | empty
 	    	$endDateSet = isset($endDate); // if set then the subscription is inactive after this date
@@ -166,21 +166,30 @@ class ApiController extends Controller
 	    	$status = Request::post("status"); // active | inactive
 	    	$statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
 	    	$testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
+            $oldTier = SubscriptionModel::getCurrentSubscription($userid)->tier_id;
 		    switch ($params[0]) {
 			    case "activated":
+                    SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode);                   
+                    break;
 				case "deactivated":
-			    	// normal new subscription or deactivation caused by cancellation, payment failure
-					SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode);
+			    	// deactivation will remove the subscription entry from the database
+                    SubscriptionModel::updateSubscriptionStatus($referenceId, $status);
 			    	break;
-
 				case "failed":
 				case "changed":
+
 					// do we need to log any of these statuses?
 					if ($endDateSet) {
 						if ($status == "inactive") {} // has become inactive and will deactivate soon
 						if ($statusReason == "canceled") {} // we should next or soon see a deactivated
-					} else if ($status == "active") {
-						// e.g. changed from failed back to active
+					} 
+                    if ($status == "active") {
+                        if ($tierid != $oldTier) { // subscription upgraded/downgraded
+                            SubscriptionModel::updateSubscriptionTier($referenceId, $tierid, $oldTier);
+                            $mail = new Mail();
+                            $mail->sendMail(Config::get('EMAIL_SUBSCRIPTION'), Config::get('EMAIL_VERIFICATION_FROM_EMAIL'), 'SubscriptionInfo', 'User: '.$userid.' Updated their subscription', 'User: '.$userid.' Changed their subscription from '.TierModel::getTierNameById($oldTier).' to '.TierModel::getTierNameById($tierid));
+                            break;
+                        }
 					}
 					break;
 		    }

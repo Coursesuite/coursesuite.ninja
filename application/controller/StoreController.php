@@ -28,18 +28,19 @@ class StoreController extends Controller
     public function info($app_key) {
         $app = AppModel::getAppByKey($app_key);
         $model = array(
-	"baseurl" => Config::get("URL"),
+	        "baseurl" => Config::get("URL"),
             "App" => $app,
             "AppFeatures" => TierModel::getAppFeatures((int)$app->app_id),
             "AppTiers" => TierModel::getAllAppTiers((int)$app->app_id),
-            "UserSubscription" => null
+            "UserSubscription" => null,
+            "user_id" => Session::get('user_id')
         );
-        if (Session::currentUserId() > 0) {
-            $submodel = SubscriptionModel::getAllSubscriptions(Session::currentUserId(), false, true);
-            if (!empty($submodel)) {
-            	$model["UserSubscription"] = $submodel;
-            }
-        };
+		if (Session::currentUserId() > 0) {
+			$submodel = SubscriptionModel::getCurrentSubscription(Session::currentUserId());
+			if (!empty($submodel) && $submodel->status == 'active') {
+				$model["UserSubscription"] = $submodel;
+			}
+	    };
         if (Session::get("user_account_type") == 7) {
     	    // $model["tokenlink"] = AppModel::getLaunchUrl($app->app_id); // because token verify checks the subscription
     	    $model["editlink"] =Config::get("URL") . 'admin/editApps/' . $app->app_id . '/edit';
@@ -56,8 +57,8 @@ class StoreController extends Controller
 			"UserSubscription" => null,
 		);
 		if (Session::currentUserId() > 0) {
-			$submodel = SubscriptionModel::getAllSubscriptions(Session::currentUserId(), false, true);
-			if (!empty($submodel)) {
+			$submodel = SubscriptionModel::getCurrentSubscription(Session::currentUserId());
+			if (!empty($submodel) && $submodel->status == 'active') {
 				$model["UserSubscription"] = $submodel;
 			}
 	    } else {
@@ -65,7 +66,27 @@ class StoreController extends Controller
 	    }
         $this->View->renderHandlebars("store/tiers", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
         // $this->View->render("store/tiers", $model);
+	    
+    }
 
+    // $newSubscription = the tier name e.g Bronze, Silver, Gold
+    public function updateSubscription($newSubscription, $confirm=Null) {
+    	$userId = Session::get('user_id');
+    	$model = array(
+    		"baseurl" => Config::get("URL"),
+    		"user_id" => $userId,
+    		"user_name" => Session::get('user_name'),
+    		"current_tier" => TierModel::getTierById(SubscriptionModel::getCurrentSubscription($userId)->tier_id, false),
+    		"new_tier" => TierModel::getTierById(TierModel::getTierIdByName($newSubscription), false),
+    		"subscription_ref" => SubscriptionModel::getCurrentSubscription($userId)->referenceId
+    		);
+    	$this->View->renderHandlebars("store/updateSubscription", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+
+    	if ($confirm) {
+    		$fs = new FastSpring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
+    		$fs->updateSubscription($model["subscription_ref"], $fs->updateSubscriptionXML(strtolower('/'.$model['new_tier']->name).'-1-month', true));
+    		Redirect::to('user/index'); 
+    	}
     }
 
    /**
@@ -85,8 +106,8 @@ class StoreController extends Controller
         b                      off         on            on
         c                      fixed     custom     custom
      */
-    public static function AppMatrix($App, $AppFeatures, $AppTiers, $UserSubscription, $options) {
-
+    public static function AppMatrix($App, $AppFeatures, $AppTiers, $UserSubscription, $user_id, $options) {
+    	$fs = new FastSpring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
         $table = array();
         $colspan = count($AppTiers);
         $table[] = '<table class="app-matrix colspan-' . $colspan . '"><thead>';
@@ -103,7 +124,7 @@ class StoreController extends Controller
 	        $details = $info["details"];
 	        $feature = $info["feature"];
 	        $icon = "";
-	        if (isset($details) && !empty($details)) $icon = "<span data-tooltip='" . addslashes($details) . "'><i class='cs-help-with-circle cs-super cs-muted'></i></span>";
+	        if (isset($details) && !empty($details)) $icon = "<span data-tooltip='" . addslashes($details) . "'><i class='cs-help-with-circle cs-super cs-muted'></i></span>"; 
             $table[] = "<tr><th>$feature $icon</th>";
             foreach ($AppTiers as $tier) {
                 $tier_level = (int)$tier["tier_level"];
@@ -135,36 +156,47 @@ class StoreController extends Controller
 		        $button_url = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
 		        $class_name = '';
 		        if (!empty($UserSubscription)) {
-			        $user_tier_level = $UserSubscription["tier"]["tier_id"];
+			        $user_tier_level = $UserSubscription["tier_id"];
 			        $label = "";
 			        if ($tier["tier_id"] == $user_tier_level) {
 				        $label = 'Launch App';
 				        $class_name = 'current-tier';
 				        $button_url = Config::get("URL") . "launch/" . $App["app_id"]; //    AppModel::getLaunchUrl($App["app_id"]);
 			        } else if ($tier["tier_id"] < $user_tier_level) {
-				        // $label = 'Downgrade';
+				        $label = 'Downgrade';
+				        $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
 			        } else if ($tier["tier_id"] > $user_tier_level) {
-				        // $label = 'Upgrade';
+				        $label = 'Upgrade';
+				        $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
 			        }
 		        }
                 $table[] = "<td>";
                 if ($label != "") $table[]= "<a href='$button_url' class='$class_name' target='_app'>$label</a>";
                 $table[] = "</td>";
             }
+            $table[] = '<tr><td></td>';
+            foreach ($AppTiers as $tier) {
+            	if (!empty(SubscriptionModel::previouslySubscribed($user_id)) && SubscriptionModel::previouslySubscribed($user_id) == $tier["tier_id"] && empty($UserSubscription)) {
+                	$table[] = "<td>Previous subscription</td>";	
+                }
+                else {
+                	$table[] = "<td></td>";
+                }
+            }
+
         } else {
             $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
         }
         $table[] = '</tr>';
-
         // caveat
         $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'>" . Text::get("TIER_MATRIX_CAVEATS") . "</td></tr>";
         // $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'><p>This product is part of a paid subscription that offers multiple products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).</p><p>Subscriptions are charged monthly until cancelled.</p><div class='text-center'><img src='/img/fastspring.png'></div></td></tr>";
         $table[] = '</tfoot></table>';
         return implode('', $table);
-
+        
     }
-
-
+    
+    
     /*
 	    Renderer which is similar to an App Tier Matrix except that it is listing all matching tiers
 	*/
@@ -227,6 +259,23 @@ class StoreController extends Controller
 	                $table[] = "<td><a href='$button_url'>Subscribe</a></td>";
 	            }
             }
+            else {
+				$AppTiers = TierModel::getAllAppTiersForPack($Name);
+				foreach ($AppTiers as $tier) {
+					if ($UserSubscription['tier_id'] < $tier->tier_id){
+						$button_url = Config::get('URL') . 'store/updateSubscription/' . $tier->name;
+						$table[] = "<td><a href='$button_url'>Upgrade</a></td>";
+					}
+					elseif ($UserSubscription['tier_id'] > $tier->tier_id){
+						$button_url = Config::get('URL') . 'store/updateSubscription/' . $tier->name;
+						$table[] = "<td><a href='$button_url'>Downgrade</a></td>";
+					}
+					else{
+						$table[] = "<td><a href=''>Launch</a></td>";
+					}
+				}   	
+            }
+
         } else {
             $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
         }

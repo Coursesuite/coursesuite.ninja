@@ -27,7 +27,7 @@
 	<section class="subscription-display">
 	<h4>Subscriptions:</h4>
 	<table border=1>
-		<thead><th>Tier</th><th>Added</th><th>Expires</th><th>Order details</th><th>Status</th></tr></thead>
+		<thead><th>Tier</th><th>Added</th><th>Expires</th><th>Order details</th><th>Status</th><th>Info</th></tr></thead>
 		<tbody>{{#each subscriptions}}
 			<tr>
 				<td>{{tier.name}} ({{tier.pack.0.name}})</td>
@@ -35,6 +35,7 @@
 				<td>{{#if endDate}}{{endDate}}{{else}}Never{{/if}}</td>
 				<td><a href="{{subscriptionUrl}}" target="_blank"><i class='cs-stack-2'></i> Show (in new window)</a></td>
 				<td>{{status}}<br>{{statusReason}}</td>
+				<td>{{info}}</td>
 			</tr>
 		{{/each}}</tbody>
 	</table>
