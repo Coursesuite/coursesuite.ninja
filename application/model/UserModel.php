@@ -15,7 +15,7 @@ class UserModel
      *
      * @return array The profiles of all users
      */
-    public static function getPublicProfilesOfAllUsers($search = null)
+    public static function getPublicProfilesOfAllUsers($search = null, $mostRecent = true)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
@@ -26,6 +26,9 @@ class UserModel
             $params = array(
                 ":search" => "%$search%"
             );
+        }
+        if ($mostRecent) {
+            $sql .= " ORDER BY user_creation_timestamp DESC LIMIT 25";
         }
         $query = $database->prepare($sql);
         $query->execute($params);

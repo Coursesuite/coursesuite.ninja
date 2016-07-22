@@ -22,9 +22,22 @@ class AdminController extends Controller
         $this->View->render('admin/index');
     }
 
-    public function allUsers($search = null) {
+    public function allUsers($action = "")
+    {
+
+        $q = null;
+        $mr = true;
+
+        switch ($action) {
+            case "search":
+                $q = Request::post("q", true);
+                $mr = false;
+                break;
+
+        }
+
         $this->View->render('admin/allusers', array(
-            'users' => UserModel::getPublicProfilesOfAllUsers($search))
+            'users' => UserModel::getPublicProfilesOfAllUsers($q, $mr))
         );
     }
 
@@ -48,7 +61,7 @@ class AdminController extends Controller
             "baseurl" => Config::get("URL"),
             "sections" => SectionsModel::getAllStoreSections(true),
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", "Sortable.min.js"),
         );
         if (is_numeric($id) && intval($id) > 0) {
             $section = SectionsModel::getStoreSection($id);
@@ -64,7 +77,7 @@ class AdminController extends Controller
                     "visible" => Request::post("visible", false, FILTER_SANITIZE_NUMBER_INT),
                     "sort" => Request::post("sort", false, FILTER_SANITIZE_NUMBER_INT),
                     "html_pre" => Request::post("html_pre"),
-                    "html_post" => Request::post("html_post")
+                    "html_post" => Request::post("html_post"),
                 );
                 $id = SectionsModel::Save("store_sections", "id", $section);
                 // $model["action"] = "edit";
@@ -78,7 +91,16 @@ class AdminController extends Controller
                 $section = SectionsModel::Make();
                 break;
 
-         }
+            case "order":
+                $table = Request::post("table");
+                $field = Request::post("field");
+                $keys = explode(',', Request::post("order")); // the order of ids, top to bottom
+                $assoc = array_combine($keys, range(0, count($keys)-1)); // a[1] => 0, a[3] => 1, a[2] => 2, etc
+                SectionsModel::setOrder($assoc);
+                exit;
+                break;
+
+        }
         $model["id"] = $id;
         if (isset($section)) {
             $model["data"] = $section;
@@ -92,36 +114,36 @@ class AdminController extends Controller
             "baseurl" => Config::get('URL'),
             "tiers" => TierModel::getAllTiers(),
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
-            );
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+        );
         if (is_numeric($id) && intval($id) > 0) {
             $tier = TierModel::getTierById($id, false);
             $model["action"] = $action;
         }
-         switch ($action) {
-             case 'save':
-                 $tier = array(
-                     "tier_id" => $id,
-                     "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_NUMBER_INT),
-                     "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
-                     "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
-                     "store_url" => Request::post("store_url", false, FILTER_SANITIZE_URL),
-                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
-                     "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_INT),
-                     "currency" => Request::post("currency", false, FILTER_SANITIZE_STRING),
-                     "period" =>Request::post("period", false, FILTER_SANITIZE_STRING),
-                     "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_NUMBER_INT)
-                     );
-                 $id = TierModel::save("tiers", "tier_id", $tier);
-                 Redirect::to("admin/editTiers");
-                 break;
+        switch ($action) {
+            case 'save':
+                $tier = array(
+                    "tier_id" => $id,
+                    "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_NUMBER_INT),
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                    "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
+                    "store_url" => Request::post("store_url", false, FILTER_SANITIZE_URL),
+                    "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
+                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_INT),
+                    "currency" => Request::post("currency", false, FILTER_SANITIZE_STRING),
+                    "period" => Request::post("period", false, FILTER_SANITIZE_STRING),
+                    "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_NUMBER_INT),
+                );
+                $id = TierModel::save("tiers", "tier_id", $tier);
+                Redirect::to("admin/editTiers");
+                break;
 
             case 'new':
                 $id = 0;
                 $model["action"] = "new";
                 $tier = TierModel::make('tiers');
                 break;
-         }
+        }
 
         $model["id"] = $id;
         if (isset($tier)) {
@@ -137,8 +159,8 @@ class AdminController extends Controller
             "products" => ProductModel::getAllProducts(),
             "categories" => CategoryModel::getAllCategories(),
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js")
-            );
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+        );
         if (is_numeric($id) && intval($id) > 0) {
             $product = ProductModel::getProductById($id);
             $model["action"] = $action;
@@ -152,8 +174,8 @@ class AdminController extends Controller
                     "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
                     "type" => Request::post("type", false, FILTER_SANITIZE_STRING),
                     "category" => Request::post("category", false, FILTER_SANITIZE_STRING),
-                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT)
-                    );
+                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT),
+                );
                 $id = ProductModel::save("products", "product_id", $product);
                 Redirect::to("admin/editAllProducts");
                 break;
@@ -216,16 +238,16 @@ class AdminController extends Controller
                         unlink($diskpath);
                     }
 
-					if ($make_thumbs) {
-	                    // delete existing versions including thumbnails
-	                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg')) {
-	                        unlink($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg');
-	                    }
+                    if ($make_thumbs) {
+                        // delete existing versions including thumbnails
+                        if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg')) {
+                            unlink($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg');
+                        }
 
-	                    if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg')) {
-	                        unlink($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg');
-	                    }
-	                }
+                        if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg')) {
+                            unlink($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg');
+                        }
+                    }
 
                     // move the file upload into position, creating the position if required
                     if (!file_exists($upload_dir)) {
@@ -237,7 +259,7 @@ class AdminController extends Controller
                     // get base colour
                     $colour = Image::getBaseColour($diskpath);
 
-					$media[] = array(
+                    $media[] = array(
                         "image" => $displaypath,
                         "thumb" => $displaypath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg',
                         "preview" => $displaypath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg',
@@ -245,16 +267,16 @@ class AdminController extends Controller
                         "bgcolor" => "rgba(" . implode(",", $colour) . ",.5)",
                     );
 
-					if ($make_thumbs) {
-	                    // generate standard sized thumbnails
-	                    Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_HEIGHT'), $colour, false);
-	                    Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_HEIGHT'), $colour);
-	                }
+                    if ($make_thumbs) {
+                        // generate standard sized thumbnails
+                        Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_HEIGHT'), $colour, false);
+                        Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_HEIGHT'), $colour);
+                    }
 
                     // save media model
                     if ($add_slide) {
-	                    AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
-	                }
+                        AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
+                    }
 
                 } else if (isset($display_url)) {
                     $thumb = "/img/hqdefault.jpg";
@@ -291,8 +313,8 @@ class AdminController extends Controller
                     );
 
                     if ($add_slide) {
-                    	AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
-					}
+                        AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
+                    }
                 }
                 Redirect::to("admin/editApps/$id/edit");
                 break;
@@ -344,7 +366,7 @@ class AdminController extends Controller
     public function actionAccountSettings()
     {
         AdminModel::setAccountSuspensionAndDeletionStatus(
-	        Request::post('user_id'),
+            Request::post('user_id'),
             Request::post('suspension'),
             Request::post('softDelete'),
             Request::post('hardDelete'),
@@ -355,62 +377,65 @@ class AdminController extends Controller
         Redirect::to("admin/allUsers");
     }
 
-    public function manualSubscribe() {
+    public function manualSubscribe()
+    {
         $model = array(
             "baseurl" => Config::get("URL"),
             "users" => UserModel::getAllUsers(),
             "tiers" => TierModel::getAllTiers(true),
-            "feedback" => Session::get("feedback_positive")
+            "feedback" => Session::get("feedback_positive"),
         );
-		Session::set("feedback_positive", null);
+        Session::set("feedback_positive", null);
         $this->View->renderHandlebars('admin/manualSubscribe', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
     }
 
-    public function actionManualSubscribe() {
-	    // addSubscription($userid, $tierid, $endDate, $referenceId, $status, $statusReason, $testMode);
-	    $userid = (int) Request::post('user_id');
-	    $tierid = (int) Request::post('tier_id');
-	    $value = SubscriptionModel::addSubscription(
-	    	$userid,
-	    	$tierid,
-	    	null,
-	    	'manually created by admin',
-	    	'active',
-	    	'',
-	    	1);
-	    Session::add('feedback_positive', "user $userid was manually subscribed to tier $tierid in test mode; result: $value");
-	    Redirect::to("admin/manualSubscribe");
+    public function actionManualSubscribe()
+    {
+        // addSubscription($userid, $tierid, $endDate, $referenceId, $status, $statusReason, $testMode);
+        $userid = (int) Request::post('user_id');
+        $tierid = (int) Request::post('tier_id');
+        $value = SubscriptionModel::addSubscription(
+            $userid,
+            $tierid,
+            null,
+            'manually created by admin',
+            'active',
+            '',
+            1);
+        Session::add('feedback_positive', "user $userid was manually subscribed to tier $tierid in test mode; result: $value");
+        Redirect::to("admin/manualSubscribe");
     }
 
-    public function staticPage($id = 0, $action = "") {
+    public function staticPage($id = 0, $action = "")
+    {
         $model = array(
             "baseurl" => Config::get("URL"),
             "action" => $action,
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
             "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
-		);
+        );
 
         if (is_numeric($id) && intval($id) > 0) {
             $data = StaticPageModel::getRecord($id);
-	    } else {
-	    	$model["records"] = StaticPageModel::getAll();
-	    }
+        } else {
+            $model["records"] = StaticPageModel::getAll();
+        }
 
-	    switch ($action) {
-		    case "save":
-		    	$data = array(
-                	"id" => $id,
-                	"page_key" => Request::post("page_key", true, FILTER_SANITIZE_SPECIAL_CHARS),
-                	"body_classes" => Request::post("body_classes", true, FILTER_SANITIZE_STRING),
-                	"content" => Request::post("content"),
+        switch ($action) {
+            case "save":
+                $data = array(
+                    "id" => $id,
+                    "page_key" => Request::post("page_key", true, FILTER_SANITIZE_SPECIAL_CHARS),
+                    "body_classes" => Request::post("body_classes", true, FILTER_SANITIZE_STRING),
+                    "content" => Request::post("content"),
                     "meta_description" => Request::post("meta_description"),
                     "meta_title" => Request::post("meta_title"),
                     "meta_keywords" => Request::post("meta_keywords"),
                 );
                 StaticPageModel::Save("id", $data);
                 $model["action"] = "edit";
-		    	break;
+                break;
 
             case "new":
                 $id = 0;
@@ -418,69 +443,74 @@ class AdminController extends Controller
                 $data = StaticPageModel::Make();
                 break;
 
-	    }
+        }
 
         $model["id"] = $id;
         if (isset($data)) {
             $model["data"] = $data;
         }
 
-	    $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function messages($message_id = 0, $action = "", $user_id = 0) {
+    public function messages($message_id = 0, $action = "", $user_id = 0)
+    {
 
-	    $baseurl = Config::get("URL");
-	    $model = array(
-		    "baseurl" => $baseurl,
-		    "action" => $action,
-		    "message_id" => $message_id,
-		    "user_id" => $user_id,
+        $baseurl = Config::get("URL");
+        $model = array(
+            "baseurl" => $baseurl,
+            "action" => $action,
+            "message_id" => $message_id,
+            "user_id" => $user_id,
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css", "$baseurl/css/flatpickr.min.css"),
             "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", "$baseurl/js/flatpickr.min.js"),
-	    );
+        );
 
-	    switch ($action) {
-		    case "send":
-		    	$text = Request::post("text",true);
-		    	$level = intval(Request::post("level"));
-		    	$expires = Request::post("expires");
-		    	if (!empty($expires)) $expires = strtotime($expires);
-		    	$message_id = MessageModel::notify_user($text, $level, $user_id, $expires);
-		    	Redirect::to("admin/messages/$message_id/edit");
-		    	break;
+        switch ($action) {
+            case "send":
+                $text = Request::post("text", true);
+                $level = intval(Request::post("level"));
+                $expires = Request::post("expires");
+                if (!empty($expires)) {
+                    $expires = strtotime($expires);
+                }
 
-		    case "search":
-		    	$q = Request::post("q",true);
-		    	$model["q"] = $q;
-		    	$model["results"] = UserModel::getUserDataByUserNameOrEmail($q,false,true);
-		    	break;
+                $message_id = MessageModel::notify_user($text, $level, $user_id, $expires);
+                Redirect::to("admin/messages/$message_id/edit");
+                break;
 
-		    case "select":
-		    	$u = UserModel::getPublicProfileOfUser($user_id);
-		    	if (empty($u)) {
-			    	$u = new stdClass();
-			    	$u->user_id =0;
-			    	$u->user_name = "All users";
-		    	}
-		    	$model["q"] = $u->user_name;
-		    	$model["user"] = $u;
-		    	break;
+            case "search":
+                $q = Request::post("q", true);
+                $model["q"] = $q;
+                $model["results"] = UserModel::getUserDataByUserNameOrEmail($q, false, true);
+                break;
 
-	    }
+            case "select":
+                $u = UserModel::getPublicProfileOfUser($user_id);
+                if (empty($u)) {
+                    $u = new stdClass();
+                    $u->user_id = 0;
+                    $u->user_name = "All users";
+                }
+                $model["q"] = $u->user_name;
+                $model["user"] = $u;
+                break;
 
-//	    $this->View->renderJSON($model);
+        }
 
-	    $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+//        $this->View->renderJSON($model);
+
+        $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
     }
 
-    public function testNotifies() {
-	    MessageModel::notify_user("You got a new notification from admin, and it's a good one", MESSAGE_LEVEL_HAPPY, 11);
-	    MessageModel::notify_user("Your credit card has expired and you're now booted out :(", MESSAGE_LEVEL_SAD, 11);
-	    MessageModel::notify_all("Hey, you are all a bunch of people.", MESSAGE_LEVEL_MEH, time() + 60);
+    public function testNotifies()
+    {
+        MessageModel::notify_user("You got a new notification from admin, and it's a good one", MESSAGE_LEVEL_HAPPY, 11);
+        MessageModel::notify_user("Your credit card has expired and you're now booted out :(", MESSAGE_LEVEL_SAD, 11);
+        MessageModel::notify_all("Hey, you are all a bunch of people.", MESSAGE_LEVEL_MEH, time() + 60);
 
-	    $this->View->output("I have added a couple of notifications...");
+        $this->View->output("I have added a couple of notifications...");
     }
 
 }

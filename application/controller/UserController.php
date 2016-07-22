@@ -22,7 +22,7 @@ class UserController extends Controller
      * Show user's PRIVATE profile
      */
     public function index() {
-	    
+
 	    $model = array(
             'user_name' => Session::get('user_name'),
             'user_email' => Session::get('user_email'),
@@ -31,14 +31,14 @@ class UserController extends Controller
             'baseurl' => Config::get('URL'),
             'products' => ProductModel::getAllSubscriptionProducts()
         );
-        
+
         if (Config::get('USE_GRAVATAR')) {
 	        $model["user_avatar"] = Session::get('user_gravatar_image_url');
 	    } else {
 		    $model["user_avatar"] = Session::get('user_avatar_file') . '?' . rand(1000,99999);
 		    $model["edit_avatar"] = Config::get('URL') . 'user/editAvatar';
 		}
-        
+
         if (isset($model["subscriptions"]) && sizeof($model["subscriptions"]) > 0) {
             $fsprg = new FastSpring('coursesuite', Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
             try {
@@ -47,9 +47,8 @@ class UserController extends Controller
                 echo($e->getMessage());
             }
         }
-		echo('fuck off');
         $this->View->renderHandlebars("user/myProfile", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-        
+
     }
 
     /**
@@ -74,13 +73,13 @@ class UserController extends Controller
             Redirect::home();
             exit();
         }
-        
+
         if (Request::post("confirm_destroy") !== "delete me forever") {
 	        Session::add('feedback_negative', Text::get('FEEDBACK_NO_DESTROY'));
 	        Redirect::to("user/destroy");
 	        exit;
         }
-        
+
         LoginModel::logout();
         UserModel::destroyUserForever(Session::get('user_id'));
         Redirect::home();
@@ -246,7 +245,7 @@ class UserController extends Controller
             if (!MailChimp::isUserSubscribed(Session::get('user_email'))){
                 MailChimp::subscribe(Session::get('user_email'), Session::get('user_name'));
             }
-            
+
             $newInterests = array();
             // Remake users interests array based on selections
             for ($i = 0; $i < count(MailChimp::getListInterests()); $i++){

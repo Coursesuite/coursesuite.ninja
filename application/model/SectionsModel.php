@@ -43,6 +43,19 @@ class SectionsModel extends Model {
         $query->execute(array(":id" => $id));
         return $query->fetch();
     }
+
+    public static function setOrder($array) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $database->setAttribute(PDO::ATTR_EMULATE_PREPARES, 1);
+        $sql = array();
+        foreach ($array as $id => $order) {
+            $sql[] = "UPDATE store_sections SET sort = $order WHERE id = $id";
+        }
+        $query = $database->prepare(implode(";", $sql));
+//        print_r($query);
+//exit;
+        $query->execute();
+    }
 /*
     public static function setStoreSection($model) {
 

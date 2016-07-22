@@ -7,8 +7,9 @@
 
     <?php $this->renderFeedbackMessages(); ?>
 
-    <form method="get" action="<?= Config::get('URL') ?>admin/allUsers">
-        <input type="text" name="q" value="<?php $q= Request::get("q"); echo isset($q) ? $q : ""; ?>" placeholder="Enter a username/email, or blank for all"><input type="submit">
+    <form method="post" action="<?= Config::get('URL') ?>admin/allUsers/search">
+        <div><label for="q">Search for a user:</label> <input type="text" id="q" name="q" value="<?php $q= Request::get("q"); echo isset($q) ? $q : ""; ?>"> <input type="submit" value="search"></div>
+        <div><span>- or -</span><a href="<?= Config::get('URL') ?>admin/allUsers/">Just show most recent 25 users</a></div>
     </form>
 
     <table>

@@ -112,8 +112,11 @@ class Application
             $url = filter_var($url, FILTER_SANITIZE_URL);
             $url = explode('/', $url);
 
+            /*
+            * stupid hacks are stupid
             $q = trim(Request::real_get('q')); // FORM GET creates a ?, so if we always use "q" for queries, we can hack it. Don't form get.
             if (isset($q)) $url[] = $q;
+            */
 
             // put URL parts into according properties
             $this->controller_name = isset($url[0]) ? $url[0] : null;

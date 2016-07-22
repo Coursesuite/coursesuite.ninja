@@ -24,10 +24,10 @@
 		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
 		Store sections
 	</h3>
-	<p>shown in current sort order; drag to change order, edit to change data</p>
-	<ul id="drag-sort" data-table="store_sections" data-field="sort">
+	<p>The order determines which store sections appear above or below others. Drag the <i class='cs-air'></i> to change order (auto-saves), and click link to edit the section itself.</p>
+	<ul id="drag-sort" data-sortable="true" data-table="store_sections" data-field="sort">
 		{{#each sections}}
-		<li><a href="{{../baseurl}}admin/editSections/{{id}}/edit">{{id}}. {{label}} ({{epiphet}})</a></li>
+		<li data-id="{{id}}"><i class='cs-air'></i> <a href="{{../baseurl}}admin/editSections/{{id}}/edit">{{label}} ({{epiphet}})</a></li>
 		{{/each}}
 	</ul>
 	<p><a href="{{baseurl}}admin/editSections/0/new" class="create button">Create a new section</a></p>

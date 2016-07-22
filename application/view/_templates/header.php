@@ -53,7 +53,8 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
         <div><nav>
         	<a href="<?php echo Config::get('URL'); ?>">Home</a>
         	<a href="http://forum.coursesuite.ninja/categories/" target="_blank">Forum</a>
-        <?php if (Session::userIsLoggedIn()) { ?>
+            <a href="http://help.coursesuite.ninja/" target="_blank">Helpdesk</a>
+        <?php if (Session::userIsLoggedIn() && false) { ?>
         	<a href="http://buggr.coursesuite.ninja/" target="_blank" data-tooltip="Found a bug? Log it!">Buggr!</a>
         <?php } ?>
         <?php if (!Session::userIsLoggedIn()) { ?>
@@ -94,9 +95,9 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
         <?php } ?>
         </ul></div>
     </header>
-    
+
     <main><?php
-	    
+
 	    $cc_logout = Session::get("concurrency_logout");
 	    if (isset($cc_logout) && !empty($cc_logout)) {
 		    Session::remove("concurrency_logout");
@@ -107,7 +108,7 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
 			    "dismissable" => false
 		    );
 	    }
-	    
+
 	    // if the user has any messages that they haven't acknowledged, render them here using some kind of template
 	    // this is an example only, it needs to know about the kind of message so it can add a class to the acknowledgement-item box
 	    if (isset($this->SystemMessages)) {
@@ -122,5 +123,5 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
 		    // some way of registering a startup script event or handler file
 		    // e.g. $this->scripts .= 'acknowledge-ajax.js';
 	    }
-	    
+
 ?>

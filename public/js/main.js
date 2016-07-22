@@ -3,7 +3,7 @@
  */
 (function (window, document) {
 	if ('open' in document.createElement('details')) return;
-	
+
 	// made global by myself to be reused elsewhere
 	var addEvent = (function () {
 	  if (document.addEventListener) {
@@ -28,8 +28,8 @@
 	    };
 	  }
 	})();
-	
-	
+
+
 	/** details support - typically in it's own script */
 	// find the first /real/ node
 	function firstNode(source) {
@@ -41,11 +41,11 @@
 	    do {
 	      source = source.nextSibling;
 	    } while (source && source.nodeName == '#text');
-	
+
 	    return source || null;
 	  }
 	}
-	
+
 	function isSummary(el) {
 	  var nn = el.nodeName.toUpperCase();
 	  if (nn == 'DETAILS') {
@@ -56,7 +56,7 @@
 	    return isSummary(el.parentNode);
 	  }
 	}
-	
+
 	function toggleDetails(event) {
 	  // more sigh - need to check the clicked object
 	  var keypress = event.type == 'keypress',
@@ -71,51 +71,51 @@
 	        return;
 	      }
 	    }
-	
+
 	    var open = this.getAttribute('open');
 	    if (open === null) {
 	      this.setAttribute('open', 'open');
 	    } else {
 	      this.removeAttribute('open');
 	    }
-	
+
 	    // this.className = open ? 'open' : ''; // Lame
 	    // trigger reflow (required in IE - sometimes in Safari too)
 	    setTimeout(function () {
 	      document.body.className = document.body.className;
 	    }, 13);
-	
+
 	    if (keypress) {
 	      event.preventDefault && event.preventDefault();
 	      return false;
 	    }
 	  }
 	}
-	
+
 	function addStyle() {
 	  var style = document.createElement('style'),
 	      head = document.getElementsByTagName('head')[0],
 	      key = style.innerText === undefined ? 'textContent' : 'innerText';
-	
+
 	  var rules = ['details{display: block;}','details > *{display: none;}','details.open > *{display: block;}','details[open] > *{display: block;}','details > summary:first-child{display: block;cursor: pointer;}','details[open]{display: block;}'];
 	      i = rules.length;
-	
+
 	  style[key] = rules.join("\n");
 	  head.insertBefore(style, head.firstChild);
 	}
-	
+
 	var details = document.getElementsByTagName('details'),
 	    wrapper,
 	    i = details.length,
 	    j,
 	    first = null,
 	    label = document.createElement('summary');
-	
+
 	label.appendChild(document.createTextNode('Details'));
-	
+
 	while (i--) {
 	  first = firstNode(details[i]);
-	
+
 	  if (first != null && first.nodeName.toUpperCase() == 'SUMMARY') {
 	    // we've found that there's a details label already
 	  } else {
@@ -128,7 +128,7 @@
 	      details[i].appendChild(first);
 	    }
 	  }
-	
+
 	  // this feels *really* nasty, but we can't target details :text in css :(
 	  j = details[i].childNodes.length;
 	  while (j--) {
@@ -138,11 +138,11 @@
 	      details[i].insertBefore(wrapper, details[i].childNodes[j]);
 	    }
 	  }
-	
+
 	  first.legend = true;
 	  first.tabIndex = 0;
 	}
-	
+
 	// trigger details in case this being used on it's own
 	document.createElement('details');
 	addEvent(details, 'click', toggleDetails);
@@ -182,12 +182,42 @@ function slideshow(index) {
 	_currentSlide = index;
 }
 
-if (document.querySelector("textarea[data-markdown]")) {
-	var simplemde = new SimpleMDE({
-		element: document.querySelector("textarea[data-markdown]"),
-		spellChecker: false,
+// make rich editors and other dooblie-doos
+window.addEventListener("load", function () {
+
+	document.querySelectorAll("textarea[data-markdown]").forEach(function (el,index) {
+		el.simplemde = new SimpleMDE({
+			element: el,
+			spellChecker: false,
+		});
+	}),
+
+	document.querySelectorAll("[data-sortable]").forEach(function (el, index) {
+		Sortable.create(el, {
+			handle: ".cs-air",
+			onEnd: function (evt) {
+				console.log(evt, evt.oldIndex, evt.newIndex);
+				if (evt.from.getAttribute("data-table")) {
+					$.post("/admin/editSections/0/order", {
+						"table": evt.from.getAttribute("data-table"),
+						"field": evt.from.getAttribute("data-field"),
+						"order": function () {
+							var ids = [];
+							$(evt.item).parent().children().each(function(index,el) {
+								ids[ids.length] = el.getAttribute("data-id");
+							});
+							return ids;
+						}
+					}, function (result) {
+						console.log(result);
+					});
+				}
+			},
+			animation: 350
+		});
 	});
-}
+
+false});
 
 function slideAdvance() {
 	if (!_autoAdvance) return;
@@ -196,7 +226,7 @@ function slideAdvance() {
 }
 
 $(function () {
-	
+
 	$("a[data-action='dismiss-message']").on("click", function(e) {
 		var $this = $(this);
 		$.getJSON("/message/done/" + this.getAttribute("data-action-id"), function (result) {
@@ -234,12 +264,12 @@ $(function () {
 
     //
     if (typeof slides != 'undefined') {
-	    
+
 	    $("div.media").on("mouseenter mouseover", function () {
 		    _autoAdvance = false;
 		    if (_aATimeout) clearTimeout(_aATimeout);
 	    });
-	    
+
         var $current_slide = $("#current_slide").html(""),
             $slide_nav = $("#slide_controls").html(""),
             _figure = function (obj) {
@@ -261,7 +291,7 @@ $(function () {
 	        $current_slide.append(_figure(item));
 	        $slide_nav.append(_thumb(item,index));
 	    });
-	    
+
 
 		$("section.info > div.media > a.slide_navigation").css("color",slides[0].bgcolor);
 	    _aATimeout= setTimeout(function(){slideAdvance()},4567);
