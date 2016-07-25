@@ -7,7 +7,7 @@
 <div class="store-items standard-width">
         {{#if label}}<h3>{{label}}</h3>{{/if}}
         {{#if epiphet}}<h4>{{epiphet}}</h4>{{/if}}
-        {{#if html_pre}}{{{html_pre}}}{{/if}}
+        {{#if html_pre}}{{{htmlify html_pre}}}{{/if}}
         <nav class='app-section-names'>
             {{#each apps}}
             <div class='tile app'>
@@ -30,7 +30,7 @@
             </div>
             {{/each}}
         </nav>
-        {{#if html_post}}{{{html_post}}}{{/if}}
+        {{#if html_post}}{{{htmlify html_post}}}{{/if}}
 </div>
     </section>{{/equals}}
 {{/each}}

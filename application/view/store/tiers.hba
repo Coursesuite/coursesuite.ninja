@@ -17,7 +17,7 @@
 </section>
 
 <section class='feature-table standard-width'>
-	{{{StoreController::TierMatrix Tiers Apps UserSubscription Name}}}
+	{{{Store::TierMatrix Tiers Apps UserSubscription Name}}}
 </section>
 
 </article>

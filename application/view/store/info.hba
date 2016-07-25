@@ -6,7 +6,7 @@
 		    <a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="/store/info/{{App.app_key}}">{{App.name}}</a>
 		</nav>
 	</header>
-	
+
 	<section class="info standard-width">
 	    {{#if App.media}}<div class="media">
 	    	<a href="javascript:slideshow('precede');" class="slide_navigation precede"><i class="cs-arrow-with-circle-left"></i></a>
@@ -17,10 +17,10 @@
 	    	<a href="javascript:slideshow('advance');" class="slide_navigation advance"><i class="cs-arrow-with-circle-right"></i></a>
 	    </div>{{/if}}
 	    {{#if AppFeatures}}<div class="tierinfo">
-	        {{{StoreController::AppMatrix App AppFeatures AppTiers UserSubscription}}}
+	        {{{Store::AppMatrix App AppFeatures AppTiers UserSubscription}}}
 	    </div>{{/if}}
 	</section>
-	
+
 	<section class="store-item-description app-{{App.app_key}}">
 		<article class="standard-width">{{{htmlify App.description}}}</article>
 	</section>

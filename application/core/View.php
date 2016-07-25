@@ -6,12 +6,14 @@ use LightnCandy\LightnCandy;
  * Class View
  * The part that handles all the output
  */
-class View {
-	
-	function __construct() {
+class View
+{
+
+    public function __construct()
+    {
         $this->SystemMessages = MessageModel::getMyUnreadMessages();
-	}
-	
+    }
+
     /**
      * simply includes (=shows) the view. this is done from the controller. In the controller, you usually say
      * $this->view->render('help/index'); to show (in this example) the view index.php in the folder help.
@@ -24,7 +26,8 @@ class View {
         self::renderWithTemplate("_templates", $filename, $data);
     }
 
-    public function renderWithTemplate($template_folder, $filename, $data = null) {
+    public function renderWithTemplate($template_folder, $filename, $data = null)
+    {
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->{$key} = $value;
@@ -35,79 +38,88 @@ class View {
         require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
     }
 
-    public function renderHandlebars($filename, $data = null, $template_folder = false, $force = false) {
+    public function renderHandlebars($filename, $data = null, $template_folder = false, $force = false)
+    {
 
         $hashname = md5($filename);
-        
-        if ($template_folder == false) $template_folder = "_templates"; 
+
+        if ($template_folder == false) {
+            $template_folder = "_templates";
+        }
 
         $precompiled = Config::get('PATH_VIEW_PRECOMPILED') . $hashname . '.php';
         $assoc = json_decode(json_encode($data), true); // data is now an associative array
 
-		// expose data so header and footer can also pick it up (includes, not handlebars tempaltes)
+        // expose data so header and footer can also pick it up (includes, not handlebars tempaltes)
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
 
-        if (!file_exists($precompiled) || $force == TRUE) { // if we have already compiled this page, don't compile it again unless being forced to
+        if (!file_exists($precompiled) || $force == true) {
+            // if we have already compiled this page, don't compile it again unless being forced to
 
             $template = file_get_contents(Config::get('PATH_VIEW') . $filename . '.hba');
-            
-			$helper_functions = array(
-              "equals" => function ($arg1, $arg2, $options) {
-                if (strcasecmp((string)$arg1, (string)$arg2) == 0) {
-                    return $options['fn']();
-                } else if (isset($options['inverse'])) {
-                    return $options['inverse']();
-                }
-              },
-              "gte" => function($arg1, $arg2, $options) {
-                if ((int)$arg1 >= (int)$arg2) {
-                    return $options['fn']();
-                } else if (isset($options['inverse'])) {
-                    return $options['inverse']();
-                }
-              },
-              "dump" => function ($arg1) {
-                return print_r($arg1, true);
-              },
-              "escape" => function ($arg1) {
-                return rawurlencode($arg1);
-              },
-              "htmlify" => function ($arg1) {
-	              return Text::toHtml($arg1);
-              },
-              "jsonformat" => function ($arg1) {
-	              $json = json_decode($arg1);
-	              return json_encode($json, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
-              }
-  			);
 
-			// extend helpers by adding methods when particular controllers are loaded.
-			// should kinda be a lib core class, but seems to work this way
-			if (class_exists("StoreController")) {
-				$helper_functions[] = "StoreController::AppMatrix";
-				$helper_functions[] = "StoreController::TierMatrix";
-			}
-			$helper_functions[] = "Text::StaticPageRenderer";
+            $helper_functions = array(
+                "equals" => function ($arg1, $arg2, $options) {
+                    if (strcasecmp((string) $arg1, (string) $arg2) == 0) {
+                        return $options['fn']();
+                    } else if (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
+                "gte" => function ($arg1, $arg2, $options) {
+                    if ((int) $arg1 >= (int) $arg2) {
+                        return $options['fn']();
+                    } else if (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
+                "dump" => function ($arg1) {
+                    return print_r($arg1, true);
+                },
+                "escape" => function ($arg1) {
+                    return rawurlencode($arg1);
+                },
+                "htmlify" => function ($arg1) {
+                    return Text::toHtml($arg1);
+                },
+                "jsonformat" => function ($arg1) {
+                    $json = json_decode($arg1);
+                    return json_encode($json, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
+                },
+            );
+
+            // extend helpers by adding methods when particular controllers are loaded.
+            // should kinda be a lib core class, but seems to work this way
+            if (class_exists("StoreController")) {
+                $helper_functions[] = "Store::AppMatrix";
+                $helper_functions[] = "Store::TierMatrix";
+            }
+            $helper_functions[] = "Text::StaticPageRenderer";
             $phpStr = LightnCandy::compile($template, array(
-              "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG,
-              "helpers" => $helper_functions,
-              "debug" => FALSE,
+                "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG,
+                "helpers" => $helper_functions,
+                "debug" => false,
             ));
-            file_put_contents($precompiled, implode('', array('<','?php',' ', $phpStr,' ','?','>'))); // so php tags are not recognised
+            file_put_contents($precompiled, implode('', array('<', '?php', ' ', $phpStr, ' ', '?', '>'))); // so php tags are not recognised
         }
-        if ($template_folder !== null) require Config::get('PATH_VIEW') . $template_folder . '/header.php';
-        $renderer = include($precompiled); // so its in the lightncandy use namespace on this file
-        echo $renderer($assoc);
-        if ($template_folder !== null) require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
+        if ($template_folder !== null) {
+            require Config::get('PATH_VIEW') . $template_folder . '/header.php';
+        }
 
-		self::destroyFeedbackMessages();
+        $renderer = include $precompiled; // so its in the lightncandy use namespace on this file
+        echo $renderer($assoc);
+        if ($template_folder !== null) {
+            require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
+        }
+
+        self::destroyFeedbackMessages();
 
     }
-    
+
     /**
      * Similar to render, but accepts an array of separate views to render between the header and footer. Use like
      * the following: $this->view->renderMulti(array('help/index', 'help/banner'));
@@ -129,7 +141,7 @@ class View {
         }
 
         require Config::get('PATH_VIEW') . '_templates/header.php';
-        foreach($filenames as $filename) {
+        foreach ($filenames as $filename) {
             require Config::get('PATH_VIEW') . $filename . '.php';
         }
         require Config::get('PATH_VIEW') . '_templates/footer.php';
@@ -151,8 +163,9 @@ class View {
         require Config::get('PATH_VIEW') . $filename . '.php';
     }
 
-    public function output($output) {
-	    echo $output;
+    public function output($output)
+    {
+        echo $output;
     }
 
     /**
@@ -170,23 +183,24 @@ class View {
      */
     public function renderFeedbackMessages($filter = "")
     {
-	    $area = Session::get("feedback_area") ?: "";
-	    if ($area == $filter) {
-	        // echo out the feedback messages (errors and success messages etc.),
-	        // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
-	        require Config::get('PATH_VIEW') . '_templates/feedback.php';
-	        
-	        self::destroyFeedbackMessages();
+        $area = Session::get("feedback_area") ?: "";
+        if ($area == $filter) {
+            // echo out the feedback messages (errors and success messages etc.),
+            // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
+            require Config::get('PATH_VIEW') . '_templates/feedback.php';
+
+            self::destroyFeedbackMessages();
 
         }
 
     }
-    
-    static function destroyFeedbackMessages() {
-	        // delete these messages (as they are not needed anymore and we want to avoid to show them twice
-	        Session::set('feedback_positive', null);
-	        Session::set('feedback_negative', null);
-			Session::set('feedback_area', null);	    
+
+    public static function destroyFeedbackMessages()
+    {
+        // delete these messages (as they are not needed anymore and we want to avoid to show them twice
+        Session::set('feedback_positive', null);
+        Session::set('feedback_negative', null);
+        Session::set('feedback_area', null);
     }
 
     /**
@@ -250,7 +264,7 @@ class View {
         $navigation_controller = $split_filename[0];
         $navigation_action = $split_filename[1];
 
-        if ($active_controller == $navigation_controller AND $active_action == $navigation_action) {
+        if ($active_controller == $navigation_controller and $active_action == $navigation_action) {
             return true;
         }
 
@@ -264,10 +278,9 @@ class View {
      * @param  string $str The string.
      * @return string
      */
-    public function encodeHTML($str){
+    public function encodeHTML($str)
+    {
         return htmlentities($str, ENT_QUOTES, 'UTF-8');
     }
-
- 
 
 }
