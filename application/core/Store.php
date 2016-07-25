@@ -18,8 +18,9 @@ class Store
     b                      off         on            on
     c                      fixed     custom     custom
      */
-    public static function AppMatrix($App, $AppFeatures, $AppTiers, $UserSubscription, $user_id, $options)
+    public static function AppMatrix($App, $AppFeatures, $AppTiers, $UserSubscription, $options)
     {
+
         $fs = new FastSpring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
         $table = array();
         $colspan = count($AppTiers);
@@ -94,6 +95,7 @@ class Store
                 $table[] = "</td>";
             }
             $table[] = '<tr><td></td>';
+            $user_id = Session::get('user_id');
             foreach ($AppTiers as $tier) {
                 if (!empty(SubscriptionModel::previouslySubscribed($user_id)) && SubscriptionModel::previouslySubscribed($user_id) == $tier["tier_id"] && empty($UserSubscription)) {
                     $table[] = "<td>Previous subscription</td>";
@@ -120,9 +122,6 @@ class Store
 
     public static function TierMatrix($Tiers, $Apps, $UserSubscription, $Name, $options)
     {
-        echo "<pre>";
-        print_r(array($Tiers, $Apps, $UserSubscription, $Name));
-        exit;
 
         $table = array();
         $colspan = count($Tiers) + 1;

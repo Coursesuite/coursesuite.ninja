@@ -76,10 +76,8 @@ class StoreController extends Controller
     // $newSubscription = the tier name e.g Bronze, Silver, Gold
     public function updateSubscription($newSubscription, $confirm = null)
     {
-        $userId = Session::get('user_id');
         $model = array(
             "baseurl" => Config::get("URL"),
-            "user_id" => $userId,
             "user_name" => Session::get('user_name'),
             "current_tier" => TierModel::getTierById(SubscriptionModel::getCurrentSubscription($userId)->tier_id, false),
             "new_tier" => TierModel::getTierById(TierModel::getTierIdByName($newSubscription), false),
