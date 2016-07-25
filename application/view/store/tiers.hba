@@ -13,7 +13,7 @@
 	<p>To change tiers, you must cancel your current subscription then purchase your new tier.
 		<a href="http://forum.coursesuite.ninja/" target="_blank">Check the forum</a> for more information about tiers
 		and subscriptions.</p>
-{{#if notLoggedOn}}<p>You must log on in order to purchase a subscription.</p>{{/if}}
+{{#if notLoggedOn}}<p>You must be registered and logged in before you can purchase a subscription.</p>{{/if}}
 </section>
 
 <section class='feature-table standard-width'>
