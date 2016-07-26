@@ -1404,6 +1404,9 @@ user-select: none;
 .form-nav-link a:hover {
 	color: rgba(62,161,236,1.00);
 }
+.free-trial {
+    text-align: center;
+}
 
 
 /* ==============================================================================

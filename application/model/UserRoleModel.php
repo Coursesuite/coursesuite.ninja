@@ -4,6 +4,12 @@
  * Class UserRoleModel
  *
  * This class contains everything that is related to up- and downgrading accounts.
+ *
+ * Account Types:
+ * 1: Basic
+ * 2: Premium?
+ * 3: Trial
+ * 7: Admin
  */
 class UserRoleModel
 {
