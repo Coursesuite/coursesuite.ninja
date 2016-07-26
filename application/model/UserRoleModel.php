@@ -68,4 +68,14 @@ class UserRoleModel
 
 		return false;
 	}
+
+	public static function changeRoleById($user_id, $type)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->prepare("UPDATE users SET user_account_type = :new_type WHERE user_id = :user_id LIMIT 1");
+		$query->execute(array(
+			":new_type" => $type,
+			":user_id" => $user_id
+			));
+	}
 }

@@ -20,6 +20,8 @@ Session::clean();
 
 // keep subscription active states up to date
 SubscriptionModel::validateSubscriptions();
+// keep track of trial users
+UserModel::trialUserExpire();
 
 ob_clean();
 ?>

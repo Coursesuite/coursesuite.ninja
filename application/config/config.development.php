@@ -222,4 +222,6 @@ return array(
 
     'FORCE_HANDLEBARS_COMPILATION' => true, // set to true to force recompilation of handlebars templates on the fly
 
+    'FREE_TRIAL_PERIOD' => 1209600, // number of seconds the free trial lasts for eg 2 weeks = 1209600
+
 );

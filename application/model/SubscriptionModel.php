@@ -126,6 +126,16 @@ class SubscriptionModel
     	$query->execute($params);
     }
 
+    public static function removeSubscriptionsFromId($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "DELETE FROM subscriptions WHERE user_id = :user_id";
+        $query = $database->prepare($sql);
+        $params = array(
+            ":user_id" => $user_id
+            );
+        $query->execute($params);
+    }
+
     public static function updateSubscriptionTier($referenceId, $newTier, $oldTier) {
     	$database = DatabaseFactory::getFactory()->getConnection();
     	$sql = "UPDATE subscriptions SET tier_id = :newTier, info = :oldTier WHERE referenceId = :referenceId";
