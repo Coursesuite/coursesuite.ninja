@@ -70,19 +70,14 @@ class SubscriptionModel
     // Returns PDO Object
     public static function getCurrentSubscription($userid) {
     	$database = DatabaseFactory::getFactory()->getConnection();
-    	$sql = "SELECT subscription_id, tier_id, user_id, added, endDate, referenceId, subscriptionUrl, status, statusReason, testMode, active FROM subscriptions WHERE user_id = :userid";
+    	$sql = "SELECT tier_id, referenceId, active FROM subscriptions WHERE user_id = :userid AND status = 'active' ";
     	$params = array(
     		":userid" => $userid
     		);
     	$query = $database->prepare($sql);
     	$query->execute($params);
-    	$result = $query->fetchAll();
-    	if (count($result) > 1) {
-    		return $result[count($result)-1];
-    	}
-    	else {
-    		return $result;
-    	}
+        $result = $query->fetch();
+        return $result;
     }
 
     public static function addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode) {
