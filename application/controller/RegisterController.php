@@ -25,7 +25,8 @@ class RegisterController extends Controller
         if (LoginModel::isUserLoggedIn()) {
             Redirect::home();
         } elseif ($freeTrial) {
-            $this->View->render('register/index/freeTrial');
+            Session::set('free_trial', true);
+            $this->View->render('register/freeTrial');
         } else {
             $this->View->render('register/index');
         }
@@ -40,7 +41,7 @@ class RegisterController extends Controller
         $registration_successful = RegistrationModel::registerNewUser();
 
         // if ($registration_successful) {
-            Redirect::to('login/index');
+        Redirect::to('login/index');
         // } else {
         //    Redirect::to('register/index');
         // }
@@ -65,14 +66,9 @@ class RegisterController extends Controller
         }
     }
 
-    public function freeTrial() {
-        $this->View->render('register/index/freeTrial');
-    }
-
     public function freeTrial_action() {
-        // RegistrationModel register trial user.  make trial account type, store in account type in db. Just register a normal user but with account trype of trial and remove their subscription once time runs out. account can then be turned into a full account with no subscription
-        // register normal user but with account type of trial. trial account comes with gold subscription. when account reaches a certain age deactive the subscription and change the account type to a normal user. your left with a regular user with no subscription and their courses arent lost.
-        break;
+        $registration_successful = RegistrationModel::registerNewUser();
+        Redirect::to('register/index/freeTrial');
     }
 
     /**

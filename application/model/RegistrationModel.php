@@ -68,14 +68,13 @@ class RegistrationModel
 		$user_activation_hash = sha1(uniqid(mt_rand(), true));
 
 		// Fix newsletter subscription variable
-		if (!$user_newsletter_subscribed){
-			$user_newsletter_subscribed = 0;
-		} else {
-			$user_newsletter_subscribed = 1;
-		}
+		$user_newsletter_subscribed = (!$user_newsletter_subscribed) ? 0 : 1;
+
+		// Set account type - normal(1) or free trial(3)
+		$user_account_type = (Session::get('free_trial')) ? 3 : 1;
 
 		// write user data to database
-		if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash, $user_newsletter_subscribed)) {
+		if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash, $user_newsletter_subscribed, $user_account_type)) {
 			Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
             return false; // no reason not to return false here
 		}
@@ -222,17 +221,18 @@ class RegistrationModel
 	 *
 	 * @return bool
 	 */
-	public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash, $user_newsletter_subscribed)
+	public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash, $user_newsletter_subscribed, $user_account_type=1)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 
 		// write new users data into database
-		$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_activation_hash, user_provider_type, user_newsletter_subscribed)
-                    VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_activation_hash, :user_provider_type, :user_newsletter_subscribed)";
+		$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_account_type, user_creation_timestamp, user_activation_hash, user_provider_type, user_newsletter_subscribed)
+                    VALUES (:user_name, :user_password_hash, :user_email, :user_account_type, :user_creation_timestamp, :user_activation_hash, :user_provider_type, :user_newsletter_subscribed)";
 		$query = $database->prepare($sql);
 		$query->execute(array(':user_name' => $user_name,
 		                      ':user_password_hash' => $user_password_hash,
 		                      ':user_email' => $user_email,
+		                      ':user_account_type' => $user_account_type,
 		                      ':user_creation_timestamp' => $user_creation_timestamp,
 		                      ':user_activation_hash' => $user_activation_hash,
 		                      ':user_provider_type' => 'DEFAULT',
@@ -325,7 +325,7 @@ class RegistrationModel
 		$userInfo = $userInfoQuery->fetchAll(); // PDO::FETCH_ASSOC
 
 		if ($user_newsletter_subscribed == 1){
-			MailChimp::subscribe($userInfo[0]['user_email'], $userInfo[0]['user_name']);
+			MailChimp::subscribe($userInfo[0]->user_email, $userInfo[0]->user_name);
 		}
 
 		if ($query->rowCount() == 1) {
