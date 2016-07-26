@@ -87,6 +87,11 @@ class RegistrationModel
 			return false;
 		}
 
+		// Give trial users their subscription
+		if ($user_account_type == 3){
+			subscriptionModel::giveFreeSubscription($user_id, 2);
+		}
+
 		// send verification email
 		if (self::sendVerificationEmail($user_id, $user_email, $user_activation_hash, $user_newsletter_subscribed)) {
 			Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
