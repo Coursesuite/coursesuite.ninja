@@ -63,7 +63,8 @@ class ApiController extends Controller
                 'api' => false,
                 'tier' => TierModel::getLevelForUser($userObj->user_id),
                 'username' => $userObj->user_name,
-                'useremail' => $userObj->user_email
+                'useremail' => $userObj->user_email,
+                'trial' => ($userObj->account_type == 3) ? true : false
             );
             LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
             $this->View->renderJSON($result);
@@ -88,7 +89,8 @@ class ApiController extends Controller
             'api' => true,
             'tier' => TierModel::getLevelForOrg($data->org),
             'error' => '',                          // some kind of error we need to report to the user (e.g. service has been used too much this month)
-            'org' => $data->org
+            'org' => $data->org,
+            'trial' => false
         );
         LoggingModel::logMethodCall(__METHOD__, $this->username, $data->org, $data->app, $result);
         $this->View->renderJSON($result);
