@@ -159,7 +159,7 @@ return array(
      * EMAIL_USE_SMTP: Use SMTP or not
      * EMAIL_SMTP_AUTH: leave this true unless your SMTP service does not need authentication
      */
-    'EMAIL_USED_MAILER' => 'phpmailer',
+    'EMAIL_USED_MAILER' => 'log',
     'EMAIL_USE_SMTP' => false,
     'EMAIL_SMTP_HOST' => 'mail.coursesuite.hosting24.com.au',
     'EMAIL_SMTP_AUTH' => true,
@@ -222,6 +222,5 @@ return array(
 
     'FORCE_HANDLEBARS_COMPILATION' => true, // set to true to force recompilation of handlebars templates on the fly
 
-    'FREE_TRIAL_PERIOD' => 1209600, // number of seconds the free trial lasts for eg 2 weeks = 1209600
-
+    'FREE_TRIAL_PERIOD' => '+2 week', // +14 day, +10 day, etc
 );

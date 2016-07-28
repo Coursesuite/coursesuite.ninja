@@ -452,25 +452,23 @@ class UserModel
     // system task to check all trial users and remove their subscription if they have expired
     public static function trialUserExpire() {
         $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->query("select count(id) from systasks where running=0 and task='trialuserExpire' and lastrun < timestamp(date_add(now(), INTERVAL -1 DAY))");
+        $query = $database->query("select count(id) from systasks where running=0 and task='trialUserExpire' and lastrun < timestamp(date_add(now(), INTERVAL -1 DAY))");
         if ($query->fetchColumn() == '1') {
             $database->query("update systasks set running=1 where task='trialUserExpire'");
             UserModel::updateTrialUsers();
             $database->query("update systasks set running=0, lastrun=timestamp(now()) where task='trialUserExpire'");
         }
-
     }
 
     public static function updateTrialUsers() {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT user_id, user_creation_timestamp FROM subscriptions WHERE user_account_type = 3";
+        $sql = "SELECT subscription_id, user_id, endDate FROM subscriptions WHERE user_account_type = 3";
         $query = $database->prepare($sql);
         $query->execute();
         $trialUsers = $query->fetchAll();
         foreach ($trialUsers as $users) {
-            if (time() - $users->user_creation_timestamp > Config::get('FREE_TRIAL_PERIOD')) {
-                SubscriptionModel::removeSubscriptionFromId($users->user_id);
+            if (date_diff(date('Y-m-d'), $users->endDate) < 0) {
+                SubscriptionModel::removeSubscriptionFromId($users->subscription_id);
                 UserRoleModel::changeRoleById($users->user_id, 1); //change state to something other than 1 maybe? 
             }
         }

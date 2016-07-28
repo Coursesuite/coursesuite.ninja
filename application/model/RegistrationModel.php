@@ -70,7 +70,7 @@ class RegistrationModel
 		// Fix newsletter subscription variable
 		$user_newsletter_subscribed = (!$user_newsletter_subscribed) ? 0 : 1;
 
-		// Set account type - normal(1) or free trial(3)
+		// Set account type - normal(1), free trial(3) this will need to be changed with the adition of new account types
 		$user_account_type = (Session::get('free_trial')) ? 3 : 1;
 
 		// write user data to database
@@ -89,7 +89,7 @@ class RegistrationModel
 
 		// Give trial users their subscription
 		if ($user_account_type == 3){
-			subscriptionModel::giveFreeSubscription($user_id, 2);
+			SubscriptionModel::giveFreeSubscription($user_id, 2);
 		}
 
 		// send verification email

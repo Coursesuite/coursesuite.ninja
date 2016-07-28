@@ -45,9 +45,9 @@ return array(
 	"FEEDBACK_PASSWORD_REPEAT_WRONG" => "Password and password repeat are not the same.",
 	"FEEDBACK_PASSWORD_TOO_SHORT" => "Password has a minimum length of 6 characters.",
 
-	"FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED" => "Sorry, we could not send you a verification mail. Your account has NOT been created.",
-	"FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR" => "Verification mail could not be sent due to: ",
-	"FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL" => "A verification mail has been sent successfully.",
+	"FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED" => "Sorry, we could not send you a verification email. Your account has NOT been created.",
+	"FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR" => "Verification email could not be sent due to: ",
+	"FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL" => "A verification email has been sent successfully.",
 
 	"FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET" => "Your account is not activated yet. Please click on the confirm link in the mail.",
 	"FEEDBACK_ACCOUNT_SUSPENDED" => "Account Suspended for ",
