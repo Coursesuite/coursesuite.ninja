@@ -1404,6 +1404,9 @@ user-select: none;
 .form-nav-link a:hover {
 	color: rgba(62,161,236,1.00);
 }
+.free-trial {
+    text-align: center;
+}
 
 
 /* ==============================================================================
@@ -1457,6 +1460,10 @@ user-select: none;
 }
 .inline-delete {
     color: rgba(221, 65, 0, 1);
+}
+
+.button.free-trial {
+
 }
 
 

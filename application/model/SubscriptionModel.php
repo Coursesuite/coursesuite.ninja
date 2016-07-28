@@ -100,6 +100,17 @@ class SubscriptionModel
         return $query->execute($params);
     }
 
+    public static function giveFreeSubscription($user_id, $tier_id){
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "INSERT INTO subscriptions (user_id, tier_id, subscriptionUrl, status, info) VALUES (:user_id, :tier_id, 'none', 'active', 'free subscription')";
+        $query = $database->prepare($sql);
+        $params = array(
+            "user_id" => $user_id,
+            "tier_id" => $tier_id
+            );
+        $query->execute($params);
+    }
+
     public static function removeSubscription($referenceId) {
     	$database = DatabaseFactory::getFactory()->getConnection();
     	$sql = "DELETE FROM subscriptions WHERE referenceId = :referenceId LIMIT 1";
@@ -108,6 +119,16 @@ class SubscriptionModel
     		":referenceId" => $referenceId
     		);
     	$query->execute($params);
+    }
+
+    public static function removeSubscriptionsFromId($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "DELETE FROM subscriptions WHERE user_id = :user_id";
+        $query = $database->prepare($sql);
+        $params = array(
+            ":user_id" => $user_id
+            );
+        $query->execute($params);
     }
 
     public static function updateSubscriptionTier($referenceId, $newTier, $oldTier) {

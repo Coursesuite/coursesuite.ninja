@@ -2,6 +2,7 @@
 	<header class='common-header'>
 		<nav><a href="{{baseurl}}">Home</a></nav>
 	</header>
+    <div class='free-trial'><a href='{{baseurl}}register/index/freeTrial' class='button'>Free 14 Day Trial</a></div>
 {{#each section}}
     {{#equals visible 1}}<section class='{{cssclass}}'>
 <div class="store-items standard-width">

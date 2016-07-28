@@ -4,6 +4,12 @@
  * Class UserRoleModel
  *
  * This class contains everything that is related to up- and downgrading accounts.
+ *
+ * Account Types:
+ * 1: Basic
+ * 2: Premium?
+ * 3: Trial
+ * 7: Admin
  */
 class UserRoleModel
 {
@@ -61,5 +67,15 @@ class UserRoleModel
 		}
 
 		return false;
+	}
+
+	public static function changeRoleById($user_id, $type)
+	{
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->prepare("UPDATE users SET user_account_type = :new_type WHERE user_id = :user_id LIMIT 1");
+		$query->execute(array(
+			":new_type" => $type,
+			":user_id" => $user_id
+			));
 	}
 }
