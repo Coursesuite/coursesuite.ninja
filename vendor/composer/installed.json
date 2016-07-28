@@ -189,117 +189,6 @@
         ]
     },
     {
-        "name": "phpmailer/phpmailer",
-        "version": "v5.2.15",
-        "version_normalized": "5.2.15.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "d0186171b28af4f06ac2ad8a84a8f3d6cbc3ba6c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/d0186171b28af4f06ac2ad8a84a8f3d6cbc3ba6c",
-            "reference": "d0186171b28af4f06ac2ad8a84a8f3d6cbc3ba6c",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.0.0"
-        },
-        "require-dev": {
-            "phpdocumentor/phpdocumentor": "*",
-            "phpunit/phpunit": "4.7.*"
-        },
-        "suggest": {
-            "league/oauth2-google": "Needed for Google XOAUTH2 authentication"
-        },
-        "time": "2016-05-10 18:39:36",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "class.phpmailer.php",
-                "class.phpmaileroauth.php",
-                "class.phpmaileroauthgoogle.php",
-                "class.smtp.php",
-                "class.pop3.php",
-                "extras/EasyPeasyICS.php",
-                "extras/ntlm_sasl_client.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "LGPL-2.1"
-        ],
-        "authors": [
-            {
-                "name": "Jim Jagielski",
-                "email": "jimjag@gmail.com"
-            },
-            {
-                "name": "Marcus Bointon",
-                "email": "phpmailer@synchromedia.co.uk"
-            },
-            {
-                "name": "Andy Prevost",
-                "email": "codeworxtech@users.sourceforge.net"
-            },
-            {
-                "name": "Brent R. Matzelle"
-            }
-        ],
-        "description": "PHPMailer is a full-featured email creation and transfer class for PHP"
-    },
-    {
-        "name": "zordius/lightncandy",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zordius/lightncandy.git",
-            "reference": "cb34749fdd192a56705882a25c2f5764e27a9337"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zordius/lightncandy/zipball/cb34749fdd192a56705882a25c2f5764e27a9337",
-            "reference": "cb34749fdd192a56705882a25c2f5764e27a9337",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.0.17"
-        },
-        "time": "2016-05-18 01:37:48",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "LightnCandy\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Zordius Chen",
-                "email": "zordius@yahoo-inc.com"
-            }
-        ],
-        "description": "An extremely fast PHP implementation of handlebars ( http://handlebarsjs.com/ ) and mustache ( http://mustache.github.io/ ).",
-        "homepage": "https://github.com/zordius/lightncandy",
-        "keywords": [
-            "handlebars",
-            "logicless",
-            "mustache",
-            "php",
-            "template"
-        ]
-    },
-    {
         "name": "erusev/parsedown",
         "version": "1.6.0",
         "version_normalized": "1.6.0.0",
@@ -478,6 +367,117 @@
         "keywords": [
             "api",
             "email"
+        ]
+    },
+    {
+        "name": "phpmailer/phpmailer",
+        "version": "v5.2.16",
+        "version_normalized": "5.2.16.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/PHPMailer/PHPMailer.git",
+            "reference": "1d85f9ef3ecfc42bbc4f3c70d5e37ca9a65f629a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/1d85f9ef3ecfc42bbc4f3c70d5e37ca9a65f629a",
+            "reference": "1d85f9ef3ecfc42bbc4f3c70d5e37ca9a65f629a",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.0.0"
+        },
+        "require-dev": {
+            "phpdocumentor/phpdocumentor": "*",
+            "phpunit/phpunit": "4.7.*"
+        },
+        "suggest": {
+            "league/oauth2-google": "Needed for Google XOAUTH2 authentication"
+        },
+        "time": "2016-06-06 09:09:37",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "class.phpmailer.php",
+                "class.phpmaileroauth.php",
+                "class.phpmaileroauthgoogle.php",
+                "class.smtp.php",
+                "class.pop3.php",
+                "extras/EasyPeasyICS.php",
+                "extras/ntlm_sasl_client.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Jim Jagielski",
+                "email": "jimjag@gmail.com"
+            },
+            {
+                "name": "Marcus Bointon",
+                "email": "phpmailer@synchromedia.co.uk"
+            },
+            {
+                "name": "Andy Prevost",
+                "email": "codeworxtech@users.sourceforge.net"
+            },
+            {
+                "name": "Brent R. Matzelle"
+            }
+        ],
+        "description": "PHPMailer is a full-featured email creation and transfer class for PHP"
+    },
+    {
+        "name": "zordius/lightncandy",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zordius/lightncandy.git",
+            "reference": "81ee3eb8e6c26295ae808e6895dc5e5747633628"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zordius/lightncandy/zipball/81ee3eb8e6c26295ae808e6895dc5e5747633628",
+            "reference": "81ee3eb8e6c26295ae808e6895dc5e5747633628",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.0.17"
+        },
+        "time": "2016-07-18 06:51:41",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "LightnCandy\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Zordius Chen",
+                "email": "zordius@yahoo-inc.com"
+            }
+        ],
+        "description": "An extremely fast PHP implementation of handlebars ( http://handlebarsjs.com/ ) and mustache ( http://mustache.github.io/ ).",
+        "homepage": "https://github.com/zordius/lightncandy",
+        "keywords": [
+            "handlebars",
+            "logicless",
+            "mustache",
+            "php",
+            "template"
         ]
     }
 ]

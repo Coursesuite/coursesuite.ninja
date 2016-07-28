@@ -367,12 +367,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zordius/lightncandy.git",
-                "reference": "cb34749fdd192a56705882a25c2f5764e27a9337"
+                "reference": "81ee3eb8e6c26295ae808e6895dc5e5747633628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zordius/lightncandy/zipball/cb34749fdd192a56705882a25c2f5764e27a9337",
-                "reference": "cb34749fdd192a56705882a25c2f5764e27a9337",
+                "url": "https://api.github.com/repos/zordius/lightncandy/zipball/81ee3eb8e6c26295ae808e6895dc5e5747633628",
+                "reference": "81ee3eb8e6c26295ae808e6895dc5e5747633628",
                 "shasum": ""
             },
             "require": {
@@ -406,22 +406,22 @@
                 "php",
                 "template"
             ],
-            "time": "2016-05-18 01:37:48"
+            "time": "2016-07-18 06:51:41"
         }
     ],
     "packages-dev": [
         {
             "name": "phpmailer/phpmailer",
-            "version": "v5.2.15",
+            "version": "v5.2.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "d0186171b28af4f06ac2ad8a84a8f3d6cbc3ba6c"
+                "reference": "1d85f9ef3ecfc42bbc4f3c70d5e37ca9a65f629a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/d0186171b28af4f06ac2ad8a84a8f3d6cbc3ba6c",
-                "reference": "d0186171b28af4f06ac2ad8a84a8f3d6cbc3ba6c",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/1d85f9ef3ecfc42bbc4f3c70d5e37ca9a65f629a",
+                "reference": "1d85f9ef3ecfc42bbc4f3c70d5e37ca9a65f629a",
                 "shasum": ""
             },
             "require": {
@@ -468,7 +468,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2016-05-10 18:39:36"
+            "time": "2016-06-06 09:09:37"
         }
     ],
     "aliases": [],
