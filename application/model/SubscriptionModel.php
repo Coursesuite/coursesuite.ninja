@@ -70,7 +70,7 @@ class SubscriptionModel
     // Returns PDO Object
     public static function getCurrentSubscription($userid) {
     	$database = DatabaseFactory::getFactory()->getConnection();
-    	$sql = "SELECT tier_id, referenceId, active FROM subscriptions WHERE user_id = :userid AND status = 'active' ";
+    	$sql = "SELECT tier_id, referenceId, status FROM subscriptions WHERE user_id = :userid AND status = 'active' ";
     	$params = array(
     		":userid" => $userid
     		);
