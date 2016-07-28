@@ -135,6 +135,9 @@ class TierModel extends Model
             LIMIT 1";
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(':user_id' => $user_id));
+        if ($query->rowCount() < 1) {
+            return -1;
+        }
         return $query->fetch()->tier_level;
     }
 
