@@ -126,9 +126,9 @@ class SubscriptionModel
     	$query->execute($params);
     }
 
-    public static function removeSubscriptionsFromId($user_id) {
+    public static function removeSubscriptionFromId($user_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "DELETE FROM subscriptions WHERE user_id = :user_id";
+        $sql = "DELETE FROM subscriptions WHERE user_id = :user_id LIMIT 1";
         $query = $database->prepare($sql);
         $params = array(
             ":user_id" => $user_id

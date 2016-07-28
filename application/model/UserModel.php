@@ -470,7 +470,7 @@ class UserModel
         $trialUsers = $query->fetchAll();
         foreach ($trialUsers as $users) {
             if (time() - $users->user_creation_timestamp > Config::get('FREE_TRIAL_PERIOD')) {
-                SubscriptionModel::removeSubscriptionsFromId($users->user_id);
+                SubscriptionModel::removeSubscriptionFromId($users->user_id);
                 UserRoleModel::changeRoleById($users->user_id, 1); //change state to something other than 1 maybe? 
             }
         }
