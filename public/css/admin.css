@@ -1,0 +1,34 @@
+.admin-tiles {
+	text-align: center;
+}
+
+.admin-tiles .admin-tile {
+	text-align: center;
+	display: inline-block;
+	box-shadow: 0 0 5px 2px rgba(0,0,0,.1);
+	background-color: #fff;
+	min-width: 20%;
+	color: #999;
+}
+
+.admin-tiles a {
+	color: inherit;
+	text-decoration: none;
+	transition: color .1s;
+}
+
+.admin-tiles a:hover {
+	color: #666;
+	background-color: rgba(0,0,0,.1);
+}
+
+.admin-tiles .admin-tile .icon {
+	line-height: 70px;
+	font-size: 50px;
+}
+
+.admin-tiles .admin-tile figcaption {
+	display: block;
+	line-height: 30px;
+	foint-size: 20px;
+}

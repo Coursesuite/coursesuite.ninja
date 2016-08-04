@@ -1,23 +1,40 @@
+<?php
+$tools = array(
+    "staticPage" => array("label" => "Edit static pages", "icon" => "cs-static-pages", "active" => true),
+    "allUsers" => array("label" => "List / Search users", "icon" => "cs-users", "active" => true),
+    "editSections" => array("label" => "Edit store sections", "icon" => "cs-store-sections", "active" => true),
+    "editApps" => array("label" => "Edit apps", "icon" => "cs-apps", "active" => true),
+    "assignApps" => array("label" => "Assign apps to store sections", "icon" => "cs-flag", "active" => false),
+    "editAllProducts" => array("label" => "Edit subscription products", "icon" => "cs-products", "active" => true),
+    "editTiers" => array("label" => "Edit tiers", "icon" => "cs-tiers", "active" => true),
+    "manualSubscribe" => array("label" => "Manually manage subscriptions", "icon" => "cs-switch", "active" => true),
+    "messages" => array("label" => "Manage messages and notifications", "icon" => "cs-notifications", "active" => true),
+    "editAppTierMatrix" => array("label" => "Edit app-tier matrix", "icon" => "cs-config", "active" => false),
+    "manageHooks" => array("label" => "3rd party hooks / endpoints", "icon" => "cs-config", "active" => true),
+);
+
+function renderTile($route, $data) {
+    if ($data["active"] !== true) return;
+    $stub = Config::get('URL');
+    echo "<figure class='admin-tile'>";
+    echo "<a href='$stub"."admin/$route'>";
+    echo "<div class='icon'><i class='" . $data["icon"] . "'></i></div>";
+    echo "<figcaption>".$data["label"]."</figcaption>";
+    echo "</a>";
+    echo "</figure>";
+}
+
+?>
 <article class="system-index admin-tools">
     <h3>Admin tools</h3>
+    <?php
+        $this->renderFeedbackMessages();
 
-    <?php $this->renderFeedbackMessages(); ?>
+        echo "<section class='admin-tiles'>";
+        foreach ($tools as $route => $tile) {
+            renderTile($route, $tile);
+        }
+        echo "</section>";
 
-    <p>I really haven't done much with the look of this page yet. Controllers will be linked as they are coded ...</p>
-
-    <ul>
-        <li><a href="<?= Config::get('URL')?>admin/staticPage">Edit static pages</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/allUsers">List users</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/editSections">Edit store sections</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/editApps">Edit apps</a></li>
-        <li>Assign apps to store sections</li>
-        <li><a href="<?= Config::get('URL')?>admin/editAllProducts">Edit all products</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/showLog">Show system log</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/editTiers">Edit tiers</a></li>
-        <li>Manage app-tier feature matrix</li>
-        <li>Manage subscriptions</li>
-        <li><a href="<?= Config::get('URL')?>admin/manualSubscribe">Manually add a subscription</a></li>
-        <li><a href="<?= Config::get('URL')?>admin/messages">Send and manage user notifications</a></li>
-    </ul>
-
+    ?>
 </article>
