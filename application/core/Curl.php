@@ -22,8 +22,46 @@ class Curl
 	    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $requestType);
 	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, $returnTransfer);
-	    if($json){curl_setopt($ch, CURLOPT_POSTFIELDS, $json);}  
+	    if($json){curl_setopt($ch, CURLOPT_POSTFIELDS, $json);}
 		ob_clean();
 	    return curl_exec($ch);
+	}
+
+	public static function cloudConvertHook($action, $param = "") {
+		ob_start();
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$headers = array();
+		$headers[] = "Authorization: Bearer " . Config::get("CLOUDCONVERT_API_KEY");
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		switch ($action) {
+			case "subscribe":
+				$vars = array(
+					"url" => $param,
+					"event" => "finished"
+				);
+				curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hook");
+				curl_setopt($ch, CURLOPT_POST, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $vars);  //Post Fields
+				$server_output = curl_exec($ch);
+			break;
+
+			case "unsubscribe":
+				// $data = json_decode(KeyStore::find("cc_hook")->get());
+				if (isset($data)) {
+					$subscription_id = $param; // $data->id;
+					curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hook/" . $subscription_id);
+					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+					$server_output = curl_exec($ch);
+				}
+			break;
+
+			case "list":
+				curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hooks");
+				$server_output = curl_exec($ch);
+
+		}
+		curl_close($ch);
+		return $server_output;
 	}
 }

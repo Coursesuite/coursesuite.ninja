@@ -1,0 +1,38 @@
+<article class="manage-hooks admin-tools">
+
+	<h3>
+		{{#if action}}
+		<a href="{{baseurl}}admin/manageHooks" class="back button">Back to Manage hooks</a>
+		Manage Hooks - {{action}}
+		{{else}}
+		<a href="{{baseurl}}admin" class="back button">Back to admin</a>
+		Manage Hooks
+		{{/if}}
+	</h3>
+
+{{#equals action "unsubscribe"}}
+	<p>Ok, we are no longer listening to CloudConvert.</p>
+	<hr>
+{{/equals}}
+
+{{#equals action "subscribe"}}
+	<p>Ok, we are now listening to CloudConvert conversion finish notifications.</p>
+	<hr>
+{{/equals}}
+
+<h4>Current subscriptions</h4>
+{{#if list}}
+{{#each list}}
+<p><i>{{event}}</i> event notifies <i>{{url}}</i>: <a href="{{baseurl}}admin/manageHooks/unsubscribe/{{id}}">Unsubscribe</a>.</p>
+{{/each}}
+{{else}}
+<p>There are no current listeners. This can happen because it has been disabled, or because the URL was not found and was deleted. See <a href="https://cloudconvert.com/api/hooks" target="_blank">this page</a> for more information about Hooks.</p>
+<p><a href="{{baseurl}}admin/manageHooks/subscribe">Subscribe</a> to the <i>finished</i> event.</p>
+{{/if}}
+
+<h4>Conversion Stat Summary</h4>
+<ul>
+	<li>Average conversion size: {{stats.averagesize}}</li>
+	<li>Most common extensions: {{#each stats.extensions}}<span>{{.}}</span>{{/each}}</li>
+	<li>Average time taken: {{stats.averagetime}}</li>
+</ul>

@@ -21,8 +21,11 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
     <!-- link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     <link href='//r.coursesuite.ninja/mycoursesuite/style.css' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/style.css" />
+    <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/admin.css" />
 <?php
+if (class_exists("AdminController")) {
+    echo "<link rel='stylesheet' href='" . Config::get('URL') . "css/style.css' />";
+}
 if (isset($this->sheets)) {
     foreach ($this->sheets as $sheet) {
 	    if (strpos($sheet, "//") === false) {

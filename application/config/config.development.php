@@ -197,6 +197,8 @@ return array(
     ),
     'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
 
+    'CLOUDCONVERT_API_KEY' => '8pxT0DHRE5lpcVzildrPoEbztL9rc5Es89xG0incUfPNB93LLZueEr7zTK7PTuZmcV1hXkRMITbhjS-U1NnnzQ',
+
     'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
     'FASTSPRING_PARAM_APPEND' => '&mode=test',
 

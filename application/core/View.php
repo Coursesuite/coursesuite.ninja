@@ -90,6 +90,9 @@ class View
                     $json = json_decode($arg1);
                     return json_encode($json, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
                 },
+                "typeof" => function ($arg1) {
+                    return gettype($arg1);
+                }
             );
 
             // extend helpers by adding methods when particular controllers are loaded.
