@@ -66,6 +66,9 @@ class StoreModel {
 
         $model->upgrade = false;
         $model->storeurl = CONFIG::get('URL') . CONFIG::get('DEFAULT_CONTROLLER') . '/info/';
+
+        $model->howelse = (KeyStore::find("howelse")->get() == "true");
+
         return $model;
     }
 

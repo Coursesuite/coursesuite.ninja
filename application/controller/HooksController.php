@@ -4,7 +4,10 @@ class HooksController //  extends Controller
 {
 
     public function cloudconvert() {
-    	$postbody = json_decode(file_get_contents('php://input'));
+    	$raw = file_get_contents('php://input');
+    	$postbody = json_decode($raw, true);
+
+    	LoggingModel::logInternal("HooksController::cloudconvert", $raw, $postbody);
 
     	if (isset($postbody->id)) {
 

@@ -11,6 +11,7 @@ $tools = array(
     "messages" => array("label" => "Manage messages and notifications", "icon" => "cs-notifications", "active" => true),
     "editAppTierMatrix" => array("label" => "Edit app-tier matrix", "icon" => "cs-config", "active" => false),
     "manageHooks" => array("label" => "3rd party hooks / endpoints", "icon" => "cs-config", "active" => true),
+    "storeSettings" => array("label" => "Misc store settings", "icon" => "cs-config", "active" => true),
 );
 
 function renderTile($route, $data) {

@@ -540,4 +540,22 @@ class AdminController extends Controller
 
     }
 
+    public function storeSettings($action = "") {
+        switch ($action) {
+            case "update":
+                KeyStore::find("freetrial")->put(Request::post("freetrial"));
+                KeyStore::find("howelse")->put(Request::post("howelse"));
+                KeyStore::find("freetriallabel")->put(Request::post("freetriallabel"));
+                break;
+        }
+        // if (!empty($action)) exit(); // no flush
+        $model = array(
+            "baseurl" => Config::get("URL"),
+            "freetrial" => KeyStore::find("freetrial")->get(),
+            "freetriallabel" => KeyStore::find("freetriallabel")->get(),
+            "howelse" => KeyStore::find("howelse")->get(),
+        );
+       $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
 }
