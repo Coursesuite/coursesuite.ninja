@@ -514,27 +514,22 @@ class AdminController extends Controller
     }
 
     public function manageHooks($action = "", $id = 0) {
-        // $current  = KeyStore::find("cc_hook")->get();
         switch ($action) {
             case "subscribe":
                 $data = Curl::cloudConvertHook("subscribe", Config::get("URL") . "hooks/cloudconvert");
-                // KeyStore::find("cc_hook")->put($data);
             break;
 
             case "unsubscribe":
-                Curl::cloudConvertHook("unsubscribe", $id);
+                $data = Curl::cloudConvertHook("unsubscribe", $id);
             break;
+
         }
         $list = Curl::cloudConvertHook("list");
-        $dec = json_decode($list,true);
-
-        $stats = HooksModel::stats();
-
         $model = array(
             "baseurl" => Config::get("URL"),
             "action" => $action,
-            "list" => $dec,
-            "stats" => $stats,
+            "list" => json_decode($list,true),
+            "stats" => HooksModel::stats(),
         );
        $this->View->renderHandlebars("admin/manageHooks", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 

@@ -23,7 +23,7 @@
 <h4>Current subscriptions</h4>
 {{#if list}}
 {{#each list}}
-<p><i>{{event}}</i> event notifies <i>{{url}}</i>: <a href="{{baseurl}}admin/manageHooks/unsubscribe/{{id}}">Unsubscribe</a>.</p>
+<p><i>{{event}}</i> event notifies <i>{{url}}</i>: <a href="{{../baseurl}}admin/manageHooks/unsubscribe/{{id}}">Unsubscribe</a>.</p>
 {{/each}}
 {{else}}
 <p>There are no current listeners. This can happen because it has been disabled, or because the URL was not found and was deleted. See <a href="https://cloudconvert.com/api/hooks" target="_blank">this page</a> for more information about Hooks.</p>
@@ -33,6 +33,11 @@
 <h4>Conversion Stat Summary</h4>
 <ul>
 	<li>Average conversion size: {{stats.averagesize}}</li>
-	<li>Most common extensions: {{#each stats.extensions}}<span>{{.}}</span>{{/each}}</li>
 	<li>Average time taken: {{stats.averagetime}}</li>
+	<li>Average conversion minutes used: {{stats.averageminutes}}</li>
+	<li>Input file types by popularity: <ol>
+		{{#each stats.extensions}}<li>{{extension}} ({{count}})</li>{{/each}}
+	</ol></li>
 </ul>
+
+<p>Further statistics can be gathered by examining the application log table.</p>

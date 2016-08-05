@@ -30,6 +30,7 @@ class Curl
 	public static function cloudConvertHook($action, $param = "") {
 		ob_start();
 		$ch = curl_init();
+		$server_output = "";
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$headers = array();
 		$headers[] = "Authorization: Bearer " . Config::get("CLOUDCONVERT_API_KEY");
@@ -47,13 +48,10 @@ class Curl
 			break;
 
 			case "unsubscribe":
-				// $data = json_decode(KeyStore::find("cc_hook")->get());
-				if (isset($data)) {
-					$subscription_id = $param; // $data->id;
-					curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hook/" . $subscription_id);
-					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-					$server_output = curl_exec($ch);
-				}
+				$subscription_id = $param;
+				curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hook/" . $subscription_id);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+				$server_output = curl_exec($ch);
 			break;
 
 			case "list":

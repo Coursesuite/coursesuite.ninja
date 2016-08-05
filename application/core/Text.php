@@ -1,5 +1,5 @@
 <?php
-	
+
 class Text
 {
     private static $texts;
@@ -41,7 +41,7 @@ class Text
             }
         }
     }
-    
+
     public static function toHtml($string) {
 	    $PDE = new ParsedownExtra();
 	    return $PDE->text($string);
@@ -50,11 +50,11 @@ class Text
 	public static function base64enc($val) {
         return strtr(base64_encode($val), '+/=', '-_,');
     }
-    
+
     public static function base64dec($val) {
         return base64_decode(strtr($val, '-_,', '+/='));
     }
-    
+
     public static function StaticPageRenderer($route) {
 	    $page = StaticPageModel::getRecordByKey($route);
 	    if (isset($page) && $page !== false) {
@@ -64,4 +64,13 @@ class Text
 	    return "";
     }
 
+    public static function formatBytes($size, $precision = 2) {
+	$base = log($size, 1024);
+	$suffixes = array('', 'K', 'M', 'G', 'T');
+	return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+    }
+
+    public static function formatTime($seconds) {
+    	return gmdate("H:i:s", $seconds);
+    }
 }
