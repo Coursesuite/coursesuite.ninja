@@ -7,6 +7,9 @@ namespace Composer\Autoload;
 class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
 {
     public static $files = array (
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
     );
 
@@ -16,13 +19,24 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
             'ReCaptcha\\' => 10,
             'Rakshazi\\' => 9,
         ),
+        'P' => 
+        array (
+            'Psr\\Http\\Message\\' => 17,
+        ),
         'L' => 
         array (
             'LightnCandy\\' => 12,
         ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+        ),
         'C' => 
         array (
             'Cviebrock\\DiscoursePHP\\' => 23,
+            'CloudConvert\\' => 13,
         ),
     );
 
@@ -35,13 +49,33 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         array (
             0 => __DIR__ . '/..' . '/rakshazi/digestauth/Rakshazi',
         ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
         'LightnCandy\\' => 
         array (
             0 => __DIR__ . '/..' . '/zordius/lightncandy/src',
         ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
         'Cviebrock\\DiscoursePHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/cviebrock/discourse-php/src',
+        ),
+        'CloudConvert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cloudconvert/cloudconvert-php/src',
         ),
     );
 
