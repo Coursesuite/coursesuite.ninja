@@ -8,12 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'ReCaptcha\\' => array($vendorDir . '/google/recaptcha/src/ReCaptcha'),
     'Rakshazi\\' => array($vendorDir . '/rakshazi/digestauth/Rakshazi'),
-    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'LightnCandy\\' => array($vendorDir . '/zordius/lightncandy/src'),
-    'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
-    'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
-    'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Cviebrock\\DiscoursePHP\\' => array($vendorDir . '/cviebrock/discourse-php/src'),
-    'CloudConvert\\' => array($vendorDir . '/cloudconvert/cloudconvert-php/src'),
     '' => array($baseDir . '/application/core', $baseDir . '/application/model'),
 );
