@@ -27,7 +27,7 @@ class ApiController extends Controller
         }
         $this->username = $digest->user;
 
-	    // LoggingModel::logMessage("ApiController::__constructed properly; user was ". $this->username);
+	//     LoggingModel::logMessage("ApiController::__constructed properly; user was ". $this->username);
     }
 
     /*

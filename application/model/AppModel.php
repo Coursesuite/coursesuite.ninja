@@ -14,11 +14,11 @@ class AppModel extends Model {
     public static function Make() {
         return parent::Create("apps");
     }
-	
+
 	public static function Load($table, $where_clause, $fields) {
 		return parent::Read($table, $where_clause, $fields);
 	}
-	
+
 	public static function Save($table, $idrow_name, $data_model) {
 		return parent::Update($table, $idrow_name, $data_model);
 	}
@@ -110,6 +110,10 @@ class AppModel extends Model {
         $query = $database->prepare($sql);
         $query->execute(array(':app_id' => $app_id));
         $url = $query->fetchColumn(0);
+        $suffix = Environment::suffix();
+        if (!empty($suffix)) {
+            $url = Filter::replaceNth("/", $suffix . "/", $url, 2);
+        }
         $auth_type = intval($query->fetchColumn(1));
         $launchurl = "";
         switch ($auth_type) {
