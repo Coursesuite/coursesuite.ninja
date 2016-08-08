@@ -59,6 +59,7 @@ class StoreController extends Controller
             "Apps" => AppModel::getAllApps(false),
             "Tiers" => TierModel::getTierPackByName($name, false),
             "UserSubscription" => null,
+            "tiersystem" => (KeyStore::find("tiersystem")->get() == "true"),
         );
         if (Session::currentUserId() > 0) {
             $submodel = SubscriptionModel::getCurrentSubscription(Session::currentUserId());

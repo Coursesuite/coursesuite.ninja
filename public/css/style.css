@@ -38,6 +38,17 @@ body>header {height: 175px; }
 	background-color: #fff;
 }
 
+.float-right {
+    float: right;
+}
+.float-left {
+    float: left;
+}
+.float-none {
+    clear: both;
+    float: none;
+}
+
 .conditional-ie {
     display: none;
 }
@@ -64,7 +75,9 @@ body > main > article > section.description
 body > footer
 */
 
-
+.admin-link {
+    color: #ffcc33;
+}
 
 .cs-small {
 	font-size: 0.5em;
@@ -120,7 +133,7 @@ body > header > div > nav > a:hover {
 }
 
 body > main {
-    background-image: url(subtle_dots.png);
+    background-image: url(http://r.coursesuite.ninja/squairy_light.png); /* subtle_dots.png); */
     background-attachment: fixed;
 }
 
@@ -293,7 +306,8 @@ section.user-acknowledgements .acknowledgement-item.level-0 {
 
 
 article > header.common-header > nav,
-article .standard-width {
+article .standard-width,
+#content_index main {
     width: 1100px;
     margin: 0 auto;
 }
@@ -383,8 +397,9 @@ nav.app-section-names .tile.app {
 }
 
 .store-index section.static-content {
-	background-color: rgba(89,114,132,1.00);
-	color: #fff;
+    background-size: cover;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAUElEQVQIWx3DwQ2AIAxA0V+KwAAevDiUiQs4ixdvzgsFauJLnhz36qKBFDM5CVEDoJgZcj6blxQpMeACzea/tolc7+6iQm9Os04dAw9KWZQPAsIc9RD1Z4AAAAAASUVORK5CYII=");
+    color: #fff;
 }
 .store-index section.static-content .how-else {
 	margin: 10px auto 0;
@@ -727,11 +742,15 @@ details > summary {
 	color: #d5cdc6
 }
 .timeline .timeline-heading h4 {
-	color: #4fc3f7;
+	color: #96ff7f;
 	text-transform: uppercase;
 	margin: 0;
 	font-size: 16px;
 	text-align: inherit;
+}
+.timeline .timeline-image h4 a {
+    color: #fff;
+    text-decoration: underline;
 }
 
 @media(min-width:768px) {
@@ -1011,41 +1030,46 @@ table.app-matrix td {
 table.app-matrix thead th {
 	font-size: 20px;
 }
-table.app-matrix thead .tier-level-0 {
+table.app-matrix thead .tier-level-1 {
 	background: transparent;
 	color: rgba(150,150,150,1.00);
 }
-table.app-matrix thead .tier-level-1 {
+table.app-matrix thead .tier-level-2 {
 	background: transparent;
 	color: rgba(28,165,234,1.00);
 }
-table.app-matrix thead .tier-level-2 {
+table.app-matrix thead .tier-level-3 {
 	background: transparent;
 	color: rgba(128,183,35,1.00);
 }
 
 
-table.app-matrix .tier-level-0 {
+table.app-matrix .tier-level-1 {
 	background-color: rgba(150,150,150,1.00);
 }
-table.app-matrix .tier-level-1 {
+table.app-matrix .tier-level-2 {
 	background-color: rgba(28,165,234,1.00);
 }
-table.app-matrix .tier-level-2 {
+table.app-matrix .tier-level-3 {
 	background-color: rgba(128,183,35,1.00);
 }
 
 
-table.app-matrix > tbody td {
+table.app-matrix.tiers-enabled > tbody td {
 	width: 22.22%; /* assuming 3 columns */
 }
-table.app-matrix.colspan-2 > tbody td {
+table.app-matrix.tiers-enabled.colspan-2 > tbody td {
 	width: 33.33%; /* assuming 3 columns */
 }
+table.app-matrix > tbody > td {
+    width: auto;
+}
+
 
 table.app-matrix > tbody th {
     text-align: right;
     text-shadow: none;
+    white-space: nowrap;
 }
 table.app-matrix > tfoot > tr:not(.fill) > td {
 	padding: 0;
@@ -1097,8 +1121,12 @@ table.app-matrix > tfoot > tr.price {
 	color: #333;
 }
 */
+table.app-matrix > tfoot > tr.price {
+    text-shadow: none;
+}
 table.app-matrix > tfoot > tr.price > th {
 	text-align: right;
+
 }
 
 .tier-pack-matrix table {
@@ -1672,7 +1700,7 @@ and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (-webkit-min-device-pixel-ratio: 2) {
 	body > main {
-	    background-image: url(subtle_dots_@2X.png);
+	    background-image: url(http://r.coursesuite.ninja/squairy_light_@2X.png); /* subtle_dots_@2X.png */
 	}
 }idth: 768px) and (device-height: 1024px) and (orientation:portrait){
 	body {
@@ -1728,7 +1756,7 @@ and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (-webkit-min-device-pixel-ratio: 2) {
 	body > main {
-	    background-image: url(subtle_dots_@2X.png);
+	    background-image: url(http://r.coursesuite.ninja/squairy_light_@2X.png); // subtle_dots_@2X.png);
 	}
 }
 
@@ -1818,3 +1846,7 @@ and (-webkit-min-device-pixel-ratio: 2) {
     border-width: 0px;
     border-style: solid;
 }
+
+
+/* content pages */
+

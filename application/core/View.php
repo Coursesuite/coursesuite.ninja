@@ -92,6 +92,9 @@ class View
                 },
                 "typeof" => function ($arg1) {
                     return gettype($arg1);
+                },
+                "idify" => function ($arg1) {
+                    return preg_replace('/[^a-zA_Z0-9]/', '_', strtolower($arg1));
                 }
             );
 

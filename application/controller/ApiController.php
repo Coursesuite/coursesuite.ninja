@@ -29,7 +29,7 @@ class ApiController extends Controller
 
 	    // LoggingModel::logMessage("ApiController::__constructed properly; user was ". $this->username);
     }
-    
+
     /*
 	 * An Api call will create a sessionid, which puts a row in the session_data table. We don't want to persist this, so delete it afterwards
 	 */
@@ -48,7 +48,7 @@ class ApiController extends Controller
      * @return JSON
      * @see Session::isActiveSession()
 
-    * input is bin2hex/encrypted: 663762623633626661393032373166353964393935333862313135336463386537646230636138336133343861633062323163343631643039386439353461334812d03b8951695b359bfbb7b8833e23684aea24450339659f1d02842e7c65abd49ed70ca651bb871aafecb74fbc145e 
+    * input is bin2hex/encrypted: 663762623633626661393032373166353964393935333862313135336463386537646230636138336133343861633062323163343631643039386439353461334812d03b8951695b359bfbb7b8833e23684aea24450339659f1d02842e7c65abd49ed70ca651bb871aafecb74fbc145e
     * output is a php session id, e.g. mog1suctkfbm5rii8fo2pla8j6
 
      */
@@ -61,7 +61,7 @@ class ApiController extends Controller
                 'appkey' => $appkey,
                 'valid' => $tokenIsValid,
                 'api' => false,
-                'tier' => TierModel::getLevelForUser($userObj->user_id),
+                'tier' => TierModel::getLevelForUser($userObj->user_id), // LEVEL (e.g. 0=bronze, 1=silver, etc) not ID; -1 means none
                 'username' => $userObj->user_name,
                 'useremail' => $userObj->user_email,
                 'trial' => ($userObj->account_type == 3) ? true : false
@@ -171,7 +171,7 @@ class ApiController extends Controller
             $oldTier = SubscriptionModel::getCurrentSubscription($userid)->tier_id;
 		    switch ($params[0]) {
 			    case "activated":
-                    SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode);                   
+                    SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode);
                     break;
 				case "deactivated":
 			    	// deactivation will remove the subscription entry from the database
@@ -184,7 +184,7 @@ class ApiController extends Controller
 					if ($endDateSet) {
 						if ($status == "inactive") {} // has become inactive and will deactivate soon
 						if ($statusReason == "canceled") {} // we should next or soon see a deactivated
-					} 
+					}
                     if ($status == "active") {
                         if ($tierid != $oldTier) { // subscription upgraded/downgraded
                             SubscriptionModel::updateSubscriptionTier($referenceId, $tierid, $oldTier);

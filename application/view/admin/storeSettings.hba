@@ -7,6 +7,11 @@
 
 	<form method="post" action="{{baseurl}}admin/storeSettings/update">
 		<p>
+			<label>Enable "tier" system</label>
+			<input type="radio" name="tiersystem" value="false"{{#equals tiersystem "true"}}{{else}} checked{{/equals}} id="r01"><label for="r01">No</label>
+			<input type="radio" name="tiersystem" value="true"{{#equals tiersystem "true"}} checked{{/equals}} id="r02"><label for="r02">Yes</label>
+		</p>
+		<p>
 			<label>Enable "free trial" button</label>
 			<input type="radio" name="freetrial" value="false"{{#equals freetrial "true"}}{{else}} checked{{/equals}} id="r11"><label for="r11">No</label>
 			<input type="radio" name="freetrial" value="true"{{#equals freetrial "true"}} checked{{/equals}} id="r12"><label for="r12">Yes</label>

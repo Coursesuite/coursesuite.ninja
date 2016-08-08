@@ -2,10 +2,11 @@
 
 <header class='common-header margin-below'>
 	<nav class="crumb">
-	    <a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}store/tiers/{{Name}}">Tier features <i class='cs-arrow-right cs-small'></i> {{Name}}</a>
+	    <a href="{{baseurl}}"><i class='cs-home-outline'></i> Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}store/tiers/{{Name}}">{{#if tiersystem}}Tier features{{else}}Features{{/if}} <i class='cs-arrow-right cs-small'></i> {{Name}}</a>
 	</nav>
 </header>
 
+{{#if tiersystem}}
 <section class='information standard-width'>
 	<p>Tiers are paid subscriptions that contain multiple products that you are able to launch from CourseSuite.
 		Higher tiers allow you to access more features or customise more options within the apps. As new apps are
@@ -15,6 +16,14 @@
 		and subscriptions.</p>
 {{#if notLoggedOn}}<p>You must be registered and logged in before you can purchase a subscription.</p>{{/if}}
 </section>
+{{else}}
+<section class='information standard-width'>
+	<p>The NinjaSuite is a set of browser based apps that each offer unique features allowing you to craft specific e-learning packages.
+		Your subscription will allow you to access all of the apps and features. We are also constantly releasing new apps, and
+		these will automatically become available to you as a subscriber without additional cost.</p>
+	<p>Check the product pages to find out more details about each app.</p>
+</section>
+{{/if}}
 
 <section class='feature-table standard-width'>
 	{{{Store::TierMatrix Tiers Apps UserSubscription Name}}}

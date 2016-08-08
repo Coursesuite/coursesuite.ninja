@@ -106,6 +106,9 @@ class TierModel extends Model
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT tier_id FROM tiers WHERE pack_id IN (SELECT id FROM tier_packs WHERE name=:name) ORDER BY tier_level";
+        if (KeyStore::find("tiersystem")->get() !== "true") {
+            $sql .= " LIMIT 1"; //  take lowest tier only, order is already ascending by level
+        }
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(':name' => $tier_name));
         $tiers = array();
@@ -163,20 +166,21 @@ class TierModel extends Model
 
     /**
      *   return tiers that contain a given app
-     * the apps tied to a tier are stored in a comma-separated string, we need to LIKE match them
-     * @param $app_id - an int, we need to cast as string since LIKE uses string matching
      */
     public static function getAllAppTiers($app_id, $onlyactive = true)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         $Active = ($onlyactive == true) ? "AND active = 1" : "";
 
-        $sql = "SELECT tier_id, tier_level, name, description, store_url, price, period
+        $sql = "SELECT tier_id, tier_level, name, description, store_url, price,currency,  period
                     FROM tiers
                     WHERE tier_id IN (SELECT tier_id FROM app_tiers WHERE app_id = :app_id)
                     $Active
                     ORDER BY tier_level, name
         ";
+        if (KeyStore::find("tiersystem")->get() !== "true") {
+            $sql .= " LIMIT 1"; //  take lowest tier only, order is already ascending by level
+        }
 
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(
@@ -190,12 +194,15 @@ class TierModel extends Model
         $database = DatabaseFactory::getFactory()->getConnection();
         $Active = ($onlyactive == true) ? "AND active = 1" : "";
 
-        $sql = "SELECT tier_id, tier_level, name, description, store_url, price, period
+        $sql = "SELECT tier_id, tier_level, name, description, store_url, price, currency, period
                     FROM tiers
                     WHERE pack_id IN (SELECT id FROM tier_packs WHERE name = :pack)
                     $Active
                     ORDER BY tier_level, name
         ";
+        if (KeyStore::find("tiersystem")->get() !== "true") {
+            $sql .= " LIMIT 1"; //  take lowest tier only, order is already ascending by level
+        }
 
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(
@@ -204,11 +211,13 @@ class TierModel extends Model
         return $query->fetchAll();
     }
 
-    public static function getAppFeatures($app_id)
+    public static function getAppFeatures($app_id, $onlyactive = true)
     {
+        $Active = ($onlyactive == true) ? "AND enabled = 1" : "";
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT min_tier_level, feature, details, match_label, mismatch_label
                     FROM app_feature WHERE app_id = :app_id
+                    $Active
                     ORDER BY min_tier_level, feature";
         $query = $database->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $query->execute(array(':app_id' => $app_id));

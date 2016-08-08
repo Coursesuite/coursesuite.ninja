@@ -159,7 +159,7 @@ return array(
      * EMAIL_USE_SMTP: Use SMTP or not
      * EMAIL_SMTP_AUTH: leave this true unless your SMTP service does not need authentication
      */
-    'EMAIL_USED_MAILER' => 'log',
+    'EMAIL_USED_MAILER' => 'phpmailer',
     'EMAIL_USE_SMTP' => false,
     'EMAIL_SMTP_HOST' => 'mail.coursesuite.hosting24.com.au',
     'EMAIL_SMTP_AUTH' => true,
@@ -210,9 +210,9 @@ return array(
     'STORE_INFO_SHOW_PRICING' => true,
 
     // footer info
-    'GLOBAL_FOOTER_COLUMN_1' => '<h3>About CourseSuite</h3><p>CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses. We also offer Open Source plugins for Moodle and downloadable online course content.</p>',
-    'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/support">Support</a> <a href="/content/privacy">Privacy</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
-    'GLOBAL_FOOTER_COLUMN_3' => '<p>&copy; CourseSuite 2016-3016</p>',
+    'GLOBAL_FOOTER_COLUMN_1' => '<h3>About Us</h3><p>We are a small Australian team focused on developing a suite of great online web apps that allow rapid creation of interactive and intuitive HTML5-based SCORM courses. We also release Open Source plugins for Moodle, and produce online course content.</p>',
+    'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/privacy">Privacy</a> <a href="http://forum.coursesuite.ninja/categories/">Forum</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
+    'GLOBAL_FOOTER_COLUMN_3' => '<h3>all rights reserved</h3><p>&copy; CourseSuite 2016-3016<br/><a href="mailto:&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;">&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;</a></p>',
 
     /*
      * Mailchimp Configuration
@@ -225,4 +225,5 @@ return array(
     'FORCE_HANDLEBARS_COMPILATION' => true, // set to true to force recompilation of handlebars templates on the fly
 
     'FREE_TRIAL_PERIOD' => '+2 week', // +14 day, +10 day, etc
+    'FREE_TRIAL_TIER' => 'Bronze',
 );

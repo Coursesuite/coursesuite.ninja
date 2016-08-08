@@ -56,7 +56,7 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
     <header>
         <div><a href="<?php echo $baseurl; ?>" class="logo"><img src="http://r.coursesuite.ninja/logo/cs_logo_70px_colour.png"></a></div>
         <div><nav>
-        	<a href="<?php echo $baseurl; ?>">Home</a>
+        	<a href="<?php echo $baseurl; ?>"><i class='cs-home-filled'></i> Home</a>
         	<a href="http://forum.coursesuite.ninja/categories/" target="_blank">Forum</a>
             <a href="http://help.coursesuite.ninja/" target="_blank">Helpdesk</a>
         <?php if (Session::userIsLoggedIn() && false) { ?>
@@ -94,7 +94,7 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
                     </li>
                 </ul><?php } ?>
         <?php if (Session::get("user_account_type") == 7) : ?>
-            <a href="<?php echo $baseurl; ?>admin/"<?php if (View::checkForActiveController($filename, "admin")) { echo ' class="active" '; } ?>>Admin</a>
+            <a href="<?php echo $baseurl; ?>admin/" class="admin-link <?php if (View::checkForActiveController($filename, "admin")) { echo 'active'; } ?>"><i class='cs-spanner'></i> Admin</a>
         <?php endif; ?>
             <a href="<?php echo $baseurl; ?>login/logout">Logout</a>
         <?php } ?>

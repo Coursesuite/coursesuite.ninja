@@ -24,14 +24,18 @@ class Store
         $fs = new FastSpring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
         $table = array();
         $colspan = count($AppTiers);
-        $table[] = '<table class="app-matrix colspan-' . $colspan . '"><thead>';
-        // $table[] = "<tr><td></td><td colspan='$colspan'><div id='tier-bracket'>Tiers</div></td></tr>";
+        $table[] = '<table class="app-matrix colspan-' . $colspan . '">';
+        $table[] = '<thead>';
         $table[] = "<tr><td></td><td colspan='$colspan'>" . Text::get('TIER_MATRIX_HEADER') . "</td></tr>";
-        $table[] = '<tr><td></td>';
-        foreach ($AppTiers as $tier) {
-            $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'><i class='cs-" . strtolower($tier["name"]) . "-full'></i></th>";
+        if (KeyStore::find("tiersystem")->get() == "true") {
+            // $table[] = "<tr><td></td><td colspan='$colspan'><div id='tier-bracket'>Tiers</div></td></tr>";
+            $table[] = '<tr><td></td>';
+            foreach ($AppTiers as $tier) {
+                $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'><i class='cs-" . strtolower($tier["name"]) . "-full'></i></th>";
+            }
+            $table[] = '</tr>';
         }
-        $table[] = '</tr></thead><tbody>';
+        $table[] = '</thead><tbody>';
 
         // app feature matrix
         foreach ($AppFeatures as $info) {
@@ -58,9 +62,9 @@ class Store
 
         // price in footer
         if (Config::get('STORE_INFO_SHOW_PRICING') == true) {
-            $table[] = '<tr class="price fill"><th>Price (USD):</th>';
+            $table[] = '<tr class="price fill"><th>Price:</th>';
             foreach ($AppTiers as $tier) {
-                $table[] = '<td>$' . $tier["price"] . ' /' . $tier["period"] . '</td>';
+                $table[] = '<td>$' . $tier["price"] . ' per ' . $tier["period"] . ' (' . $tier["currency"] . ')</td>';
             }
             $table[] = '</tr>';
         }
@@ -123,23 +127,32 @@ class Store
     public static function TierMatrix($Tiers, $Apps, $UserSubscription, $Name, $options)
     {
 
+        $infourl = Config::get("URL") . "store/info";
+
         $table = array();
         $colspan = count($Tiers) + 1;
-        $table[] = '<table class="tier-matrix app-matrix"><thead>';
-        $table[] = "<tr><td></td>";
+        $table[] = '<table class="tier-matrix app-matrix">';
         $tier_apps = array();
-        foreach ($Tiers as $tier) {
-            $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'><i class='cs-" . strtolower($tier["name"]) . "-full'></i>";
-            // if (isset($tier["description"])) $table[] = "<br><small>" . $tier["description"] . "</small>";
-            if ($UserSubscription !== null) {
-                if ($UserSubscription["tier_id"] == $tier["tier_id"]) {
-                    $table[] = '<p>(Your current tier)</p>';
+        if (KeyStore::find("tiersystem")->get() == "true") {
+            $table[] = "<thead><tr><td></td>";
+            foreach ($Tiers as $tier) {
+                $table[] = "<th class='tier-level-" . $tier["tier_level"] . "'><i class='cs-" . strtolower($tier["name"]) . "-full'></i>";
+                // if (isset($tier["description"])) $table[] = "<br><small>" . $tier["description"] . "</small>";
+                if ($UserSubscription !== null) {
+                    if ($UserSubscription["tier_id"] == $tier["tier_id"]) {
+                        $table[] = '<p>(Your current tier)</p>';
+                    }
                 }
+                $table[] = "</th>";
+                $tier_apps = array_merge($tier_apps, $tier["app_ids"]);
             }
-            $table[] = "</th>";
-            $tier_apps = array_merge($tier_apps, $tier["app_ids"]);
+            $table[] = '</tr></thead>';
+        } else {
+            foreach ($Tiers as $tier) {
+                $tier_apps = array_merge($tier_apps, $tier["app_ids"]);
+            }
         }
-        $table[] = '</tr></thead><tbody>';
+        $table[] = '<tbody>';
         $tier_apps = array_unique($tier_apps);
         foreach ($Apps as $app) {
             if (in_array($app["app_id"], $tier_apps)) {
@@ -147,13 +160,13 @@ class Store
                 $AppFeatures = TierModel::getAppFeatures($app["app_id"]);
                 $AppTiers = TierModel::getAllAppTiers($app["app_id"]);
                 if ($headered != true) {
-                    $table[] = "<tr><th colspan='$colspan' class='app-header'>" . $app["name"] . "</th></tr>";
+                    $table[] = "<tr><th colspan='$colspan' class='app-header'>" . $app["name"] . " <a href='$infourl/{$app["name"]}' class='float-right'><i class='cs-info-large-outline'></i></a></th></tr>";
                     $headered = true;
                 }
                 foreach ($AppFeatures as $info) {
                     $table[] = '<tr><td><h3>' . $info->feature . '</h3>' . $info->details . '</td>';
                     $cell = 1;
-                    for ($i = 1; $i <= $AppTiers[0]->tier_level; $i++) {
+                    for ($i = 1; $i <= $AppTiers[0]->tier_level -1; $i++) { // tier_level is 1 based
                         $table[] = "<td>-</td>";
                     }
                     foreach ($AppTiers as $tier) {

@@ -541,6 +541,7 @@ class AdminController extends Controller
                 KeyStore::find("freetrial")->put(Request::post("freetrial"));
                 KeyStore::find("howelse")->put(Request::post("howelse"));
                 KeyStore::find("freetriallabel")->put(Request::post("freetriallabel"));
+                KeyStore::find("tiersystem")->put(Request::post("tiersystem"));
                 break;
         }
         // if (!empty($action)) exit(); // no flush
@@ -549,6 +550,7 @@ class AdminController extends Controller
             "freetrial" => KeyStore::find("freetrial")->get(),
             "freetriallabel" => KeyStore::find("freetriallabel")->get(),
             "howelse" => KeyStore::find("howelse")->get(),
+            "tiersystem" => KeyStore::find("tiersystem")->get(),
         );
        $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }

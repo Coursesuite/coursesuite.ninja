@@ -1,3 +1,5 @@
+<div class="static-page page-{{idify App.meta_title}}">
 {{#with staticPage}}
 	{{{htmlify content}}}
 {{/with}}
+</div>

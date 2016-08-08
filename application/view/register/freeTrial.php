@@ -1,13 +1,13 @@
 <article class="register-login">
-    
+
     <header class='common-header margin-below'>
-        <nav><a href="<?php echo Config::get('URL'); ?>">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>login/">Register for free trial</a></nav>
+        <nav><a href="<?php echo Config::get('URL'); ?>"><i class='cs-home-outline'></i> Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>login/">Register for free trial</a></nav>
     </header>
-    
+
     <section class="login-page-container standard-width">
 
         <div class="register-box">
-            <header>New user</header>
+            <header>Create your trial account</header>
             <main>
                 <form method="post" action="<?php echo Config::get('URL'); ?>register/freeTrial_action" autocomplete="off">
                 <?php $rego = Session::get("form_data"); ?>

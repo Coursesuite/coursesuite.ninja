@@ -1,6 +1,6 @@
 <article class='store-index'>
 	<header class='common-header'>
-		<nav><a href="{{baseurl}}">Home</a></nav>
+		<nav><a href="{{baseurl}}"><i class='cs-home-outline'></i> Home</a></nav>
 	</header>
 {{#each section}}
     {{#equals visible 1}}<section class='{{cssclass}}'>

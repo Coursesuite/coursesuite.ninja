@@ -1,9 +1,9 @@
 <article class="register-login">
-    
+
     <header class='common-header margin-below'>
-        <nav><a href="<?php echo Config::get('URL'); ?>">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>login/">Login or register</a></nav>
+        <nav><a href="<?php echo Config::get('URL'); ?>"><i class='cs-home-outline'></i> Home</a> <i class='cs-arrow-right cs-small'></i> <a href="<?php echo Config::get('URL'); ?>login/">Login or register</a></nav>
     </header>
-    
+
     <section class="login-page-container standard-width">
 
         <div class="login-box">
@@ -49,5 +49,5 @@
         </div>
 
     </section>
-    
+
 </article>

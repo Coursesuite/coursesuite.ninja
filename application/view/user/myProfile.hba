@@ -2,14 +2,14 @@
 
 	<header class='common-header margin-below'>
 		<nav>
-			<a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}user/">My Account</a>
+			<a href="{{baseurl}}"><i class='cs-home-outline'></i> Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}user/">My Account</a>
 		</nav>
 	</header>
 
 	{{#each feedback}}<p class='feedback'>{{.}}</p>{{/each}}
 
 	<section class="profile-display">
-	
+
 		<div class="profile-card">
 			<figure class="user-avatar-image">
 				<img src="{{user_avatar}}" class="user-avatar-image">
@@ -21,9 +21,9 @@
 			<div><a href="{{baseurl}}user/changeNewsletterSubscription">Update newsletter subscription</a></div>
 			<div class="user-destroy"><a href="{{baseurl}}user/destroy">Delete account <i class='cs-delete'></i></a></div>
 		</div>
-	
+
 	</section>
-	
+
 	<section class="subscription-display">
 	<h4>Subscriptions:</h4>
 	<table border=1>
@@ -33,7 +33,7 @@
 				<td>{{tier.name}} ({{tier.pack.0.name}})</td>
 				<td>{{added}}</td>
 				<td>{{#if endDate}}{{endDate}}{{else}}Never{{/if}}</td>
-				<td><a href="{{subscriptionUrl}}" target="_blank"><i class='cs-stack-2'></i> Show (in new window)</a></td>
+				<td>{{#equals subscriptionUrl ""}}14 day free trial{{else}}<a href="{{subscriptionUrl}}" target="_blank"><i class='cs-stack-2'></i> Show (in new window)</a>{{/equals}}</td>
 				<td>{{status}}<br>{{statusReason}}</td>
 				<td>{{info}}</td>
 			</tr>
@@ -55,10 +55,10 @@
 	<div class="products-gold" id="gold"><h5>Gold</h5>
 		{{#each products}}
 		{{#equals category "Gold"}}<div id="{{product_id}}" name="{{link_id}}" {{#equals link_id ../subscription_type}}class="product-subscribed"{{/equals}}>{{display_name}}</div>{{/equals}}
-		{{/each}}	
+		{{/each}}
 	</div>
 	{{/if}}
 	-->
 	</section>
-	
+
 </article>

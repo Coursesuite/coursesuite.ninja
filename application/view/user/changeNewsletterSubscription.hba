@@ -2,7 +2,7 @@
 
 	<header class='common-header margin-below'>
 		<nav>
-			<a href="{{baseurl}}">Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}user/">My Account</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}user/changeNewsletterSubscription">Change newsletter subscription</a>
+			<a href="{{baseurl}}"><i class='cs-home-outline'></i> Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}user/">My Account</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}user/changeNewsletterSubscription">Change newsletter subscription</a>
 		</nav>
 	</header>
 	<section class="profile-display standard-width">
@@ -21,7 +21,7 @@
 		<br/>
 		<input type='submit' value='Done' />
 		</form>
-				
+
 	</section>
 
 </article>
