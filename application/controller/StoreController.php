@@ -93,4 +93,21 @@ class StoreController extends Controller
         }
     }
 
+    public function contactUs() {
+        $user_email = Request::post("your-email", true);
+        $user_name = Request::post("your-name", true);
+        $message = Request::post("your-message", true);
+
+        $mailer = new Mail;
+        $mail_sent = $mailer->sendMail(Config::get('EMAIL_SUBSCRIPTION'), $user_email, $user_name, "CourseSuite Contact Form", $message);
+
+        $model = array(
+            "sent" => true, // $mail_sent,
+            "email" => $email,
+            "name" => $name,
+            "message" => $message,
+        );
+        $this->View->renderJSON($model);
+    }
+
 }

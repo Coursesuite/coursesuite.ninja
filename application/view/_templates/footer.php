@@ -3,9 +3,9 @@
     <footer>
 	    <div class="standard-width">
 		    <div class="footer-columns">
-			    <div><?php echo Config::get('GLOBAL_FOOTER_COLUMN_1'); ?></div>
-			    <div><?php echo Config::get('GLOBAL_FOOTER_COLUMN_2'); ?></div>
-			    <div><?php echo Config::get('GLOBAL_FOOTER_COLUMN_3'); ?></div>
+			    <div><?php echo KeyStore::find('footer_col1')->get(); ?></div>
+			    <div><?php echo KeyStore::find('footer_col2')->get(); ?></div>
+			    <div><?php echo KeyStore::find('footer_col3')->get(); ?></div>
 		    </div>
 	    </div>
     </footer>

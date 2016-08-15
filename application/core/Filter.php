@@ -56,12 +56,4 @@ class Filter
 
         return $value;
     }
-
-    public static function replaceNth($search, $replace, $subject, $nth, $delimiter = "/") {
-        $found = preg_match_all('/'.preg_quote($search, $delimiter).'/', $subject, $matches, PREG_OFFSET_CAPTURE);
-        if (false !== $found && $found > $nth) {
-            return substr_replace($subject, $replace, $matches[0][$nth][1], strlen($search));
-        }
-        return $subject;
-    }
 }

@@ -23,8 +23,7 @@
                     <a href='{{../../storeurl}}{{app_key}}'>More info</a>
                     {{#each ../../appTokens}}
                     	{{#equals app_id ../app_id}}
-                            {{!-- if token <a href='{{../launch}}?token={{token}} --}}
-                            <a href='{{launchurl}}' target='_app' class='launch'>Launch</a>
+                            {{#if token}}<a href='{{../launch}}?token={{token}}' target='_app' class='launch'>Launch</a>{{else}}<a href='{{launchurl}}' target='_app' class='launch'>Launch</a>{{/if}}
                         {{/equals}}
                     {{/each}}{{/equals}}
                 </div>
@@ -42,4 +41,5 @@
 		</div>
 	</section>
 {{/if}}
+{{{Store::ContactForm}}}
 </article>

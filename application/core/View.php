@@ -38,12 +38,12 @@ class View
         require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
     }
 
-    public function renderHandlebars($filename, $data = null, $template_folder = false, $force = false)
+    public function renderHandlebars($filename, $data = null, $template_folder = false, $force = false, $return = false)
     {
 
         $hashname = md5($filename);
 
-        if ($template_folder == false) {
+        if ($template_folder === false) {
             $template_folder = "_templates";
         }
 
@@ -103,6 +103,7 @@ class View
             if (class_exists("StoreController")) {
                 $helper_functions[] = "Store::AppMatrix";
                 $helper_functions[] = "Store::TierMatrix";
+                $helper_functions[] = "Store::ContactForm";
             }
             $helper_functions[] = "Text::StaticPageRenderer";
             $phpStr = LightnCandy::compile($template, array(
@@ -112,6 +113,13 @@ class View
             ));
             file_put_contents($precompiled, implode('', array('<', '?php', ' ', $phpStr, ' ', '?', '>'))); // so php tags are not recognised
         }
+
+        $buffer = "";
+
+        if ($return === true) { // capture all outputs
+            $buffer = ob_start();
+        }
+
         if ($template_folder !== null) {
             require Config::get('PATH_VIEW') . $template_folder . '/header.php';
         }
@@ -122,7 +130,14 @@ class View
             require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
         }
 
+        if ($return === true) {
+            $buffer = ob_get_contents();
+            ob_end_clean();
+        }
+
         self::destroyFeedbackMessages();
+
+        return $buffer;
 
     }
 

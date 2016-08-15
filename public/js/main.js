@@ -185,6 +185,18 @@ function slideshow(index) {
 // make rich editors and other dooblie-doos
 window.addEventListener("load", function () {
 
+	document.querySelectorAll("form[method='ajax']").forEach(function (el, index) {
+		$(el).on("submit", function (e) {
+			e.preventDefault;
+			var $this = $(this);
+			$.post($this.attr("action"), $this.serialize(), function (result) {
+				$("#contact-feedback").html("<p>Your message has been sent! Thanks for your interest.</p>");
+				$(el).reset();
+			});
+			return false;
+		});
+	});
+
 	document.querySelectorAll("textarea[data-markdown]").forEach(function (el,index) {
 		el.simplemde = new SimpleMDE({
 			element: el,

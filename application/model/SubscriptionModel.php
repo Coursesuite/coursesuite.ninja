@@ -116,7 +116,7 @@ class SubscriptionModel
     public static function giveFreeSubscription($user_id, $tier_id)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "INSERT INTO subscriptions (user_id, tier_id, endDate, subscriptionUrl, status, info) VALUES (:user_id, :tier_id, :endDate, 'none', 'active', 'Free subscription')";
+        $sql = "INSERT INTO subscriptions (user_id, tier_id, endDate, subscriptionUrl, status, info) VALUES (:user_id, :tier_id, :endDate, 'none', 'active', 'free subscription')";
         $query = $database->prepare($sql);
         $params = array(
             ":user_id" => $user_id,

@@ -1,0 +1,26 @@
+<section class="section contact-form">
+    <div class="standard-width">
+        <header>
+            <h3>Contact us</h3>
+        </header>
+        <article>
+            <form method="ajax" action="{{baseurl}}store/contactUs">
+                <div class="row-grouping flexible">
+                    <div class="name-fields">
+                        <input type="text" name="your-name" required placeholder="Your name (required)">
+                        <input type="email" name="your-email" required placeholder="Your email (required)">
+                    </div>
+                    <div class="message-fields">
+                        <textarea name="your-message" required placeholder="What do you want to talk about?"></textarea>
+                    </div>
+                </div>
+                <div class="row-grouping centered">
+                    <div class="action-fields">
+                        <input type="submit" name="action" value="Send message">
+                    </div>
+                </div>
+                <div id="contact-feedback"></div>
+            </form>
+        </article>
+    </div>
+</section>

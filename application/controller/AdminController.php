@@ -542,8 +542,23 @@ class AdminController extends Controller
                 KeyStore::find("howelse")->put(Request::post("howelse"));
                 KeyStore::find("freetriallabel")->put(Request::post("freetriallabel"));
                 KeyStore::find("tiersystem")->put(Request::post("tiersystem"));
+
+                KeyStore::find("footer_col1")->put(Request::post("footer_col1"));
+                KeyStore::find("footer_col2")->put(Request::post("footer_col2"));
+                KeyStore::find("footer_col3")->put(Request::post("footer_col3"));
+
+                KeyStore::find("purchasesystem")->put(Request::post("purchasesystem"));
+                KeyStore::find("nopurchases")->put(Request::post("nopurchases"));
+
+                KeyStore::find("contactform")->put(Request::post("contactform"));
+
                 break;
         }
+
+        $footer_1 = KeyStore::find("footer_col1")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_1");
+        $footer_2 = KeyStore::find("footer_col2")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_2");
+        $footer_3 = KeyStore::find("footer_col3")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_3");
+
         // if (!empty($action)) exit(); // no flush
         $model = array(
             "baseurl" => Config::get("URL"),
@@ -551,8 +566,18 @@ class AdminController extends Controller
             "freetriallabel" => KeyStore::find("freetriallabel")->get(),
             "howelse" => KeyStore::find("howelse")->get(),
             "tiersystem" => KeyStore::find("tiersystem")->get(),
+            "footer" => array($footer_1, $footer_2, $footer_3),
+            "purchasesystem" => KeyStore::find("purchasesystem")->get(),
+            "nopurchases" => KeyStore::find("nopurchases")->get(),
+            "contactform" => KeyStore::find("contactform")->get(),
+
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+
+
         );
        $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
+
 
 }

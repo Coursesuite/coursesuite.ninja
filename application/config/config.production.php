@@ -1,27 +1,14 @@
 <?php
 
 /**
- * Configuration for DEVELOPMENT environment
- * To create another configuration set just copy this file to config.production.php etc. You get the idea :)
+ * Configuration for PRODUCTION environment
  */
 
-/**
- * Configuration for: Error reporting
- * Useful to show every little problem during development, but only show hard / no errors in production.
- * It's a little bit dirty to put this here, but who cares. For development purposes it's totally okay.
- */
-// error_reporting(E_ALL);
-// ini_set("display_errors", 1);
-
-/**
- * Configuration for cookie security
- * Quote from PHP manual: Marks the cookie as accessible only through the HTTP protocol. This means that the cookie
- * won't be accessible by scripting languages, such as JavaScript. This setting can effectively help to reduce identity
- * theft through XSS attacks (although it is not supported by all browsers).
- *
- * @see php.net/manual/en/session.configuration.php#ini.session.cookie-httponly
- */
+ ini_set('display_errors','off');
 ini_set('session.cookie_httponly', 1);
+
+//ini_set('error_reporting', E_ALL|E_STRICT);
+// ini_set('display_errors', 1);
 
 /**
  * Returns the full configuration.
@@ -76,12 +63,13 @@ return array(
      * DB_CHARSET The charset, necessary for security reasons. Check Database.php class for more info.
      */
     'DB_TYPE' => 'mysql',
-    'DB_HOST' => 'coursesuite.ninja', // 127.0.0.1',
-    'DB_NAME' => 'csninja_huge',
-    'DB_USER' => 'csninja_huge',
-    'DB_PASS' => 'qh+7$^kT(~sd',
+    'DB_HOST' => 'localhost', // no remote access
+    'DB_NAME' => 'csninja_prod',
+    'DB_USER' => 'csninja_prod',
+    'DB_PASS' => 'ñ?&0gÊìf^2', // different to dev
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
+
     /**
      * Configuration for: Captcha size
      * The currently used Captcha generator (https://github.com/Gregwar/Captcha) also runs without giving a size,
@@ -145,8 +133,8 @@ return array(
      * ENCRYPTION_KEY, HMAC_SALT: Currently used to encrypt and decrypt publicly visible values, like the user id in
      * the cookie. Change these values for increased security, but don't touch if you have no idea what this means.
      */
-    'ENCRYPTION_KEY' => '6#x0gÊìf^25cL1f$08&',
-    'HMAC_SALT' => '8qk9c^4L6d#15tM8z7n0%',
+    'ENCRYPTION_KEY' => '6#x(mLLÜ·i™Ú<›ÜêTÍ+³Íuµñ?&0gÊìf^25c%#v23L1f$08&',
+    'HMAC_SALT' => '8qkå—ÍÃüÿNóƒ7Hd‹E¹ûü{1,Ä‰¸ú9c^4L6546d#!$%#15tM8z7n0%',
     /**
      * Configuration for: Email server credentials
      *
@@ -197,6 +185,8 @@ return array(
     ),
     'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
 
+    'CLOUDCONVERT_API_KEY' => '8pxT0DHRE5lpcVzildrPoEbztL9rc5Es89xG0incUfPNB93LLZueEr7zTK7PTuZmcV1hXkRMITbhjS-U1NnnzQ',
+
     'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
     'FASTSPRING_PARAM_APPEND' => '', // e.g. &mode=test
 
@@ -205,21 +195,23 @@ return array(
     'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
 
     // store info pricing table may not be relevant or have other logic later on
-    'STORE_INFO_SHOW_PRICING' => false,
+    'STORE_INFO_SHOW_PRICING' => true,
 
     // footer info
-    'GLOBAL_FOOTER_COLUMN_1' => '<h3>About CourseSuite</h3><p>CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses. We also offer Open Source plugins for Moodle and downloadable online course content.</p>',
-    'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/support">Support</a> <a href="/content/privacy">Privacy</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
-    'GLOBAL_FOOTER_COLUMN_3' => '<p>&copy; CourseSuite 2016-3016</p>',
+    'GLOBAL_FOOTER_COLUMN_1' => '<h3>About Us</h3><p>We are a small Australian team focused on developing a suite of great online web apps that allow rapid creation of interactive and intuitive HTML5-based SCORM courses. We also release Open Source plugins for Moodle, and produce online course content.</p>',
+    'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/privacy">Privacy</a> <a href="http://forum.coursesuite.ninja/categories/">Forum</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
+    'GLOBAL_FOOTER_COLUMN_3' => '<h3>all rights reserved</h3><p>&copy; CourseSuite 2016-3016<br/><a href="mailto:&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;">&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;</a></p>',
 
     /*
      * Mailchimp Configuration
      */
     'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
-    'MAILCHIMP_LIST_ID' => '2f5671f29b',
+    'MAILCHIMP_LIST_ID' => '08344979e7', // '2f5671f29b',
     'MAILCHIMP_INTEREST_ID' => '3e1d42a267',
     // interest ids app:d85d3fb037 plugin:986db51105 course catalouge:5c3fa3caed (i think) change from null to 1 to sub to interest
 
     'FORCE_HANDLEBARS_COMPILATION' => false, // set to true to force recompilation of handlebars templates on the fly
 
+    'FREE_TRIAL_PERIOD' => '+2 week', // +14 day, +10 day, etc
+    'FREE_TRIAL_TIER' => 'Bronze',
 );

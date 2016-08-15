@@ -70,52 +70,60 @@ class Store
         }
 
         // purchase / launch buttons
-        $table[] = '<tr class="fill"><th></th>';
-        if (Session::userIsLoggedIn()) {
-            foreach ($AppTiers as $tier) {
-                $label = 'Subscribe';
-                $button_url = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
-                $class_name = '';
-                if (!empty($UserSubscription)) {
-                    $user_tier_level = $UserSubscription["tier_id"];
-                    $label = "";
-                    if ($tier["tier_id"] == $user_tier_level) {
-                        $label = 'Launch App';
-                        $class_name = 'current-tier';
-                        $button_url = Config::get("URL") . "launch/" . $App["app_id"]; //    AppModel::getLaunchUrl($App["app_id"]);
-                    } else if ($tier["tier_id"] < $user_tier_level) {
-                        $label = 'Downgrade';
-                        $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
-                    } else if ($tier["tier_id"] > $user_tier_level) {
-                        $label = 'Upgrade';
-                        $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
+        if (KeyStore::find("purchasesystem")->get() == "true") {
+            $table[] = '<tr class="fill"><th></th>';
+            if (Session::userIsLoggedIn()) {
+                foreach ($AppTiers as $tier) {
+                    $label = 'Subscribe';
+                    $button_url = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+                    $class_name = '';
+                    if (!empty($UserSubscription)) {
+                        $user_tier_level = $UserSubscription["tier_id"];
+                        $label = "";
+                        if ($tier["tier_id"] == $user_tier_level) {
+                            $label = 'Launch App';
+                            $class_name = 'current-tier';
+                            $button_url = Config::get("URL") . "launch/" . $App["app_id"]; //    AppModel::getLaunchUrl($App["app_id"]);
+                        } else if ($tier["tier_id"] < $user_tier_level) {
+                            $label = 'Downgrade';
+                            $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
+                        } else if ($tier["tier_id"] > $user_tier_level) {
+                            $label = 'Upgrade';
+                            $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
+                        }
+                    }
+                    $table[] = "<td>";
+                    if ($label != "") {
+                        $table[] = "<a href='$button_url' class='$class_name' target='_app'>$label</a>";
+                    }
+
+                    $table[] = "</td>";
+                }
+                $table[] = '<tr><td></td>';
+                $user_id = Session::get('user_id');
+                foreach ($AppTiers as $tier) {
+                    if (!empty(SubscriptionModel::previouslySubscribed($user_id)) && SubscriptionModel::previouslySubscribed($user_id) == $tier["tier_id"] && empty($UserSubscription)) {
+                        $table[] = "<td>Previous subscription</td>";
+                    } else {
+                        $table[] = "<td></td>";
                     }
                 }
-                $table[] = "<td>";
-                if ($label != "") {
-                    $table[] = "<a href='$button_url' class='$class_name' target='_app'>$label</a>";
-                }
 
-                $table[] = "</td>";
+            } else {
+                $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
             }
-            $table[] = '<tr><td></td>';
-            $user_id = Session::get('user_id');
-            foreach ($AppTiers as $tier) {
-                if (!empty(SubscriptionModel::previouslySubscribed($user_id)) && SubscriptionModel::previouslySubscribed($user_id) == $tier["tier_id"] && empty($UserSubscription)) {
-                    $table[] = "<td>Previous subscription</td>";
-                } else {
-                    $table[] = "<td></td>";
-                }
-            }
-
+            $table[] = '</tr>';
         } else {
-            $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
+            $nopay = KeyStore::find("nopurchases")->get();
+            if (!empty($nopay)) {
+                $table[] = "<tr class='fill no-payments'><th></th><td colspan='$colspan'>$nopay</td></tr>";
+            }
         }
-        $table[] = '</tr>';
         // caveat
         $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'>" . Text::get("TIER_MATRIX_CAVEATS") . "</td></tr>";
         // $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'><p>This product is part of a paid subscription that offers multiple products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).</p><p>Subscriptions are charged monthly until cancelled.</p><div class='text-center'><img src='/img/fastspring.png'></div></td></tr>";
         $table[] = '</tfoot></table>';
+
         return implode('', $table);
 
     }
@@ -183,34 +191,47 @@ class Store
             }
         }
         $table[] = '</tbody><tfoot>';
-        $table[] = '<tr class="fill"><th></th>';
-        if (Session::userIsLoggedIn()) {
-            if ($UserSubscription === null) {
-                $AppTiers = TierModel::getAllAppTiersForPack($Name);
-                foreach ($AppTiers as $tier) {
-                    $button_url = trim($tier->store_url) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
-                    $table[] = "<td><a href='$button_url'>Subscribe</a></td>";
-                }
-            } else {
-                $AppTiers = TierModel::getAllAppTiersForPack($Name);
-                foreach ($AppTiers as $tier) {
-                    if ($UserSubscription['tier_id'] < $tier->tier_id) {
-                        $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier->name;
-                        $table[] = "<td><a href='$button_url'>Upgrade</a></td>";
-                    } elseif ($UserSubscription['tier_id'] > $tier->tier_id) {
-                        $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier->name;
-                        $table[] = "<td><a href='$button_url'>Downgrade</a></td>";
-                    } else {
-                        $table[] = "<td><a href=''>Launch</a></td>";
+        if (KeyStore::find("purchasesystem")->get() == "true") {
+
+            $table[] = '<tr class="fill"><th></th>';
+            if (Session::userIsLoggedIn()) {
+                if ($UserSubscription === null) {
+                    $AppTiers = TierModel::getAllAppTiersForPack($Name);
+                    foreach ($AppTiers as $tier) {
+                        $button_url = trim($tier->store_url) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+                        $table[] = "<td><a href='$button_url'>Subscribe</a></td>";
+                    }
+                } else {
+                    $AppTiers = TierModel::getAllAppTiersForPack($Name);
+                    foreach ($AppTiers as $tier) {
+                        if ($UserSubscription['tier_id'] < $tier->tier_id) {
+                            $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier->name;
+                            $table[] = "<td><a href='$button_url'>Upgrade</a></td>";
+                        } elseif ($UserSubscription['tier_id'] > $tier->tier_id) {
+                            $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier->name;
+                            $table[] = "<td><a href='$button_url'>Downgrade</a></td>";
+                        } else {
+                            $table[] = "<td><a href=''>Launch</a></td>";
+                        }
                     }
                 }
-            }
 
+            } else {
+                $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
+            }
         } else {
-            $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></td>";
+            $nopay = KeyStore::find("nopurchases")->get();
+            if (!empty($nopay)) {
+                $table[] = "<tr class='fill no-payments'><th></th><td colspan='$colspan'>$nopay</td></tr>";
+            }
         }
+
         $table[] = '</tfoot></table>';
 
         return implode('', $table);
+    }
+
+    public static function ContactForm() {
+        return View::renderHandlebars("store/contactForm", array(), null, Config::get('FORCE_HANDLEBARS_COMPILATION'), true);
     }
 }

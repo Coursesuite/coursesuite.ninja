@@ -469,7 +469,7 @@ class UserModel
         foreach ($trialUsers as $users) {
             if (date_diff(date('Y-m-d'), $users->endDate) < 0) {
                 SubscriptionModel::removeSubscriptionFromId($users->subscription_id);
-                UserRoleModel::changeRoleById($users->user_id, 1); //change state to something other than 1 maybe? 
+                UserRoleModel::changeRoleById($users->user_id, 1); //change state to something other than 1 maybe?
             }
         }
     }

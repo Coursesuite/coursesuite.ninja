@@ -1848,5 +1848,81 @@ and (-webkit-min-device-pixel-ratio: 2) {
 }
 
 
-/* content pages */
+/* contact us area */
 
+section.contact-form {
+    background: rgba(89,114,132,1.00) url(map-image.png) no-repeat bottom;
+    border-top: 1px solid rgba(89,114,132,1.00); /* for some wierd margin bug I couldn't be bothered chasing */
+
+}
+
+section.contact-form .standard-width {
+    padding: 20px 0;
+}
+
+section.contact-form header {
+    text-align: center;
+    color: #fff;
+}
+
+section.contact-form header h3 {
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    padding: 0;
+}
+
+section.contact-form .row-grouping {
+    display: flex;
+    flex-direction: row;
+
+}
+
+section.contact-form .row-grouping.centered > div {
+    margin: 0 auto;
+}
+section.contact-form input[type='submit'] {
+    padding: 10px;
+    border: 0;
+    border-radius: 3px;
+    font-size: 16px;
+    background: #f2f6f8;
+    background: -moz-linear-gradient(top,  #f2f6f8 0%, #d8e1e7 50%, #b5c6d0 51%, #e0eff9 100%);
+    background: -webkit-linear-gradient(top,  #f2f6f8 0%,#d8e1e7 50%,#b5c6d0 51%,#e0eff9 100%);
+    background: linear-gradient(to bottom,  #f2f6f8 0%,#d8e1e7 50%,#b5c6d0 51%,#e0eff9 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9',GradientType=0 );
+    box-shadow: 0 0 3px rgba(0,0,0,.1);
+    transition: box-shadow .2s ease;
+    cursor: pointer;
+}
+section.contact-form input[type='submit']:hover, section.contact-form input[type='submit']:active {
+    box-shadow: 0 0 6px rgba(0,0,0,.2);
+}
+
+section.contact-form .row-grouping.flexible > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+section.contact-form .row-grouping.flexible > div:not(.action-fields) > input,
+section.contact-form .row-grouping.flexible > div > textarea {
+    flex: 1;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: normal;
+    border: none;
+    background-color: rgba(255,255,255,.88);
+    border-radius: 3px;
+    transition: background-color .2s ease;
+}
+section.contact-form .row-grouping.flexible > div:not(.action-fields) > input:focus,
+section.contact-form .row-grouping.flexible > div > textarea:focus {
+    background-color: #fff;
+}
+
+#contact-feedback {
+    text-align: center;
+    color: #fff;
+}

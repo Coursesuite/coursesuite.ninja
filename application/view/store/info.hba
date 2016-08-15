@@ -27,4 +27,6 @@
 
 </article>
 
+{{{Store::ContactForm}}}
+
 <script type="text/javascript">var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>
