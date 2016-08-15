@@ -77,6 +77,7 @@ class StoreController extends Controller
     // $newSubscription = the tier name e.g Bronze, Silver, Gold
     public function updateSubscription($newSubscription, $confirm = null)
     {
+        $userId = Session::get('user_id');
         $model = array(
             "baseurl" => Config::get("URL"),
             "user_name" => Session::get('user_name'),
@@ -89,6 +90,7 @@ class StoreController extends Controller
         if ($confirm) {
             $fs = new FastSpring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
             $fs->updateSubscription($model["subscription_ref"], $fs->updateSubscriptionXML(strtolower('/' . $model['new_tier']->name) . '-1-month', true));
+            SubscriptionModel::updateSubscriptionTier($model["subscription_ref"], $model["new_tier"]->tier_id, $model["current_tier"]);
             Redirect::to('user/index');
         }
     }
