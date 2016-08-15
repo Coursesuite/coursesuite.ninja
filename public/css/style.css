@@ -307,6 +307,7 @@ section.user-acknowledgements .acknowledgement-item.level-0 {
 
 article > header.common-header > nav,
 article .standard-width,
+section.contact-form .standard-width,
 #content_index main {
     width: 1100px;
     margin: 0 auto;

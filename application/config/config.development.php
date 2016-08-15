@@ -191,6 +191,7 @@ return array(
     'DIGEST_USERS' => array(
         'admin' => 'nT5YyYb233WB',
         'apiuser' => 'rpxC5kCmYuFn',
+        'apimatrix' => 'q6d5F4HHg2Fn',
         'tokenuser' => 'GEv6mJ7wJgWR',
         'fastspring' => 'e93NcNdpntFq',
         'discourse' => '3kurpzSGRAq4',
