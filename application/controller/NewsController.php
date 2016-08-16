@@ -25,7 +25,7 @@ class NewsController extends Controller
     public function index()
     {
         $this->View->render('news/index', array(
-            'news' => NewsModel::getAllNews()
+            'news' => NewsModel::getAllNews(),
         ));
     }
 
@@ -48,7 +48,7 @@ class NewsController extends Controller
     public function edit($news_id)
     {
         $this->View->render('news/edit', array(
-            'news' => NewsModel::getNews($news_id)
+            'news' => NewsModel::getNews($news_id),
         ));
     }
 

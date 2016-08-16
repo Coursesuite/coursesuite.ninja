@@ -24,4 +24,3 @@ SubscriptionModel::validateSubscriptions();
 UserModel::trialUserExpire();
 
 ob_clean();
-?>

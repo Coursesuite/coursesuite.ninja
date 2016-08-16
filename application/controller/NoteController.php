@@ -25,7 +25,7 @@ class NoteController extends Controller
     public function index()
     {
         $this->View->render('note/index', array(
-            'notes' => NoteModel::getAllNotes()
+            'notes' => NoteModel::getAllNotes(),
         ));
     }
 
@@ -48,7 +48,7 @@ class NoteController extends Controller
     public function edit($note_id)
     {
         $this->View->render('note/edit', array(
-            'note' => NoteModel::getNote($note_id)
+            'note' => NoteModel::getNote($note_id),
         ));
     }
 

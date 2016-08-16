@@ -24,7 +24,7 @@ class UserModel
         if ($search != null) {
             $sql .= " WHERE (user_name like :search OR user_email like :search)";
             $params = array(
-                ":search" => "%$search%"
+                ":search" => "%$search%",
             );
         }
         if ($mostRecent) {
@@ -56,7 +56,8 @@ class UserModel
         return $all_users_profiles;
     }
 
-    public static function getAllUsers() {
+    public static function getAllUsers()
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT user_id, user_name FROM users ORDER BY user_name";
         $query = $database->prepare($sql);
@@ -69,10 +70,13 @@ class UserModel
      * @param int $user_id The user's id
      * @return mixed The selected user's profile
      */
-    public static function getPublicProfileOfUser($user_id) {
+    public static function getPublicProfileOfUser($user_id)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        if (intval($user_id) == 0) return false;
+        if (intval($user_id) == 0) {
+            return false;
+        }
 
         $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted
                 FROM users WHERE user_id = :user_id LIMIT 1";
@@ -99,15 +103,16 @@ class UserModel
         return $user;
     }
 
-    public static function getActiveUser($user_id) {
-		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT user_id, user_name, user_email
-				FROM users
-				WHERE user_id = :user_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL
-				LIMIT 1";
-		$query = $database->prepare($sql);
-		$query->execute(array(":user_id" => $user_id));
-		return $query->fetch();
+    public static function getActiveUser($user_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT user_id, user_name, user_email
+                FROM users
+                WHERE user_id = :user_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL
+                LIMIT 1";
+        $query = $database->prepare($sql);
+        $query->execute(array(":user_id" => $user_id));
+        return $query->fetch();
     }
 
     /**
@@ -120,25 +125,27 @@ class UserModel
         $database = DatabaseFactory::getFactory()->getConnection();
         $matcher = "=";
         if ($likeMatching == true) {
-	        $matcher = "LIKE";
-	        $user_name_or_email = "%" . $user_name_or_email . "%";
+            $matcher = "LIKE";
+            $user_name_or_email = "%" . $user_name_or_email . "%";
         }
         $sql = "SELECT user_id, user_name, user_email
-        		FROM users
-				WHERE (user_name $matcher :user_name_or_email OR user_email $matcher :user_name_or_email)
-				AND user_provider_type = :provider_type";
-        if ($applyLimit) $sql .= " LIMIT 1";
+                FROM users
+                WHERE (user_name $matcher :user_name_or_email OR user_email $matcher :user_name_or_email)
+                AND user_provider_type = :provider_type";
+        if ($applyLimit) {
+            $sql .= " LIMIT 1";
+        }
 
         $query = $database->prepare($sql);
         $query->execute(array(
-        	':user_name_or_email' => $user_name_or_email,
-        	':provider_type' => 'DEFAULT'
+            ':user_name_or_email' => $user_name_or_email,
+            ':provider_type' => 'DEFAULT',
         ));
         if ($applyLimit) {
-	        return $query->fetch();
-	    } else {
-	        return $query->fetchAll();
-	    }
+            return $query->fetch();
+        } else {
+            return $query->fetchAll();
+        }
     }
 
     /**
@@ -221,7 +228,8 @@ class UserModel
     }
 
     // update the activation hash value in the db (e.g. re-send activation email)
-    public static function saveUserActivationHash($user_id, $activation_hash) {
+    public static function saveUserActivationHash($user_id, $activation_hash)
+    {
 
         $database = DatabaseFactory::getFactory()->getConnection();
 
@@ -403,7 +411,8 @@ class UserModel
         return $query->fetch();
     }
 
-    public static function destroyUserForever($user_id, $base_type_only = true) {
+    public static function destroyUserForever($user_id, $base_type_only = true)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $force = ($base_type_only) ? " AND user_account_type=1 " : "";
         $query = $database->prepare("DELETE FROM users WHERE user_id=:user_id $force LIMIT 1");
@@ -419,7 +428,8 @@ class UserModel
      * @return boolean - truthy if user is still able to log in
      *
      */
-    public static function checkLogonCap($user_id) {
+    public static function checkLogonCap($user_id)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->prepare("SELECT COUNT(1) FROM users
                                                         WHERE user_id = :userid
@@ -438,7 +448,8 @@ class UserModel
      * @param $user_id - (int) user that you want to increment
      *
      */
-    public static function incrementLoginCounter($user_id) {
+    public static function incrementLoginCounter($user_id)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->prepare("UPDATE users
                                                         SET user_logon_count = (user_logon_count + 1)
@@ -450,7 +461,8 @@ class UserModel
     }
 
     // system task to check all trial users and remove their subscription if they have expired
-    public static function trialUserExpire() {
+    public static function trialUserExpire()
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->query("select count(id) from systasks where running=0 and task='trialUserExpire' and lastrun < timestamp(date_add(now(), INTERVAL -1 DAY))");
         if ($query->fetchColumn() == '1') {
@@ -460,7 +472,8 @@ class UserModel
         }
     }
 
-    public static function updateTrialUsers() {
+    public static function updateTrialUsers()
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT subscription_id, user_id, endDate FROM subscriptions WHERE user_account_type = 3";
         $query = $database->prepare($sql);

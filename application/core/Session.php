@@ -20,7 +20,8 @@ class Session
         }
     }
 
-    public static function CurrentId() {
+    public static function CurrentId()
+    {
         return session_id();
     }
 
@@ -37,8 +38,8 @@ class Session
 
     public static function remove($key)
     {
-	    if (isset($_SESSION[$key])) {
-        	unset($_SESSION[$key]);
+        if (isset($_SESSION[$key])) {
+            unset($_SESSION[$key]);
         }
     }
     /**
@@ -51,8 +52,8 @@ class Session
     {
         if (isset($_SESSION[$key])) {
             $value = $_SESSION[$key];
-        	// filter the value for XSS vulnerabilities
-        	return Filter::XSSFilter($value);
+            // filter the value for XSS vulnerabilities
+            return Filter::XSSFilter($value);
         }
     }
 
@@ -65,13 +66,14 @@ class Session
      */
     public static function add($key, $value)
     {
-	    $ar = $_SESSION[$key];
-	    if (is_array($ar)) {
-		    if (!in_array($value, $ar)) { // TIM: don't re-add duplicate values
-	        	$_SESSION[$key][] = $value;
-	        }
+        $ar = $_SESSION[$key];
+        if (is_array($ar)) {
+            if (!in_array($value, $ar)) {
+                // TIM: don't re-add duplicate values
+                $_SESSION[$key][] = $value;
+            }
         } else {
-        	$_SESSION[$key][] = $value;
+            $_SESSION[$key][] = $value;
         }
     }
 
@@ -82,25 +84,27 @@ class Session
     {
         session_destroy();
     }
-    
-	/*
-	 * Clean up expired or invalid sessions
-	 * (Called from cron.php)
-	 */    
-    public static function clean() {
-	    echo "static clean";
-	    return;
-	    
+
+    /*
+     * Clean up expired or invalid sessions
+     * (Called from cron.php)
+     */
+    public static function clean()
+    {
+        echo "static clean";
+        return;
+
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->query("delete from session_data where hash = 'f628356cee6cf4cf5249828feed7fcb3'");
-		$query = $database->query("update users set session_id = null where session_id in (select session_id from session_data where session_expire < current_timestamp)");
-		$query = $database->query("update users set session_id = null where session_id not in (select session_id from session_data)");
+        $query = $database->query("update users set session_id = null where session_id in (select session_id from session_data where session_expire < current_timestamp)");
+        $query = $database->query("update users set session_id = null where session_id not in (select session_id from session_data)");
 
     }
-    
-    public static function manual_session_record_remove($session_id) {
-		$database = DatabaseFactory::getFactory()->getConnection();
-		echo "<p>delete from session_data where session_id = '$session_id'</p>";
+
+    public static function manual_session_record_remove($session_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        echo "<p>delete from session_data where session_id = '$session_id'</p>";
         $query = $database->prepare("delete from session_data where session_id = :session_id");
         $query->execute(array(":session_id" => $session_id));
     }
@@ -114,7 +118,8 @@ class Session
      * @param  string $sessionId
      * @return string
      */
-    public static function updateSessionId($userId, $sessionId = null){
+    public static function updateSessionId($userId, $sessionId = null)
+    {
 
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "UPDATE users SET session_id = :session_id WHERE user_id = :user_id";
@@ -142,12 +147,13 @@ class Session
      * @see Session::updateSessionId()
      * @see http://stackoverflow.com/questions/6126285/php-stop-concurrent-user-logins
      */
-    public static function isConcurrentSessionExists(){
+    public static function isConcurrentSessionExists()
+    {
 
         $session_id = session_id();
-        $userId     = Session::get('user_id');
+        $userId = Session::get('user_id');
 
-        if(isset($userId) && isset($session_id)){
+        if (isset($userId) && isset($session_id)) {
 
             $database = DatabaseFactory::getFactory()->getConnection();
             $sql = "SELECT session_id FROM users WHERE user_id = :user_id LIMIT 1";
@@ -156,7 +162,7 @@ class Session
             $query->execute(array(":user_id" => $userId));
 
             $result = $query->fetch();
-            $userSessionId = !empty($result) ? $result->session_id: null;
+            $userSessionId = !empty($result) ? $result->session_id : null;
 
             return $session_id !== $userSessionId;
         }
@@ -174,7 +180,8 @@ class Session
      * @return bool
      * @see Session::userIsLoggedIn()
      */
-    public static function isActiveSession($session_id, $app_id = NULL) {
+    public static function isActiveSession($session_id, $app_id = null)
+    {
         if (isset($session_id)) {
             $database = DatabaseFactory::getFactory()->getConnection();
             $sql = "SELECT count(1) FROM session_data WHERE session_id = :sid AND session_expire < current_timestamp";
@@ -185,56 +192,62 @@ class Session
         return false;
     }
 
-	// equivalent to http://php.net/manual/en/function.session-decode.php except doesn't populate $_SESSION - we can pluck results
-	private static function unserialize_session($session_data, $start_index=0, &$dict=null) {
-	   isset($dict) or $dict = array();
-	   $name_end = strpos($session_data, "|", $start_index); // standard delimeter
-	   if ($name_end !== FALSE) {
-	       $name = substr($session_data, $start_index, $name_end - $start_index);
-	       $rest = substr($session_data, $name_end + 1);
-	
-	       $value = unserialize($rest);      // PHP will unserialize up to "|" delimiter.
-	       $dict[$name] = $value;
-	
-	       return self::unserialize_session($session_data, $name_end + 1 + strlen(serialize($value)), $dict);
-	   }
-	
-	   return $dict;
-	}
+    // equivalent to http://php.net/manual/en/function.session-decode.php except doesn't populate $_SESSION - we can pluck results
+    private static function unserialize_session($session_data, $start_index = 0, &$dict = null)
+    {
+        isset($dict) or $dict = array();
+        $name_end = strpos($session_data, "|", $start_index); // standard delimeter
+        if ($name_end !== false) {
+            $name = substr($session_data, $start_index, $name_end - $start_index);
+            $rest = substr($session_data, $name_end + 1);
 
-	// decode the data that is stored in [session_data].`session_data` - as an array
-    private static function SessionData($session_id, $asObject = false) {
-            $database = DatabaseFactory::getFactory()->getConnection();
-            $query = $database->prepare("SELECT session_data FROM session_data WHERE session_id = :sid");
-            $query->execute(array(":sid" => $session_id));
-            $data = $query->fetchColumn();
-            return (true == $asObject) ? (object) self::unserialize_session($data) : self::unserialize_session($data);
+            $value = unserialize($rest); // PHP will unserialize up to "|" delimiter.
+            $dict[$name] = $value;
+
+            return self::unserialize_session($session_data, $name_end + 1 + strlen(serialize($value)), $dict);
+        }
+
+        return $dict;
     }
-    
+
+    // decode the data that is stored in [session_data].`session_data` - as an array
+    private static function SessionData($session_id, $asObject = false)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT session_data FROM session_data WHERE session_id = :sid");
+        $query->execute(array(":sid" => $session_id));
+        $data = $query->fetchColumn();
+        return (true == $asObject) ? (object) self::unserialize_session($data) : self::unserialize_session($data);
+    }
+
     // return the userid that is stored in session
-    public static function CurrentUserId() {
-	     return Session::get('user_id');
+    public static function CurrentUserId()
+    {
+        return Session::get('user_id');
     }
 
-	// return the userid that is stored BY session in the database (but not neccesarily in $_SESSION)
-    public static function UserIdFromSession($session_id) {
+    // return the userid that is stored BY session in the database (but not neccesarily in $_SESSION)
+    public static function UserIdFromSession($session_id)
+    {
         if (isset($session_id)) {
-	        $data = self::SessionData($session_id);
-	        return (isset($data["user_id"])) ? $data["user_id"] : -1;
-	    }
+            $data = self::SessionData($session_id);
+            return (isset($data["user_id"])) ? $data["user_id"] : -1;
+        }
     }
 
-	// return the useful parts of a user record that is stored BY session in the database (but not neccesarily in $_SESSION)
-    public static function UserDetailsFromSession($session_id) {
+    // return the useful parts of a user record that is stored BY session in the database (but not neccesarily in $_SESSION)
+    public static function UserDetailsFromSession($session_id)
+    {
         $obj = (object) array("user_id" => -1, "user_name" => "", "user_email" => "", "user_account_type" => -1); // new stdClass();
         if (isset($session_id)) {
-	        $data = self::SessionData($session_id, true);
-	        if (isset($data->user_logged_in)) { // we assume the rest is also built
-		        $obj->user_id = $data->user_id;
-			    $obj->user_name = $data->user_name;
-				$obj->user_email = $data->user_email;
-				$obj->account_type = $data->user_account_type;
-	        }
+            $data = self::SessionData($session_id, true);
+            if (isset($data->user_logged_in)) {
+                // we assume the rest is also built
+                $obj->user_id = $data->user_id;
+                $obj->user_name = $data->user_name;
+                $obj->user_email = $data->user_email;
+                $obj->account_type = $data->user_account_type;
+            }
         }
         return $obj;
     }

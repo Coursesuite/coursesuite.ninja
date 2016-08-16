@@ -20,7 +20,7 @@ class RegisterController extends Controller
      * Register page
      * Show the register form, but redirect to main-page if user is already logged-in
      */
-    public function index($freeTrial = NULL)
+    public function index($freeTrial = null)
     {
         if (LoginModel::isUserLoggedIn()) {
             Redirect::home();
@@ -55,7 +55,7 @@ class RegisterController extends Controller
      */
     public function verify($user_id, $user_activation_verification_code, $user_newsletter_subscribed)
     {
-		Session::set("feedback_area", "registration");
+        Session::set("feedback_area", "registration");
 
         if (isset($user_id) && isset($user_activation_verification_code)) {
             RegistrationModel::verifyNewUser($user_id, $user_activation_verification_code, $user_newsletter_subscribed);
@@ -66,7 +66,8 @@ class RegisterController extends Controller
         }
     }
 
-    public function freeTrial_action() {
+    public function freeTrial_action()
+    {
         $registration_successful = RegistrationModel::registerNewUser();
         Redirect::to('register/index/freeTrial');
     }

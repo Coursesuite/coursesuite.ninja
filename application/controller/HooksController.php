@@ -9,7 +9,8 @@ class HooksController//  extends Controller
         $raw = file_get_contents('php://input');
         LoggingModel::logInternal("HooksController::cloudconvert", $raw, $event);
         $postbody = json_decode($raw, true);
-        if (isset($postbody["step"])) { // ensure we only record completions
+        if (isset($postbody["step"])) {
+            // ensure we only record completions
             $taken = (int) $postbody["endtime"] - (int) $postbody["starttime"]; // actual time taken
             $minutes = (int) $postbody["minutes"]; // conversion minutes used
             $filename = "";

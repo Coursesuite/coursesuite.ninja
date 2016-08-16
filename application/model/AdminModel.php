@@ -5,103 +5,103 @@
  */
 class AdminModel
 {
-	/**
-	 * Sets the deletion and suspension values
-	 *
-	 * @param $suspensionInDays
-	 * @param $softDelete
-	 * @param $userId
-	 */
-	public static function setAccountSuspensionAndDeletionStatus($userId, $suspensionInDays, $softDelete = "", $hardDelete = "", $makeActive = "", $logonCap = -1) {
+    /**
+     * Sets the deletion and suspension values
+     *
+     * @param $suspensionInDays
+     * @param $softDelete
+     * @param $userId
+     */
+    public static function setAccountSuspensionAndDeletionStatus($userId, $suspensionInDays, $softDelete = "", $hardDelete = "", $makeActive = "", $logonCap = -1)
+    {
 
-		// Prevent to suspend or delete own account.
-		// If admin suspend or delete own account will not be able to do any action.
-		if ($userId == Session::get('user_id')) {
-			Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CANT_DELETE_SUSPEND_OWN'));
-			return false;
-		}
+        // Prevent to suspend or delete own account.
+        // If admin suspend or delete own account will not be able to do any action.
+        if ($userId == Session::get('user_id')) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CANT_DELETE_SUSPEND_OWN'));
+            return false;
+        }
 
-		if ($suspensionInDays > 0) {
-			$suspensionTime = time() + ($suspensionInDays * 60 * 60 * 24);
-		} else {
-			$suspensionTime = null;
-		}
+        if ($suspensionInDays > 0) {
+            $suspensionTime = time() + ($suspensionInDays * 60 * 60 * 24);
+        } else {
+            $suspensionTime = null;
+        }
 
         // FYI "on" is what a checkbox delivers by default when submitted. Didn't know that for a long time :)
 
-		$delete = ($softDelete == "on") ? 1 : 0;
-		$destroy = ($hardDelete == "on") ? 1 : 0;
-		$activate = ($makeActive == "on") ? 1 : 0;
+        $delete = ($softDelete == "on") ? 1 : 0;
+        $destroy = ($hardDelete == "on") ? 1 : 0;
+        $activate = ($makeActive == "on") ? 1 : 0;
 
+        // write the above info to the database
+        self::writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate, $logonCap);
 
-		// write the above info to the database
-		self::writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate, $logonCap);
+        // if suspension or deletion should happen, then also kick user out of the application instantly by resetting
+        // the user's session :)
+        if ($suspensionTime != null or $delete = 1 or $destroy = 1) {
+            self::resetUserSession($userId);
+        }
+    }
 
-		// if suspension or deletion should happen, then also kick user out of the application instantly by resetting
-		// the user's session :)
-		if ($suspensionTime != null OR $delete = 1 OR $destroy = 1) {
-			self::resetUserSession($userId);
-		}
-	}
+    /**
+     * Simply write the deletion and suspension info for the user into the database, also puts feedback into session
+     *
+     * @param $userId
+     * @param $suspensionTime
+     * @param $delete
+     * @return bool
+     */
+    private static function writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate, $logonCap)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
 
-	/**
-	 * Simply write the deletion and suspension info for the user into the database, also puts feedback into session
-	 *
-	 * @param $userId
-	 * @param $suspensionTime
-	 * @param $delete
-	 * @return bool
-	 */
-	private static function writeDeleteAndSuspensionInfoToDatabase($userId, $suspensionTime, $delete, $destroy, $activate, $logonCap)
-	{
-		$database = DatabaseFactory::getFactory()->getConnection();
+        if ($destroy == 1) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_ADMIN_USER_DELETED', array("id" => $userId)));
+            return true;
+        }
 
-		if ($destroy == 1) {
-			Session::add('feedback_positive', Text::get('FEEDBACK_ADMIN_USER_DELETED', array("id" => $userId)));
-			return true;
-		}
+        $params = array(
+            ':user_suspension_timestamp' => $suspensionTime,
+            ':user_deleted' => $delete,
+            ':user_id' => $userId,
+            ':logoncap' => $logonCap,
+        );
 
-		$params = array(
-				':user_suspension_timestamp' => $suspensionTime,
-				':user_deleted' => $delete,
-				':user_id' => $userId,
-				':logoncap' => $logonCap,
-		);
+        $ACTIVATED = "";
+        if ($activate == 1) {
+            $ACTIVATED = ", user_active=1, user_activation_hash=NULL, user_password_reset_hash=NULL ";
+        }
 
-		$ACTIVATED = "";
-		if ($activate == 1) {
-			$ACTIVATED = ", user_active=1, user_activation_hash=NULL, user_password_reset_hash=NULL ";
-		}
+        $query = $database->prepare("UPDATE users SET user_suspension_timestamp = :user_suspension_timestamp, user_deleted = :user_deleted, user_logon_cap = :logoncap $ACTIVATED WHERE user_id = :user_id LIMIT 1");
+        $query->execute($params);
 
-		$query = $database->prepare("UPDATE users SET user_suspension_timestamp = :user_suspension_timestamp, user_deleted = :user_deleted, user_logon_cap = :logoncap $ACTIVATED WHERE user_id = :user_id LIMIT 1");
-		$query->execute($params);
+        if ($query->rowCount() == 1) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUSPENSION_DELETION_STATUS'));
+            return true;
+        }
+    }
 
-		if ($query->rowCount() == 1) {
-			Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUSPENSION_DELETION_STATUS'));
-			return true;
-		}
-	}
+    /**
+     * Kicks the selected user out of the system instantly by resetting the user's session.
+     * This means, the user will be "logged out".
+     *
+     * @param $userId
+     * @return bool
+     */
+    private static function resetUserSession($userId)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
 
-	/**
-	 * Kicks the selected user out of the system instantly by resetting the user's session.
-	 * This means, the user will be "logged out".
-	 *
-	 * @param $userId
-	 * @return bool
-	 */
-	private static function resetUserSession($userId)
-	{
-		$database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("UPDATE users SET session_id = :session_id  WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(
+            ':session_id' => null,
+            ':user_id' => $userId,
+        ));
 
-		$query = $database->prepare("UPDATE users SET session_id = :session_id  WHERE user_id = :user_id LIMIT 1");
-		$query->execute(array(
-				':session_id' => null,
-				':user_id' => $userId
-		));
-
-		if ($query->rowCount() == 1) {
-			Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_USER_SUCCESSFULLY_KICKED'));
-			return true;
-		}
-	}
+        if ($query->rowCount() == 1) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_USER_SUCCESSFULLY_KICKED'));
+            return true;
+        }
+    }
 }

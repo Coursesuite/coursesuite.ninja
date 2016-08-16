@@ -1,7 +1,9 @@
 <?php
-class Model {
+class Model
+{
 
-    function __construct() {
+    public function __construct()
+    {
     }
 
 //  protected abstract function definition();
@@ -11,44 +13,47 @@ class Model {
      * set default on fields that are nullable
      * relies on the db user having describe capability
      */
-    public static function Create($table) {
+    public static function Create($table)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->query("DESCRIBE $table");
         $rows = $query->fetchAll(); // PDO::FETCH_COLUMN));
         $results = array();
         foreach ($rows as $row) {
-           // if (!($row->Null == "NO" && $row->Default > "")) {
-                $key = $row->Field;
-                if ($row->Key == "PRI") { // assuming numerical keys
-                    $value = 0;
-                } else if ($row->Null == "YES") {
-                    $value = null;
-                } else {
-                    $value = "";
-                }
-                if (is_numeric($row->Default)) {
-                    $value = intval($row->Default,10);
-                }
-                $results[$key] = $value;
-           // }
+            // if (!($row->Null == "NO" && $row->Default > "")) {
+            $key = $row->Field;
+            if ($row->Key == "PRI") {
+                // assuming numerical keys
+                $value = 0;
+            } else if ($row->Null == "YES") {
+                $value = null;
+            } else {
+                $value = "";
+            }
+            if (is_numeric($row->Default)) {
+                $value = intval($row->Default, 10);
+            }
+            $results[$key] = $value;
+            // }
         }
         return $results;
     }
 
-    public static function Read($table, $where = "", $params = array(), $fields = array("*")) {
+    public static function Read($table, $where = "", $params = array(), $fields = array("*"))
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         /*if ($fields == array("*")) {
-	        $fields = array();
-			$rs = $database->query("SELECT * FROM $table LIMIT 0");
-			for ($i = 0; $i < $rs->columnCount(); $i++) {
-			    $col = $rs->getColumnMeta($i);
-			    $fields[] = $col['name'];
-			}	        
+        $fields = array();
+        $rs = $database->query("SELECT * FROM $table LIMIT 0");
+        for ($i = 0; $i < $rs->columnCount(); $i++) {
+        $col = $rs->getColumnMeta($i);
+        $fields[] = $col['name'];
+        }
         }*/
-	    $sql = "SELECT ". implode(",",$fields) . " FROM $table ";
-	    if (!empty($where)) {
-		    $sql .= "WHERE $where";
-	    }
+        $sql = "SELECT " . implode(",", $fields) . " FROM $table ";
+        if (!empty($where)) {
+            $sql .= "WHERE $where";
+        }
         $query = $database->prepare($sql);
         $query->execute($params);
         $count = $query->rowCount();
@@ -64,7 +69,8 @@ class Model {
      * @param data_model array - associative array of the columns you are updating (must include id column)
      * @return id value
      */
-    public static function Update($table, $idrow_name, $data_model) {
+    public static function Update($table, $idrow_name, $data_model)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $values = array();
@@ -86,7 +92,7 @@ class Model {
         if ($idvalue < 1) {
             $sql = "INSERT INTO $table (" . implode(",", $keys) . ") VALUES (:" . implode(",:", $keys) . ")";
             $query = $database->prepare($sql);
-            $params = array_combine($keys,$values);
+            $params = array_combine($keys, $values);
             $query->execute($params);
             $idvalue = $database->lastInsertId();
         } else {
@@ -98,9 +104,9 @@ class Model {
         return $idvalue;
     }
 
-    public static function Destroy($table, $where_clause, $fields) {
+    public static function Destroy($table, $where_clause, $fields)
+    {
 
     }
-
 
 }

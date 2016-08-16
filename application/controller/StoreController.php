@@ -95,7 +95,8 @@ class StoreController extends Controller
         }
     }
 
-    public function contactUs() {
+    public function contactUs()
+    {
         $user_email = Request::post("your-email", true);
         $user_name = Request::post("your-name", true);
         $message = Request::post("your-message", true);

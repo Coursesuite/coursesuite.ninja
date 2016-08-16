@@ -95,7 +95,7 @@ class View
                 },
                 "idify" => function ($arg1) {
                     return preg_replace('/[^a-zA_Z0-9]/', '_', strtolower($arg1));
-                }
+                },
             );
 
             // extend helpers by adding methods when particular controllers are loaded.
@@ -116,7 +116,8 @@ class View
 
         $buffer = "";
 
-        if ($return === true) { // capture all outputs
+        if ($return === true) {
+            // capture all outputs
             $buffer = ob_start();
         }
 

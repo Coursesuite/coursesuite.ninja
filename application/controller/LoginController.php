@@ -28,22 +28,23 @@ class LoginController extends Controller
             // echo "redirectto = " . Session::get("RedirectTo");
             // redirect might be set in querystring, or in session, or not at all
             $data = array(
-            	'redirect' => Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo") ? Session::get("RedirectTo") : NULL,
-            	'baseurl' => Config::get('URL'),
-            	'formdata' => Session::get('form_data'),
+                'redirect' => Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo") ? Session::get("RedirectTo") : null,
+                'baseurl' => Config::get('URL'),
+                'formdata' => Session::get('form_data'),
             );
             $this->View->render('login/index', $data);
         }
     }
-    
-    public function timeout($appkey = "") {
-	    $model = array(
-		    'baseurl' => Config::get('URL'),
-	    );
-	    if (!empty($appkey)) {
-		    Session::set("RedirectTo", "launch/app/$appkey");
-	    }
-	    $this->View->renderHandlebars("login/timeout", $model, "_overlay", true);
+
+    public function timeout($appkey = "")
+    {
+        $model = array(
+            'baseurl' => Config::get('URL'),
+        );
+        if (!empty($appkey)) {
+            Session::set("RedirectTo", "launch/app/$appkey");
+        }
+        $this->View->renderHandlebars("login/timeout", $model, "_overlay", true);
     }
 
     /**
@@ -94,7 +95,7 @@ class LoginController extends Controller
     public function loginWithCookie()
     {
         // run the loginWithCookie() method in the login-model, put the result in $login_successful (true or false)
-         $login_successful = LoginModel::loginWithCookie(Request::cookie('remember_me'));
+        $login_successful = LoginModel::loginWithCookie(Request::cookie('remember_me'));
 
         // if login successful, redirect to dashboard/index ...
         if ($login_successful) {
@@ -122,8 +123,8 @@ class LoginController extends Controller
     {
         $result = PasswordResetModel::requestPasswordReset(Request::post('user_name_or_email'), Request::post('g-recaptcha-response'));
         //if ($result === TRUE) { // all seemed to work; go back to the login page
-	        $this->View->render('login/requestPasswordReset');
-           // Redirect::to('login/index');
+        $this->View->render('login/requestPasswordReset');
+        // Redirect::to('login/index');
         //} else { // stay here so they can fix it
         //    Redirect::to("login/requestPasswordReset");
         //}
@@ -141,7 +142,7 @@ class LoginController extends Controller
             // pass URL-provided variable to view to display them
             $this->View->render('login/resetPassword', array(
                 'user_name' => $user_name,
-                'user_password_reset_hash' => $verification_code
+                'user_password_reset_hash' => $verification_code,
             ));
         } else {
             Redirect::to('login/index');
@@ -167,24 +168,26 @@ class LoginController extends Controller
 
     // check a session to see if it's active
     // http://auth.coursesuite.ninja.dev/login/validateSession/gpac1drc8g62cefakdd7r78737/docninja/
-    public function validateSession($encrypted_session_id, $app_id = null) {
+    public function validateSession($encrypted_session_id, $app_id = null)
+    {
 
         $session_id = Encryption::decrypt($encrypted_session_id);
 
         echo Session::isActiveSession($session_id, $app_id);
     }
 
-    public function discourseSSO($skipGet = false){
+    public function discourseSSO($skipGet = false)
+    {
         Session::set('discourse_sso', true);
 
         // not sure how secure this is
         // if ($_SERVER['HTTP_REFERER'] == 'http://forum.coursesuite.ninja/'){
 
-	    if (Request::exists("sso") && Request::exists("sig")) {
+        if (Request::exists("sso") && Request::exists("sig")) {
             Session::set('discourse_payload', $_GET['sso']);
             Session::set('discourse_signature', $_GET['sig']);
         } else {
-	        throw new Exception(Text::get("INCORRECT_USAGE"));
+            throw new Exception(Text::get("INCORRECT_USAGE"));
         }
 
         if (LoginModel::isUserLoggedIn()) {
@@ -193,7 +196,6 @@ class LoginController extends Controller
         } else {
             Redirect::to('login/index');
         }
-        
 
     }
 

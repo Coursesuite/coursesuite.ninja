@@ -174,7 +174,8 @@ class Store
                 foreach ($AppFeatures as $info) {
                     $table[] = '<tr><td><h3>' . $info->feature . '</h3>' . $info->details . '</td>';
                     $cell = 1;
-                    for ($i = 1; $i <= $AppTiers[0]->tier_level -1; $i++) { // tier_level is 1 based
+                    for ($i = 1; $i <= $AppTiers[0]->tier_level - 1; $i++) {
+                        // tier_level is 1 based
                         $table[] = "<td>-</td>";
                     }
                     foreach ($AppTiers as $tier) {
@@ -231,7 +232,8 @@ class Store
         return implode('', $table);
     }
 
-    public static function ContactForm() {
+    public static function ContactForm()
+    {
         return View::renderHandlebars("store/contactForm", array(), null, Config::get('FORCE_HANDLEBARS_COMPILATION'), true);
     }
 }

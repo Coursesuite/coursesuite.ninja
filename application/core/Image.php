@@ -2,18 +2,21 @@
 
 use ColorThief\ColorThief;
 
-class Image {
+class Image
+{
 
-    public static function getBaseColour($sourceImage) {
+    public static function getBaseColour($sourceImage)
+    {
         return ColorThief::getColor($sourceImage);
     }
 
-    public static function makeThumbnail($source_image, $destination, $final_width = 44, $final_height = 44, $bgcolour = array(224, 224, 228), $center = true) {
+    public static function makeThumbnail($source_image, $destination, $final_width = 44, $final_height = 44, $bgcolour = array(224, 224, 228), $center = true)
+    {
 
         $imageData = getimagesize($source_image);
-        $width     = $imageData[0];
-        $height    = $imageData[1];
-        $mimeType  = $imageData['mime'];
+        $width = $imageData[0];
+        $height = $imageData[1];
+        $mimeType = $imageData['mime'];
 
         if (!$width || !$height) {
             return false;
@@ -31,18 +34,18 @@ class Image {
 
         // calculating the part of the image to use for thumbnail
         if ($width > $height) {
-            $verticalCoordinateOfSource   = 0;
+            $verticalCoordinateOfSource = 0;
             $horizontalCoordinateOfSource = ($width - $height) / 2;
-            $smallestSide                 = $height;
+            $smallestSide = $height;
         } else {
             $horizontalCoordinateOfSource = 0;
-            $verticalCoordinateOfSource   = ($height - $width) / 2;
-            $smallestSide                 = $width;
+            $verticalCoordinateOfSource = ($height - $width) / 2;
+            $smallestSide = $width;
         }
-        
+
         if (!$center) {
-	        $horizontalCoordinateOfSource = 0;
-	        $verticalCoordinateOfSource = 0;
+            $horizontalCoordinateOfSource = 0;
+            $verticalCoordinateOfSource = 0;
         }
 
         // copying the part into thumbnail, maybe edit this for square avatars

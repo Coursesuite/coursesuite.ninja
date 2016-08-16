@@ -22,7 +22,7 @@ class LoginModel
         Session::set("feedback_area", "login");
 
         // we do negative-first checks here, for simplicity empty username and empty password in one line
-        if (empty($user_name) OR empty($user_password)) {
+        if (empty($user_name) or empty($user_password)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_FIELD_EMPTY'));
             return false;
         }
@@ -44,7 +44,7 @@ class LoginModel
 
         // stop the user from logging in if user has a suspension, display how long they have left in the feedback.
         if ($result->user_suspension_timestamp != null && $result->user_suspension_timestamp - time() > 0) {
-            $suspensionTimer = Text::get('FEEDBACK_ACCOUNT_SUSPENDED') . round(abs($result->user_suspension_timestamp - time())/60/60, 2) . " hours left";
+            $suspensionTimer = Text::get('FEEDBACK_ACCOUNT_SUSPENDED') . round(abs($result->user_suspension_timestamp - time()) / 60 / 60, 2) . " hours left";
             Session::add('feedback_negative', $suspensionTimer);
             return false;
         }
@@ -75,83 +75,83 @@ class LoginModel
         return true;
     }
 
-	/**
-	 * Validates the inputs of the users, checks if password is correct etc.
-	 * If successful, user is returned
-	 *
-	 * @param $user_name
-	 * @param $user_password
-	 *
-	 * @return bool|mixed
-	 */
-	private static function validateAndGetUser($user_name, $user_password)
-	{
+    /**
+     * Validates the inputs of the users, checks if password is correct etc.
+     * If successful, user is returned
+     *
+     * @param $user_name
+     * @param $user_password
+     *
+     * @return bool|mixed
+     */
+    private static function validateAndGetUser($user_name, $user_password)
+    {
 
-		Session::set("feedback_area", "login");
+        Session::set("feedback_area", "login");
 
-		// brute force attack mitigation: use session failed login count and last failed login for not found users.
-		// block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
-		// (limits user searches in database)
-		if (Session::get('failed-login-count') >= 3 AND (Session::get('last-failed-login') > (time() - 30))) {
-			Session::add('feedback_negative', Text::get('FEEDBACK_LOGIN_FAILED_3_TIMES'));
-			return false;
-		}
+        // brute force attack mitigation: use session failed login count and last failed login for not found users.
+        // block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
+        // (limits user searches in database)
+        if (Session::get('failed-login-count') >= 3 and (Session::get('last-failed-login') > (time() - 30))) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_LOGIN_FAILED_3_TIMES'));
+            return false;
+        }
 
-		// get all data of that user (to later check if password and password_hash fit)
-		$result = UserModel::getUserDataByUsername($user_name);
+        // get all data of that user (to later check if password and password_hash fit)
+        $result = UserModel::getUserDataByUsername($user_name);
 
         // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
         // brute force attack mitigation: reset failed login counter because of found user
-        if (!$result){
+        if (!$result) {
             // increment the user not found count, helps mitigate user enumeration
             self::incrementUserNotFoundCounter();
             // user does not exist, but we won't to give a potential attacker this details, so we just use a basic feedback message
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
-			return false;
-		}
+            return false;
+        }
 
-		// block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
-		if (($result->user_failed_logins >= 3) AND ($result->user_last_failed_login > (time() - 30))) {
-			Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG_3_TIMES'));
-			return false;
-		}
+        // block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
+        if (($result->user_failed_logins >= 3) and ($result->user_last_failed_login > (time() - 30))) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG_3_TIMES'));
+            return false;
+        }
 
-		// if hash of provided password does NOT match the hash in the database: +1 failed-login counter
-		if (!password_verify($user_password, $result->user_password_hash)) {
-			self::incrementFailedLoginCounterOfUser($result->user_name);
-			Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
-			return false;
-		}
+        // if hash of provided password does NOT match the hash in the database: +1 failed-login counter
+        if (!password_verify($user_password, $result->user_password_hash)) {
+            self::incrementFailedLoginCounterOfUser($result->user_name);
+            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_WRONG'));
+            return false;
+        }
 
-		// if user is not active (= has not verified account by verification mail)
-		if ($result->user_active != 1) {
-			Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET'));
+        // if user is not active (= has not verified account by verification mail)
+        if ($result->user_active != 1) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET'));
 
-                                    // resend activation mail
-                                    $user_activation_hash = sha1(uniqid(mt_rand(), true));
-                                    if (UserModel::saveUserActivationHash($result->user_id, $user_activation_hash)) {
+            // resend activation mail
+            $user_activation_hash = sha1(uniqid(mt_rand(), true));
+            if (UserModel::saveUserActivationHash($result->user_id, $user_activation_hash)) {
 
-                                        // re-send verification email (invalidates the last one, but)
-                                        if (RegistrationModel::sendVerificationEmail($result->user_id, $result->user_email, $user_activation_hash)) {
-                                            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT'));
-                                        }
+                // re-send verification email (invalidates the last one, but)
+                if (RegistrationModel::sendVerificationEmail($result->user_id, $result->user_email, $user_activation_hash)) {
+                    Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT'));
+                }
 
-                                    }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-                        // if the user has exceeded their configured usage cap (e.g. demo or nuisance accounts)
-                        if (!UserModel::checkLogonCap($result->user_id)) {
-                            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_USAGE_CAP'));
-                            return false;
-                        }
+        // if the user has exceeded their configured usage cap (e.g. demo or nuisance accounts)
+        if (!UserModel::checkLogonCap($result->user_id)) {
+            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_USAGE_CAP'));
+            return false;
+        }
 
         // reset the user not found counter
         self::resetUserNotFoundCounter();
 
-		return $result;
-	}
+        return $result;
+    }
 
     /**
      * Reset the failed-login-count to 0.
@@ -185,7 +185,7 @@ class LoginModel
     public static function loginWithCookie($cookie)
     {
 
-		Session::set("feedback_area", "login");
+        Session::set("feedback_area", "login");
 
         // do we have a cookie ?
         if (!$cookie) {
@@ -194,18 +194,18 @@ class LoginModel
         }
 
         // before list(), check it can be split into 3 strings.
-        if(count (explode(':', $cookie)) !== 3){
+        if (count(explode(':', $cookie)) !== 3) {
             Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
             return false;
         }
 
         // check cookie's contents, check if cookie contents belong together or token is empty
-        list ($user_id, $token, $hash) = explode(':', $cookie);
+        list($user_id, $token, $hash) = explode(':', $cookie);
 
         // decrypt user id
         $user_id = Encryption::decrypt($user_id);
 
-        if ($hash !== hash('sha256', $user_id . ':' . $token) OR empty($token) OR empty($user_id)) {
+        if ($hash !== hash('sha256', $user_id . ':' . $token) or empty($token) or empty($user_id)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
             return false;
         }
@@ -276,7 +276,7 @@ class LoginModel
         Session::set('user_gravatar_image_url', AvatarModel::getGravatarLinkByEmail($user_email));
 
         // for when your logging into the forum via SSO
-        if (isset($discourse_sso)){
+        if (isset($discourse_sso)) {
             Session::set('discourse_sso', $discourse_sso);
             Session::set('discourse_payload', $discourse_payload);
             Session::set('discourse_signature', $discourse_signature);
@@ -310,7 +310,7 @@ class LoginModel
                  WHERE user_name = :user_name OR user_email = :user_name
                  LIMIT 1";
         $sth = $database->prepare($sql);
-        $sth->execute(array(':user_name' => $user_name, ':user_last_failed_login' => time() ));
+        $sth->execute(array(':user_name' => $user_name, ':user_last_failed_login' => time()));
     }
 
     /**
@@ -367,10 +367,10 @@ class LoginModel
         // generate cookie string that consists of user id, random string and combined hash of both
         // never expose the original user id, instead, encrypt it.
         $cookie_string_first_part = Encryption::encrypt($user_id) . ':' . $random_token_string;
-        $cookie_string_hash       = hash('sha256', $user_id . ':' . $random_token_string);
-        $cookie_string            = $cookie_string_first_part . ':' . $cookie_string_hash;
+        $cookie_string_hash = hash('sha256', $user_id . ':' . $random_token_string);
+        $cookie_string = $cookie_string_first_part . ':' . $cookie_string_hash;
 
-		// set cookie, and make it available only for the domain created on (to avoid XSS attacks, where the
+        // set cookie, and make it available only for the domain created on (to avoid XSS attacks, where the
         // attacker could steal your remember-me cookie string and would login itself).
         // If you are using HTTPS, then you should set the "secure" flag (the second one from right) to true, too.
         // @see http://www.php.net/manual/en/function.setcookie.php
@@ -389,13 +389,13 @@ class LoginModel
     public static function deleteCookie($user_id = null)
     {
         // is $user_id was set, then clear remember_me token in database
-        if(isset($user_id)){
+        if (isset($user_id)) {
 
             $database = DatabaseFactory::getFactory()->getConnection();
 
             $sql = "UPDATE users SET user_remember_me_token = :user_remember_me_token WHERE user_id = :user_id LIMIT 1";
             $sth = $database->prepare($sql);
-            $sth->execute(array(':user_remember_me_token' => NULL, ':user_id' => $user_id));
+            $sth->execute(array(':user_remember_me_token' => null, ':user_id' => $user_id));
         }
 
         // delete remember_me cookie in browser

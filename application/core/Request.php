@@ -31,8 +31,9 @@ class Request
         }
     }
 
-    public static function post_debug() {
-	    return print_r($_POST, true);
+    public static function post_debug()
+    {
+        return print_r($_POST, true);
     }
 
     /**
@@ -43,7 +44,7 @@ class Request
      */
     public static function postCheckbox($key)
     {
-        return isset($_POST[$key]) ? 1 : NULL;
+        return isset($_POST[$key]) ? 1 : null;
     }
 
     /**
@@ -61,11 +62,11 @@ class Request
             return $_GET[$key];
         }
     }
-    
-    public static function exists($key) {
-	    return (isset($_GET[$key]) || isset($_POST[$key]));
-    }
 
+    public static function exists($key)
+    {
+        return (isset($_GET[$key]) || isset($_POST[$key]));
+    }
 
     /**
      * gets/returns the value of a specific key of the GET super-global, except it doesn't escape + to space

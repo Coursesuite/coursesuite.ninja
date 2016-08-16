@@ -21,33 +21,34 @@ class UserController extends Controller
     /**
      * Show user's PRIVATE profile
      */
-    public function index() {
+    public function index()
+    {
 
-	    $model = array(
+        $model = array(
             'user_name' => Session::get('user_name'),
             'user_email' => Session::get('user_email'),
             'user_account_type' => Session::get('user_account_type'),
             'subscriptions' => array_reverse(SubscriptionModel::getAllSubscriptions(Session::get('user_id'), false, false, false, true, 'added')),
             'baseurl' => Config::get('URL'),
-            'products' => ProductModel::getAllSubscriptionProducts()
+            'products' => ProductModel::getAllSubscriptionProducts(),
         );
 
         if (Config::get('USE_GRAVATAR')) {
-	        $model["user_avatar"] = Session::get('user_gravatar_image_url');
-	    } else {
-		    $model["user_avatar"] = Session::get('user_avatar_file') . '?' . rand(1000,99999);
-		    $model["edit_avatar"] = Config::get('URL') . 'user/editAvatar';
-		}
+            $model["user_avatar"] = Session::get('user_gravatar_image_url');
+        } else {
+            $model["user_avatar"] = Session::get('user_avatar_file') . '?' . rand(1000, 99999);
+            $model["edit_avatar"] = Config::get('URL') . 'user/editAvatar';
+        }
         /*
         if (isset($model["subscriptions"]) && sizeof($model["subscriptions"]) > 0) {
-            $fsprg = new Fastspring('coursesuite', Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
-            try {
-                $model["subscription_type"] = $fsprg->getSubscription($model['subscriptions'][0]->referenceId)->productName;
-            } catch (Exception $e) {
-                echo($e->getMessage());
-            }
+        $fsprg = new Fastspring('coursesuite', Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
+        try {
+        $model["subscription_type"] = $fsprg->getSubscription($model['subscriptions'][0]->referenceId)->productName;
+        } catch (Exception $e) {
+        echo($e->getMessage());
         }
-        */
+        }
+         */
         $this->View->renderHandlebars("user/myProfile", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
     }
@@ -76,9 +77,9 @@ class UserController extends Controller
         }
 
         if (Request::post("confirm_destroy") !== "delete me forever") {
-	        Session::add('feedback_negative', Text::get('FEEDBACK_NO_DESTROY'));
-	        Redirect::to("user/destroy");
-	        exit;
+            Session::add('feedback_negative', Text::get('FEEDBACK_NO_DESTROY'));
+            Redirect::to("user/destroy");
+            exit;
         }
 
         LoginModel::logout();
@@ -101,7 +102,7 @@ class UserController extends Controller
         }
 
         UserModel::editUserName(Request::post('user_name'));
-        MailChimp::updateUserInfo(Session::get('user_email'), Request::post('user_name'), NULL, 'subscribed');
+        MailChimp::updateUserInfo(Session::get('user_email'), Request::post('user_name'), null, 'subscribed');
         Redirect::to('user/editUsername');
     }
 
@@ -129,7 +130,7 @@ class UserController extends Controller
     public function editAvatar()
     {
         $this->View->render('user/editAvatar', array(
-            'avatar_file_path' => AvatarModel::getPublicUserAvatarFilePathByUserId(Session::get('user_id'))
+            'avatar_file_path' => AvatarModel::getPublicUserAvatarFilePathByUserId(Session::get('user_id')),
         ));
     }
 
@@ -198,10 +199,12 @@ class UserController extends Controller
             Request::post('user_password_new'), Request::post('user_password_repeat')
         );
 
-        if($result)
+        if ($result) {
             Redirect::to('user/index');
-        else
+        } else {
             Redirect::to('user/changePassword');
+        }
+
     }
 
     /**
@@ -213,7 +216,7 @@ class UserController extends Controller
             'baseurl' => Config::get('URL'),
             'user_subbed' => MailChimp::isUserSubscribed(Session::get('user_email')),
             'list_interests' => MailChimp::getListInterests(),
-            'user_interests' => MailChimp::getUserInterests(Session::get('user_email'))
+            'user_interests' => MailChimp::getUserInterests(Session::get('user_email')),
         );
         $model['list_ids'] = array();
         foreach (MailChimp::getListInterests() as $toplist) {
@@ -230,40 +233,37 @@ class UserController extends Controller
     public function changeNewsletterSubscription_action()
     {
         // Unsubscribe from newsletter
-        if ($_POST['subscription'] == 'false'){
-            if (MailChimp::unsubscribe(Session::get('user_email'))){
+        if ($_POST['subscription'] == 'false') {
+            if (MailChimp::unsubscribe(Session::get('user_email'))) {
                 Session::add('feedback_positive', Text::get('FEEDBACK_MAILCHIMP_UNSUBSCRIBED_SUCCESSFUL'));
                 Redirect::to('user/index');
-            }
-            else{
+            } else {
                 Session::add('feedback_negative', Text::get('FEEDBACK_MAILCHIMP_UNSUBSCRIBED_FAILED'));
                 Redirect::to('user/changeNewsletterSubscription');
             }
         }
         // Subscribe / update interests
-        elseif ($_POST['subscription'] == 'true'){
+        elseif ($_POST['subscription'] == 'true') {
             // Check if user is subbed or not (only really needed for people who have never subbed)
-            if (!MailChimp::isUserSubscribed(Session::get('user_email'))){
+            if (!MailChimp::isUserSubscribed(Session::get('user_email'))) {
                 MailChimp::subscribe(Session::get('user_email'), Session::get('user_name'));
             }
 
             $newInterests = array();
             // Remake users interests array based on selections
-            for ($i = 0; $i < count(MailChimp::getListInterests()); $i++){
-                if(strpos($_POST['interestCheck'.$i], 'false') !== false){
-                    $key = str_replace('false', '', $_POST['interestCheck'.$i]);
+            for ($i = 0; $i < count(MailChimp::getListInterests()); $i++) {
+                if (strpos($_POST['interestCheck' . $i], 'false') !== false) {
+                    $key = str_replace('false', '', $_POST['interestCheck' . $i]);
                     $newInterests[$key] = false;
-                }
-                else{
-                    $newInterests[$_POST['interestCheck'.$i]] = true;
+                } else {
+                    $newInterests[$_POST['interestCheck' . $i]] = true;
                 }
             }
 
-            if (MailChimp::updateUserInfo(Session::get('user_email'), NULL, $newInterests)){
+            if (MailChimp::updateUserInfo(Session::get('user_email'), null, $newInterests)) {
                 Session::add('feedback_positive', Text::get('FEEDBACK_MAILCHIMP_UPDATE_SUCCESS')); //Not sure how to make this work
                 Redirect::to('user/index');
-            }
-            else{
+            } else {
                 Session::add('feedback_negative', Text::get('FEEDBACK_MAILCHIMP_UPDATE_FAILED')); //Not sure how to make this work
                 Redirect::to('user/changeNewsletterSubscription');
             }

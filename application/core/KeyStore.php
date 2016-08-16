@@ -17,7 +17,7 @@ class KeyStoreInstance
         $query->execute(array(":key" => $this->lookup));
         $value = $query->fetchColumn();
         if ($query->rowCount() > 0) {
-        	return $value;
+            return $value;
         }
         return "";
     }

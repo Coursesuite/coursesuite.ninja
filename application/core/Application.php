@@ -1,12 +1,12 @@
 <?php
 
-DEFINE ('AUTH_TYPE_TOKEN', 0);
-DEFINE ('AUTH_TYPE_NONE', 1);
-DEFINE ('AUTH_TYPE_DIGEST', 2);
+DEFINE('AUTH_TYPE_TOKEN', 0);
+DEFINE('AUTH_TYPE_NONE', 1);
+DEFINE('AUTH_TYPE_DIGEST', 2);
 
-DEFINE ('MESSAGE_LEVEL_HAPPY', 2);
-DEFINE ('MESSAGE_LEVEL_MEH', 1);
-DEFINE ('MESSAGE_LEVEL_SAD', 0);
+DEFINE('MESSAGE_LEVEL_HAPPY', 2);
+DEFINE('MESSAGE_LEVEL_MEH', 1);
+DEFINE('MESSAGE_LEVEL_SAD', 0);
 
 /**
  * Class Application
@@ -28,9 +28,10 @@ class Application
 
     private $session;
 
-    public static function php_session() {
-	    global $session;
-	    return $session;
+    public static function php_session()
+    {
+        global $session;
+        return $session;
     }
 
     /**
@@ -38,35 +39,35 @@ class Application
      */
     public function __construct()
     {
-	    global $session;
+        global $session;
         $mysqli = DatabaseFactory::getFactory()->getMySqli();
 
-		// IF the request is coming from a validator-request (CURL call from an external site) then we DO NOT want a new session record
+        // IF the request is coming from a validator-request (CURL call from an external site) then we DO NOT want a new session record
         if (Environment::NinjaValidator()) {
 
-	        // header_remove('Set-Cookie');
+            // header_remove('Set-Cookie');
 
-	    } else {
+        } else {
 
-	        // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
-	        $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, TRUE, FALSE, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
+            // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
+            $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, true, false, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
 
-		}
+        }
 
         // create array with URL parts in $url
         $this->splitUrl();
 
-	    // creates controller and action names (from URL input)
-	    $this->createControllerAndActionNames();
+        // creates controller and action names (from URL input)
+        $this->createControllerAndActionNames();
 
         // does such a controller exist ?
         if (file_exists(Config::get('PATH_CONTROLLER') . $this->controller_name . '.php')) {
 
-			// ContentController gets a different route handler, route everything through index() .. couldn't think of a better way to do this
-	        if ($this->controller_name == "ContentController") {
-		        $this->parameters = array($this->action_name);
-		        $this->action_name = "index";
-	        }
+            // ContentController gets a different route handler, route everything through index() .. couldn't think of a better way to do this
+            if ($this->controller_name == "ContentController" || $this->controller_name == "LaunchController") {
+                $this->parameters = array($this->action_name);
+                $this->action_name = "index";
+            }
 
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
@@ -95,8 +96,9 @@ class Application
             $this->controller->error404();
         }
     }
-    public function override_action($action) {
-	    $action_name = $action;
+    public function override_action($action)
+    {
+        $action_name = $action;
     }
 
     /**
@@ -113,10 +115,10 @@ class Application
             $url = explode('/', $url);
 
             /*
-            * stupid hacks are stupid
+             * stupid hacks are stupid
             $q = trim(Request::real_get('q')); // FORM GET creates a ?, so if we always use "q" for queries, we can hack it. Don't form get.
             if (isset($q)) $url[] = $q;
-            */
+             */
 
             // put URL parts into according properties
             $this->controller_name = isset($url[0]) ? $url[0] : null;
@@ -130,23 +132,23 @@ class Application
         }
     }
 
-	/**
-	 * Checks if controller and action names are given. If not, default values are put into the properties.
-	 * Also renames controller to usable name.
-	 */
-	private function createControllerAndActionNames()
-	{
-		// check for controller: no controller given ? then make controller = default controller (from config)
-		if (!$this->controller_name) {
-			$this->controller_name = Config::get('DEFAULT_CONTROLLER');
-		}
+    /**
+     * Checks if controller and action names are given. If not, default values are put into the properties.
+     * Also renames controller to usable name.
+     */
+    private function createControllerAndActionNames()
+    {
+        // check for controller: no controller given ? then make controller = default controller (from config)
+        if (!$this->controller_name) {
+            $this->controller_name = Config::get('DEFAULT_CONTROLLER');
+        }
 
-		// check for action: no action given ? then make action = default action (from config)
-		if (!$this->action_name OR (strlen($this->action_name) == 0)) {
-			$this->action_name = Config::get('DEFAULT_ACTION');
-		}
+        // check for action: no action given ? then make action = default action (from config)
+        if (!$this->action_name or (strlen($this->action_name) == 0)) {
+            $this->action_name = Config::get('DEFAULT_ACTION');
+        }
 
-		// rename controller name to real controller class/file name ("index" to "IndexController")
-		$this->controller_name = ucwords($this->controller_name) . 'Controller';
-	}
+        // rename controller name to real controller class/file name ("index" to "IndexController")
+        $this->controller_name = ucwords($this->controller_name) . 'Controller';
+    }
 }

@@ -1,36 +1,39 @@
 <?php
 
-class LoggingModel {
+class LoggingModel
+{
 
-	public static function systemLog($filter = "", $value = "") {
+    public static function systemLog($filter = "", $value = "")
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $clause = "";
         $params = array();
         switch ($filter) {
-	        case "user":
-	        	$clause = "WHERE digest_user = :digest_user";
-	        	$params[":digest_user"] = $value;
-	        	break;
-	        	
-	        case "date":
-	        	$clause = "WHERE added >= :added";
-	        	$params[":added"] = (new DateTime($value))->format("Y-m-d");
-	        	break;
-	        	
+            case "user":
+                $clause = "WHERE digest_user = :digest_user";
+                $params[":digest_user"] = $value;
+                break;
+
+            case "date":
+                $clause = "WHERE added >= :added";
+                $params[":added"] = (new DateTime($value))->format("Y-m-d");
+                break;
+
         }
         $sql = "SELECT method_name, digest_user, added, message, param0, param1, param2, param3 FROM applog $clause ORDER BY id DESC";
         $query = $database->prepare($sql);
         $query->execute($params);
         return $query->fetchAll();
     }
-    
-    public static function uniqueDigestUsers() {
+
+    public static function uniqueDigestUsers()
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT DISTINCT(digest_user) as digest_user FROM applog WHERE NOT (digest_user IS NULL OR digest_user = '')";
         $query = $database->prepare($sql);
         $query->execute();
         return $query->fetchAll();
-	    
+
     }
 
     /**
@@ -41,13 +44,14 @@ class LoggingModel {
      * @param ...$args - zero or more arguments
      * @example LoggingModel::logMethodCall(__METHOD__, $this->username, $org, $app);
      * @return boolean
-    */
-    public static function logMethodCall($methodName, $digestUser, ...$args) {
+     */
+    public static function logMethodCall($methodName, $digestUser, ...$args)
+    {
 
         $database = DatabaseFactory::getFactory()->getConnection();
         $params["method_name"] = $methodName;
         $params["digest_user"] = $digestUser;
-        for ($i = 0 ; $i < count($args) ; $i += 1) {
+        for ($i = 0; $i < count($args); $i += 1) {
             $params["param" . $i] = $args[$i];
         }
         $sql = "INSERT INTO applog(" . implode(", ", array_keys($params)) . ") VALUES (";
@@ -65,12 +69,12 @@ class LoggingModel {
         return false;
     }
 
-
-    public static function logInternal($methodName, ...$args) {
+    public static function logInternal($methodName, ...$args)
+    {
 
         $database = DatabaseFactory::getFactory()->getConnection();
         $params["method_name"] = $methodName;
-        for ($i = 0 ; $i < count($args) ; $i += 1) {
+        for ($i = 0; $i < count($args); $i += 1) {
             $params["param" . $i] = $args[$i];
         }
         $sql = "INSERT INTO applog(" . implode(", ", array_keys($params)) . ") VALUES (";
@@ -87,15 +91,15 @@ class LoggingModel {
         }
         return false;
     }
-    
-    
+
     /**
      * logs a raw message
      * @static static
      * @param message - a string, up tp 255 characters
      * @return boolean
      */
-    public static function logMessage($message) {
+    public static function logMessage($message)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "INSERT INTO applog(message) VALUES (:message)";
         $query = $database->prepare($sql);

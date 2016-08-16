@@ -67,7 +67,7 @@ class AvatarModel
     public static function createAvatar()
     {
         // check avatar folder writing rights, check if upload fits all rules
-        if (self::isAvatarFolderWritable() AND self::validateImageFile()) {
+        if (self::isAvatarFolderWritable() and self::validateImageFile()) {
             // create a jpg file in the avatar folder, write marker to database
             $target_file_path = Config::get('PATH_AVATARS') . Session::get('user_id');
             self::resizeAvatarImage($_FILES['avatar_file']['tmp_name'], $target_file_path, Config::get('AVATAR_SIZE'), Config::get('AVATAR_SIZE'));
@@ -84,7 +84,7 @@ class AvatarModel
      */
     public static function isAvatarFolderWritable()
     {
-        if (is_dir(Config::get('PATH_AVATARS')) AND is_writable(Config::get('PATH_AVATARS'))) {
+        if (is_dir(Config::get('PATH_AVATARS')) and is_writable(Config::get('PATH_AVATARS'))) {
             return true;
         }
 
@@ -116,7 +116,7 @@ class AvatarModel
         $image_proportions = getimagesize($_FILES['avatar_file']['tmp_name']);
 
         // if input file too small, [0] is the width, [1] is the height
-        if ($image_proportions[0] < Config::get('AVATAR_SIZE') OR $image_proportions[1] < Config::get('AVATAR_SIZE')) {
+        if ($image_proportions[0] < Config::get('AVATAR_SIZE') or $image_proportions[1] < Config::get('AVATAR_SIZE')) {
             Session::add('feedback_negative', Text::get('FEEDBACK_AVATAR_UPLOAD_TOO_SMALL'));
             return false;
         }
@@ -169,10 +169,13 @@ class AvatarModel
         }
 
         switch ($mimeType) {
-            case 'image/jpeg': $myImage = imagecreatefromjpeg($source_image); break;
-            case 'image/png': $myImage = imagecreatefrompng($source_image); break;
-            case 'image/gif': $myImage = imagecreatefromgif($source_image); break;
-            default: return false;
+            case 'image/jpeg':$myImage = imagecreatefromjpeg($source_image);
+                break;
+            case 'image/png':$myImage = imagecreatefrompng($source_image);
+                break;
+            case 'image/gif':$myImage = imagecreatefromgif($source_image);
+                break;
+            default:return false;
         }
 
         // calculating the part of the image to use for thumbnail
@@ -219,7 +222,7 @@ class AvatarModel
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sth = $database->prepare("UPDATE users SET user_has_avatar = 0 WHERE user_id = :user_id LIMIT 1");
-        $sth->bindValue(":user_id", (int)$userId, PDO::PARAM_INT);
+        $sth->bindValue(":user_id", (int) $userId, PDO::PARAM_INT);
         $sth->execute();
 
         if ($sth->rowCount() == 1) {

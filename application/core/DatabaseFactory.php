@@ -34,14 +34,16 @@ class DatabaseFactory
     }
 
     // the zebra_session manager requires a mysqli connection because it pings the database. don't use this for anything else.
-    public function getMysqli() {
+    public function getMysqli()
+    {
         if (!$this->mysqli) {
             $this->mysqli = mysqli_connect(Config::get('DB_HOST'), Config::get('DB_USER'), Config::get('DB_PASS'), Config::get('DB_NAME')) or die('mysqli: Could not connect to database!');
         }
         return $this->mysqli;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         if (!$this->database) {
 
             /**
@@ -54,16 +56,16 @@ class DatabaseFactory
                 $options = array(
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
-               //     PDO::ATTR_PERSISTENT => true, // at some point this will become useful, but when do we clean it up? http://www.php.net/manual/en/features.persistent-connections.php
+                    //     PDO::ATTR_PERSISTENT => true, // at some point this will become useful, but when do we clean it up? http://www.php.net/manual/en/features.persistent-connections.php
                     PDO::ATTR_STRINGIFY_FETCHES => false, // http://stackoverflow.com/a/10455228/1238884
                     //PDO::ATTR_EMULATE_PREPARES => false, // This stops PDO from adding single quotes around integer values. https://bugs.php.net/bug.php?id=44639, but also breaks logon somehow .. hmm
 
                 );
                 $this->database = new PDO(
-                   Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
-                   Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),
-                   Config::get('DB_USER'), Config::get('DB_PASS'), $options
-                   );
+                    Config::get('DB_TYPE') . ':host=' . Config::get('DB_HOST') . ';dbname=' .
+                    Config::get('DB_NAME') . ';port=' . Config::get('DB_PORT') . ';charset=' . Config::get('DB_CHARSET'),
+                    Config::get('DB_USER'), Config::get('DB_PASS'), $options
+                );
             } catch (PDOException $e) {
 
                 // Echo custom message. Echo error code gives you some info.
@@ -78,17 +80,22 @@ class DatabaseFactory
         return $this->database;
     }
 
-    public function lastInsertId() {
-        if (!$this->database) return null;
+    public function lastInsertId()
+    {
+        if (!$this->database) {
+            return null;
+        }
+
         return $this->database->lastInsertId();
     }
 
     // for debugging the acutal data in a PDO prepared statement, emulate its probable sql string
-    public static function interpolateQuery($query, $params) {
+    public static function interpolateQuery($query, $params)
+    {
         $keys = array();
         foreach ($params as $key => $value) {
             if (is_string($key)) {
-                $keys[] = '/:'.$key.'/';
+                $keys[] = '/:' . $key . '/';
             } else {
                 $keys[] = '/[?]/';
             }

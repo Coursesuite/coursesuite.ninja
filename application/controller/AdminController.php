@@ -95,7 +95,7 @@ class AdminController extends Controller
                 $table = Request::post("table");
                 $field = Request::post("field");
                 $keys = explode(',', Request::post("order")); // the order of ids, top to bottom
-                $assoc = array_combine($keys, range(0, count($keys)-1)); // a[1] => 0, a[3] => 1, a[2] => 2, etc
+                $assoc = array_combine($keys, range(0, count($keys) - 1)); // a[1] => 0, a[3] => 1, a[2] => 2, etc
                 SectionsModel::setOrder($assoc);
                 exit;
                 break;
@@ -513,29 +513,31 @@ class AdminController extends Controller
         $this->View->output("I have added a couple of notifications...");
     }
 
-    public function manageHooks($action = "", $id = 0) {
+    public function manageHooks($action = "", $id = 0)
+    {
         switch ($action) {
             case "subscribe":
                 $data = Curl::cloudConvertHook("subscribe", Config::get("URL") . "hooks/cloudconvert");
-            break;
+                break;
 
             case "unsubscribe":
                 $data = Curl::cloudConvertHook("unsubscribe", $id);
-            break;
+                break;
 
         }
         $list = Curl::cloudConvertHook("list");
         $model = array(
             "baseurl" => Config::get("URL"),
             "action" => $action,
-            "list" => json_decode($list,true),
+            "list" => json_decode($list, true),
             "stats" => HooksModel::stats(),
         );
-       $this->View->renderHandlebars("admin/manageHooks", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars("admin/manageHooks", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
     }
 
-    public function storeSettings($action = "") {
+    public function storeSettings($action = "")
+    {
         switch ($action) {
             case "update":
                 KeyStore::find("freetrial")->put(Request::post("freetrial"));
@@ -574,10 +576,8 @@ class AdminController extends Controller
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
             "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
 
-
         );
-       $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
-
 
 }
