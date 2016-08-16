@@ -12,20 +12,42 @@ class LaunchController extends Controller
     {
         parent::__construct();
 
-        // this entire controller should only be visible/usable by logged in users, so we put authentication-check here
+        // TODO: need to know if page was called with two params and avoid auth check
         Auth::checkAuthentication();
     }
 
-    public function index() {
-        Redirect::to("store");
+    public function index($appkey = "", $token = "")
+    {
+        if (empty($appkey)) {
+            Redirect::to("store");
+        }
+        $url = AppModel::getLaunchUrl($appkey);
+        if (empty($token)) {
+            Redirect::external($url);
+        } else {
+            $database = DatabaseFactory::getFactory()->getConnection();
+            // this token exists and is fairly current
+            $query = $database->prepare("SELECT count(1) FROM api_requests
+                    WHERE token = :token
+                    AND created < CURDATE()
+                    AND created > CURDATE() - INTERVAL 1 DAY");
+            $query->execute(array(":token" => $token));
+            $val = intval($query->fetchColumn());
+            if ($val > 0) {
+                Redirect::external($url);
+            } else {
+                $this->View->renderJSON(array("error" => "invalid or expired apikey"));
+            }
+        }
     }
 
-    public function app($appkey = "") {
-	    if (empty($appkey)) {
-		    Redirect::to("404");
-	    }
-	    $url = AppModel::getLaunchUrl($appkey);
-	    Redirect::external($url);
+    public function app($appkey = "")
+    {
+        if (empty($appkey)) {
+            Redirect::to("404");
+        }
+        $url = AppModel::getLaunchUrl($appkey);
+        Redirect::external($url);
     }
 
 }
