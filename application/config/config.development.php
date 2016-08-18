@@ -219,9 +219,8 @@ return array(
      * Mailchimp Configuration
      */
     'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
-    'MAILCHIMP_LIST_ID' => '2f5671f29b',
-    'MAILCHIMP_INTEREST_ID' => '3e1d42a267',
-    // interest ids app:d85d3fb037 plugin:986db51105 course catalouge:5c3fa3caed (i think) change from null to 1 to sub to interest
+    'MAILCHIMP_LIST_ID' => '08344979e7',
+    'MAILCHIMP_INTEREST_ID' => 'd3a65e22a1', // use MailChimp::getInterestsId()
 
     'FORCE_HANDLEBARS_COMPILATION' => true, // set to true to force recompilation of handlebars templates on the fly
 

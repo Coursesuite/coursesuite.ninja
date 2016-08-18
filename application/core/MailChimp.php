@@ -82,6 +82,21 @@ class MailChimp
     }
 
     /**
+     * Returns the id of the interest categorie
+     *
+     * @return string
+     */
+
+    public static function getInterstsId()
+    {
+        $apiKey = Config::get('MAILCHIMP_API_KEY');
+        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
+        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/interest-categories';
+        $result = json_decode(Curl::mailChimpCurl($url, $apiKey, 'GET', true));
+        return $result->categories[0]->id;
+    }
+
+    /**
      * Returns a 2d array of the different categories and their ID's for the mailing list
      * GET request
      *
