@@ -69,6 +69,7 @@ class RegisterController extends Controller
     public function freeTrial_action()
     {
         $registration_successful = RegistrationModel::registerNewUser();
+        Mail::sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial created', "User:" . Session::get('user_id') . ", " . Session::get('user_name') . " Just created a free trial account");
         Redirect::to('register/index/freeTrial');
     }
 
@@ -80,6 +81,7 @@ class RegisterController extends Controller
     {
         SubscriptionModel::giveFreeSubscription(Session::get('user_id'), 1);
         UserModel::setTrialUnavailable(Session::get('user_id'));
+        Mail::sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial activated', "User:" . Session::get('user_id') . ", " . Session::get('user_name') . " Just activated their free trial.");
         Redirect::to('user/index');
     }
 
