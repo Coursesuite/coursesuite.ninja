@@ -71,6 +71,7 @@ class Store
 
         // purchase / launch buttons
         if (KeyStore::find("purchasesystem")->get() == "true") {
+            $user_id = Session::get('user_id');
             $table[] = '<tr class="fill"><th></th>';
             if (Session::userIsLoggedIn()) {
                 foreach ($AppTiers as $tier) {
@@ -96,11 +97,16 @@ class Store
                     if ($label != "") {
                         $table[] = "<a href='$button_url' class='$class_name' target='_app'>$label</a>";
                     }
-
                     $table[] = "</td>";
+
+                    $table[] = "<tr><td></td><td>";
+                    if (UserModel::getUserAccountType($user_id) == 3) {
+                        $subscriptionUrl = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+                        $table[] = "<a href='$subscriptionUrl' class='$class_name'><strong>Buy Subscription</strong></a>";
+                    }
+                    $table[] = "</td></tr>";
                 }
                 $table[] = '<tr><td></td>';
-                $user_id = Session::get('user_id');
                 foreach ($AppTiers as $tier) {
                     if (!empty(SubscriptionModel::previouslySubscribed($user_id)) && SubscriptionModel::previouslySubscribed($user_id) == $tier["tier_id"] && empty($UserSubscription)) {
                         $table[] = "<td>Previous subscription</td>";

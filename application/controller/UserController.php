@@ -31,6 +31,7 @@ class UserController extends Controller
             'subscriptions' => array_reverse(SubscriptionModel::getAllSubscriptions(Session::get('user_id'), false, false, false, true, 'added')),
             'baseurl' => Config::get('URL'),
             'products' => ProductModel::getAllSubscriptionProducts(),
+            'store_url' => TierModel::getTierById(1, false)->store_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND'),
         );
 
         if (Config::get('USE_GRAVATAR')) {

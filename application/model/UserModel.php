@@ -460,6 +460,23 @@ class UserModel
         ));
     }
 
+    /**
+     * Returns the users account type. 1 - Standard, 3 - Trial, 7 - Admin
+     *
+     * @param $user_id - (int) users id
+     *
+     * @return int - users account type
+     *
+     */
+    public static function getUserAccountType($user_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT user_account_type FROM users WHERE user_id = :user_id");
+        $query->execute(array(":user_id" => $user_id));
+        $result = $query->fetch();
+        return $result->user_account_type;
+    }
+
     // system task to check all trial users and remove their subscription if they have expired
     public static function trialUserExpire()
     {
