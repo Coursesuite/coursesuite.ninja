@@ -1379,6 +1379,9 @@ user-select: none;
 	margin: 0 auto;
 	max-width: 360px;
 }
+#register_freeTrial .login-page-container > div {
+    margin: 0 auto;
+}
 
 .login-page-container form > input[type='submit'] {
 	flex: none;
