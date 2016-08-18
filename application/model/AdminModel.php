@@ -57,9 +57,9 @@ class AdminModel
         $database = DatabaseFactory::getFactory()->getConnection();
 
         if ($destroy == 1) {
+            $query = $database->prepare("DELETE FROM users WHERE user_id=:uid");
+            $query->execute(array(":uid" => $userId));
             Session::add('feedback_positive', Text::get('FEEDBACK_ADMIN_USER_DELETED', array("id" => $userId)));
-            $query = $database->prepare("DELETE FROM users WHERE user_id=:uid")
-            $query->execute(array(":uid" => $userid));
             return true;
         }
 
