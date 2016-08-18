@@ -24,6 +24,8 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
     <link href='//r.coursesuite.ninja/mycoursesuite/style.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<?php echo $baseurl; ?>css/style.css" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <?php
 if (class_exists("AdminController")) {
     echo "<link rel='stylesheet' href='" . $baseurl . "css/admin.css' />";

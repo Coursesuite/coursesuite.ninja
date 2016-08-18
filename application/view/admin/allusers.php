@@ -41,9 +41,9 @@
                     <td><?php echo (isset($user->logon_count) ? $user->logon_count : "?"); ?> / <input type="number" name="logonCap" size="3" min="-1" max="65534" value="<?php echo (isset($user->logon_cap) ? $user->logon_cap : '-1'); ?>"></td>
                     <td><input type="number" name="suspension" size="3" min="0" max="365" value="0" /></td>
                     <td>
-                        <label><input type="checkbox" name="softDelete" <?php if ($user->user_deleted) { ?> checked <?php } ?> /> Soft Delete</label>
-                        <label><input type="checkbox" name="hardDelete" /> Full Delete</label>
-                        <?php if ($user->user_active == 0) { ?><label><input type='checkbox' name='manualActivation' /> Activate</label><?php } ?>
+                        <label><input type="checkbox" name="softDelete" <?php if ($user->user_deleted) { ?> checked <?php } ?> /> Mark as Deleted (soft) </label><br>
+                        <label><input type="checkbox" name="hardDelete" /> Delete from database (hard)</label>
+                        <?php if ($user->user_active == 0) { ?><label><input type='checkbox' name='manualActivation' /> Manually activate user</label><?php } ?>
                     </td>
                     <td>
                         <input type="hidden" name="user_id" value="<?= $user->user_id; ?>" />
