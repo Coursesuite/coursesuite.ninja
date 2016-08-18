@@ -72,6 +72,17 @@ class RegisterController extends Controller
         Redirect::to('register/index/freeTrial');
     }
 
+    public function registeredUserTrial(){
+        $this->View->render('register/registeredUserTrial');
+    }
+
+    public function registeredUserTrial_action()
+    {
+        SubscriptionModel::giveFreeSubscription(Session::get('user_id'), 1);
+        UserModel::setTrialUnavailable(Session::get('user_id'));
+        Redirect::to('user/index');
+    }
+
     /**
      * Generate a captcha, write the characters into $_SESSION['captcha'] and returns a real image which will be used
      * like this: <img src="......./login/showCaptcha" />

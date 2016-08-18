@@ -110,6 +110,7 @@ class SubscriptionModel
             ":active" => ($status == 'active') ? 1 : 0,
         );
         // LoggingModel::logInternal("addSubscription Query", $sql, print_r($params, true));
+        UserModel::setTrialUnavailable($userid);
         return $query->execute($params);
     }
 

@@ -503,4 +503,37 @@ class UserModel
             }
         }
     }
+
+    /**
+     * Returns whether the user can get a free trial
+     *
+     * @param $user_id - the user to check
+     *
+     * @return bool - truthy if user can get a free trial
+     *
+     */ 
+
+    public static function getTrialAvailability($user_id)
+    {
+        if (!is_int($user_id)) {return false;}
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT user_free_trial_available FROM users WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(":user_id" => $user_id));
+        $result = $query->fetch();
+        return $result->user_free_trial_available == 1 ? true : false;
+    }
+
+    /**
+     * Stops the user from activating a free trial.
+     *
+     * @param $user_id - (int) The users id
+     *
+     */
+
+    public static function setTrialUnavailable($user_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("UPDATE users SET user_free_trial_available = 0 WHERE user_id = :user_id");
+        $query->execute(array(":user_id" => $user_id));
+    }
 }

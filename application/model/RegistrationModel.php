@@ -89,9 +89,10 @@ class RegistrationModel
             return false;
         }
 
-        // Give trial users their subscription
+        // Give trial users their subscription and remove their ability to get another free trial
         if ($user_account_type == 3) {
             SubscriptionModel::giveFreeSubscription($user_id, TierModel::getTierIdByName(Config::get('FREE_TRIAL_TIER')));
+            UserModel::setTrialUnavailable($user_id);
         }
 
         // send verification email
