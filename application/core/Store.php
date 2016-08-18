@@ -84,7 +84,7 @@ class Store
                         if ($tier["tier_id"] == $user_tier_level) {
                             $label = 'Launch App';
                             $class_name = 'current-tier';
-                            $button_url = Config::get("URL") . "launch/" . $App["app_id"]; //    AppModel::getLaunchUrl($App["app_id"]);
+                            $button_url = Config::get("URL") . "launch/" . $App["app_key"]; //    AppModel::getLaunchUrl($App["app_id"]);
                         } else if ($tier["tier_id"] < $user_tier_level) {
                             $label = 'Downgrade';
                             $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
