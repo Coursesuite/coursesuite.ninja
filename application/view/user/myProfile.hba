@@ -19,9 +19,15 @@
 			<div class="user-email">{{user_email}} <a href="{{baseurl}}user/editUserEmail"><i class='cs-pen'></i></a></div>
 			<div class="user-password"><a href="{{baseurl}}user/changePassword">Change password</a></div>
 			<div><a href="{{baseurl}}user/changeNewsletterSubscription">Update newsletter subscription</a></div>
-			<div>{{#equals user_account_type 3}}<a href="{{store_url}}" class="submit button">Buy Subscription</a>{{/equals}}</div>
 			<div class="user-destroy"><a href="{{baseurl}}user/destroy">Delete account <i class='cs-delete'></i></a></div>
 		</div>
+
+		{{#equals user_account_type 3}}
+		<div class="upsell">
+			<p>You're using a Trial account.</p>
+			<div class="buy-button"><a href="{{store_url}}" class="button">Buy Subscription</a></div>
+		</div>
+		{{/equals}}
 
 	</section>
 

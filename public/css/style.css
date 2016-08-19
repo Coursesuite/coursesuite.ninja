@@ -1237,7 +1237,7 @@ section > article > .container {
 
 
 article.my-profile > header {
-    background-color: rgba(150,150,150,1.00);
+    background-color: #009688;
     color: #fff;
     margin-bottom: 10px;
     box-shadow: inset 0 10px 25px rgba(0,0,0,.1);
@@ -1245,11 +1245,11 @@ article.my-profile > header {
 }
 
 article.my-profile > header > nav {
-	max-width: 1100px;
-	margin: 0 auto 10px;
-    font-size: 28px;
-    padding: 28px 0;
+    font-size: 22px;
+    font-weight: 300;
+    padding: 10px 0;
     color: inherit;
+    max-width: 1100px;
 }
 
 article.my-profile > section {
@@ -1279,19 +1279,33 @@ article.my-profile form input[type='submit'] {
 	display:inline-block;
 }
 
-article.my-profile div.profile-card {
-	display: inline-block;
-	min-width: 500px;
-	background-color: rgba(255,255,255,.7);
-	box-shadow: 0 0 5px rgba(0,0,0,.1);
-	padding: 10px;
+article.my-profile section.profile-display {
+    display: flex;
 }
-article.my-profile section a {
+article.my-profile div.profile-card, article.my-profile .upsell {
+        flex: 1;
+    background-color: rgba(255,255,255,.7);
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
+    padding: 10px;
+}
+article.my-profile .upsell {
+    margin-left: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+article.my-profile .upsell .buy-button {
+    flex: 1;
+}
+
+
+article.my-profile section .profile-card a {
 	color: rgba(28,165,234,1.00);
 	transition: color .1s linear;
 	text-decoration: none;
 }
-article.my-profile section a:hover {
+article.my-profile section .profile-card a:hover {
 	color: #000;
 }
 article.my-profile div.profile-card > figure {
