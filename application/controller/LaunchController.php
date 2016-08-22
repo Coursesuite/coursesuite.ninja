@@ -41,13 +41,13 @@ class LaunchController extends Controller
         }
     }
 
-    public function app($appkey = "")
-    {
-        if (empty($appkey)) {
-            Redirect::to("404");
-        }
-        $url = AppModel::getLaunchUrl($appkey);
-        Redirect::external($url);
-    }
+    // public function app($appkey = "")
+    // {
+    //     if (empty($appkey)) {
+    //         Redirect::to("404");
+    //     }
+    //     $url = AppModel::getLaunchUrl($appkey);
+    //     Redirect::external($url);
+    // }
 
 }
