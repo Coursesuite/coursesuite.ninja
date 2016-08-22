@@ -7,6 +7,8 @@
  */
 class Redirect
 {
+
+
     /**
      * To the homepage
      */
@@ -23,12 +25,19 @@ class Redirect
     public static function to($path)
     {
         // $to = array_map('trim', $path);
+        // die("<a href='" . Config::get("URL") . $path . "'>redirect::to($path)</a>");
         header("location: " . Config::get('URL') . $path);
     }
 
     public static function external($url)
     {
-        $rd = "location: " . $url . Environment::suffix();
-        header($rd);
+        // may have an apache vhost environment set to shim in a developer domain, i.e. ".dev" or ".local"
+        $sfx = Environment::suffix();
+        if (!empty($sfx)) {
+            if (strpos($url, ".ninja/app/") !== false) {
+                $url = str_replace(".ninja/app/", ".ninja$sfx/app/", $url);
+            }
+        }
+        header("location: " . $url);
     }
 }
