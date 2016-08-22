@@ -58,7 +58,7 @@ return $query->fetchAll();
                                         $appTokens[] = array(
                                             "app_id" => $tier,
                                             "token" => $token,
-                                            "launchurl" => Config::get("URL") . "launch/app/" . $ap->app_key,
+                                            "launchurl" => Config::get("URL") . "launch/" . $ap->app_key,
                                         );
                                     }
                                 }

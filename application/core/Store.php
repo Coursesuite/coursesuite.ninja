@@ -174,7 +174,7 @@ class Store
                 $AppFeatures = TierModel::getAppFeatures($app["app_id"]);
                 $AppTiers = TierModel::getAllAppTiers($app["app_id"]);
                 if ($headered != true) {
-                    $table[] = "<tr><th colspan='$colspan' class='app-header'>" . $app["name"] . " <a href='$infourl/{$app["name"]}' class='float-right'><i class='cs-info-large-outline'></i></a></th></tr>";
+                    $table[] = "<tr><th colspan='$colspan' class='app-header'>" . $app["name"] . " <a href='$infourl/{$app["app_key"]}' class='float-right'><i class='cs-info-large-outline'></i></a></th></tr>";
                     $headered = true;
                 }
                 foreach ($AppFeatures as $info) {
