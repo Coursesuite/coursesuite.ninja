@@ -84,24 +84,9 @@ class ApiController extends Controller
 
     public function verifyApiKey($key)
     {
-        $data = ApiModel::decodeApiToken($key, $this->username);
-        // org
-        // app
-        // timestamp
-        // valid
-        // reason
-        $result = array(
-            'authuser' => $this->username,
-            'appkey' => $data->app,
-            'valid' => $data->valid,
-            'api' => true,
-            'tier' => TierModel::getLevelForOrg($data->org),
-            'error' => $data->reason,
-            'org' => $data->org,
-            'trial' => false,
-        );
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $data->org, $data->app, $result);
-        $this->View->renderJSON($result);
+        $data = ApiModel::decodeApiToken($key);
+        LoggingModel::logMethodCall(__METHOD__, $this->username, json_encode($data));
+        $this->View->renderJSON($data);
     }
 
     /*
@@ -120,16 +105,16 @@ class ApiController extends Controller
         $org = Request::post("org", true);
         $app = Request::post("app", true);
         $publish_url = Request::post("publish_url", true);
+
         $username = $this->username;
+        if (empty($username)) return;
 
         if (empty($org)) { // empty($publish_url)
             $this->View->renderJSON(array("error" => Text::get("MISSING_PARAMETERS")));
             return false;
         }
 
-        $org_model = new stdClass();
-        $org_model->org_id = 0;
-        $app_model = new stcClass();
+        $app_model = new stdClass();
         $app_model->app_id = 0;
 
         LoggingModel::logMethodCall(__METHOD__, $username, file_get_contents("php://input"));
@@ -149,7 +134,7 @@ class ApiController extends Controller
             $org_model = $tmp;
         } else {
             $org_model = OrgModel::Make();
-            $org_model->name = $org;
+            $org_model["name"] = $org;
             OrgModel::Save($org_model); // defaults to non-active
             $org_model = OrgModel::getApiModel($org); // get full row once default are applied
         }
@@ -157,6 +142,8 @@ class ApiController extends Controller
         $token = ApiModel::encodeApiToken($org_model, $app_model, $publish_url, $this->username);
         $data = array("token" => $token);
         $this->View->renderJSON($data);
+
+        return true;
     }
 
     /*

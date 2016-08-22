@@ -31,17 +31,16 @@ class ApiModel
 
         // we need to store why and when we encoded this - so we can do request limiting
         $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->prepare("INSERT INTO api_requests (digest_user, org, app, publish_url, token, `month`) VALUES (:user, :org, :app, :url, :key, MONTH(CURRENT_DATE()))");
+        $query = $database->prepare("INSERT INTO api_requests (digest_user, org, app, publish_url, `month`) VALUES (:user, :org, :app, :url, MONTH(CURRENT_DATE()))");
         $query->execute(array(
             ":user" => $digest_user,
             ":org" => $orgModel->org_id,
             ":app" => $appModel->app_id,
             ":url" => $publish_url,
-            ":key" => $token,
         ));
         $rowId = $database->lastInsertId();
 
-        // the token is the encrypted version of the rowId inserted above
+        // the token IS the encrypted version of the rowId inserted above
         return self::encodeToken($rowId);
     }
 
@@ -58,18 +57,23 @@ class ApiModel
             ":id" => $id
         ));
         $row = $query->fetch();
+        $result->api = true;
+        $result->trial = false;
+        $result->reason = "";
         if ($row) {
             $result->org = OrgModel::getRecord($row->org);
+            $result->app = $row->app; // kinda useless ATM
 
-            // the digest_user to check is the one who CREATED the token; since we are now under the guise of tokenuser
-            $digest_user = $row->digest_user;
+            // the digest_user to check is the one who CREATED the token; since we are now validating under the guise of tokenuser
+            $result->username = $row->digest_user;
+            $result->publish_url = $row->publish_url;
 
-            $query = $database->prepare("SELECT usage_cap WHERE digest_user = :user");
-            $query->execute(array(":user" => $digest_user));
+            $query = $database->prepare("SELECT usage_cap FROM api_limits WHERE digest_user = :user");
+            $query->execute(array(":user" => $result->username));
             $cap = intval($query->fetchColumn()); // how many ues per month this user can have
 
             $query = $database->prepare("SELECT COUNT(1) FROM api_requests WHERE `month` = MONTH(CURRENT_DATE()) and digest_user = :user");
-            $query->execute(array(":user" => $digest_user));
+            $query->execute(array(":user" => $result->username));
             $used = intval($query->fetchColumn()); // how many times this month this user has generated an apitoken
 
             if ($used > $cap) {
