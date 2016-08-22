@@ -129,5 +129,6 @@ return array(
     "FEEDBACK_MAILCHIMP_UNSUBSCRIBE_SUCCESS" => "Successfully unsubscribed from mailing list",
 
     "EXCEEDED_MONTHLY_CAP" => "Monthly usage cap exceeded",
+    "MISSING_PARAMETERS" => "Missing expected parameters",
 
 );

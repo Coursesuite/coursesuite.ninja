@@ -108,22 +108,54 @@ class ApiController extends Controller
      *  generate an api token, optionally for a given app;
      *
      * @access public
+     * @method POST
      * @static false
 
      * @return JSON
      * @see ApiController::generateApiKey()
      */
-    public function generateApiKey($org, $app = "", $publish_url = "")
+    public function generateApiKey()
     {
-        if (!empty($app)) {
-            if (!in_array($app, AppModel::getAppKeys())) {
+
+        $org = Request::post("org", true);
+        $app = Request::post("app", true);
+        $publish_url = Request::post("publish_url", true);
+        $username = $this->username;
+
+        if (empty($org)) { // empty($publish_url)
+            $this->View->renderJSON(array("error" => Text::get("MISSING_PARAMETERS")));
+            return false;
+        }
+
+        $org_model = new stdClass();
+        $org_model->org_id = 0;
+        $app_model = new stcClass();
+        $app_model->app_id = 0;
+
+        LoggingModel::logMethodCall(__METHOD__, $username, file_get_contents("php://input"));
+
+        if (!empty($app) && $app !== "*") {
+            $tmp = AppModel::getAppByKey($app);
+            if ($tmp) {
+                $app_model = $tmp;
+            } else {
                 $this->View->renderJSON(array("error" => "App name not found"));
                 return false;
             }
         }
-        $token = ApiModel::encodeApiToken($org, $app, $publish_url, $this->username);
+
+        $tmp = OrgModel::getApiModel($org);
+        if ($tmp) {
+            $org_model = $tmp;
+        } else {
+            $org_model = OrgModel::Make();
+            $org_model->name = $org;
+            OrgModel::Save($org_model); // defaults to non-active
+            $org_model = OrgModel::getApiModel($org); // get full row once default are applied
+        }
+
+        $token = ApiModel::encodeApiToken($org_model, $app_model, $publish_url, $this->username);
         $data = array("token" => $token);
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $org, $app, $data);
         $this->View->renderJSON($data);
     }
 
