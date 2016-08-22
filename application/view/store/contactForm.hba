@@ -14,10 +14,10 @@
                         <textarea name="your-message" required placeholder="What do you want to talk about?"></textarea>
                     </div>
                 </div>
-                <div class="row-grouping centered">
-                    <div class="action-fields">
-                        <input type="submit" name="action" value="Send message">
-                    </div>
+                <div class="row-grouping flexible text-centre">
+                    <div class="g-recaptcha" data-sitekey="{{captchakey}}"></div>
+                    <script type="text/javascript" src="//www.google.com/recaptcha/api.js?hl=en"></script>
+                    <div><input type="submit" name="action" value="Send message"></div>
                 </div>
                 <div id="contact-feedback"></div>
             </form>

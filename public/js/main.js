@@ -151,9 +151,11 @@
 
 })(window, document);
 
-// TODO: fix slideshow hack
+// store info page slideshow.. a nasty hack, but also pretty efficient on the gpu
+// todo: pause videos during slide turns
 var _currentSlide = 0,
-	_aATimeout, _autoAdvance = true;
+	_aATimeout,
+	_autoAdvance = true;
 function slideshow(index) {
 	if (typeof index == "string") {
 		switch (index) {
@@ -165,20 +167,20 @@ function slideshow(index) {
 				if (_currentSlide == index) index = 0;
 				break;
 		}
-		//console.log("current slide", _currentSlide, "index", index);
 	}
-    var n = (index * 459), // TODO: read thumbnail widths from config
-          m = Math.max((index * 120) - 60, 0); // half a thumb on the left, plus a full thumb visible, no matter the index
-    $("#current_slide").css({
-	    "transform": "translateX(-" + n + "px)"
-    });
-    $("#slide_controls").css({
-	    "transform": "translateX(-" + m + "px)"
-    }).find("a").removeClass("active");
-    $("a:eq(" + index + ")", "#slide_controls").addClass("active");
-    // transition the background to match the content of the image/slide predominant colour (precalculated by thumbnailer)
-    $("section.info > div.media > div.slide-wrapper > .viewport.current_slide").css("box-shadow","0 0 25px " + slides[index].bgcolor);
-    $("section.info > div.media > a.slide_navigation").css("color",slides[index].bgcolor);
+	var n = (index * 459), // TODO: read thumbnail widths from config
+		m = Math.max((index * 120) - 60, 0); // half a thumb on the left, plus a full thumb visible, no matter the index
+	$("#current_slide").css({
+		"transform": "translateX(-" + n + "px)"
+	});
+	$("#slide_controls").css({
+		"transform": "translateX(-" + m + "px)"
+	}).find("a").removeClass("active");
+	$("a:eq(" + index + ")", "#slide_controls").addClass("active");
+
+	// transition the background to match the content of the image/slide predominant colour (precalculated - thanks ColorThief!)
+	$("section.info > div.media > div.slide-wrapper > .viewport.current_slide").css("box-shadow","0 0 25px " + slides[index].bgcolor);
+	$("section.info > div.media > a.slide_navigation").css("color",slides[index].bgcolor);
 	_currentSlide = index;
 }
 
@@ -188,10 +190,13 @@ window.addEventListener("load", function () {
 	document.querySelectorAll("form[method='ajax']").forEach(function (el, index) {
 		$(el).on("submit", function (e) {
 			e.preventDefault;
+			$("#contact-feedback").html("");
 			var $this = $(this);
 			$.post($this.attr("action"), $this.serialize(), function (result) {
-				$("#contact-feedback").html("<p>Your message has been sent! Thanks for your interest.</p>");
-				$(el).reset();
+				$("#contact-feedback").html("<p>" + result.message + "</p>");
+				if (result.sent) {
+					el.reset();
+				}
 			});
 			return false;
 		});

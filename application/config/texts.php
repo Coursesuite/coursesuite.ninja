@@ -131,4 +131,7 @@ return array(
     "EXCEEDED_MONTHLY_CAP" => "Monthly usage cap exceeded",
     "MISSING_PARAMETERS" => "Missing expected parameters",
 
+    "CONTACT_FORM_OK" => "Your message has been sent! Thanks for your interest.",
+    "CONTACT_FORM_SPAM" => "I have always wanted to meet a robot!",
+
 );

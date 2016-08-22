@@ -1944,3 +1944,11 @@ section.contact-form .row-grouping.flexible > div > textarea:focus {
     text-align: center;
     color: #fff;
 }
+
+.contact-form .text-centre > div {
+    align-self: center;
+}
+.contact-form input[type='submit'] {
+    max-width: 302px;
+    margin: 0 auto;
+}

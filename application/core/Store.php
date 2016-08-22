@@ -240,6 +240,9 @@ class Store
 
     public static function ContactForm()
     {
-        return View::renderHandlebars("store/contactForm", array(), null, Config::get('FORCE_HANDLEBARS_COMPILATION'), true);
+        return View::renderHandlebars("store/contactForm", array(
+            "baseurl" => Config::get('URL'),
+            "captchakey" => Config::get('GOOGLE_CAPTCHA_SITEKEY'),
+        ), null, Config::get('FORCE_HANDLEBARS_COMPILATION'), true);
     }
 }
