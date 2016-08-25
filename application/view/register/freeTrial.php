@@ -5,6 +5,9 @@
     </header>
 
     <section class="login-page-container standard-width">
+        <div class='login-box'>
+            <?php echo KeyStore::find("freeTrialDescription")->get(); ?>
+        </div>
 
         <div class="register-box">
             <header>Create your trial account</header>

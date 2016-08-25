@@ -52,6 +52,8 @@
 		<div><label for="description">Footer right column</label>
 		<div><textarea id="footer_col1" name="footer_col3" rows="5" cols="80" data-markdown="true">{{footer.2}}</textarea></div></div>
 
+		<div><label for="description">Free trial description</label>
+		<div><textarea id='freeTrialDescription' name="freeTrialDescription" rows="5" cols="80" data-markdown="true">{{freeTrialDescription}}</textarea></div></div>
 
 		<div><input type="submit"></div>
 	</form>

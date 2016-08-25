@@ -554,6 +554,8 @@ class AdminController extends Controller
 
                 KeyStore::find("contactform")->put(Request::post("contactform"));
 
+                KeyStore::find("freeTrialDescription")->put(Request::post("freeTrialDescription"));
+
                 break;
         }
 
@@ -572,6 +574,7 @@ class AdminController extends Controller
             "purchasesystem" => KeyStore::find("purchasesystem")->get(),
             "nopurchases" => KeyStore::find("nopurchases")->get(),
             "contactform" => KeyStore::find("contactform")->get(),
+            "freeTrialDescription" => KeyStore::find("freeTrialDescription")->get(),
 
             "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
             "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
