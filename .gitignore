@@ -15,3 +15,5 @@
 
 /application/_installation/
 application/_installation/
+application/config/config.development.php
+application/config/config.production.php
