@@ -1,4 +1,5 @@
     </main>
+
     <style>
     @media all and (-ms-high-contrast:none)
     {
@@ -6,13 +7,7 @@
     	*::-ms-backdrop, .footer {display:none;} /* IE11 */
     }
     </style>
-    <script>
-	$(document).ready(function() {
-        if (navigator.userAgent.match(/msie|trident/i)) {
-        	$('#footer').hide();
-        }
-    });
-    </script>
+
     <footer class='footer'>
 	    <div class="standard-width">
 		    <div class="footer-columns">
