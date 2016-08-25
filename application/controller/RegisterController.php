@@ -69,8 +69,6 @@ class RegisterController extends Controller
     public function freeTrial_action()
     {
         $registration_successful = RegistrationModel::registerNewUser();
-        $mail = new Mail;
-        $mail->sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial created', "User:" . Session::get('user_id') . ", " . Session::get('user_name') . " Just created a free trial account");
         Redirect::to('register/index/freeTrial');
     }
 

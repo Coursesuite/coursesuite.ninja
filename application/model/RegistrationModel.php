@@ -74,6 +74,7 @@ class RegistrationModel
 
         // Set account type - normal(1), free trial(3) this will need to be changed with the adition of new account types
         $user_account_type = (Session::get('free_trial')) ? 3 : 1;
+        Session::remove('free_trial');
 
         // write user data to database
         if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash, $user_newsletter_subscribed, $user_account_type)) {
@@ -315,6 +316,8 @@ class RegistrationModel
      */
     public static function verifyNewUser($user_id, $user_activation_verification_code, $user_newsletter_subscribed)
     {
+        Session::set("feedback_area", "login");
+        Session::remove('free_trial');
         $database = DatabaseFactory::getFactory()->getConnection();
 
         $sql = "UPDATE users
@@ -328,7 +331,7 @@ class RegistrationModel
         ));
 
         // Get user name and email
-        $sql = "SELECT user_email, user_name
+        $sql = "SELECT user_email, user_name, user_account_type
                                     FROM users
                                     WHERE user_id = :user_id
                                     LIMIT 1";
@@ -340,6 +343,11 @@ class RegistrationModel
 
         if ($user_newsletter_subscribed == 1) {
             MailChimp::subscribe($userInfo[0]->user_email, $userInfo[0]->user_name);
+        }
+
+        if ($userInfo[0]->user_account_type == 3){
+            $mail = new Mail;
+            $mail->sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial created', "User " . $user_id . ": " . $userInfo[0]->user_name . ", Just created a free trial account");
         }
 
         if ($query->rowCount() == 1) {
