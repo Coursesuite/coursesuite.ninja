@@ -47,14 +47,14 @@ return array(
 
     "FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED" => "Sorry, we could not send you a verification email. Your account has NOT been created.",
     "FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR" => "Verification email could not be sent due to: ",
-    "FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL" => "A verification email has been sent successfully.",
+    "FEEDBACK_VERIFICATION_MAIL_SENDING_SUCCESSFUL" => "A verification email has been sent successfully (Don't forget to check your spam folder).",
 
     "FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET" => "Your account is not activated yet. Please click on the confirm link in the mail.",
     "FEEDBACK_ACCOUNT_SUSPENDED" => "Account Suspended for ",
     "FEEDBACK_ACCOUNT_SUSPENSION_DELETION_STATUS" => "This user's suspension / deletion / logon cap has been edited.",
     "FEEDBACK_ACCOUNT_CANT_DELETE_SUSPEND_OWN" => "You can not delete or suspend your own account.",
     "FEEDBACK_ACCOUNT_USER_SUCCESSFULLY_KICKED" => "The selected user has been successfully kicked out of the system (by resetting this user's session)",
-    "FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED" => "Your account has been created successfully and we have sent you an email. Please click the VERIFICATION LINK within that mail; Problems? <a href='mailto:info@coursesuite.com.au'>email us</a>",
+    "FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED" => "Your account has been created successfully and we have sent you an email (Don't forget to check your spam folder). Please click the VERIFICATION LINK within that mail; Problems? <a href='mailto:info@coursesuite.com.au'>email us</a> \n <a href='" . Config::get('URL')."register/reVerify'>Resend verification email</a>",
     "FEEDBACK_ACCOUNT_CREATION_FAILED" => "Sorry, your registration failed. Please go back and try again.",
     "FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT" => "A verification mail has been resent (check your inbox or spam folder). You need to click the VERIFICATION LINK within that mail.",
     "FEEDBACK_ACCOUNT_ACTIVATION_SUCCESSFUL" => "Activation was successful! You can now log in.",

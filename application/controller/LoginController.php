@@ -78,6 +78,11 @@ class LoginController extends Controller
         }
     }
 
+    public function loginSingle(){
+        $this->View->render('login/loginSingle');
+    }
+
+
     /**
      * The logout action
      * Perform logout, redirect user to main-page

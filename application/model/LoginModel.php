@@ -132,7 +132,7 @@ class LoginModel
             if (UserModel::saveUserActivationHash($result->user_id, $user_activation_hash)) {
 
                 // re-send verification email (invalidates the last one, but)
-                if (RegistrationModel::sendVerificationEmail($result->user_id, $result->user_email, $user_activation_hash)) {
+                if (RegistrationModel::sendVerificationEmail($result->user_id, $result->user_email, $user_activation_hash, $result->user_newsletter_subscribed, $result->user_account_type)) {
                     Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT'));
                 }
 

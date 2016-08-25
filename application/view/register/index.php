@@ -34,9 +34,9 @@
             <main>
                 <form method="post" action="<?php echo Config::get('URL'); ?>register/register_action" autocomplete="off">
                 <?php $rego = Session::get("form_data"); ?>
-                    <input type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" placeholder="Username (letters/numbers, 2-64 chars)" required value="<?php Text::output($rego, 'user_name'); ?>" />
-                    <input type="text" name="user_email" placeholder="email address (a real address)" required value="<?php Text::output($rego, 'user_email'); ?>" />
-                    <input type="text" name="user_email_repeat" placeholder="repeat email address (to prevent typos)" required value="<?php Text::output($rego, 'user_email_repeat'); ?>" />
+                    <input type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" placeholder="Username (One word, letters/numbers, 2-64 chars)" required value="<?php Text::output($rego, 'user_name'); ?>" />
+                    <input type="text" name="user_email" placeholder="Email address (A real address)" required value="<?php Text::output($rego, 'user_email'); ?>" />
+                    <input type="text" name="user_email_repeat" placeholder="Repeat email address (To prevent typos)" required value="<?php Text::output($rego, 'user_email_repeat'); ?>" />
                     <input type="password" name="user_password_new" pattern=".{6,}" placeholder="Password (6+ characters)" required autocomplete="off" value="<?php Text::output($rego, 'user_password_new'); ?>" />
                     <input type="password" name="user_password_repeat" pattern=".{6,}" required placeholder="Repeat your password" autocomplete="off" value="<?php Text::output($rego, 'user_password_repeat'); ?>" />
                     <label><input type="checkbox" name="user_newsletter_subscribed" checked="checked" value="true"/>Signup for CourseSuite newsletter</label>

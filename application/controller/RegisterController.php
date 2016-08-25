@@ -59,11 +59,16 @@ class RegisterController extends Controller
 
         if (isset($user_id) && isset($user_activation_verification_code)) {
             RegistrationModel::verifyNewUser($user_id, $user_activation_verification_code, $user_newsletter_subscribed);
-            $this->View->render('login/login');
+            $this->View->render('login/loginSingle');
              // $this->View->render('register/verify');
         } else {
             Redirect::to('login/index');
         }
+    }
+
+    public function reVerify(){
+        RegistrationModel::reSendVerificationEmail();
+        Redirect::to('login/loginSingle');
     }
 
     public function freeTrial_action()

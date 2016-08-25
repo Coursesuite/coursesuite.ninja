@@ -305,6 +305,18 @@ class RegistrationModel
         }
     }
 
+    public static function reSendVerificationEmail() {
+        $formData = Session::get('form_data');
+        Session::set("feedback_area", "login");
+        $userInfo = UserModel::getUserDataByUsername($formData['user_name']);
+        $user_activation_hash = sha1(uniqid(mt_rand(), true));
+        if (UserModel::saveUserActivationHash($userInfo->user_id, $user_activation_hash)) {
+            if (RegistrationModel::sendVerificationEmail($userInfo->user_id, $userInfo->user_email, $user_activation_hash, $userInfo->user_newsletter_subscribed, $userInfo->user_account_type  )) {
+                Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT'));
+            }
+        }
+    }
+
     /**
      * checks the email/verification code combination and set the user's activation status to true in the database
      *
