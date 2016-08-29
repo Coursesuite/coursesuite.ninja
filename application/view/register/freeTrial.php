@@ -5,7 +5,8 @@
     </header>
 
     <section class="login-page-container standard-width">
-        <div class='login-box'>
+        <div class="free-trial-drescription">
+            <header>What you get</header>
             <?php echo KeyStore::find("freeTrialDescription")->get(); ?>
         </div>
 
