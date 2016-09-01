@@ -105,7 +105,7 @@ class StoreController extends Controller
         if (($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true) {
 
             $mailer = new Mail;
-            // $mail_sent = $mailer->sendMail(Config::get('EMAIL_SUBSCRIPTION'), $user_email, $user_name, "CourseSuite Contact Form", $message);
+            $mail_sent = $mailer->sendMail(Config::get('EMAIL_SUBSCRIPTION'), $user_email, $user_name, "CourseSuite Contact Form", $message);
 
             $model = array(
                 "sent" => true, // $mail_sent,
