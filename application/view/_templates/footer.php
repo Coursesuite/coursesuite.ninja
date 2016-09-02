@@ -1,13 +1,5 @@
     </main>
 
-    <style>
-    @media all and (-ms-high-contrast:none)
-    {
-    	.footer {display:none;} /* IE10 */
-    	*::-ms-backdrop, .footer {display:none;} /* IE11 */
-    }
-    </style>
-
     <footer class='footer'>
 	    <div class="standard-width">
 		    <div class="footer-columns">
@@ -17,7 +9,7 @@
 		    </div>
 	    </div>
     </footer>
-	
+
 
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <script>window.jQuery || document.write('<script src="<?=Config::get('URL')?>js/jquery-1.10.2.min.js"><\/script>')</script>

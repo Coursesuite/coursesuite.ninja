@@ -15,7 +15,7 @@ body {
     background-color: #fff;
 
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     flex-direction: column;
 
 	-webkit-font-smoothing: subpixel-antialiased;
@@ -26,9 +26,9 @@ body.no-scroll {
 	overflow: hidden;
 }
 
-body>main { flex: 1 }
-body>footer { height: auto; }
-body>header {height: 175px; }
+body>main { flex: 1 0 auto; }
+body>footer { flex-shrink: 0; }
+body>header {height: 175px; flex-shrink: 0; }
 
 .text-center {
 	text-align: center;
@@ -1372,7 +1372,7 @@ user-select: none;
 
 .login-page-container {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	width: 100%;
 	margin: 50px auto 0;
 }
@@ -1454,7 +1454,7 @@ user-select: none;
     text-align: center;
 }
 .free-trial-description {
-    
+
 }
 
 
@@ -1827,8 +1827,10 @@ and (-webkit-min-device-pixel-ratio: 2) {
 .green-button {
     text-decoration: none;
     display: inline-block;
+    background: #6ca225;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b6d644), color-stop(100%,#6ca225));
     background: -moz-linear-gradient(center top, #b6d644 0%, #6ca225 100%);
+    background: linear-gradient(center top, #b6d644 0%, #6ca225 100%);
     -webkit-box-shadow: 0px 4px 0px 0px #4b7d10, 0px -1px 0px 0px #b6d644 inset;
     -moz-box-shadow: 0px 4px 0px 0px #4b7d10, 0px -1px 0px 0px #b6d644 inset;
     box-shadow: 0px 4px 0px 0px #4b7d10, 0px -1px 0px 0px #b6d644 inset;
@@ -1849,6 +1851,7 @@ and (-webkit-min-device-pixel-ratio: 2) {
     background: #b6d644;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bedd51), color-stop(100%,#78b528));
     background: -moz-linear-gradient(center top, #bedd51 0%, #78b528 100%);
+    background: linear-gradient(center top, #bedd51 0%, #78b528 100%);
     -webkit-box-shadow: 0px 4px 0px 0px #4b7d10, 0px -1px 0px 0px #cae85d inset;
     -moz-box-shadow: 0px 4px 0px 0px #4b7d10, 0px -1px 0px 0px #cae85d inset;
     box-shadow: 0px 4px 0px 0px #4b7d10, 0px -1px 0px 0px #cae85d inset;
@@ -1860,6 +1863,7 @@ and (-webkit-min-device-pixel-ratio: 2) {
     background: #b6d644;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#528d1c), color-stop(100%,#afce46));
     background: -moz-linear-gradient(center top, #528d1c 0%, #afce46 100%);
+    background: linear-gradient(center top, #528d1c 0%, #afce46 100%);
     -webkit-box-shadow: 0px 2px 3px 1px #436418 inset, 0px 1px 0px 0px #ffffff;
     -moz-box-shadow: 0px 2px 3px 1px #436418 inset, 0px 1px 0px 0px #ffffff;
     box-shadow: 0px 2px 3px 1px #436418 inset, 0px 1px 0px 0px #ffffff;
