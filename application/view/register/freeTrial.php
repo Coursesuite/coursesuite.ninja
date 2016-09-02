@@ -5,11 +5,6 @@
     </header>
 
     <section class="login-page-container standard-width">
-        <div class="free-trial-drescription">
-            <header>What you get</header>
-            <?php echo KeyStore::find("freeTrialDescription")->get(); ?>
-        </div>
-
         <div class="register-box">
             <header>Create your trial account</header>
             <main>
@@ -28,6 +23,9 @@
                 </form>
             </main>
         </div>
-
+        <div class="free-trial-drescription">
+            <header><?php echo KeyStore::find("freeTrialHeader")->get(); ?></header>
+            <?php echo Text::toHtml(KeyStore::find("freeTrialDescription")->get()); ?>
+        </div>
     </section>
 </article>

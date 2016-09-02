@@ -30,6 +30,14 @@
 			<label for="r13">"Free trial" button label</label>
 			<input type="text" name="freetriallabel" value="{{freetriallabel}}" id="r13" size="40">
 		</div>
+		<div>
+			<label for="r131">"Free trial" box label</label>
+			<input type="text" name="freeTrialHeader" value="{{freetrialheader}}" id="r131" size="40">
+		</div>
+		<div>
+			<label for="freeTrialDescription">Free trial description</label>
+			<div><textarea id='freeTrialDescription' name="freeTrialDescription" rows="5" cols="80" data-markdown="true">{{freetrialdescription}}</textarea></div>
+		</div>
 
 		<div>
 			<label>Contact Us (store pages)</label>
@@ -51,9 +59,6 @@
 
 		<div><label for="description">Footer right column</label>
 		<div><textarea id="footer_col1" name="footer_col3" rows="5" cols="80" data-markdown="true">{{footer.2}}</textarea></div></div>
-
-		<div><label for="description">Free trial description</label>
-		<div><textarea id='freeTrialDescription' name="freeTrialDescription" rows="5" cols="80" data-markdown="true">{{freeTrialDescription}}</textarea></div></div>
 
 		<div><input type="submit"></div>
 	</form>
