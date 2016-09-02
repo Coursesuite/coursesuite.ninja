@@ -15,19 +15,13 @@ class ApiController extends Controller
     public function __construct()
     {
         parent::__construct();
-
-        // LoggingModel::logMessage("ApiController::__construct");
-
         $digest = new \Rakshazi\Digestauth;
         $valid = $digest->setUsers(Config::get('DIGEST_USERS'))->setRealm("CourseSuite")->enable();
         if (!$valid) {
             header('HTTP/1.1 401 Unauthorized');
-            // LoggingModel::logMethodCall(__METHOD__, $digest->user, "authentication", "failed", $_SERVER['PHP_AUTH_DIGEST']);
             die("Digest Authentication Failed");
         }
         $this->username = $digest->user;
-
-        // LoggingModel::logMessage("ApiController::__constructed properly; user was ". $this->username);
     }
 
     /*
