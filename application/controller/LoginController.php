@@ -192,7 +192,9 @@ class LoginController extends Controller
             Session::set('discourse_payload', $_GET['sso']);
             Session::set('discourse_signature', $_GET['sig']);
         } else {
-            throw new Exception(Text::get("INCORRECT_USAGE"));
+            if (!Session::get('discourse_payload') && !Session::get('discourse_signature')) {
+                throw new Exception(Text::get("INCORRECT_USAGE"));
+            }
         }
 
         if (LoginModel::isUserLoggedIn()) {
