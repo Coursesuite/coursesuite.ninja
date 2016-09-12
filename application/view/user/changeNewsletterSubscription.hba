@@ -11,13 +11,15 @@
 		<form class="newsletter-update" action="{{baseurl}}user/changeNewsletterSubscription_action" method="post">
 		<h4>Newsletter Subscription</h4>
 		<input type="hidden" name="subscription" value='false' />
-		<label><input type='checkbox' name="subscription" value='true' id='subscribed' {{#if user_subbed}} checked="checked" {{/if}}/>General Subscription</label>
+		<label><input type='checkbox' name="subscription" value='true' id='subscribed' onclick="toggleVisible('interests')" {{#if user_subbed}} checked="checked" {{/if}}/>General Subscription</label>
 		<br/>
-		<h4>Specific Interests</h4>
-		{{#each user_interests}}
-		<input type="hidden" name="interestCheck{{@index}}" value='false{{this.[1]}}' />
-		<label><input type='checkbox' value="{{this.[1]}}" name="interestCheck{{@index}}" id="{{this.[0]}}" {{#if this.[2]}} checked="checked" {{/if}}>{{this.[0]}}</label>
-		{{/each}}
+		<div id='interests' {{#equals user_subbed false}} style='display:none;' {{/equals}}>
+			<h4>Specific Interests</h4>
+			{{#each user_interests}}
+			<input type="hidden" name="interestCheck{{@index}}" value='false{{this.[1]}}' />
+			<label><input type='checkbox' value="{{this.[1]}}" name="interestCheck{{@index}}" id="{{this.[0]}}" {{#if this.[2]}} checked="checked" {{/if}}>{{this.[0]}}</label>
+			{{/each}}
+		</div>
 		<br/>
 		<input type='submit' value='Done' />
 		</form>
@@ -25,3 +27,39 @@
 	</section>
 
 </article>
+<script>
+	function toggleVisible(id){
+		var e = document.getElementById(id);
+		if (e.style.display !== 'none')
+			fadeOut(e);
+		else
+			fadeIn(e);
+	}
+
+	function fadeOut(element) {
+	    var op = 1;
+	    var timer = setInterval(function () {
+	        if (op <= 0.1){
+	            clearInterval(timer);
+	            element.style.display = 'none';
+	        }
+	        element.style.opacity = op;
+	        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+	        op -= op * 0.1;
+	    }, 10);
+	}
+
+	function fadeIn(element) {
+	    var op = 0.1;
+	    element.style.opacity = op;
+	    element.style.display = 'block';
+	    var timer = setInterval(function () {
+	        if (op >= 1){
+	            clearInterval(timer);
+	        }
+	        element.style.opacity = op;
+	        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+	        op += op * 0.1;
+	    }, 10);
+	}
+</script>

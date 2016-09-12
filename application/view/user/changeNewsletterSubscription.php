@@ -12,10 +12,11 @@
 		<label><input type='checkbox' id='subscribed' <?php if(MailChimp::isUserSubscribed(Session::get('user_email'))) echo('checked="checked"'); ?> />General Subscription</label>
 		<br/>
 		<h4>Specific Interests</h4>
-		<!-- Make dynamic using handlebars. pass and array of variables to use over at userController -->
-		<label><input type='checkbox' id="apps">Apps</label>
-		<label><input type='checkbox' id="plugins">Plugins</label>
-		<label><input type='checkbox' id="courseCatalouge">Course Catalouge</label>
+		<div id='interests'>
+			<label><input type='checkbox' id="apps">Apps</label>
+			<label><input type='checkbox' id="plugins">Plugins</label>
+			<label><input type='checkbox' id="courseCatalouge">Course Catalouge</label>
+		</div>
 	<form>
 	</section>
 

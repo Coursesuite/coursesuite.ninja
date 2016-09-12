@@ -1373,6 +1373,14 @@ article.my-profile section.subscription-display div.product-subscribed{
 user-select: none;
 }
 
+/* Newsletter subscription */
+.interests {
+    display: block;
+}
+.interests-hidden {
+    display: none;
+}
+
 /* ==============================================================================
 
 				LOGIN / REGISTER
