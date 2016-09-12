@@ -17,10 +17,12 @@
         <tr>
             <td>Id</td>
             <td>Avatar</td>
+            <td>Account Type</td>
             <td>Username</td>
             <td>User's email</td>
             <td>Activated ?</td>
             <td>Logons/Cap</td>
+            <td>Last Login</td>
             <td>Suspension time in days</td>
             <td>Action</td>
             <td>Submit</td>
@@ -34,11 +36,21 @@
                         <img src="<?= $user->user_avatar_link; ?>"/>
                     <?php } ?>
                 </td>
+                <td><?php switch($user->user_account_type) {
+                    case 1: echo 'Basic';
+                            break;
+                    case 3: echo 'Trial';
+                            break;
+                    case 7: echo 'Admin';
+                            break;
+                    default: echo $user->user_account_type;
+                } ?></td>
                 <td><?= $user->user_name; ?></td>
                 <td><?= $user->user_email; ?></td>
                 <form action="<?= config::get("URL"); ?>admin/actionAccountSettings" method="post">
                     <td><?= ($user->user_active == 0) ? "No" : "Yes" ?></td>
                     <td><?php echo (isset($user->logon_count) ? $user->logon_count : "?"); ?> / <input type="number" name="logonCap" size="3" min="-1" max="65534" value="<?php echo (isset($user->logon_cap) ? $user->logon_cap : '-1'); ?>"></td>
+                    <td><?php echo $user->last_login; ?></td>
                     <td><input type="number" name="suspension" size="3" min="0" max="365" value="0" /></td>
                     <td>
                         <label><input type="checkbox" name="softDelete" <?php if ($user->user_deleted) { ?> checked <?php } ?> /> Mark as Deleted (soft) </label><br>

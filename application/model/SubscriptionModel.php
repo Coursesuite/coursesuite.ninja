@@ -82,13 +82,16 @@ class SubscriptionModel
     public static function getCurrentSubscription($userid)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT tier_id, referenceId, status FROM subscriptions WHERE user_id = :userid AND status = 'active' ";
+        $sql = "SELECT tier_id, added, endDate, referenceId, subscriptionUrl, status, info FROM subscriptions WHERE user_id = :userid AND status = 'active' ";
         $params = array(
             ":userid" => $userid,
         );
         $query = $database->prepare($sql);
         $query->execute($params);
         $result = $query->fetch();
+        if ($result != Null){
+            $result->subscriptionUrl = Encryption::decrypt(Text::base64dec($result->subscriptionUrl));
+        }
         return $result;
     }
 

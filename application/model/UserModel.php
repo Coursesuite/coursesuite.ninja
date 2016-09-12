@@ -19,7 +19,7 @@ class UserModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap FROM users";
+        $sql = "SELECT user_id, user_account_type, user_name, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap, DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y') AS 'user_last_login_timestamp' FROM users";
         $params = array();
         if ($search != null) {
             $sql .= " WHERE (user_name like :search OR user_email like :search)";
@@ -44,14 +44,18 @@ class UserModel
 
             $all_users_profiles[$user->user_id] = new stdClass();
             $all_users_profiles[$user->user_id]->user_id = $user->user_id;
+            $all_users_profiles[$user->user_id]->user_account_type = $user->user_account_type;
             $all_users_profiles[$user->user_id]->user_name = $user->user_name;
             $all_users_profiles[$user->user_id]->user_email = $user->user_email;
             $all_users_profiles[$user->user_id]->user_active = $user->user_active;
             $all_users_profiles[$user->user_id]->user_deleted = $user->user_deleted;
             $all_users_profiles[$user->user_id]->logon_cap = $user->user_logon_cap;
             $all_users_profiles[$user->user_id]->logon_count = $user->user_logon_count;
+            $all_users_profiles[$user->user_id]->last_login = $user->user_last_login_timestamp;
             $all_users_profiles[$user->user_id]->user_avatar_link = (Config::get('USE_GRAVATAR') ? AvatarModel::getGravatarLinkByEmail($user->user_email) : AvatarModel::getPublicAvatarFilePathOfUser($user->user_has_avatar, $user->user_id));
         }
+
+
 
         return $all_users_profiles;
     }
@@ -78,7 +82,7 @@ class UserModel
             return false;
         }
 
-        $sql = "SELECT user_id, user_name, user_email, user_active, user_has_avatar, user_deleted
+        $sql = "SELECT user_id, user_name, user_email, user_active, user_account_type, user_has_avatar,  DATE_FORMAT(FROM_UNIXTIME(`user_creation_timestamp`) , '%e %b %Y %T') AS 'user_creation_timestamp', DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y %T') AS 'user_last_login_timestamp', user_newsletter_subscribed, user_free_trial_available, user_deleted
                 FROM users WHERE user_id = :user_id LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':user_id' => $user_id));
@@ -94,6 +98,7 @@ class UserModel
         } else {
             Session::add('feedback_negative', Text::get('FEEDBACK_USER_DOES_NOT_EXIST'));
         }
+        $user->subscription = SubscriptionModel::getCurrentSubscription($user_id);
 
         // all elements of array passed to Filter::XSSFilter for XSS sanitation, have a look into
         // application/core/Filter.php for more info on how to use. Removes (possibly bad) JavaScript etc from
