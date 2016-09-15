@@ -8,20 +8,26 @@
 	<section class="profile-display standard-width">
 		{{#each feedback}}<p class='feedback'>{{.}}</p>{{/each}}
 
-		<form class="newsletter-update" action="{{baseurl}}user/changeNewsletterSubscription_action" method="post">
-		<h4>Newsletter Subscription</h4>
-		<input type="hidden" name="subscription" value='false' />
-		<label><input type='checkbox' name="subscription" value='true' id='subscribed' onclick="toggleVisible('interests')" {{#if user_subbed}} checked="checked" {{/if}}/>General Subscription</label>
-		<br/>
-		<div id='interests' {{#equals user_subbed false}} style='display:none;' {{/equals}}>
-			<h4>Specific Interests</h4>
-			{{#each user_interests}}
-			<input type="hidden" name="interestCheck{{@index}}" value='false{{this.[1]}}' />
-			<label><input type='checkbox' value="{{this.[1]}}" name="interestCheck{{@index}}" id="{{this.[0]}}" {{#if this.[2]}} checked="checked" {{/if}}>{{this.[0]}}</label>
-			{{/each}}
-		</div>
-		<br/>
-		<input type='submit' value='Done' />
+		<form id='newsletter-form' action="{{baseurl}}user/changeNewsletterSubscription_action" method="post">
+			<h4>Newsletter Subscription</h4>
+			<input type="hidden" name="subscription" value='false' />
+			<label class="mdl-switch mdl-js-switch" for="subscribed">
+			<input class='mdl-switch__input' type='checkbox' name="subscription" value='true' id='subscribed' onclick="toggleVisible('interests')" {{#if user_subbed}} checked="checked" {{/if}}/>
+			<span class='mdl-switch__label'>Subscribe</span>
+			</label>
+			<br/>
+			<div id='interests' {{#equals user_subbed false}} style='display:none;' {{/equals}}>
+				<h4>Specific Interests</h4>
+				{{#each user_interests}}
+				<input type="hidden" name="interestCheck{{@index}}" value='false{{this.[1]}}' />
+				<label class='mdl-checkbox mdl-js-checkbox' for='{{this.[0]}}'>
+					<input class='mdl-checkbox__input' type='checkbox' value="{{this.[1]}}" name="interestCheck{{@index}}" id="{{this.[0]}}" {{#if this.[2]}} checked="checked" {{/if}}>
+					<span class='mdl-checkbox__label'>{{this.[0]}}</span>
+				</label>
+				{{/each}}
+			</div>
+			<br/>
+			<input class='mdl-button mdl-js-button mdl-button--raised' type='submit' value='Done' />
 		</form>
 
 	</section>

@@ -22,6 +22,9 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
     <link rel="icon" href="data:;base64,=">
     <!-- link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/material.css" />
+    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
     <link href='//r.coursesuite.ninja/mycoursesuite/style.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<?php echo $baseurl; ?>css/style.css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">

@@ -1374,12 +1374,17 @@ user-select: none;
 }
 
 /* Newsletter subscription */
+#newsletter-form input{
+    min-width: 50px;
+}
+
 .interests {
     display: block;
 }
 .interests-hidden {
     display: none;
 }
+
 
 /* ==============================================================================
 
