@@ -1,0 +1,26 @@
+<article class="mail-templates admin-tools">
+	{{#if action}}
+		{{#with template}}
+			<form method="post" action="{{../baseurl}}admin/mailTemplates/{{id}}/save">	
+			<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>
+			<div><label for='subject'>Subject: </label><textarea name="subject" rows="1" cols="80">{{subject}}</textarea></div>
+			<div><label for='body'>Body: </label><textarea name="body" rows="10" cols="80">{{body}}</textarea></div>
+			<div><input type="submit" value="Save" class="submit button"></div>
+			</form>
+		{{/with}}
+		<a href="{{baseurl}}admin/mailTemplates" class="back button">Cancel</a>
+	{{else}}
+		<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		Edit mail templates
+		</h3>
+		<p><a href="{{baseurl}}admin/mailTemplates/0/new" class="create button">Create a new template</a></p>
+		<ul>
+		{{#each allTemplates}}
+			<li><a href="{{baseurl}}/admin/mailTemplates/{{id}}/update">{{name}}</a></li>
+		{{/each}}
+		</ul>
+	{{/if}}
+
+
+</article>

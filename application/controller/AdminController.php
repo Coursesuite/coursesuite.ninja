@@ -586,4 +586,34 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
+    public function mailTemplates($id = 0, $action = ""){
+        $model = array(
+                "baseurl" => Config::get("URL"),
+                "allTemplates" => MailTemplateModel::getAllTemplates(),
+            );
+
+        switch($action){
+            case "new":
+                $model["action"] = 'new';
+                break;
+            case "update":
+                $model["action"] = 'update';
+                $model["template"] = MailTemplateModel::getTemplate($id);
+                break;
+            case "save":
+                $template = array(
+                        "id" => $id,
+                        "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                        "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                        "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                    );
+                print_r($template);
+                MailTemplateModel::Save("mail_templates", "id", $template);
+                Redirect::to('admin/mailTemplates');
+                break;
+        }
+
+        $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
 }
