@@ -505,6 +505,15 @@ section.section.opensource {
 .cs-bracket-design.bottom { border-top-color: transparent; border-radius: 0 0 3px 3px; }
 .cs-bracket-design.top { border-bottom-color: transparent; border-radius: 3px 3px 0 0; }
 
+section.store-item-description h2 {
+    font-size: 48px;
+    font-weight: 100;
+    line-height: 56px;
+}
+
+section.store-item-description p:not([class]) {
+    text-align: justify;
+}
 
 details {
     padding: 0 2em;
