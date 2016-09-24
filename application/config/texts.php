@@ -134,4 +134,6 @@ return array(
     "CONTACT_FORM_OK" => "Your message has been sent! Thanks for your interest.",
     "CONTACT_FORM_SPAM" => "I have always wanted to meet a robot!",
 
+    "REGISTRATION_DOMAIN_BLACKLISTED" => "Sorry, this domain has been blacklisted. Please email info@coursesuite.com.au to resolve this.",
+
 );

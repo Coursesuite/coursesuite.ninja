@@ -49,6 +49,12 @@ class RegistrationModel
         // make return a bool variable, so both errors can come up at once if needed
         $return = true;
 
+        // see if the email domain is on our blacklist (typically spam / throwaway email accounts)
+        if (BlacklistModel::isBlacklisted($user_email)) {
+            Session::add('feedback_negative', Text::get('REGISTRATION_DOMAIN_BLACKLISTED'));
+            $return = false;
+        }
+
         // check if username already exists
         if (UserModel::doesUsernameAlreadyExist($user_name)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_ALREADY_TAKEN'));
