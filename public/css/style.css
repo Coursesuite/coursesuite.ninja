@@ -1655,6 +1655,9 @@ user-select: none;
 	min-height: 200px;
 }
 
+.admin-tools .mail-templates {
+    position: relative;
+}
 
 
 /* ==============================================================================
@@ -1894,6 +1897,11 @@ and (-webkit-min-device-pixel-ratio: 2) {
     border-style: solid;
 }
 
+.delete-button { 
+    background:rgba(255,0,0,1); 
+    position: absolute;
+    right: 0%;
+}
 
 /* contact us area */
 

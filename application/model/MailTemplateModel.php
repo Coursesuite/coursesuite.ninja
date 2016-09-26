@@ -14,7 +14,7 @@ class MailTemplateModel extends Model
 		return parent::Update($table, $idrow_name, $data_model);
 	}
 
-	public static function getAllTemplates(){
+	public static function getAllTemplates() {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT id, name, subject, body FROM mail_templates";
 		$query = $database->prepare($sql);
@@ -28,5 +28,24 @@ class MailTemplateModel extends Model
 		$query = $database->prepare($sql);
 		$query->execute(array(":id"=>$id));
 		return $query->fetch();
+	}
+
+	public static function createTemplate($name, $subject, $body) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "INSERT INTO mail_templates (name, subject, body) VALUES (:name, :subject, :body)";
+		$params = array(
+			":name" => $name,
+			":subject" => $subject,
+			":body" => $body
+		);
+		$query = $database->prepare($sql);
+		$query->execute($params);
+	}
+
+	public static function deleteTemplate($id) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "DELETE FROM mail_templates WHERE id = :id";
+		$query = $database->prepare($sql);
+		$query->execute(array(":id" => $id));
 	}
 }

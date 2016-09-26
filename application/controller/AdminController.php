@@ -593,8 +593,19 @@ class AdminController extends Controller
             );
 
         switch($action){
-            case "new":
+            case "new": // empty fields
                 $model["action"] = 'new';
+                $model["template"] = array("a"=>1); //doesn't mean anything
+                break;
+            case "create":
+                $model["action"] = 'create';
+                $template = array(
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
+                MailTemplateModel::createTemplate($template['name'], $template['subject'], $template['body']);
+                Redirect::to('admin/mailTemplates');
                 break;
             case "update":
                 $model["action"] = 'update';
@@ -602,13 +613,28 @@ class AdminController extends Controller
                 break;
             case "save":
                 $template = array(
-                        "id" => $id,
-                        "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
-                        "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
-                        "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
-                    );
-                print_r($template);
+                    "id" => $id,
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
                 MailTemplateModel::Save("mail_templates", "id", $template);
+                Redirect::to('admin/mailTemplates');
+                break;
+            // Send test email
+            case "test":
+                $template = array(
+                    "recipient" => Request::post("recipient", false, FILTER_SANITIZE_EMAIL),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
+                $mailer = new Mail();
+                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $template["body"]);
+                Redirect::to('admin/mailTemplates');
+                break;
+            case "delete":
+            $mdoel["action"] = 'delete';
+                MailTemplateModel::deleteTemplate($id);
                 Redirect::to('admin/mailTemplates');
                 break;
         }

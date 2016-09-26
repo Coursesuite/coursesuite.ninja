@@ -70,6 +70,14 @@ class View
                         return $options['inverse']();
                     }
                 },
+                "not" => function ($arg1, $arg2, $options) {
+                    if (strcasecmp((string) $arg1, (string) $arg2) == 0) {
+                        return $options['inverse']();
+                    } else if (isset($options['inverse'])) {
+                        return $options['fn']();
+                        
+                    }
+                },
                 "gte" => function ($arg1, $arg2, $options) {
                     if ((int) $arg1 >= (int) $arg2) {
                         return $options['fn']();

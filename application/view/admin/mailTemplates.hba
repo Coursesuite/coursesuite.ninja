@@ -1,14 +1,20 @@
-<article class="mail-templates admin-tools">
+<article class="admin-tools mail-templates">
 	{{#if action}}
 		{{#with template}}
-			<form method="post" action="{{../baseurl}}admin/mailTemplates/{{id}}/save">	
+			<form method="post">	
 			<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>
 			<div><label for='subject'>Subject: </label><textarea name="subject" rows="1" cols="80">{{subject}}</textarea></div>
 			<div><label for='body'>Body: </label><textarea name="body" rows="10" cols="80">{{body}}</textarea></div>
-			<div><input type="submit" value="Save" class="submit button"></div>
+			<div><input type="submit" name="emailRecipient" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/test" value="Test" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"><input type="text" name="recipient" placeholder="Email address to send to"></div>
+			<br/>
+			{{#equals ../action 'new'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/0/create" value="Create" class="submit button"></div>{{/equals}}
+			{{#equals ../action 'update'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/save" value="Save" class="submit button"></div>{{/equals}}	
 			</form>
+		<div style="position:relative;">
+			<a href="{{../baseurl}}admin/mailTemplates" class="back button">Cancel</a>
+			{{#not ../action 'new'}}<a href="{{../baseurl}}admin/mailTemplates/{{id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>{{/not}}
+		</div>
 		{{/with}}
-		<a href="{{baseurl}}admin/mailTemplates" class="back button">Cancel</a>
 	{{else}}
 		<h3>
 		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
