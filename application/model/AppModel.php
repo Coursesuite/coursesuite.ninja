@@ -105,7 +105,7 @@ class AppModel extends Model
         return $query->fetchAll();
     }
 
-    public static function getLaunchUrl($app_id)
+    public static function getLaunchUrl($app_id, $method = "token", $token = "")
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         if (is_string($app_id)) {
@@ -122,16 +122,20 @@ class AppModel extends Model
         $url = $query->fetchColumn(0);
         $auth_type = intval($query->fetchColumn(1));
         $launchurl = "";
-        switch ($auth_type) {
-            case AUTH_TYPE_DIGEST:
-                $launchurl = Config::get("URL") . "launch/app/" . $query->fetchColumn(2); // unfinished
-                break;
-            case AUTH_TYPE_TOKEN:
-                $launchurl = $url . "?token=" . ApiModel::encodeToken(Session::CurrentId());
-                break;
-            case AUTH_TYPE_NONE:
-                $launchurl = $url;
-                break;
+        if ($method == "apikey") {
+            $launchurl = $url . "?apikey=$token";
+        } else {
+            switch ($auth_type) {
+                case AUTH_TYPE_DIGEST:
+                    $launchurl = Config::get("URL") . "launch/app/" . $query->fetchColumn(2); // unfinished, DO NOT USE
+                    break;
+                case AUTH_TYPE_TOKEN:
+                    $launchurl = $url . "?token=" . ApiModel::encodeToken(Session::CurrentId());
+                    break;
+                case AUTH_TYPE_NONE:
+                    $launchurl = $url;
+                    break;
+            }
         }
         // unset($query);
         return $launchurl;

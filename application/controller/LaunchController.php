@@ -1,53 +1,45 @@
 <?php
 
-/**
- * This controller shows an area that's only visible for logged in users (because of Auth::checkAuthentication(); in line 16)
- */
 class LaunchController extends Controller
 {
-    /**
-     * Construct this object by extending the basic Controller class
-     */
-    public function __construct()
+
+    public function __construct(...$args)
     {
+
         parent::__construct();
 
-        // TODO: need to know if page was called with two params and avoid auth check
-        Auth::checkAuthentication();
+        $count = count($args[1]);
+        if ($count < 2) {
+            Redirect::home(); // not enough params, reset
+        } else if ($count == 2) {
+            Auth::checkAuthentication(); // looks like an internal call
+        } else {
+            // No need to check Auth, it's a parameterised launch, let the index sort it out
+        }
+
     }
 
-    public function index($appkey = "", $token = "")
+    public function index($appkey = "", ...$args)
     {
-        if (empty($appkey)) {
-            Redirect::to("store");
+
+        if (count($args) >= 2) {
+            // launch/docninja/apikey/f63bc5ae39
+            $method = strtolower($args[0]);
+            $token = $args[1];
+            // any more params than that are ignored
+        } else {
+            // launch/docninja/48fbaec24
+            $method = "token";
+            $token = $args[0];
         }
-        $url = AppModel::getLaunchUrl($appkey);
-        if (empty($token)) {
+
+        $url = AppModel::getLaunchUrl($appkey, $method, $token);
+        if (!empty($url)) {
             Redirect::external($url);
         } else {
-            $database = DatabaseFactory::getFactory()->getConnection();
-            // this token exists and is fairly current
-            $query = $database->prepare("SELECT count(1) FROM api_requests
-                    WHERE token = :token
-                    AND created < CURDATE()
-                    AND created > CURDATE() - INTERVAL 1 DAY");
-            $query->execute(array(":token" => $token));
-            $val = intval($query->fetchColumn());
-            if ($val > 0) {
-                Redirect::external($url);
-            } else {
-                $this->View->renderJSON(array("error" => "invalid or expired apikey"));
-            }
+            Redirect::to("500"); // because we don't know what it could be
         }
-    }
 
-    // public function app($appkey = "")
-    // {
-    //     if (empty($appkey)) {
-    //         Redirect::to("404");
-    //     }
-    //     $url = AppModel::getLaunchUrl($appkey);
-    //     Redirect::external($url);
-    // }
+    }
 
 }

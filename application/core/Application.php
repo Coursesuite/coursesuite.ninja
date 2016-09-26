@@ -63,10 +63,23 @@ class Application
         // does such a controller exist ?
         if (file_exists(Config::get('PATH_CONTROLLER') . $this->controller_name . '.php')) {
 
-            // ContentController gets a different route handler, route everything through index() .. couldn't think of a better way to do this
-            if ($this->controller_name == "ContentController" || $this->controller_name == "LaunchController") {
-                $this->parameters = array($this->action_name);
-                $this->action_name = "index";
+            // there's no "router" as such to this framework,
+            // it works as className/methodName and subsequent items are send to the method as parameters
+            // so store/info/docninja/ becomes store::info(docninja)
+            // When we have a non-standard route
+            // we have to handle it here by modifying the action_name and parameters objects.
+            switch ($this->controller_name) {
+                case "ContentController": // content/foo becomes content/index (foo)
+                    $this->parameters = array($this->action_name);
+                    $this->action_name = "index";
+                    break;
+
+                case "LaunchController": // launch/app/param1/param2 becomes launch/index (app, param1, param2)
+                    $params = $this->parameters;
+                    array_unshift($params, $this->action_name);
+                    $this->action_name = "index";
+                    $this->parameters = $params;
+
             }
 
             // load this file and create this controller

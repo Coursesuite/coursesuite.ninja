@@ -40,7 +40,6 @@ class ApiModel
         ));
         $rowId = $database->lastInsertId();
 
-        // the token IS the encrypted version of the rowId inserted above
         return self::encodeToken($rowId);
     }
 

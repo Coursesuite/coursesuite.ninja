@@ -124,7 +124,7 @@ class ApiController extends Controller
         }
 
         $tmp = OrgModel::getApiModel($org);
-        if ($tmp) {
+        if (isset($tmp)) {
             $org_model = $tmp;
         } else {
             $org_model = OrgModel::Make();

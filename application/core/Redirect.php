@@ -24,8 +24,7 @@ class Redirect
      */
     public static function to($path)
     {
-        // $to = array_map('trim', $path);
-        // die("<a href='" . Config::get("URL") . $path . "'>redirect::to($path)</a>");
+        // die("location: " . Config::get('URL') . $path);
         header("location: " . Config::get('URL') . $path);
     }
 
@@ -38,6 +37,7 @@ class Redirect
                 $url = str_replace(".ninja/app/", ".ninja$sfx/app/", $url);
             }
         }
+        // die("location: $url");
         header("location: " . $url);
     }
 }

@@ -30,20 +30,23 @@ class OrgModel extends Model
         return parent::Read(self::TABLE);
     }
 
-    public static function getApiModel($key, $active = 1)
+    public static function getApiModel($key, $active = null)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         $field = "org_id";
+        $active_sql = "";
+        $params = array(":id" => $key);
         if (!is_numeric($key)) {
             $field = "name";
         }
+        if ($active !== null) {
+            $active_sql = "AND active = :active";
+            $params[":active"] = intval($active);
+        }
 
-        $sql = "SELECT org_id, name, logo_url, tier FROM orgs WHERE $field = :id AND active = :active LIMIT 1";
+        $sql = "SELECT org_id, name, logo_url, tier, active FROM orgs WHERE $field = :id $active_sql LIMIT 1";
         $query = $database->prepare($sql);
-        $query->execute(array(
-            ":id" => $key,
-            ":active" => $active,
-        ));
+        $query->execute($params);
         return $query->fetch();
     }
 
