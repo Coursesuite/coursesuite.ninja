@@ -1659,6 +1659,17 @@ user-select: none;
     position: relative;
 }
 
+.admin-tools .mail-hidden {
+    display: none;
+}
+
+.admin-tools .mail-display {
+    display: block;
+}
+
+.admin-tools .live div > label{
+
+}
 
 /* ==============================================================================
 

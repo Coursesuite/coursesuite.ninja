@@ -30,13 +30,23 @@ class MailTemplateModel extends Model
 		return $query->fetch();
 	}
 
-	public static function createTemplate($name, $subject, $body) {
+	/* Gets the live version of the template from mail_templates_published */
+	public static function getLiveTemplate($name) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT id, name, subject, body FROM mail_templates_published WHERE name = :name";
+		$query = $database->prepare($sql);
+		$query->execute(array(":name"=>$name));
+		return $query->fetch();
+	}
+
+	/* $template - array containing name, subject, body */
+	public static function createTemplate($template) {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "INSERT INTO mail_templates (name, subject, body) VALUES (:name, :subject, :body)";
 		$params = array(
-			":name" => $name,
-			":subject" => $subject,
-			":body" => $body
+			":name" => $template["name"],
+			":subject" => $template["subject"],
+			":body" => $template["body"]
 		);
 		$query = $database->prepare($sql);
 		$query->execute($params);
@@ -48,4 +58,32 @@ class MailTemplateModel extends Model
 		$query = $database->prepare($sql);
 		$query->execute(array(":id" => $id));
 	}
+
+	/* $template - array containing name, subject, body */
+	public static function publishTemplate($template) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "INSERT INTO mail_templates_published (name, subject, body) VALUES(:name, :subject, :body) ON DUPLICATE KEY UPDATE name=:name, subject=:subject, body=:body";
+		$params = array(
+			":name" => $template["name"],
+			":subject" => $template["subject"],
+			":body" => $template["body"]
+		);
+		$query = $database->prepare($sql);
+		$query->execute($params);
+	}
+	
+	/* Saves the template if it hasnt already been. (used when publishing) 
+	$template - array containing name, subject, body */
+	public static function ifNotSaved($template) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "INSERT INTO mail_templates (name, subject, body) VALUES(:name, :subject, :body) ON DUPLICATE KEY UPDATE name=:name, subject=:subject, body=:body";
+		$params = array(
+			":name" => $template["name"],
+			":subject" => $template["subject"],
+			":body" => $template["body"]
+		);
+		$query = $database->prepare($sql);
+		$query->execute($params);
+	}
+
 }

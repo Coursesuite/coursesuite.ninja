@@ -75,7 +75,6 @@ class View
                         return $options['inverse']();
                     } else if (isset($options['inverse'])) {
                         return $options['fn']();
-                        
                     }
                 },
                 "gte" => function ($arg1, $arg2, $options) {

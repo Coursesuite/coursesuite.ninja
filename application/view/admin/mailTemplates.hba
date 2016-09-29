@@ -1,19 +1,33 @@
 <article class="admin-tools mail-templates">
 	{{#if action}}
 		{{#with template}}
-			<form method="post">	
-			<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>
-			<div><label for='subject'>Subject: </label><textarea name="subject" rows="1" cols="80">{{subject}}</textarea></div>
-			<div><label for='body'>Body: </label><textarea name="body" rows="10" cols="80">{{body}}</textarea></div>
-			<div><input type="submit" name="emailRecipient" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/test" value="Test" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"><input type="text" name="recipient" placeholder="Email address to send to"></div>
-			<br/>
-			{{#equals ../action 'new'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/0/create" value="Create" class="submit button"></div>{{/equals}}
-			{{#equals ../action 'update'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/save" value="Save" class="submit button"></div>{{/equals}}	
-			</form>
-		<div style="position:relative;">
-			<a href="{{../baseurl}}admin/mailTemplates" class="back button">Cancel</a>
-			{{#not ../action 'new'}}<a href="{{../baseurl}}admin/mailTemplates/{{id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>{{/not}}
-		</div>
+			<select id="templateVersion">
+				<option value="draft">Draft</option>
+				<option value="live">Live</option>
+			</select>
+			<div id="draft" class="admin-tools mail-display">
+				<form method="post">
+				<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>
+				<div><label for='subject'>Subject: </label><textarea name="subject" rows="1" cols="80">{{subject}}</textarea></div>
+				<div><label for='body'>Body: </label><textarea name="body" rows="10" cols="80">{{body}}</textarea></div>
+				<div><input type="submit" name="emailRecipient" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/test" value="Test" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"><input type="text" name="recipient" placeholder="Email address to send to"></div>
+				<br>
+				{{#equals ../action 'new'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/0/create" value="Create" class="submit button"></div>{{/equals}}
+				{{#equals ../action 'update'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/save" value="Save" class="submit button"></div>{{/equals}}	
+				<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/publish" value="Publish" class="submit button"></div>
+				</form>
+				<div style="position:relative;">
+					<a href="{{../baseurl}}admin/mailTemplates" class="back button">Cancel</a>
+					{{#not ../action 'new'}}<a href="{{../baseurl}}admin/mailTemplates/{{id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>{{/not}}
+				</div>
+			</div>
+			<div id="live" class="admin-tools mail-hidden">
+			<div class="live">
+				<div><label>Name: </label>{{name}}</div>
+				<div><label>Subject: </label>{{subject}}</div>
+				<div><label>Body: </label>{{body}}</div>
+			</div>
+			</div>
 		{{/with}}
 	{{else}}
 		<h3>
@@ -27,6 +41,19 @@
 		{{/each}}
 		</ul>
 	{{/if}}
-
-
 </article>
+
+<script>
+var dropDown = document.getElementById("templateVersion");
+var draft = document.getElementById("draft");
+var live = document.getElementById("live");
+dropDown.addEventListener('change', function() {
+	if (dropDown.options[dropDown.selectedIndex].value == "draft") {
+		draft.className = "admin-tools mail-display"
+		live.className = "admin-tools mail-hidden"
+	} else {
+		draft.className = "admin-tools mail-hidden"
+		live.className = "admin-tools mail-display"
+	}
+});
+</script>
