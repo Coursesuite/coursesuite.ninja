@@ -16,7 +16,7 @@ class MailTemplateModel extends Model
 
 	public static function getAllTemplates() {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT id, name, subject, body FROM mail_templates";
+		$sql = "SELECT id, name, subject, body, body_plain FROM mail_templates";
 		$query = $database->prepare($sql);
 		$query->execute();
 		return $query->fetchAll();
@@ -24,7 +24,7 @@ class MailTemplateModel extends Model
 
 	public static function getTemplate($id) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT id, name, subject, body FROM mail_templates WHERE id = :id";
+		$sql = "SELECT id, name, subject, body, body_plain FROM mail_templates WHERE id = :id";
 		$query = $database->prepare($sql);
 		$query->execute(array(":id"=>$id));
 		return $query->fetch();
@@ -33,7 +33,7 @@ class MailTemplateModel extends Model
 	/* Gets the live version of the template from mail_templates_published */
 	public static function getLiveTemplate($name) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT id, name, subject, body FROM mail_templates_published WHERE name = :name";
+		$sql = "SELECT id, name, subject, body, body_plain FROM mail_templates_published WHERE name = :name";
 		$query = $database->prepare($sql);
 		$query->execute(array(":name"=>$name));
 		return $query->fetch();
@@ -42,11 +42,12 @@ class MailTemplateModel extends Model
 	/* $template - array containing name, subject, body */
 	public static function createTemplate($template) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "INSERT INTO mail_templates (name, subject, body) VALUES (:name, :subject, :body)";
+		$sql = "INSERT INTO mail_templates (name, subject, body, body_plain) VALUES (:name, :subject, :body, :body_plain)";
 		$params = array(
 			":name" => $template["name"],
 			":subject" => $template["subject"],
-			":body" => $template["body"]
+			":body" => $template["body"],
+			":body_plain" => $template["body_plain"]
 		);
 		$query = $database->prepare($sql);
 		$query->execute($params);
@@ -62,11 +63,12 @@ class MailTemplateModel extends Model
 	/* $template - array containing name, subject, body */
 	public static function publishTemplate($template) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "INSERT INTO mail_templates_published (name, subject, body) VALUES(:name, :subject, :body) ON DUPLICATE KEY UPDATE name=:name, subject=:subject, body=:body";
+		$sql = "INSERT INTO mail_templates_published (name, subject, body, body_plain) VALUES(:name, :subject, :body, :body_plain) ON DUPLICATE KEY UPDATE name=:name, subject=:subject, body=:body, body_plain=:body_plain";
 		$params = array(
 			":name" => $template["name"],
 			":subject" => $template["subject"],
-			":body" => $template["body"]
+			":body" => $template["body"],
+			":body_plain" => $template["body_plain"]
 		);
 		$query = $database->prepare($sql);
 		$query->execute($params);
@@ -80,7 +82,8 @@ class MailTemplateModel extends Model
 		$params = array(
 			":name" => $template["name"],
 			":subject" => $template["subject"],
-			":body" => $template["body"]
+			":body" => $template["body"],
+			":body_plain" => $template["body_plain"]
 		);
 		$query = $database->prepare($sql);
 		$query->execute($params);
