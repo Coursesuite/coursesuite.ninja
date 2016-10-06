@@ -639,7 +639,6 @@ class AdminController extends Controller
                 );
                 MailTemplateModel::Save("mail_templates", "id", $template);
                 $mailer = new Mail();
-                print_r($template['body_plain']);
                 $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $template["body"], $template["body_plain"]);
                 Redirect::to('admin/mailTemplates');
                 break;

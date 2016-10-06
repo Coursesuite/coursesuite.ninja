@@ -22,11 +22,21 @@ class MailTemplateModel extends Model
 		return $query->fetchAll();
 	}
 
+	// For the admin interface 
 	public static function getTemplate($id) {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT id, name, subject, body, body_plain FROM mail_templates WHERE id = :id";
 		$query = $database->prepare($sql);
 		$query->execute(array(":id"=>$id));
+		return $query->fetch();
+	}
+
+	// get email template by name
+	public static function getEmail($name) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT subject, body, body_plain FROM mail_templates WHERE name = :name";
+		$query = $database->prepare($sql);
+		$query->execute(array(":name"=>$name));
 		return $query->fetch();
 	}
 

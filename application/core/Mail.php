@@ -53,6 +53,8 @@ class Mail
      */
     public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body, $altBody='')
     {
+        // add head/foot argument? true/false
+        
         $mail = new PHPMailer;
 
         // if you want to send mail via PHPMailer using SMTP credentials
