@@ -51,12 +51,15 @@ class Mail
      * @throws Exception
      * @throws phpmailerException
      */
-    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body)
+    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body, $altBody='')
     {
+        // add head/foot argument? true/false
+        
         $mail = new PHPMailer;
 
         // if you want to send mail via PHPMailer using SMTP credentials
         if (Config::get('EMAIL_USE_SMTP')) {
+            // $mail->CharSet = "text/html; charset=UTF-8;";
             // set PHPMailer to use SMTP
             $mail->IsSMTP();
             // 0 = off, 1 = commands, 2 = commands and data, perfect to see SMTP errors
@@ -82,7 +85,7 @@ class Mail
         $mail->AddAddress($user_email);
         $mail->Subject = $subject;
         $mail->Body = $body;
-
+        $mail->AltBody = $altBody;
         // hmm
         LoggingModel::logInternal("sending mail", print_r($mail, true));
 
@@ -111,12 +114,12 @@ class Mail
      * @param $body string full mail body text
      * @return bool the success status of the according mail sending method
      */
-    public function sendMail($user_email, $from_email, $from_name, $subject, $body)
+    public function sendMail($user_email, $from_email, $from_name, $subject, $body, $altBody='')
     {
         if (Config::get('EMAIL_USED_MAILER') == "phpmailer") {
             // returns true if successful, false if not
             return $this->sendMailWithPHPMailer(
-                $user_email, $from_email, $from_name, $subject, $body
+                $user_email, $from_email, $from_name, $subject, $body, $altBody
             );
         }
 

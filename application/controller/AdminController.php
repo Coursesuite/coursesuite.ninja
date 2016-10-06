@@ -602,9 +602,10 @@ class AdminController extends Controller
             case "create":
                 $model["action"] = 'create';
                 $template = array(
-                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
-                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
-                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                    "name" => Request::post("name", false),
+                    "subject" => Request::post("subject", false),
+                    "body" => Request::post("body", false),
+                    "body_plain" => Request::post("body_plain", false)
                 );
                 MailTemplateModel::createTemplate($template);
                 Redirect::to('admin/mailTemplates');
@@ -618,9 +619,10 @@ class AdminController extends Controller
             case "save":
                 $template = array(
                     "id" => $id,
-                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
-                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
-                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                    "name" => Request::post("name", false),
+                    "subject" => Request::post("subject", false),
+                    "body" => Request::post("body", false),
+                    "body_plain" => Request::post("body_plain", false)
                 );
                 MailTemplateModel::Save("mail_templates", "id", $template);
                 Redirect::to('admin/mailTemplates');
@@ -628,12 +630,16 @@ class AdminController extends Controller
             // Send test email
             case "test":
                 $template = array(
-                    "recipient" => Request::post("recipient", false, FILTER_SANITIZE_EMAIL),
-                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
-                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                    "recipient" => Request::post("recipient", false),
+                    "id" => $id,
+                    "name" => Request::post("name", false),
+                    "subject" => Request::post("subject", false),
+                    "body" => Request::post("body", false),
+                    "body_plain" => Request::post("body_plain", false)
                 );
+                MailTemplateModel::Save("mail_templates", "id", $template);
                 $mailer = new Mail();
-                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $template["body"]);
+                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $template["body"], $template["body_plain"]);
                 Redirect::to('admin/mailTemplates');
                 break;
             // deletes template from database
@@ -645,15 +651,15 @@ class AdminController extends Controller
             // adds template to mail_templates_published for live use
             case "publish":
                 $template = array(
-                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
-                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
-                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                    "name" => Request::post("name", false),
+                    "subject" => Request::post("subject", false),
+                    "body" => Request::post("body", false),
+                    "body_plain" => Request::post("body_plain", false)
                 );
                 MailTemplateModel::ifNotSaved($template);
                 MailTemplateModel::publishTemplate($template);
                 Redirect::to('admin/mailTemplates');
                 break;
-
         }
 
         $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));

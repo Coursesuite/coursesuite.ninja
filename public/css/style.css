@@ -399,7 +399,8 @@ nav.app-section-names .tile.app {
 
 .store-index section.static-content {
     background-size: cover;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAUElEQVQIWx3DwQ2AIAxA0V+KwAAevDiUiQs4ixdvzgsFauJLnhz36qKBFDM5CVEDoJgZcj6blxQpMeACzea/tolc7+6iQm9Os04dAw9KWZQPAsIc9RD1Z4AAAAAASUVORK5CYII=");
+    /*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAUElEQVQIWx3DwQ2AIAxA0V+KwAAevDiUiQs4ixdvzgsFauJLnhz36qKBFDM5CVEDoJgZcj6blxQpMeACzea/tolc7+6iQm9Os04dAw9KWZQPAsIc9RD1Z4AAAAAASUVORK5CYII=");
+    */background-color: #587285;
     color: #fff;
 }
 .store-index section.static-content .how-else {
@@ -486,7 +487,8 @@ section.section.ourcourses {
 }
 section.section.opensource {
 	background-size: cover;
-	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAJklEQVQIW33JMQEAMAzDMLv8iQ7EkjKoXpn/moSZQaUtLWiRw5kLylgM5nnJSOUAAAAASUVORK5CYII=");
+	/*background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAADCAYAAABfwxXFAAAAJklEQVQIW33JMQEAMAzDMLv8iQ7EkjKoXpn/moSZQaUtLWiRw5kLylgM5nnJSOUAAAAASUVORK5CYII=");
+    */background-color: #F5F5F5;
 }
 
 .cs-bracket-design {
@@ -1676,8 +1678,22 @@ user-select: none;
     display: block;
 }
 
-.admin-tools .live div > label{
+.admin-tools .live > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
+.admin-tools .live div > label {
+    min-width: 120px;
+    background-color: rgba(0,0,0,0.05);
+    padding: 5px;   
+}
+
+.admin-tools .live > div > *:last-child {
+    white-space: pre-wrap;
+    max-width: 90%;
+    word-wrap: break-word;
 }
 
 /* ==============================================================================
