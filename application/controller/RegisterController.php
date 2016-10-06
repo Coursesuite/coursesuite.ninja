@@ -86,7 +86,11 @@ class RegisterController extends Controller
         SubscriptionModel::giveFreeSubscription(Session::get('user_id'), 1);
         UserModel::setTrialUnavailable(Session::get('user_id'));
         $mail = new Mail;
-        $mail->sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial activated', "User:" . Session::get('user_id') . ", " . Session::get('user_name') . " Just activated their free trial.");
+        $template = MailTemplateModel::getLiveTemplate('trialAccount');
+        if (isset($template)) {
+            $body = $this->View->prepareString($template['body']);
+            $mail->sendMail(Session::get('user_email'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', $template['subject'], $body(array('userName'=>UserModel::getUserNameById(Session::get('user_id')))));
+        }
         Redirect::to('user/index');
     }
 

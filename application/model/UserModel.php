@@ -541,4 +541,12 @@ class UserModel
         $query = $database->prepare("UPDATE users SET user_free_trial_available = 0 WHERE user_id = :user_id");
         $query->execute(array(":user_id" => $user_id));
     }
+
+    public static function getUserNameById($user_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT user_name FROM users WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(":user_id"=>$user_id));
+        return $query->fetch();
+    }
 }

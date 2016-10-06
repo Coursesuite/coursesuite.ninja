@@ -285,6 +285,11 @@ class RegistrationModel
             Text::get('EMAIL_TRIAL_VERIFICATION_CONTENT') . "\n\n" .
             Config::get('URL') . Config::get('EMAIL_VERIFICATION_URL') . '/' . urlencode($user_id) . '/' . urlencode($user_activation_hash) . '/' . urlencode($user_newsletter_subscribed) .
             Text::get('EMAIL_COMMON_CONTENT_SIG');
+            $view = new View();
+            $template = MailTemplateModel::getLiveTemplate('freeTrial')
+            $body = $view->prepareString($template->body);
+
+
         } else {
             $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
             Text::get('EMAIL_VERIFICATION_CONTENT') . "\n\n" .
