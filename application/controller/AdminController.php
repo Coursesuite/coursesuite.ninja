@@ -586,4 +586,77 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
+    public function mailTemplates($id = 0, $action = ""){
+        $model = array(
+                "baseurl" => Config::get("URL"),
+                "allTemplates" => MailTemplateModel::getAllTemplates(),
+                "live" => ""
+            );
+        switch($action){
+            // page with empty fields
+            case "new": 
+                $model["action"] = 'new';
+                $model["template"] = array("a"=>1); //doesn't mean anything
+                break;
+            // adds to database
+            case "create":
+                $model["action"] = 'create';
+                $template = array(
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
+                MailTemplateModel::createTemplate($template);
+                Redirect::to('admin/mailTemplates');
+                break;
+            // page for updating templates
+            case "update":
+                $model["action"] = 'update';
+                $model["template"] = MailTemplateModel::getTemplate($id);
+                break;
+            // saves updated template to database
+            case "save":
+                $template = array(
+                    "id" => $id,
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
+                MailTemplateModel::Save("mail_templates", "id", $template);
+                Redirect::to('admin/mailTemplates');
+                break;
+            // Send test email
+            case "test":
+                $template = array(
+                    "recipient" => Request::post("recipient", false, FILTER_SANITIZE_EMAIL),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
+                $mailer = new Mail();
+                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $template["body"]);
+                Redirect::to('admin/mailTemplates');
+                break;
+            // deletes template from database
+            case "delete":
+                $mdoel["action"] = 'delete';
+                MailTemplateModel::deleteTemplate($id);
+                Redirect::to('admin/mailTemplates');
+                break;
+            // adds template to mail_templates_published for live use
+            case "publish":
+                $template = array(
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
+                    "subject" => Request::post("subject", false, FILTER_SANITIZE_STRING),
+                    "body" => Request::post("body", false, FILTER_SANITIZE_STRING)
+                );
+                MailTemplateModel::ifNotSaved($template);
+                MailTemplateModel::publishTemplate($template);
+                Redirect::to('admin/mailTemplates');
+                break;
+
+        }
+
+        $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
 }
