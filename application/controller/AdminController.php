@@ -336,6 +336,7 @@ class AdminController extends Controller
                     "feed" => Request::post("feed", false, FILTER_SANITIZE_URL),
                     "auth_type" => Request::post("auth_type", false, FILTER_SANITIZE_NUMBER_INT),
                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
+                    "popular" => Request::post("popular", false, FILTER_SANITIZE_NUMBER_INT),
                     "description" => Request::post("description"),
                     "media" => Request::post("media"),
                     "meta_description" => Request::post("meta_description"),
@@ -594,7 +595,7 @@ class AdminController extends Controller
             );
         switch($action){
             // page with empty fields
-            case "new": 
+            case "new":
                 $model["action"] = 'new';
                 $model["template"] = array("a"=>1); //doesn't mean anything
                 break;

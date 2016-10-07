@@ -27,6 +27,7 @@
                         {{/equals}}
                     {{/each}}{{/equals}}
                 </div>
+                {{#equals popular 1}}<div class="ribbon"><span>Popular</span></div>{{/equals}}
             </div>
             {{/each}}
         </nav>

@@ -23,6 +23,10 @@
 				<input type="radio" name="active" value="1" {{#equals "1" active}} checked{{/equals}} id="y"><label for="y">Visible</label>
 				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Hidden</label>
 			</div>
+			<div><span>Popular:</span>
+				<input type="radio" name="popular" value="1" {{#equals "1" popular}} checked{{/equals}} id="py"><label for="py">Yep</label>
+				<input type="radio" name="popular" value="0" {{#equals "0" popular}} checked{{/equals}} id="pn"><label for="pn">Nope</label>
+			</div>
 			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
 			<div><label for="media">Slide data</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
 			<h4>SEO (Metadata)</h4>
@@ -39,7 +43,7 @@
 		<ul class="media-select">
 			{{#unless files}}<li>No media found.</li>{{/unless}}
 			{{#each files}}<li><a href="{{../baseurl}}admin/editApps/{{../id}}/delete/{{.}}" title="Delete file now" class="inline-delete"><i class="cs-trash"></i></a>
-								<a href="{{../baseurl}}img/apps/{{../data.app_key}}/{{.}}" data-action="hover-thumb" target="_blank"><i class='cs-eye'></i></a> 
+								<a href="{{../baseurl}}img/apps/{{../data.app_key}}/{{.}}" data-action="hover-thumb" target="_blank"><i class='cs-eye'></i></a>
 								<code>![image](/img/apps/{{../data.app_key}}/{{.}})</code></li>{{/each}}
 		</ul>
 		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/upload" enctype="multipart/form-data">
