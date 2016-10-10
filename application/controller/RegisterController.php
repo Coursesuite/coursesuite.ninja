@@ -83,13 +83,14 @@ class RegisterController extends Controller
 
     public function registeredUserTrial_action()
     {
-        SubscriptionModel::giveFreeSubscription(Session::get('user_id'), 1);
+        $user_id = Session::get('user_id')
+        SubscriptionModel::giveFreeSubscription($user_id, 1);
         UserModel::setTrialUnavailable(Session::get('user_id'));
         $mail = new Mail;
-        $template = MailTemplateModel::getLiveTemplate('trialAccount');
+        $template = MailTemplateModel::getLiveTemplate('freeTrial');
         if (isset($template)) {
             $body = $this->View->prepareString($template['body']);
-            $mail->sendMail(Session::get('user_email'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', $template['subject'], $body(array('userName'=>UserModel::getUserNameById(Session::get('user_id')))));
+            $mail->sendMail(Session::get('user_email'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', $template['subject'], $body(MailTemplateModel::getVars($user_id)));
         }
         Redirect::to('user/index');
     }

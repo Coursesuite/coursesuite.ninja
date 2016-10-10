@@ -99,4 +99,13 @@ class MailTemplateModel extends Model
 		$query->execute($params);
 	}
 
+	/* Returns array of key value pairs to be passed into the prepared template */
+	public static function getVars($user_id) {
+		$userInfo = UserModel::getPublicProfileOfUser($user_id);
+		$vars = array(
+			'userName' => $userInfo->user_name,
+			'userEmail' => $userInfo->user_email
+			);
+		return $vars;
+	}
 }
