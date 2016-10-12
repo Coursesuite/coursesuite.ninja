@@ -7,7 +7,8 @@
 			</select>
 			<div id="draft" class="admin-tools mail-display">
 				<form method="post">
-				<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>
+				{{#not ../action 'update'}}<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>{{/not}}
+				{{#equals ../action 'update'}}<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}" readonly></div>{{/equals}}
 				<div><label for='subject'>Subject: </label><textarea name="subject" rows="1" cols="80">{{subject}}</textarea></div>
 				<div><label for='body'>Body: </label><textarea name="body" rows="10" cols="80">{{body}}</textarea></div>
 				<div><label for='body_plain'>Plain Text: </label><textarea name="body_plain" rows="10" cols="80">{{body_plain}}</textarea></div>
@@ -34,7 +35,18 @@
 		{{/with}}
 	{{else}}
 		<h3>
+		Pre-Mailer
 		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		</h3>
+		<div>
+			Once your email is completed, copy and past the code into the <a href="http://premailer.dialect.ca/">Pre-Mailer</a> Then paste the output into your template.
+		<h3>Variable names</h3>
+		<div>
+			&#123;&#123;userName&#125;&#125;<br>
+			&#123;&#123;userEmail&#125;&#125;<br>
+			&#123;&#123;verificationUrl&#125;&#125;
+		</div>
+		<h3>
 		Edit mail templates
 		</h3>
 		<p><a href="{{baseurl}}admin/mailTemplates/0/new" class="create button">Create a new template</a></p>

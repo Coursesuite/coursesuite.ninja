@@ -88,7 +88,7 @@ class MailTemplateModel extends Model
 	$template - array containing name, subject, body */
 	public static function ifNotSaved($template) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "INSERT INTO mail_templates (name, subject, body) VALUES(:name, :subject, :body) ON DUPLICATE KEY UPDATE name=:name, subject=:subject, body=:body";
+		$sql = "INSERT INTO mail_templates (name, subject, body, body_plain) VALUES(:name, :subject, :body, :body_plain) ON DUPLICATE KEY UPDATE name=:name, subject=:subject, body=:body, body_plain=:body_plain";
 		$params = array(
 			":name" => $template["name"],
 			":subject" => $template["subject"],
@@ -99,4 +99,14 @@ class MailTemplateModel extends Model
 		$query->execute($params);
 	}
 
+	/* Returns array of key value pairs to be passed into the prepared template */
+	public static function getVars($user_id, $verification_url='') {
+		$userInfo = UserModel::getPublicProfileOfUser($user_id);
+		$vars = array(
+			'userName' => $userInfo->user_name,
+			'userEmail' => $userInfo->user_email
+			);
+		if (isset($verification_url)){$vars['verificationUrl'] = $verification_url;}
+		return $vars;
+	}
 }

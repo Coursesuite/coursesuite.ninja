@@ -597,7 +597,7 @@ class AdminController extends Controller
             // page with empty fields
             case "new":
                 $model["action"] = 'new';
-                $model["template"] = array("a"=>1); //doesn't mean anything
+                $model["template"] = array("a"=>1); //just for displaying empty page
                 break;
             // adds to database
             case "create":
@@ -620,7 +620,7 @@ class AdminController extends Controller
             case "save":
                 $template = array(
                     "id" => $id,
-                    "name" => Request::post("name", false),
+                    "name" => Request::post('name', false),
                     "subject" => Request::post("subject", false),
                     "body" => Request::post("body", false),
                     "body_plain" => Request::post("body_plain", false)

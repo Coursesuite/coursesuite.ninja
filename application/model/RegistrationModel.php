@@ -286,16 +286,33 @@ class RegistrationModel
      */
     public static function sendVerificationEmail($user_id, $user_email, $user_activation_hash, $user_newsletter_subscribed, $user_account_type)
     {
+        $view = new View();
+        $verification_url = Config::get('URL') . Config::get('EMAIL_VERIFICATION_URL') . '/' . urlencode($user_id) . '/' . urlencode($user_activation_hash) . '/' . urlencode($user_newsletter_subscribed);
+
+        // Free trial reigistration
         if ($user_account_type == 3) {
-            $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
-            Text::get('EMAIL_TRIAL_VERIFICATION_CONTENT') . "\n\n" .
-            Config::get('URL') . Config::get('EMAIL_VERIFICATION_URL') . '/' . urlencode($user_id) . '/' . urlencode($user_activation_hash) . '/' . urlencode($user_newsletter_subscribed) .
-            Text::get('EMAIL_COMMON_CONTENT_SIG');
+            $template = MailTemplateModel::getLiveTemplate('freeTrial');
+            if (isset($template)){
+                $templateBody = $view->prepareString($template->body);
+                $body = $templateBody(MailTemplateModel::getVars($user_id, $verification_url));
+            } else { // Fallback if template is empty
+                $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
+                Text::get('EMAIL_TRIAL_VERIFICATION_CONTENT') . "\n\n" . 
+                $verification_url .
+                Text::get('EMAIL_COMMON_CONTENT_SIG');
+            }
+        // Normal registration
         } else {
-            $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
-            Text::get('EMAIL_VERIFICATION_CONTENT') . "\n\n" .
-            Config::get('URL') . Config::get('EMAIL_VERIFICATION_URL') . '/' . urlencode($user_id) . '/' . urlencode($user_activation_hash) . '/' . urlencode($user_newsletter_subscribed) .
-            Text::get('EMAIL_COMMON_CONTENT_SIG');
+            $template = MailTemplateModel::getLiveTemplate('register');
+            if (isset($template)){
+                $templateBody = $view->prepareString($template->body);
+                $body = $templateBody(MailTemplateModel::getVars($user_id, $verification_url));
+            } else { // Fallback if template is empty
+                $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
+                Text::get('EMAIL_VERIFICATION_CONTENT') . "\n\n" .
+                $template .
+                Text::get('EMAIL_COMMON_CONTENT_SIG');
+            }
         }
         $mail = new Mail;
         $mail_sent = $mail->sendMail($user_email, Config::get('EMAIL_VERIFICATION_FROM_EMAIL'),
