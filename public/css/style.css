@@ -469,9 +469,9 @@ nav.app-section-names .tile.app {
 }
 .tile > div.actions a.launch {
     padding: .3em .7em;
-    background-color: rgba(255,255,255,.5);
-    color: #757575;
-    text-shadow: 1px 1px 1px rgba(255,255,255,.5);
+    background-color: #b6d644;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,60,0,.5);
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,.13);
     text-decoration: none;
