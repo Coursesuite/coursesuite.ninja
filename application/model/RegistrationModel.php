@@ -304,13 +304,13 @@ class RegistrationModel
             } else { // Fallback if template is empty
                 $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
                 Text::get('EMAIL_VERIFICATION_CONTENT') . "\n\n" .
-                $template .
+                $verification_url .
                 Text::get('EMAIL_COMMON_CONTENT_SIG');
             }
         }
         $mail = new Mail;
         $mail_sent = $mail->sendMail($user_email, Config::get('EMAIL_VERIFICATION_FROM_EMAIL'),
-            Config::get('EMAIL_VERIFICATION_FROM_NAME'), Config::get('EMAIL_VERIFICATION_SUBJECT'), $body
+            Config::get('EMAIL_VERIFICATION_FROM_NAME'), $template->subject, $body, $template->body_plain
         );
 
         if ($mail_sent) {
