@@ -109,4 +109,20 @@ class MailTemplateModel extends Model
 		if (isset($verification_url)){$vars['verificationUrl'] = $verification_url;}
 		return $vars;
 	}
+
+	public static function getHeader() {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT body FROM mail_templates_published WHERE name='header'";
+		$query = $database->prepare($sql);
+		$query->execute();
+		return $query->fetchAll()[0]->body;
+	}
+
+	public static function getFooter() {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT body FROM mail_templates_published WHERE name='footer'";
+		$query = $database->prepare($sql);
+		$query->execute();
+		return $query->fetchAll()[0]->body;
+	}
 }

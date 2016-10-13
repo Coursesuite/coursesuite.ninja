@@ -310,7 +310,7 @@ class RegistrationModel
         }
         $mail = new Mail;
         $mail_sent = $mail->sendMail($user_email, Config::get('EMAIL_VERIFICATION_FROM_EMAIL'),
-            Config::get('EMAIL_VERIFICATION_FROM_NAME'), $template->subject, $body, $template->body_plain
+            Config::get('EMAIL_VERIFICATION_FROM_NAME'), $template->subject, $body, $template->body_plain, MailTemplateModel::getHeader(), MailTemplateModel::getFooter()
         );
 
         if ($mail_sent) {
