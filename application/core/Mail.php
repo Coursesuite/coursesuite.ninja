@@ -51,9 +51,8 @@ class Mail
      * @throws Exception
      * @throws phpmailerException
      */
-    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body, $altBody='')
+    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body, $altBody='', $header='', $footer='')
     {
-        // add head/foot argument? true/false
 
         $mail = new PHPMailer;
 
@@ -86,6 +85,9 @@ class Mail
         $mail->Subject = $subject;
         $mail->Body = $body;
         $mail->AltBody = $altBody;
+        if (isset($header)) {$mail->Body = $header . $mail->Body;}
+        if (isset($footer)) {$mail->Body .= $footer;}
+
         // hmm
         LoggingModel::logInternal("sending mail", print_r($mail, true));
 
