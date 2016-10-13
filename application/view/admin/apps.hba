@@ -23,7 +23,7 @@
 				<input type="radio" name="active" value="1" {{#equals "1" active}} checked{{/equals}} id="y"><label for="y">Visible</label>
 				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Hidden</label>
 			</div>
-			<div><span>Popular:</span>
+			<div><span>Popular:</span>{{!-- http://www.cssportal.com/css-ribbon-generator/ --}}
 				<input type="radio" name="popular" value="1" {{#equals "1" popular}} checked{{/equals}} id="py"><label for="py">Yep</label>
 				<input type="radio" name="popular" value="0" {{#equals "0" popular}} checked{{/equals}} id="pn"><label for="pn">Nope</label>
 			</div>

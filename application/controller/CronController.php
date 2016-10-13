@@ -3,10 +3,10 @@
 class CronController extends Controller
 {
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    // public function __construct()
+    // {
+    //     parent::__construct();
+    // }
 
     public function index()
     {
@@ -19,5 +19,11 @@ class CronController extends Controller
 
         // keep subscription active states up to date
         SubscriptionModel::validateSubscriptions();
+
+        // keep track of trial users
+        UserModel::trialUserExpire();
+
+        ob_clean();
+
     }
 }
