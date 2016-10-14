@@ -131,6 +131,8 @@ return array(
     "EXCEEDED_MONTHLY_CAP" => "Monthly usage cap exceeded",
     "MISSING_PARAMETERS" => "Missing expected parameters",
 
+    "FREE_TRIAL_EXPIRED" => "Your free trial has expired. To continue using the apps, please purchase a subscription.",
+
     "CONTACT_FORM_OK" => "Your message has been sent! Thanks for your interest.",
     "CONTACT_FORM_SPAM" => "I have always wanted to meet a robot!",
     "REGISTRATION_DOMAIN_BLACKLISTED" => "Sorry, this domain has been blacklisted. Please email info@coursesuite.com.au to resolve this.",

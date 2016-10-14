@@ -100,7 +100,7 @@ class Store
                     $table[] = "</td>";
 
                     $table[] = "<tr><td></td><td>";
-                    if (UserModel::getUserAccountType($user_id) == 3) {
+                    if (UserModel::getUserAccountType($user_id) == USER_TYPE_TRIAL) {
                         $subscriptionUrl = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
                         $table[] = "<a href='$subscriptionUrl' class='$class_name'><strong>Buy Subscription</strong></a>";
                     }

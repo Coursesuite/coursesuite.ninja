@@ -21,7 +21,7 @@ class SubscriptionModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->query("select count(id) from systasks where running=0 and task='validateSubscriptions' and lastrun < timestamp(date_add(now(), INTERVAL -1 DAY))");
+        $query = $database->query("select count(id) from systasks where running=0 and task='validateSubscriptions' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
         if ("1" == $query->fetchColumn()) {
 
             // prevent duplicate processes
@@ -38,8 +38,8 @@ class SubscriptionModel
             // sent a broadcast to the user
 
             // prevent re-running this function for a day
-            $database->query("update systasks set running=0, lastrun=timestamp(now()) where task='validateSubscriptions'");
         }
+        $database->query("update systasks set running=0, lastrun=CURRENT_TIMESTAMP where task='validateSubscriptions'");
     }
 
     public static function getAllSubscriptions($userid = 0, $include_app_model = false, $limit = false, $include_user = true, $include_pack = false, $order = 'added')
