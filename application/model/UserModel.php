@@ -486,7 +486,7 @@ class UserModel
     public static function trialUserExpire()
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->query("select count(id) from systasks where running=0 and task='trialUserExpire' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
+        $query = $database->query("select count(1) from systasks where running=0 and task='trialUserExpire' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
         if (intval($query->fetchColumn()) == 1) {
             $database->query("update systasks set running=1 where task='trialUserExpire'");
             UserModel::updateTrialUsers();

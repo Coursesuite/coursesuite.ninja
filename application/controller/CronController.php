@@ -11,19 +11,18 @@ class CronController extends Controller
     public function index()
     {
 
+        // keep track of trial users
+        UserModel::trialUserExpire();
+
+        // keep subscription active states up to date
+        SubscriptionModel::validateSubscriptions();
+
         $ssn = Application::php_session();
         $ssn->get_active_sessions(); // internally garbage collects
 
         // Clean old sessions
         Session::clean();
-
-        // keep subscription active states up to date
-        SubscriptionModel::validateSubscriptions();
-
-        // keep track of trial users
-        UserModel::trialUserExpire();
-
-        ob_clean();
+        // ob_clean();
 
     }
 }

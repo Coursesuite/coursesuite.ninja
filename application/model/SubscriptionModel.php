@@ -21,8 +21,8 @@ class SubscriptionModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->query("select count(id) from systasks where running=0 and task='validateSubscriptions' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
-        if ("1" == $query->fetchColumn()) {
+        $query = $database->query("select count(1) from systasks where running=0 and task='validateSubscriptions' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
+        if (1 == intval($query->fetchColumn())) {
 
             // prevent duplicate processes
             $database->query("update systasks set running=1 where task='validateSubscriptions'");
