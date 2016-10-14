@@ -486,25 +486,27 @@ class UserModel
     public static function trialUserExpire()
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->query("select count(id) from systasks where running=0 and task='trialUserExpire' and lastrun < timestamp(date_add(now(), INTERVAL -1 DAY))");
-        if ($query->fetchColumn() == '1') {
+        $query = $database->query("select count(id) from systasks where running=0 and task='trialUserExpire' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
+        if (intval($query->fetchColumn()) == 1) {
             $database->query("update systasks set running=1 where task='trialUserExpire'");
             UserModel::updateTrialUsers();
-            $database->query("update systasks set running=0, lastrun=timestamp(now()) where task='trialUserExpire'");
         }
+        $database->query("update systasks set running=0, lastrun=CURRENT_TIMESTAMP where task='trialUserExpire'");
     }
 
     public static function updateTrialUsers()
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT subscription_id, user_id, endDate FROM subscriptions WHERE user_account_type = 3";
+        $sql = "SELECT subscription_id, user_id, endDate
+            FROM subscriptions
+            WHERE user_id IN (SELECT user_id FROM users WHERE user_account_type = :type)";
         $query = $database->prepare($sql);
-        $query->execute();
+        $query->execute(array(":type" => USER_TYPE_TRIAL));
         $trialUsers = $query->fetchAll();
-        foreach ($trialUsers as $users) {
-            if (date_diff(date('Y-m-d'), $users->endDate) < 0) {
-                SubscriptionModel::removeSubscriptionFromId($users->subscription_id);
-                UserRoleModel::changeRoleById($users->user_id, 1); //change state to something other than 1 maybe?
+        foreach ($trialUsers as $sub) {
+            if (date_diff(date('Y-m-d'), $sub->endDate) < 0) {
+                SubscriptionModel::removeSubscriptionFromId($sub->subscription_id);
+                UserRoleModel::changeRoleById($users->sub, USER_TYPE_STANDARD); //change state to something other than 1 maybe?
             }
         }
     }
@@ -516,7 +518,7 @@ class UserModel
      *
      * @return bool - truthy if user can get a free trial
      *
-     */ 
+     */
 
     public static function getTrialAvailability($user_id)
     {
