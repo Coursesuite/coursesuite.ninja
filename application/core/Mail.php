@@ -46,14 +46,14 @@ class Mail
      * @param $from_name
      * @param $subject
      * @param $body
+     * @param $optionals
      *
      * @return bool
      * @throws Exception
      * @throws phpmailerException
      */
-    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body, $altBody='', $header='', $footer='')
+    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body, $optionals)
     {
-
         $mail = new PHPMailer;
 
         // if you want to send mail via PHPMailer using SMTP credentials
@@ -83,13 +83,13 @@ class Mail
         $mail->FromName = $from_name;
         $mail->AddAddress($user_email);
         $mail->Subject = $subject;
-        $mail->Body = $body;
-        $mail->AltBody = $altBody;
-        if (isset($header)) {$mail->Body = $header . $mail->Body;}
-        if (isset($footer)) {$mail->Body .= $footer;}
-
+        if (isset($optionals['header'])) {$mail->Body = $optionals['header'];}
+        $mail->Body .= $body;
+        if (isset($optionals['footer'])) {$mail->Body .= $optionals['footer'];}
+        if (isset($optionals['altBody'])) {$mail->AltBody = $optionals['altBody'];}
         // hmm
         LoggingModel::logInternal("sending mail", print_r($mail, true));
+        
 
         // try to send mail, put result status (true/false into $wasSendingSuccessful)
         // I'm unsure if mail->send really returns true or false every time, tis method in PHPMailer is quite complex
@@ -114,14 +114,16 @@ class Mail
      * @param $from_name string sender's name
      * @param $subject string subject
      * @param $body string full mail body text
+     * @param $optionals array header,footer,altbody
      * @return bool the success status of the according mail sending method
      */
-    public function sendMail($user_email, $from_email, $from_name, $subject, $body, $altBody='')
+    public function sendMail($user_email, $from_email, $from_name, $subject, $body, $optionals = '')
     {
         if (Config::get('EMAIL_USED_MAILER') == "phpmailer") {
+            LoggingModel::logInternal("mail array values", print_r($optionals, true));
             // returns true if successful, false if not
             return $this->sendMailWithPHPMailer(
-                $user_email, $from_email, $from_name, $subject, $body, $altBody
+                $user_email, $from_email, $from_name, $subject, $body, $optionals
             );
         }
 

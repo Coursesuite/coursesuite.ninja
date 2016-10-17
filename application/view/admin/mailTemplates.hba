@@ -25,14 +25,17 @@
 			</div>
 			<div id="live" class="admin-tools mail-hidden">
 			<div class="live">
-				<div><label>Name: </label><div>{{name}}</div></div>
-				<div><label>Subject: </label><div>{{subject}}</div></div>
-				<div><label>Body: </label><div>{{body}}</div></div>
-				<div><label>Plain Text: </label><div>{{body_plain}}</div></div>
+		{{/with}}
+		{{#with live}}
+			<div><label>Name: </label><div>{{name}}</div></div>
+			<div><label>Subject: </label><div>{{subject}}</div></div>
+			<div><label>Body: </label><div>{{body}}</div></div>
+			<div><label>Plain Text: </label><div>{{body_plain}}</div></div>
+		{{/with}}
 			</div>
 			<a href="{{../baseurl}}admin/mailTemplates" class="back button">Cancel</a>
 			</div>
-		{{/with}}
+		
 	{{else}}
 		<h3>
 		Pre-Mailer

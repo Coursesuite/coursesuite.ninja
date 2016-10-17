@@ -615,6 +615,7 @@ class AdminController extends Controller
             case "update":
                 $model["action"] = 'update';
                 $model["template"] = MailTemplateModel::getTemplate($id);
+                $model["live"] = MailTemplateModel::getLiveTemplate($model['template']->name);
                 break;
             // saves updated template to database
             case "save":
@@ -640,7 +641,14 @@ class AdminController extends Controller
                 );
                 MailTemplateModel::Save("mail_templates", "id", $template);
                 $mailer = new Mail();
-                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $template["body"], $template["body_plain"]);
+                $templateBody = $this->View->prepareString($template["body"]);
+                $body = $templateBody(MailTemplateModel::getVars(Session::get('user_id')));
+                $optionals = array(
+                        "header" => MailTemplateModel::getHeader(),
+                        "footer" => MailTemplateModel::getFooter(),
+                        "altBody" => $template['body_plain']
+                    );
+                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $body, $optionals);
                 Redirect::to('admin/mailTemplates');
                 break;
             // deletes template from database
