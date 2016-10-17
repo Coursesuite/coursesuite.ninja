@@ -286,7 +286,7 @@ class RegistrationModel
         // Free trial reigistration
         if ($user_account_type == 3) {
             $template = MailTemplateModel::getLiveTemplate('freeTrial');
-            if (isset($template)){
+            if (isset($template) && !empty($template)){
                 $templateBody = $view->prepareString($template->body);
                 $body = $templateBody(MailTemplateModel::getVars($user_id, $verification_url));
             } else { // Fallback if template is empty
@@ -298,7 +298,7 @@ class RegistrationModel
         // Normal registration
         } else {
             $template = MailTemplateModel::getLiveTemplate('register');
-            if (isset($template)){
+            if (isset($template) && !empty($template)){
                 $templateBody = $view->prepareString($template->body);
                 $body = $templateBody(MailTemplateModel::getVars($user_id, $verification_url));
             } else { // Fallback if template is empty
@@ -313,7 +313,7 @@ class RegistrationModel
             'header' => MailTemplateModel::getHeader(),
             'footer' => MailTemplateModel::getFooter()
         );
-        if (isset($template)) {$optionals['altBody'] = $template->altBody;}
+        if (isset($template) && !empty($template)) {$optionals['altBody'] = $template->altBody;}
         $mail_sent = $mail->sendMail($user_email, Config::get('EMAIL_VERIFICATION_FROM_EMAIL'),
             Config::get('EMAIL_VERIFICATION_FROM_NAME'), $template->subject, $body, $optionals
         );
