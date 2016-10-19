@@ -106,7 +106,7 @@ class MailTemplateModel extends Model
 			'userName' => $userInfo->user_name,
 			'userEmail' => $userInfo->user_email
 			);
-		if (isset($verification_url)){$vars['verificationUrl'] = $verification_url;}
+		if (!empty($verification_url)){$vars['verificationUrl'] = $verification_url;}
 		return $vars;
 	}
 

@@ -586,7 +586,7 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function mailTemplates($id = 0, $action = ""){
+    public function mailTemplates($id = 0, $action = "") {
         $model = array(
                 "baseurl" => Config::get("URL"),
                 "allTemplates" => MailTemplateModel::getAllTemplates(),

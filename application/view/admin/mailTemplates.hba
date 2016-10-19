@@ -45,6 +45,7 @@
 			Once your email is completed, copy and past the code into the <a href="http://premailer.dialect.ca/">Pre-Mailer</a> Then paste the output into your template.
 		<h3>Variable names</h3>
 		<div>
+			Use these anywhere in your email and they will resolve to their appropriate value <br><br>
 			&#123;&#123;userName&#125;&#125;<br>
 			&#123;&#123;userEmail&#125;&#125;<br>
 			&#123;&#123;verificationUrl&#125;&#125;
