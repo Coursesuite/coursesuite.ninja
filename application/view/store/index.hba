@@ -6,7 +6,7 @@
     {{#equals visible 1}}<section class='{{cssclass}}'>
 <div class="store-items standard-width">
         {{#if label}}<h3>{{label}}</h3>{{/if}}
-        {{#if epiphet}}<h4>{{epiphet}}</h4>{{/if}}
+        {{#if epiphet}}<h4>{{{epiphet}}}</h4>{{/if}}
         {{#if html_pre}}{{{htmlify html_pre}}}{{/if}}
         <nav class='app-section-names'>
             {{#each apps}}
