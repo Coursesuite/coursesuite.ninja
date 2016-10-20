@@ -169,10 +169,10 @@ function slideshow(index) {
 		}
 	}
 	var n = (index * 459), // TODO: read thumbnail widths from config
-		m = Math.max((index * 120) - 60, 0); // half a thumb on the left, plus a full thumb visible, no matter the index
+		m = Math.max((index * (120 + 9) - 60), 0); // half a thumb on the left, plus margin between thumbs, plus 2 times the border width, plus a full thumb visible, no matter the index
 	$("#current_slide").css({
 		"transform": "translateX(-" + n + "px)"
-	});
+	}).children(".slide").removeClass("active").filter(":eq(" + index + ")").addClass("active");
 	$("#slide_controls").css({
 		"transform": "translateX(-" + m + "px)"
 	}).find("a").removeClass("active");
@@ -181,6 +181,13 @@ function slideshow(index) {
 	// transition the background to match the content of the image/slide predominant colour (precalculated - thanks ColorThief!)
 	$("section.info > div.media > div.slide-wrapper > .viewport.current_slide").css("box-shadow","0 0 25px " + slides[index].bgcolor);
 	$("section.info > div.media > a.slide_navigation").css("color",slides[index].bgcolor);
+
+	var bg = slides[index].bgcolor;
+	if (bg.indexOf("rgba")!==-1) {
+		bg = "linear-gradient(to bottom, rgba(" + bg.substring(bg.lastIndexOf("(")+1,bg.lastIndexOf(",")) + ", 0.9) 0%, rgba(0,0,0,.5) 100%)";
+		$(".slide-wrapper .slide.active>figcaption").css("background", bg);
+	}
+
 	_currentSlide = index;
 }
 
@@ -239,7 +246,7 @@ false});
 function slideAdvance() {
 	if (!_autoAdvance) return;
 	slideshow("advance");
-    _aATimeout = setTimeout(function(){slideAdvance()},4567);
+    _aATimeout = setTimeout(function(){slideAdvance()},5678);
 }
 
 $(function () {
@@ -289,9 +296,9 @@ $(function () {
 
         var $current_slide = $("#current_slide").html(""),
             $slide_nav = $("#slide_controls").html(""),
-            _figure = function (obj) {
+            _figure = function (obj, index) {
                 if (obj.hasOwnProperty("video")) {
-                    return "<iframe width='459' height='344' src='" + obj.video + "&enablejsapi=1' frameborder='0' allowfullscreen class='slide' style='background-color:" + obj.bgcolor + ";'></iframe>";
+                    return "<iframe width='459' height='344' src='" + obj.video + "&enablejsapi=1' frameborder='0' allowfullscreen class='slide " + (index==0 ? " active" : "") + "' style='background-color:" + obj.bgcolor + ";'></iframe>";
                 } else if (obj.hasOwnProperty("image")) {
                     return ["<figure class='slide' style='background-color:" + obj.bgcolor + ";'>",
                     	"<img src='" + obj.preview + "'>",
@@ -305,7 +312,7 @@ $(function () {
 	            return "<a href='javascript:slideshow(" + index + ");'" + (index==0 ? " class='active'" : "") + "><img src='" + obj.thumb + "'></a>";
             };
         slides.forEach(function(item,index) {
-	        $current_slide.append(_figure(item));
+	        $current_slide.append(_figure(item,index));
 	        $slide_nav.append(_thumb(item,index));
 	    });
 

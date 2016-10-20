@@ -921,19 +921,20 @@ section.info > div.media > div.slide-wrapper > .viewport.current_slide {
     transition: box-shadow .5s ease;
 }
 section.info > div.media > div.slide-wrapper > .viewport.slide_controls {
-	height: 90px;
+	height: 98px;
 	width: 459px;
 	margin-top: 10px;
 }
-section.info > div.media > div.slide-wrapper > .viewport.slide_controls a {
-	opacity: .25;
-	transition: opacity .1s ease;
-}
-section.info > div.media > div.slide-wrapper > .viewport.slide_controls a:hover {
-	opacity: .5;
-}
-section.info > div.media > div.slide-wrapper > .viewport.slide_controls a.active {
+section.info > div.media > div.slide-wrapper > .viewport.slide_controls a > img {
 	opacity: 1;
+	transition: opacity .2s ease;
+     border-radius: 4px;
+}
+section.info > div.media > div.slide-wrapper > .viewport.slide_controls a:hover > img {
+	opacity: .66;
+}
+section.info > div.media > div.slide-wrapper > .viewport.slide_controls a.active > img {
+	opacity: .33;
 }
 
 section.info > div.media > a.slide_navigation {
@@ -978,6 +979,11 @@ section.info > div.media > a.slide_navigation.precede:hover {
     width: 459px;
     margin: 0;
     padding: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.slide-wrapper .slide.active {
+  opacity: 1;
 }
 .slide-wrapper .slide>a {
 	position: absolute;
@@ -1002,12 +1008,18 @@ section.info > div.media > a.slide_navigation.precede:hover {
 	white-space: normal;
 	font-size: 14px;
 	padding: 5px;
-	background-color: rgba(42,88,129,.5);
+	background-color: rgba(42,88,129,.75);
 	border-radius: 2px 2px 0 0;
 	font-size: 14px;
 	text-align: center;
 	color: #fff;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.5);
+      transform: translateY(50px);
+      transition: transform 1s ease;
+      transition-delay: 1s;
+}
+.slide-wrapper .slide.active>figcaption {
+  transform: translateY(0);
 }
 
 table.app-matrix {
@@ -1024,6 +1036,12 @@ table.app-matrix tr:not(.caveat) a {
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,.33);
     text-decoration: none;
+}
+section.info > div.media > div.slide-wrapper > .viewport.slide_controls a {
+  margin-right: 5px;
+  padding: 0;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,.13);
 }
 table.app-matrix a.current-tier {
 	background-color:rgba(70,157,61,1.00);
