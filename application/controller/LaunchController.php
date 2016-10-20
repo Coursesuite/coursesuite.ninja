@@ -31,6 +31,8 @@ class LaunchController extends Controller
             // launch/docninja/48fbaec24
             $method = "token";
             $token = $args[0];
+
+            // TODO: validate this user has an active subscription to a product that contains this $appkey
         }
 
         $url = AppModel::getLaunchUrl($appkey, $method, $token);
