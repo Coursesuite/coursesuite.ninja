@@ -309,10 +309,7 @@ class RegistrationModel
             }
         }
         $mail = new Mail;
-        $optionals = array(
-            'header' => MailTemplateModel::getHeader(),
-            'footer' => MailTemplateModel::getFooter()
-        );
+        $optionals = array();
         if (!empty($template)) {$optionals['altBody'] = $template->altBody;}
         $mail_sent = $mail->sendMail($user_email, Config::get('EMAIL_VERIFICATION_FROM_EMAIL'),
             Config::get('EMAIL_VERIFICATION_FROM_NAME'), $template->subject, $body, $optionals

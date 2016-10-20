@@ -77,18 +77,20 @@ class Mail
         } else {
             $mail->IsMail();
         }
-
+        
         // fill mail with data
+        if (empty($optionals['altbody'])) {
+            $mail->IsHTML(true);
+            $mail->CharSet = "text/html; charset=UTF-8;";
+        }
         $mail->From = $from_email;
         $mail->FromName = $from_name;
         $mail->AddAddress($user_email);
         $mail->Subject = $subject;
-        if (isset($optionals['header'])) {$mail->Body = $optionals['header'];}
-        $mail->Body .= $body;
-        if (isset($optionals['footer'])) {$mail->Body .= $optionals['footer'];}
-        if (isset($optionals['altBody'])) {$mail->AltBody = $optionals['altBody'];}
+        $mail->Body = $body;
+        if (!empty($optionals['altBody'])) {$mail->AltBody = $optionals['altBody'];}
         // hmm
-        LoggingModel::logInternal("sending mail", print_r($mail, true));
+        // LoggingModel::logInternal("sending mail", print_r($mail, true));
         
 
         // try to send mail, put result status (true/false into $wasSendingSuccessful)
@@ -120,7 +122,6 @@ class Mail
     public function sendMail($user_email, $from_email, $from_name, $subject, $body, $optionals = '')
     {
         if (Config::get('EMAIL_USED_MAILER') == "phpmailer") {
-            LoggingModel::logInternal("mail array values", print_r($optionals, true));
             // returns true if successful, false if not
             return $this->sendMailWithPHPMailer(
                 $user_email, $from_email, $from_name, $subject, $body, $optionals
