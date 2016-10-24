@@ -109,10 +109,13 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
         if (!Session::userIsLoggedIn()) {
             if (KeyStore::find("freetrial")->get()=="true" && !empty(KeyStore::find("freetriallabel")->get())) {
                 echo "<a href='{$baseurl}register/index/freeTrial' class='free-trial green-button'>" . KeyStore::find("freetriallabel")->get() . "</a>";
-            } elseif (UserModel::getTrialAvailability(intval(Session::get('user_id'))) && KeyStore::find("freetrial")->get()=="true" && !empty(KeyStore::find("freetriallabel")->get())) {
-                echo "<a href='{$baseurl}register/registeredUserTrial' class='free-trial green-button'>" . KeyStore::find("freetriallabel")->get() . "</a>";
             }
-        }
+        // Free trial for logged in users
+        } elseif (UserModel::getTrialAvailability(Session::get('user_id')) && !SubscriptionModel::hasSubscription(Session::get('user_id'))) {
+            if (KeyStore::find("freetrial")->get()=="true" && !empty(KeyStore::find("freetriallabel")->get())) {
+                    echo "<a href='{$baseurl}register/registeredUserTrial' class='free-trial green-button'>" . KeyStore::find("freetriallabel")->get() . "</a>";   
+                }
+            }
         ?>
     </header>
 

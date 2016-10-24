@@ -522,12 +522,16 @@ class UserModel
 
     public static function getTrialAvailability($user_id)
     {
-        if (!is_int($user_id)) {return false;}
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->prepare("SELECT user_free_trial_available FROM users WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(":user_id" => $user_id));
+        $query->execute(array(":user_id" => intval($user_id)));
         $result = $query->fetch();
-        return $result->user_free_trial_available == 1 ? true : false;
+        //return $result->user_free_trial_available == 1 ? true : false;
+        if ($result->user_free_trial_available == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
