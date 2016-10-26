@@ -587,7 +587,7 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function mailTemplates($id = 0, $action = ""){
+    public function mailTemplates($id = 0, $action = "") {
         $model = array(
                 "baseurl" => Config::get("URL"),
                 "allTemplates" => MailTemplateModel::getAllTemplates(),
@@ -643,10 +643,10 @@ class AdminController extends Controller
                 $mailer = new Mail();
                 $templateBody = $this->View->prepareString($template["body"]);
                 $body = $templateBody(MailTemplateModel::getVars(Session::get('user_id')));
+                $templateAltBody = $this->View->prepareString($template["body_plain"]);
+                $altBody = $templateAltBody(MailTemplateModel::getVars(Session::get('user_id')));
                 $optionals = array(
-                        "header" => MailTemplateModel::getHeader(),
-                        "footer" => MailTemplateModel::getFooter(),
-                        "altBody" => $template['body_plain']
+                        "altBody" => $altBody
                     );
                 $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $body, $optionals);
                 Redirect::to('admin/mailTemplates');
