@@ -138,6 +138,7 @@ class Store
         $table = array();
         $table[] = "<div>App Info";
         $table[] = "<div id='item-details' class='store-item-details'>";
+        $product = StoreProductModel::getStoreProductById((int) StoreProductModel::getProductsByAppId($App['app_id'])[0]->product_id);
         
         if (KeyStore::find("tiersystem")->get() == "true") {
             $table[] = '<div><label></label>';
@@ -225,12 +226,10 @@ class Store
             }
         }
         */
-        // Purchase buttons. Default URLs will need to be changed
         if (KeyStore::find("purchasesystem")->get() == "true") {
             $table[] = "<div>";
-            // get appropriate fastspring url from store-product table
-            //$button_url =  . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
-            $table[] = "<div class='purchase-buttons'><a href='$button_url' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
+            $buttonUrl = $product->purchase_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+            $table[] = "<div class='purchase-buttons'><a href='$buttonUrl' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
             $table[] = "<div class='purchase-buttons'><a href='t1' id='purchase-pack' class='mdl-button mdl-js-button mdl-button--raised'>Purchase in bundle</a></div>";
             $table[] = "</div>";   
         }

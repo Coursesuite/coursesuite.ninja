@@ -30,7 +30,8 @@
 
 <script type="text/javascript">
 var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};
-
+var purchaseUrl = '{{{purchase_url}}}';
+var urlSuffix = '{{{urlSuffix}}}';
 function selectTier(id){
 	var tierHeading = document.getElementById(id),
 	 	tierDetails = document.getElementsByClassName(id),
@@ -46,7 +47,6 @@ function selectTier(id){
 	// set button links
 	var purchaseSingle = document.getElementById('purchase-single'),
 		purchasePack = document.getElementById('purchase-pack');
-	purchaseSingle.href = id; //figure out once we have an actual URL
-	purchasePack.href = id;
+	purchaseSingle.href = purchaseUrl.substring(0, purchaseUrl.length - 2) + id + urlSuffix; // A bit janky but it works for now...
 }	
 </script>
