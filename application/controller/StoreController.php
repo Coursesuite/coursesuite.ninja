@@ -37,6 +37,8 @@ class StoreController extends Controller
             "AppTiers" => TierModel::getAllAppTiers((int) $app->app_id),
             "UserSubscription" => null,
             "user_id" => Session::get('user_id'),
+            "purchase_url" => StoreProductModel::getStoreProductById((int) StoreProductModel::getProductsByAppId($app->app_id)[0]->product_id)->purchase_url,
+            "urlSuffix" => "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND'),
         );
         if (Session::currentUserId() > 0) {
             $submodel = SubscriptionModel::getCurrentSubscription(Session::currentUserId());

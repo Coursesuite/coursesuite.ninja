@@ -658,7 +658,7 @@ details > summary {
 }
 
 
-/* Default selected tier */
+/* Default selected tier is tier 1 (basic) */
 [id='t1'], [id='tier-level-1'] {
     background-color: cyan;
 }

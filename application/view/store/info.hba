@@ -33,6 +33,7 @@ var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};
 var purchaseUrl = '{{{purchase_url}}}';
 var urlSuffix = '{{{urlSuffix}}}';
 function selectTier(id){
+	// Cyan stuff here
 	var tierHeading = document.getElementById(id),
 	 	tierDetails = document.getElementsByClassName(id),
 		allTiers = document.querySelectorAll("div.store-item-details *");
