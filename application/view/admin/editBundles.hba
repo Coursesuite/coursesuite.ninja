@@ -1,0 +1,25 @@
+<article class="system-sections admin-tools">
+	{{#if action}}
+	{{#with product}}
+	<div class='admin-tools'>
+	<h3>Edit {{name}}</h3>
+	<form method="post">
+		<div><label for="description">Bundle Description: </label><textarea name="description" rows='10' cols='80'>{{bundle_description}}</textarea></div>
+		<input type='submit' formaction="{{../baseurl}}/admin/editBundles/{{product_id}}/save" value="Save" class="submit button">
+		<a href="{{../baseurl}}/admin/editBundles" class="back button">Cancel</a>
+	</form>
+	</div>
+	{{/with}}
+	{{else}}
+
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		App Bundles
+	</h3>
+	<ul>
+	{{#each bundles}}
+		<li><a href="editBundles/{{product_id}}/edit">{{name}}</a></li>
+	{{/each}}
+	</ul>
+	{{/if}}
+</article>

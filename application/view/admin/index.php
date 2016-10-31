@@ -13,6 +13,7 @@ $tools = array(
     "manageHooks" => array("label" => "3rd party hooks / endpoints", "icon" => "cs-config", "active" => true),
     "storeSettings" => array("label" => "Misc store settings", "icon" => "cs-cog", "active" => true),
     "mailTemplates" => array("label" => "Edit mail templates", "icon" => "cs-mail", "active" => true),
+    "editBundles" => array("label" => "Edit product bundles", "icon" => "cs-cog", "active" => true),
 );
 
 function renderTile($route, $data) {

@@ -587,7 +587,7 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function mailTemplates($id = 0, $action = ""){
+    public function mailTemplates($id = 0, $action = "") {
         $model = array(
                 "baseurl" => Config::get("URL"),
                 "allTemplates" => MailTemplateModel::getAllTemplates(),
@@ -672,6 +672,28 @@ class AdminController extends Controller
         }
 
         $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function editBundles($id = 0, $action= "") {
+        $model = array(
+            "baseUrl" => Config::get('URL'),
+            "action" => $action,
+            "bundles" => StoreProductModel::getBundles(),
+            );
+        switch ($action) {
+            case 'edit':
+                $model["product"] = StoreProductModel::getStoreProductById($id);
+                break;
+            
+            case 'save':
+                StoreProductModel::save('store_product', 'product_id', array(
+                    "product_id" => $id,
+                    "bundle_description" => Request::post('description'),
+                    ));
+                Redirect::to('admin/editBundles');
+                break;
+        }
+        $this->View->renderHandlebars("admin/editBundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
 }

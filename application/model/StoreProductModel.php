@@ -14,13 +14,11 @@ class StoreProductModel extends Model
 
     public static function getStoreProductById($id) {
     	$database = DatabaseFactory::getFactory()->getConnection();
-    	$sql = "SELECT purchase_url, active, name FROM store_product WHERE product_id = :id LIMIT 1";
+    	$sql = "SELECT product_id, purchase_url, active, name, bundle_description FROM store_product WHERE product_id = :id LIMIT 1";
     	$query = $database->prepare($sql);
     	$query->execute(array(':id'=>$id));
     	return $query->fetch();
     }
-
-
 
     public static function getProductsByAppId($id) {
     	$database = DatabaseFactory::getFactory()->getConnection();
@@ -28,5 +26,16 @@ class StoreProductModel extends Model
     	$query = $database->prepare($sql);
     	$query->execute(array(':id'=>$id));
     	return $query->fetchAll();
+    }
+
+    public static function getBundles() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT product_id, purchase_url, active, name, bundle_description
+                FROM store_product
+                WHERE product_id IN
+                (SELECT product_id from store_product_apps GROUP BY product_id HAVING COUNT(*) > 1)";
+        $query = $database->prepare($sql);
+        $query->execute();
+        return $query->fetchAll();
     }
 }
