@@ -1,0 +1,21 @@
+<article class='store-bundles'>
+	<header class='common-header margin-below'>
+	<nav class="crumb">
+	    <a href="{{baseurl}}"><i class='cs-home-outline'></i> Home</a> <i class='cs-arrow-right cs-small'></i> <a href="{{baseurl}}store/bundles">Bundles</a>
+	</nav>
+</header>
+<section class='standard-width'>
+	{{#each bundles}}
+	<div id='{{this.name}}' class="bundle">
+		<div class='bundle-contents'>
+			{{this.display_name}}<br/>
+			{{{this.description}}}
+			<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised">Purchase</a>
+		</div>
+		<div class='bundle-media'>
+		{{{this.media}}}
+		</div>
+	</div>
+	{{/each}}
+</section>
+</article>

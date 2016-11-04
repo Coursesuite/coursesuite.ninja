@@ -123,4 +123,12 @@ class StoreController extends Controller
 
     }
 
+    public function bundles() {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "bundles" => BundleModel::getBundles(),
+            );
+        $this->View->renderHandlebars("store/bundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
 }

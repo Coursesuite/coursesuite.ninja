@@ -1,15 +1,33 @@
 <article class="system-sections admin-tools">
 	{{#if action}}
-	{{#with product}}
+	{{#with bundle}}
 	<div class='admin-tools'>
-	<h3>Edit {{name}}</h3>
-	<form method="post">
-		<div><label for="description">Bundle Description: </label><textarea name="description" rows='10' cols='80'>{{bundle_description}}</textarea></div>
-		<input type='submit' formaction="{{../baseurl}}/admin/editBundles/{{product_id}}/save" value="Save" class="submit button">
+	{{#equals ../action 'edit'}}<h3>Edit {{display_name}}</h3>{{/equals}}
+	{{#equals ../action 'new'}}
+	<h3>New bundle</h3>
+	{{/equals}}
+	<form method="post" id='bundleInfo' action="{{../baseurl}}/admin/editBundles/0/create">
+		{{#equals ../action 'new'}}
+			{{#each ../apps}}
+			<div class='no-flex'><input type='checkbox' name='apps[]' value='{{this.app_id}}'>{{this.name}}</div>
+			{{/each}}
+			<div><label for='store_name'>Store Name: </label><input type="text" name="store_name"></div>
+		{{/equals}} 
+		<div><label for="display_name">Display Name: </label><input type="text" name="display_name" value='{{display_name}}'></div> 
+		<div class='no-flex'><label for="description">Description: </label><textarea name="description" rows='10' cols='80' data-markdown='true'>{{description}}</textarea></div>
+		<div class='no-flex'><label for='media'>Media: </label><textarea name='media' rows='10' cols='80' data-markdown='true'>{{media}}</textarea></div>
+		{{#equals ../action 'edit'}}
+			<input type='submit' value="Save" class="submit button" formaction="{{../baseurl}}/admin/editBundles/{{product_id}}/save">
+		{{/equals}}{{#equals ../action 'new'}}
+			<div class='no-flex'><input type="checkbox" name="active" value='true'>Active?</div>
+			<br>
+			<input type='submit' value='Create' class="submit button" />
+		{{/equals}}
 		<a href="{{../baseurl}}/admin/editBundles" class="back button">Cancel</a>
 	</form>
 	</div>
 	{{/with}}
+
 	{{else}}
 
 	<h3>
@@ -18,8 +36,9 @@
 	</h3>
 	<ul>
 	{{#each bundles}}
-		<li><a href="editBundles/{{product_id}}/edit">{{name}}</a></li>
+		<li><a href="editBundles/{{product_id}}/edit">{{display_name}}</a></li>
 	{{/each}}
 	</ul>
+	<a href='editBundles/0/new' class="button">New Bundle</a>
 	{{/if}}
 </article>

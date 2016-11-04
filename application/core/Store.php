@@ -229,8 +229,8 @@ class Store
         if (KeyStore::find("purchasesystem")->get() == "true") {
             $table[] = "<div>";
             $buttonUrl = $product->purchase_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
-            $table[] = "<div class='purchase-buttons'><a href='$buttonUrl' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
-            $table[] = "<div class='purchase-buttons'><a href='t1' id='purchase-pack' class='mdl-button mdl-js-button mdl-button--raised'>Purchase in bundle</a></div>";
+            $table[] = "<div class='store-purchase-buttons'><a href='$buttonUrl' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
+            $table[] = "<div class='store-purchase-buttons'><a href='".Config::get('URL')."store/bundles' id='purchase-pack' class='mdl-button mdl-js-button mdl-button--raised'>Purchase in bundle</a></div>";
             $table[] = "</div>";   
         }
 

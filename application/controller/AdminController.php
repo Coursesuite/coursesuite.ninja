@@ -678,19 +678,55 @@ class AdminController extends Controller
         $model = array(
             "baseUrl" => Config::get('URL'),
             "action" => $action,
-            "bundles" => StoreProductModel::getBundles(),
+            "bundles" => BundleModel::getBundles(),
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
             );
         switch ($action) {
             case 'edit':
-                $model["product"] = StoreProductModel::getStoreProductById($id);
+                $model["bundle"] = BundleModel::getBundleById($id);
                 break;
             
             case 'save':
-                StoreProductModel::save('store_product', 'product_id', array(
+                StoreProductModel::save('app_bundles', 'product_id', array(
                     "product_id" => $id,
-                    "bundle_description" => Request::post('description'),
+                    "display_name" => Request::post('display_name'),
+                    "description" => Request::post('description'),
+                    "media" => Request::post('media'),
                     ));
                 Redirect::to('admin/editBundles');
+                break;
+
+            case 'new':
+                $model['bundle'] = array('a'=>1);
+                $model['apps'] = AppModel::getAllApps(false);
+                break;
+
+            case 'create':
+                $postData = array(
+                    'apps' => Request::post('apps'),
+                    'store_name' => Request::post('store_name'),
+                    'display_name' => Request::post('display_name'),
+                    'description' => Request::post('description'),
+                    'media' => Request::post('media'),
+                    'active' => Request::post('active'),
+                );
+                if (empty($postData['apps'])) {
+                    Redirect::to('admin/editBundles');
+                    break;
+                } else {
+                    $active = (empty($postData['active']) ? false : true);
+                    StoreProductModel::createStoreProduct($postData['store_name'], $active, 2);
+                    $product_id = StoreProductModel::getStoreProductByName($postData['store_name'])->product_id;
+                    foreach ($postData['apps'] as $app) {
+                        StoreProductModel::createProductAppLink($app, $product_id);
+                    }
+                    BundleModel::createBundle($product_id, $postData['display_name'], $postData['description'], $postData['media']);
+                    Redirect::to('admin/editBundles');
+                    break;
+                }
+
+
                 break;
         }
         $this->View->renderHandlebars("admin/editBundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
