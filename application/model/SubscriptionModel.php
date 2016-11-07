@@ -128,6 +128,7 @@ class SubscriptionModel
             ":endDate" => date('Y-m-d', strtotime(Config::get('FREE_TRIAL_PERIOD'))),
         );
         $query->execute($params);
+        UserModel::setTrialUnavailable($user_id);
     }
 
     public static function removeSubscription($referenceId)

@@ -85,7 +85,6 @@ class RegisterController extends Controller
     {
         $user_id = Session::get('user_id');
         SubscriptionModel::giveFreeSubscription($user_id, 1);
-        UserModel::setTrialUnavailable(Session::get('user_id'));
         $mail = new Mail;
         $mail->sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial activated', "User:" . Session::get('user_id') . ", " . Session::get('user_name') . " Just activated their free trial.");
         Redirect::to('user/index');
