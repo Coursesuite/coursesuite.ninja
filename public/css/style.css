@@ -657,6 +657,58 @@ details > summary {
     background-color: rgba(36,106,106,0.75);
 }
 
+
+/* Default selected tier is tier 1 (basic) */
+[id='t1'], [id='tier-level-1'] {
+    background-color: cyan;
+}
+
+.store-item-tier {
+    float: left;
+    display: inline-block;
+    text-align: center;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.store-item-tier:hover {
+    background-color: #ddd;
+}
+
+.store-item-details {
+    padding: 6px 12px;
+}
+
+.store-item-details > div {
+    display: flex;
+    text-align: right;
+}
+
+.store-item-details > div > label {
+    min-width: 90px;
+    padding-bottom: 10px;
+}
+
+.store-item-details > div > div {
+    flex: 1 1 0;
+    display: inline;
+    text-align: center;
+}
+
+.store-item-details > div > a {
+    flex: 1 1 0;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.purchase-buttons {
+    padding-top: 10px;
+}
+
 /* ==============================================================================
 
 				How Else timeline

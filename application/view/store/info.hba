@@ -24,9 +24,30 @@
 	<section class="store-item-description app-{{App.app_key}}">
 		<article class="standard-width">{{{htmlify App.description}}}</article>
 	</section>
-
 </article>
 
 {{{Store::ContactForm}}}
 
-<script type="text/javascript">var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>
+<script type="text/javascript">
+var slides = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};
+var purchaseUrl = '{{{purchase_url}}}';
+var urlSuffix = '{{{urlSuffix}}}';
+function selectTier(id){
+	// Cyan stuff here
+	var tierHeading = document.getElementById(id),
+	 	tierDetails = document.getElementsByClassName(id),
+		allTiers = document.querySelectorAll("div.store-item-details *");
+	for (i = 0; i < allTiers.length; i++) {
+		allTiers[i].style.backgroundColor = 'inherit';
+	}
+	for (i = 0; i < tierDetails.length; i++) {
+		tierDetails[i].style.backgroundColor = 'cyan';
+	}
+	tierHeading.style.backgroundColor = 'cyan';
+
+	// set button links
+	var purchaseSingle = document.getElementById('purchase-single'),
+		purchasePack = document.getElementById('purchase-pack');
+	purchaseSingle.href = purchaseUrl.substring(0, purchaseUrl.length - 2) + id + urlSuffix; // A bit janky but it works for now...
+}	
+</script>

@@ -22,6 +22,7 @@ class Store
     {
 
         $fs = new FastSpring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
+        /*
         $table = array();
         $colspan = count($AppTiers);
         $table[] = '<table class="app-matrix colspan-' . $colspan . '">';
@@ -35,6 +36,7 @@ class Store
             }
             $table[] = '</tr>';
         }
+        // Table body content begin
         $table[] = '</thead><tbody>';
 
         // app feature matrix
@@ -58,6 +60,7 @@ class Store
             }
             $table[] = '</tr>';
         }
+        // Body content end, foot content begin (price, launch, caveat)
         $table[] = '</tbody><tfoot>';
 
         // price in footer
@@ -129,7 +132,112 @@ class Store
         $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'>" . Text::get("TIER_MATRIX_CAVEATS") . "</td></tr>";
         // $table[] = "<tr class='caveat'><td></td><td colspan='$colspan'><p>This product is part of a paid subscription that offers multiple products (<a href='" . Config::get('URL') . "store/tiers/NinjaSuite'>details</a>).</p><p>Subscriptions are charged monthly until cancelled.</p><div class='text-center'><img src='/img/fastspring.png'></div></td></tr>";
         $table[] = '</tfoot></table>';
+        */
+        // try something new
+        
+        $table = array();
+        $table[] = "<div>App Info";
+        $table[] = "<div id='item-details' class='store-item-details'>";
+        $product = StoreProductModel::getStoreProductById((int) StoreProductModel::getProductsByAppId($App['app_id'])[0]->product_id);
+        
+        if (KeyStore::find("tiersystem")->get() == "true") {
+            $table[] = '<div><label></label>';
+            foreach ($AppTiers as $tier) {
+                $id = 't' . $tier["tier_level"];
+                $table[] = "<div id='$id' class='store-item-tier' onClick='selectTier(this.id)'><span>" . $tier['name'] . "</span></div>";
+            }
+            $table[] = '</div>';
+        }
+        foreach ($AppFeatures as $info) {
+            $details = $info["details"];
+            $feature = $info["feature"];
+            $icon = "";
+            if (isset($details) && !empty($details)) {
+                $icon = "<span data-tooltip='" . addslashes($details) . "'><i class='cs-help-with-circle cs-super cs-muted'></i></span>";
+            }
+            $table[] = "<div><label>$feature $icon</label>";
+            foreach ($AppTiers as $tier) {
+                $tier_level = (int) $tier["tier_level"];
+                $info_level = (int) $info["min_tier_level"];
+                $value = $info["mismatch_label"];
+                if ($tier_level >= $info_level) {
+                    $value = $info["match_label"];
+                }
+                $table[] = "<div id='tier-level-$tier_level' class='t$tier_level'>$value</div>";
+            }
+            $table[] = "</div>";
+        }
+        if (Config::get('STORE_INFO_SHOW_PRICING') == true) {
+            $table[] = "<div><label class='price'>Price: </label>";
+            foreach ($AppTiers as $tier) {
+                $tier_level = (int) $tier["tier_level"];
+                $table[] = '<div id="t'.$tier_level.'" class="t'.$tier_level.'">$' . $tier["price"] . ' per ' . $tier["period"] . ' (' . $tier["currency"] . ')</div>';
+            }
+            $table[] = '</div>';
+        }
+        /*
+        if (KeyStore::find("purchasesystem")->get() == "true") {
+            $user_id = Session::get('user_id');
+            $table[] = '<div class="fill"><label></label>';
+            if (Session::userIsLoggedIn()) {
+                foreach ($AppTiers as $tier) {
+                    $label = 'Subscribe';
+                    $button_url = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+                    $class_name = '';
+                    if (!empty($UserSubscription)) {
+                        $user_tier_level = $UserSubscription["tier_id"];
+                        $label = "";
+                        if ($tier["tier_id"] == $user_tier_level) {
+                            $label = 'Launch App';
+                            $class_name = 'current-tier';
+                            $button_url = Config::get("URL") . "launch/" . $App["app_key"]; //    AppModel::getLaunchUrl($App["app_id"]);
+                        } else if ($tier["tier_id"] < $user_tier_level) {
+                            $label = 'Downgrade';
+                            $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
+                        } else if ($tier["tier_id"] > $user_tier_level) {
+                            $label = 'Upgrade';
+                            $button_url = Config::get('URL') . 'store/updateSubscription/' . $tier['name'];
+                        }
+                    }
+                    $table[] = "<div>";
+                    if ($label != "") {
+                        $table[] = "<a href='$button_url' class='$class_name' target='_app'>$label</a>";
+                    }
+                    $table[] = "</div>";
 
+                    
+                    if (UserModel::getUserAccountType($user_id) == USER_TYPE_TRIAL) {
+                        $table[] = "<div><label></label><div>";
+                        $subscriptionUrl = trim($tier["store_url"]) . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+                        $table[] = "<a href='$subscriptionUrl' class='$class_name'><strong>Buy Subscription</strong></a>";
+                        $table[] = "</div></div>";
+                    }
+                    
+                }
+
+            } else {
+                $table[] = "<div><label></label><a href='" . Config::get('URL') . "login/'>Please log in to subscribe</a></div>";
+            }
+            $table[] = '</div>';
+        } else {
+            $nopay = KeyStore::find("nopurchases")->get();
+            if (!empty($nopay)) {
+                $table[] = "<div class='fill no-payments'><label></label><div>$nopay</div></div>";
+            }
+        }
+        */
+        if (KeyStore::find("purchasesystem")->get() == "true") {
+            $table[] = "<div>";
+            $buttonUrl = $product->purchase_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+            $table[] = "<div class='purchase-buttons'><a href='$buttonUrl' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
+            $table[] = "<div class='purchase-buttons'><a href='t1' id='purchase-pack' class='mdl-button mdl-js-button mdl-button--raised'>Purchase in bundle</a></div>";
+            $table[] = "</div>";   
+        }
+
+        $table[] = "</div>"; // item-details end
+        
+        $table[] = "</div>"; // main end
+        
         return implode('', $table);
 
     }
