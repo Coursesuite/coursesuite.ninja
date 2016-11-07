@@ -128,6 +128,15 @@ class StoreController extends Controller
             "baseurl" => Config::get('URL'),
             "bundles" => BundleModel::getBundles(),
             );
+        // add an array of app names that the bundle contains to the object
+        foreach ($model['bundles'] as $bundle) {
+            $appIds = BundleModel::getBundleContents($bundle->product_id);
+            $appNames = array();
+            foreach ($appIds as $id) {
+                array_push($appNames, AppModel::getAppById($id->app_id)->name);
+            }
+            $bundle->apps = $appNames;
+        }
         $this->View->renderHandlebars("store/bundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 

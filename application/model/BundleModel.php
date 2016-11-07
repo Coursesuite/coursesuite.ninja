@@ -41,6 +41,14 @@ class BundleModel extends Model
         return $query->fetch();
     }
 
+    public static function getBundleContents($product_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT app_id FROM store_product_apps WHERE product_id = :product_id";
+        $query = $database->prepare($sql);
+        $query->execute(array(':product_id'=>$product_id));
+        return $query->fetchAll();
+    }
+
     public static function deleteBundle($product_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "DELETE ab, sp, spa 

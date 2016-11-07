@@ -13,9 +13,13 @@
 			<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised">Purchase</a>
 		</div>
 		<div class='bundle-media'>
-		{{{this.media}}}
+		<!--{{{this.media}}}-->
+		{{#each this.apps}}
+		<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}'></div></a>
+		{{/each}}
 		</div>
 	</div>
 	{{/each}}
+
 </section>
 </article>
