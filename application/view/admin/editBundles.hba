@@ -18,11 +18,13 @@
 		<div class='no-flex'><label for='media'>Media: </label><textarea name='media' rows='10' cols='80' data-markdown='true'>{{media}}</textarea></div>
 		{{#equals ../action 'edit'}}
 			<input type='submit' value="Save" class="submit button" formaction="{{../baseurl}}/admin/editBundles/{{product_id}}/save">
+			<a href="{{../baseurl}}/admin/editBundles/{{product_id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>
 		{{/equals}}{{#equals ../action 'new'}}
 			<div class='no-flex'><input type="checkbox" name="active" value='true'>Active?</div>
 			<br>
 			<input type='submit' value='Create' class="submit button" />
 		{{/equals}}
+
 		<a href="{{../baseurl}}/admin/editBundles" class="back button">Cancel</a>
 	</form>
 	</div>

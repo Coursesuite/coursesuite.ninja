@@ -653,7 +653,7 @@ class AdminController extends Controller
                 break;
             // deletes template from database
             case "delete":
-                $mdoel["action"] = 'delete';
+                $model["action"] = 'delete';
                 MailTemplateModel::deleteTemplate($id);
                 Redirect::to('admin/mailTemplates');
                 break;
@@ -725,8 +725,12 @@ class AdminController extends Controller
                     Redirect::to('admin/editBundles');
                     break;
                 }
+                break;
 
-
+            case 'delete':
+                $model["action"] = "delete";
+                BundleModel::deleteBundle($id);
+                Redirect::to('admin/editBundles');
                 break;
         }
         $this->View->renderHandlebars("admin/editBundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
