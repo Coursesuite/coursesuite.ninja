@@ -44,7 +44,7 @@ class ApiModel
     }
 
     // GET the object representation of the data in an Api Key
-    public static function decodeApiToken($token)
+    public static function decodeApiToken($token, $app_key = "")
     {
 
         $result = new stdClass();
@@ -61,6 +61,28 @@ class ApiModel
         $result->reason = "";
         if ($row) {
             $result->org = OrgModel::getRecord($row->org);
+
+            if (isset($result->org) && !empty($app_key)) {
+                // reformat header & css properties to be in the context of this app_key
+                if (isset($result->org->header) && !empty($result->org->header)) {
+                    $tmp = json_decode($result->org->header);
+                    if (array_key_exists($app_key, $tmp)) {
+                        $result->org->header =Text::toHtml($tmp->$app_key);
+                    } else {
+                        $result->org->header = "";
+                    }
+                }
+                if (isset($result->org->css) && !empty($result->org->css)) {
+                    $tmp = json_decode($result->org->css);
+                    if (array_key_exists($app_key, $tmp)) {
+                        $result->org->css = $tmp->$app_key;
+                    } else {
+                        $result->org->css = "";
+                    }
+                }
+            }
+
+
             $result->app = $row->app; // kinda useless ATM
 
             // the digest_user to check is the one who CREATED the token; since we are now validating under the guise of tokenuser

@@ -76,9 +76,9 @@ class ApiController extends Controller
      * @see ApiController::generateApiKey()
      */
 
-    public function verifyApiKey($key)
+    public function verifyApiKey($key, $app_key = "")
     {
-        $data = ApiModel::decodeApiToken($key);
+        $data = ApiModel::decodeApiToken($key, $app_key);
         LoggingModel::logMethodCall(__METHOD__, $this->username, json_encode($data));
         $this->View->renderJSON($data);
     }

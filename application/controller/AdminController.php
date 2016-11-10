@@ -653,7 +653,7 @@ class AdminController extends Controller
                 break;
             // deletes template from database
             case "delete":
-                $mdoel["action"] = 'delete';
+                $model["action"] = 'delete';
                 MailTemplateModel::deleteTemplate($id);
                 Redirect::to('admin/mailTemplates');
                 break;
@@ -672,6 +672,88 @@ class AdminController extends Controller
         }
 
         $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function whiteLabelling($org_id = 0, $app_key = "", $action = "") {
+        $url = Config::get("URL");
+        $model = array(
+                "baseurl" => $url,
+                "orgs" => OrgModel::getAll(),
+                "apps" => AppModel::getAllAppKeys(),
+                "action" => $action,
+                "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+                "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
+        );
+        switch($action) {
+            case "edit":
+                $model["selected_app_key"] = $app_key;
+                $model["selected_org_id"] = $org_id;
+                $org_model = OrgModel::getRecord($org_id);
+                $tmp = json_decode($org_model->header);
+                if (array_key_exists($app_key, $tmp)) {
+                    $org_model->header = $tmp->$app_key;
+                } else {
+                    $org_model->header = "";
+                }
+                $tmp = json_decode($org_model->css);
+                if (array_key_exists($app_key, $tmp)) {
+                    $org_model->css = $tmp->$app_key;
+                } else {
+                    $org_model->css = "";
+                }
+                $model["selected_org"] = $org_model;
+                break;
+
+            case "save":
+
+                $model = OrgModel::getRecord($org_id);
+
+                $header = json_decode($model->header);
+                $header->$app_key = Request::post("header");
+                $model->header = json_encode($header, JSON_NUMERIC_CHECK);
+
+                $css = json_decode($model->css);
+                $css->$app_key = Request::post("css");
+                $model->css = json_encode($css, JSON_NUMERIC_CHECK);
+
+                OrgModel::Save($model);
+                Redirect::to('admin/whiteLabelling');
+
+                break;
+        }
+
+        $this->View->renderHandlebars("admin/whiteLabel", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+
+    }
+
+    public function uploadMDE() {
+        $model = array();
+        // $_FILES = Array
+        // (
+        //     [file] => Array
+        //         (
+        //             [name] => image-1478751066687.gif
+        //             [type] => image/gif
+        //             [tmp_name] => /private/var/tmp/phpB6eGOM
+        //             [error] => 0
+        //             [size] => 1778921
+        //         )
+        // )
+        $uplname = basename($_FILES["file"]["name"]); // name of file only
+        $image_ext = pathinfo($uplname, PATHINFO_EXTENSION); // extension
+        $tmpname = $_FILES["file"]["tmp_name"]; // php temporary file
+        if (isset($tmpname) && !empty($tmpname) && (getimagesize($tmpname) !== false) && ($image_ext == "jpg" || $image_ext == "png" || $image_ext == "jpeg" || $image_ext == "gif")) {
+            $upload_dir = Config::get('PATH_IMG_MEDIA');
+
+            $diskname = md5($uplname) . "." . $image_ext;
+            $diskpath = $upload_dir . $diskname;
+
+            move_uploaded_file($tmpname, $diskpath);
+
+            $model["filename"] = Config::get('URL') . 'img/' . $diskname;
+        };
+        $this->View->renderJSON($model);
+
     }
 
 }

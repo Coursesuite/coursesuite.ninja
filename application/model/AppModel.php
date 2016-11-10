@@ -28,6 +28,18 @@ class AppModel extends Model
         return parent::Update($table, $idrow_name, $data_model);
     }
 
+
+    public static function getAllAppKeys() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT app_key, app_id
+                FROM apps
+                WHERE active = :active and trim(coalesce(launch, '')) <>''
+        ";
+        $query = $database->prepare($sql);
+        $query->execute(array(':active' => true));
+        return $query->fetchAll();
+    }
+
     /**
      * get a list of the (active) appkeys (that have an api)
      */
