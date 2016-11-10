@@ -713,8 +713,9 @@ details > summary {
 
 .bundle {
     position: relative;
-    display: flex;
+    float: left;
     height: 400px;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 15px;
@@ -723,38 +724,76 @@ details > summary {
 
 .bundle-contents {
     flex: 1 1 0;
+    float: left;
+    width: 50%;
     height: 100%;
     outline: solid black;
 }
 
-.bundle-contents > a {
+.bundle-purchase {
     position: absolute;
     bottom: 20px;
     left: 0;
 }
 
 .bundle-media {
-    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    float: left;
+    width: 50%;
     height: 100%;
     outline: solid black;
 }
 
+.bundle-media > a {
+  display: inline-block;
+}
+
+.bundle-media-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  /*margin: 25px;*/
+}
+
 .bundle-icon {
+  flex: 1 1 0;
+  flex-basis: 50%;
   margin: 10px;
-  background: red;
+  background-image: url('/img/apps/appIcons/builderninja.png');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
   border-radius: 50%;
   width: 100px;
   height: 100px;
+  z-index: 1;
 }
 
 .bundle-icon:hover {
   transform: scale(1.1);
 }
 
+.bundle-icon-inactive {
+  flex: 1 1 0;
+  flex-basis: 20%;
+  margin: 10px;
+  background-image: url('/img/apps/appIcons/builderninja.png');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  opacity: 0.5;
+}
+
 /* Bundle icon tooltips */
 [data-icontooltip] {
   position: relative;
-  z-index: 50;
+  z-index: 1;
   cursor: pointer;
 }
 
@@ -789,7 +828,7 @@ details > summary {
 
 [data-icontooltip]:after {
   position: absolute;
-  bottom: 100%;
+  bottom: 101%;
   left: 50%;
   margin-left: -5px;
   width: 0;

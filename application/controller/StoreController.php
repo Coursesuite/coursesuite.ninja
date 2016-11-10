@@ -127,9 +127,11 @@ class StoreController extends Controller
         $model = array(
             "baseurl" => Config::get('URL'),
             "bundles" => BundleModel::getBundles(),
+            "allApps" => AppModel::getActiveApps(),
             );
-        // add an array of app names that the bundle contains to the object
+        // Iterate through each bundle
         foreach ($model['bundles'] as $bundle) {
+            // Add app names to bundle
             $appIds = BundleModel::getBundleContents($bundle->product_id);
             $appNames = array();
             foreach ($appIds as $id) {
@@ -137,6 +139,11 @@ class StoreController extends Controller
             }
             $bundle->apps = $appNames;
         }
+        $allAppNames = array();
+        foreach ($model['allApps'] as $app) {
+            array_push($allAppNames, $app->name);
+        }
+        $model['allAppNames'] = $allAppNames;
         $this->View->renderHandlebars("store/bundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 

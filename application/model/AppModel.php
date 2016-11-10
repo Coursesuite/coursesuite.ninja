@@ -62,6 +62,15 @@ class AppModel extends Model
         return $query->fetchAll();
     }
 
+    // Get all active apps
+    public static function getActiveApps() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT app_key, name FROM apps WHERE active = 1";
+        $query = $database->prepare($sql);
+        $query->execute();
+        return $query->fetchAll();
+    }
+
     /**
      * get an app by its key (string)
      */

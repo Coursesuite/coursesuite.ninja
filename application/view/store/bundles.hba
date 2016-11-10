@@ -10,13 +10,18 @@
 		<div class='bundle-contents'>
 			{{this.display_name}}<br/>
 			{{{this.description}}}
-			<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised">Purchase</a>
+			<a href='{{this.purchase_url}}' class=" bundle-purchase mdl-button mdl-js-button mdl-button--raised">Purchase</a>
 		</div>
 		<div class='bundle-media'>
-		<!--{{{this.media}}}-->
-		{{#each this.apps}}
-		<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}'></div></a>
+		<div class='bundle-media-container'>
+		{{#each ../allAppNames}}
+			{{#isin this ../this.apps}}
+				<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}'></div></a>
+			{{else}}
+				<a href="#"><div class='bundle-icon-inactive' data-icontooltip='{{this}}'></div></a>
+			{{/isin}}
 		{{/each}}
+		</div>
 		</div>
 	</div>
 	{{/each}}
