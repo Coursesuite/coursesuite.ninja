@@ -705,17 +705,13 @@ class AdminController extends Controller
                 break;
 
             case "save":
-
                 $model = OrgModel::getRecord($org_id);
-
                 $header = json_decode($model->header);
                 $header->$app_key = Request::post("header");
                 $model->header = json_encode($header, JSON_NUMERIC_CHECK);
-
                 $css = json_decode($model->css);
                 $css->$app_key = Request::post("css");
                 $model->css = json_encode($css, JSON_NUMERIC_CHECK);
-
                 OrgModel::Save($model);
                 Redirect::to('admin/whiteLabelling');
 
