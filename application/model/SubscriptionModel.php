@@ -79,12 +79,12 @@ class SubscriptionModel
 
     // Gets the users currently active subscription
     // Returns PDO Object
-    public static function getCurrentSubscription($userid)
+    public static function getCurrentSubscription($user_id)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT tier_id, added, endDate, referenceId, subscriptionUrl, status, info FROM subscriptions WHERE user_id = :userid AND status = 'active' ";
+        $sql = "SELECT tier_id, added, endDate, referenceId, subscriptionUrl, status, info FROM subscriptions WHERE user_id = :user_id AND status = 'active' ";
         $params = array(
-            ":userid" => $userid,
+            ":user_id" => $user_id,
         );
         $query = $database->prepare($sql);
         $query->execute($params);
@@ -93,6 +93,21 @@ class SubscriptionModel
             $result->subscriptionUrl = Encryption::decrypt(Text::base64dec($result->subscriptionUrl));
         }
         return $result;
+    }
+
+    // Checks if user has any active subscriptions
+    // Returns true/false
+    public static function hasSubscription($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT subscription_id FROM subscriptions WHERE user_id = :user_id AND status = 'active'";
+        $query = $database->prepare($sql);
+        $query->execute(array(":user_id" => $user_id));
+        $result = $query->fetch();
+        if (empty($result)){
+            return(false);
+        } else {
+            return(true);
+        }
     }
 
     public static function addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode)
