@@ -15,7 +15,7 @@ class View
     }
 
     /* For parsing strings instead of files
-    usage: 
+    usage:
     $render = $this->View->prepareString($template);
     $render(array('key'=>'value'));
     */
@@ -113,6 +113,15 @@ class View
                 "idify" => function ($arg1) {
                     return preg_replace('/[^a-zA_Z0-9]/', '_', strtolower($arg1));
                 },
+                "iswhitelabelled" => function ($org_id, $app_key, $options) {
+                    $obj = OrgModel::getRecord($org_id);
+                    $html = json_decode($obj->header);
+                    if (isset($html) && array_key_exists($app_key, $html)) {  // "docninja" => "some html code"
+                        return $options['fn']();
+                    } elseif (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                }
             );
 
             // extend helpers by adding methods when particular controllers are loaded.

@@ -213,7 +213,13 @@ window.addEventListener("load", function () {
 		el.simplemde = new SimpleMDE({
 			element: el,
 			spellChecker: false,
+			placeholder: "Markdown / HTML is allowed.\nDrag images onto this editor to upload & link them\nTo nest markdown inside html, add attribute markdown=\"1\" of tags containing markdown.",
 		});
+
+		inlineAttachment.editors.codemirror4.attach(el.simplemde.codemirror, {
+			uploadUrl: "/admin/uploadMDE/"
+		});
+
 	}),
 
 	document.querySelectorAll("[data-sortable]").forEach(function (el, index) {

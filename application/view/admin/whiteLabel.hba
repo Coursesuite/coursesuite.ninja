@@ -1,0 +1,34 @@
+<article class="white-labels admin-tools">
+
+	<h3>
+		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+		White Labelling of apps accessed via the API
+	</h3>
+
+	<p>When apps are launched via an API call, it requires the launch token to be created against an <em>org</em> (which is created on demand). Apps will have the standard headers unless they are overridden - you can use this page to override the header for each app by using custom html and css. Select an App within an Org to customise it; customised items are marked with <i class='cs-tag2'></i>.</p>
+
+	<ul class="selection">{{#each orgs}}
+		<li>{{name}}</li>
+		<ul>{{#each ../apps}}
+			<li{{#equals ../../selected_org_id ../org_id}}{{#equals ../../selected_app_key app_key}} class="selected"{{/equals}}{{/equals}}><a href="{{../../baseurl}}admin/whiteLabelling/{{../org_id}}/{{app_key}}/edit">{{app_key}}{{#iswhitelabelled ../org_id app_key}}<i class='cs-tag2'></i>{{/iswhitelabelled}}</a></li>
+		{{/each}}</ul>
+	{{/each}}</ul>
+
+	{{#equals action "edit"}}
+	<hr>
+	<form method="post" action="{{baseurl}}admin/whiteLabelling/{{selected_org_id}}/{{selected_app_key}}/save/">{{#with selected_org}}
+
+		<div><label for="wl-header">Header</label>
+		<div><textarea id="wl-header" name="header" rows="5" cols="80" data-markdown="true">{{{header}}}</textarea></div></div>
+
+		<div><label for="css">CSS</label>
+		<div><textarea id="wl-css" name="css" rows="15" cols="80">{{{css}}}</textarea></div></div>
+
+		<div><span class="spacer"></span><input type="submit" value="Save & return" class="button"></div>
+
+	{{/with}}</form>
+
+	{{/equals}}
+
+</article>
+

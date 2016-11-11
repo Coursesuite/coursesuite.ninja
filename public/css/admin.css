@@ -32,3 +32,25 @@
 	line-height: 30px;
 	foint-size: 20px;
 }
+
+.white-labels ul.selection li {
+	list-style-type: none;
+	margin: .5em 0;
+}
+
+.white-labels ul.selection ul>li {
+	display: inline-block;
+	margin: 0 1em 0 0;
+	padding: 0;
+}
+.white-labels ul.selection ul>li a {
+	background-color: rgba(0,0,0,.1);
+	border-radius: 3px;
+	text-decoration: none;
+	color: #333;
+	padding: .3em .7em;
+}
+.white-labels ul.selection ul>li.selected a {
+	background-color: #fd792a;
+	color: #fff;
+}
