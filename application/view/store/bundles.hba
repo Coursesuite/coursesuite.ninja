@@ -5,20 +5,28 @@
 	</nav>
 </header>
 <section class='standard-width'>
+	<div id='sidebar' class='bundle-sidebar'>
+		<ul>
+			{{#each bundles}}
+			<li id='menu-{{this.display_name}}' class='bundle-sidebar-item'><a href='javascript:void(0);'>{{this.display_name}}</a></li>
+			{{/each}}
+		</ul>
+	</div>
 	{{#each bundles}}
-	<div id='{{this.name}}' class="bundle">
+	<div id='{{this.display_name}}' class="bundle">
 		<div class='bundle-contents'>
-			{{this.display_name}}<br/>
-			{{{this.description}}}
+			<h2>{{this.display_name}}</h2>
+			<p>{{{this.description}}}</p>
 			<a href='{{this.purchase_url}}' class=" bundle-purchase mdl-button mdl-js-button mdl-button--raised">Purchase</a>
 		</div>
-		<div class='bundle-media'>
-		<div class='bundle-media-container'>
+		<div class='bundle-icons'>
+
+		<div class='bundle-icons-container'>
 		{{#each ../allAppNames}}
 			{{#isin this ../this.apps}}
 				<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}'></div></a>
 			{{else}}
-				<a href="#"><div class='bundle-icon-inactive' data-icontooltip='{{this}}'></div></a>
+				<a href="#"><div class='bundle-icon-inactive'></div></a>
 			{{/isin}}
 		{{/each}}
 		</div>
@@ -28,3 +36,83 @@
 
 </section>
 </article>
+
+<script type='text/javascript'>
+window.onload = function() {
+	var menuTabs = document.getElementsByClassName('bundle-sidebar-item');
+	for (var i = 0; i < menuTabs.length; i++) {
+		var item = menuTabs[i];
+		// Add functions to the menu tabs
+		item.onclick = function(){
+			showHideBundle(this);
+			showHideTab(menuTabs, this);
+		};
+	}
+}
+
+function showHideBundle(clicked) {
+	var bundles = document.getElementsByClassName('bundle');
+	// Hide other bundles
+	for (var i = 0; i < bundles.length; i++) {
+		bundles[i].style.display = 'none';
+	}
+	// Show selected bundle
+	var showBundle = document.getElementById(clicked.id.split('-').pop());
+	showBundle.style.display = 'block';
+}
+
+function showHideTab(menuTabs, clicked) {
+	for (var i = 0; i < menuTabs.length; i++) {
+		menuTabs[i].style.borderRight = '2px solid #cecece';
+		setGradient(menuTabs[i]);
+	}
+	clicked.style.borderRight = 'none';
+	clicked.style.backgroundImage = 'url(http://r.coursesuite.ninja/squairy_light.png)';
+}
+
+function setGradient(element) {
+	element.style.backgroundImage = '';
+	element.style.background = '#ffffff';
+	element.style.background = '-moz-linear-gradient(left,  transparent 27%, #e1e1e1 100%)';
+	element.style.background = '-webkit-linear-gradient(left, transparent 27%,#e1e1e1 100%)';
+	element.style.background = 'linear-gradient(to right,  transparent 27%,#e1e1e1 100%)';
+	element.style.filter = "progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='#e1e1e1',GradientType=1 )";
+}
+
+/* shrinks all active (large) icons over 1 second */
+function shrinkIcons(removeAnimation) {
+	var icons = document.getElementsByClassName('bundle-icon');
+	for (i = 0; i < icons.length; i++) {
+		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
+		icons[i].style.width = '40px';
+		icons[i].style.height = '40px';
+		icons[i].style.opacity = '0.2';
+		// icons[i].style.removeProperty('-webkit-transition', '1s ease-in-out');
+	}	
+	// removeAnimation();
+}
+
+function growIcons(removeAnimation) {
+	var icons = document.getElementsByClassName('bundle-icon');
+	for (i = 0; i < icons.length; i++) {
+		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
+		icons[i].style.width = '100px';
+		icons[i].style.height = '100px';
+		icons[i].style.opacity = '1';
+	}
+	// removeAnimation();
+}
+//????????????
+function removeAnimation(){
+	var icons = document.getElementsByClassName('bundle-icon');
+	for (i = 0; i < icons.length; i++) {
+		icons[i].style.removeProperty('-webkit-transition', '1s ease-in-out');
+	}
+}
+
+function shrinkGrow(){
+	shrinkIcons(function(){
+		removeAnimation();
+	});
+}
+</script>

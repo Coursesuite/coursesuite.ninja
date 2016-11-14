@@ -12,22 +12,21 @@ class BundleModel extends Model
         return parent::create($table);
     }
 
-    public static function createBundle($product_id, $display_name, $description, $media) {
+    public static function createBundle($product_id, $display_name, $description) {
 		$database = DatabaseFactory::getFactory()->getConnection();  
-		$sql = "INSERT INTO app_bundles (product_id, display_name, description, media) VALUES(:product_id, :display_name, :description, :media)";
+		$sql = "INSERT INTO app_bundles (product_id, display_name, description) VALUES(:product_id, :display_name, :description)";
 		$query = $database->prepare($sql);
 		$params = array(
 			':product_id' => $product_id,
 			':display_name' => $display_name,
 			':description' => $description,
-			':media' => $media,
 		);
 		$query->execute($params);
     }
 
     public static function getBundles() {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_bundles.product_id, bundle_id, display_name, description, media, purchase_url FROM app_bundles INNER JOIN store_product ON app_bundles.product_id = store_product.product_id";
+        $sql = "SELECT app_bundles.product_id, bundle_id, display_name, description, purchase_url FROM app_bundles INNER JOIN store_product ON app_bundles.product_id = store_product.product_id";
         $query = $database->prepare($sql);
         $query->execute();
         return $query->fetchAll();
@@ -35,7 +34,7 @@ class BundleModel extends Model
 
     public static function getBundleById($product_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT bundle_id, product_id, display_name, description, media FROM app_bundles WHERE product_id=:product_id";
+        $sql = "SELECT bundle_id, product_id, display_name, description FROM app_bundles WHERE product_id=:product_id";
         $query = $database->prepare($sql);
         $query->execute(array(':product_id'=>$product_id));
         return $query->fetch();

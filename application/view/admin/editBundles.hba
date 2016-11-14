@@ -15,7 +15,6 @@
 		{{/equals}} 
 		<div><label for="display_name">Display Name: </label><input type="text" name="display_name" value='{{display_name}}'></div> 
 		<div class='no-flex'><label for="description">Description: </label><textarea name="description" rows='10' cols='80' data-markdown='true'>{{description}}</textarea></div>
-		<div class='no-flex'><label for='media'>Media: </label><textarea name='media' rows='10' cols='80' data-markdown='true'>{{media}}</textarea></div>
 		{{#equals ../action 'edit'}}
 			<input type='submit' value="Save" class="submit button" formaction="{{../baseurl}}/admin/editBundles/{{product_id}}/save">
 			<a href="{{../baseurl}}/admin/editBundles/{{product_id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>

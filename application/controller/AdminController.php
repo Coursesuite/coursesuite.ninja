@@ -708,7 +708,6 @@ class AdminController extends Controller
                     'store_name' => Request::post('store_name'),
                     'display_name' => Request::post('display_name'),
                     'description' => Request::post('description'),
-                    'media' => Request::post('media'),
                     'active' => Request::post('active'),
                 );
                 if (empty($postData['apps'])) {

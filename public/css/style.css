@@ -712,45 +712,109 @@ details > summary {
 /* Bundle page */
 
 .bundle {
-    position: relative;
-    float: left;
-    height: 400px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-bottom: 15px;
-    /*outline: solid black;*/
+  /*display: none;*/
+
+  position: relative;
+  float: left;
+  height: 400px;
+  width: 82.5%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bundle-sidebar {
+  position: relative;
+  float: left;
+  height: 400px;
+  width: 17.5%;
+  margin-left: auto;
+  margin-right: auto;
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(left,  transparent 27%, #e1e1e1 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, transparent 27%,#e1e1e1 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right,  transparent 27%,#e1e1e1 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='#e1e1e1',GradientType=1 ); /* IE6-9 */
+}
+
+.bundle-sidebar > ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  font-color: #5FC2F5;
+}
+
+.bundle-sidebar > ul > li {
+  padding-bottom: 20px;
+  cursor: pointer;
+  border-top: 2px solid #cecece;
+  border-right: 2px solid #cecece;
+  padding-bottom: 0px;
+  height: 50px;
+
+}
+
+.bundle-sidebar > ul > li:first-child {
+  border-right: none;
+  background-image: url(http://r.coursesuite.ninja/squairy_light.png);
+}
+
+.bundle-sidebar > ul > li:last-child {
+  border-bottom: 2px solid #cecece;
+}
+
+.bundle-sidebar > ul > li:hover {
+  background-image: url(http://r.coursesuite.ninja/squairy_light.png);
+  border-right: none;
+}
+
+.bundle-sidebar > ul > li > a {
+  text-decoration: none;
+  color: #5FC2F5;
+  line-height: 45px; /* See .bundle-sidebar>ul>li height */
+}
+
+/* Show only the first bundle */
+.bundle ~ .bundle {
+  display: none;
 }
 
 .bundle-contents {
-    flex: 1 1 0;
-    float: left;
-    width: 50%;
-    height: 100%;
-    outline: solid black;
+  flex: 1 1 0;
+  float: left;
+  width: 50%;
+  height: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.bundle-contents > h2 {
+  text-align: center;
+}
+
+.bundle-contents > p {
+  text-align: center;
 }
 
 .bundle-purchase {
-    position: absolute;
-    bottom: 20px;
-    left: 0;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
 }
 
-.bundle-media {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    float: left;
-    width: 50%;
-    height: 100%;
-    outline: solid black;
+.bundle-icons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  float: left;
+  width: 50%;
+  height: 100%;
 }
 
-.bundle-media > a {
+.bundle-icons > a {
   display: inline-block;
 }
 
-.bundle-media-container {
+.bundle-icons-container {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -776,6 +840,8 @@ details > summary {
   transform: scale(1.1);
 }
 
+  /*-webkit-transition: 1s ease-in-out;  for animating scale */ 
+
 .bundle-icon-inactive {
   flex: 1 1 0;
   flex-basis: 20%;
@@ -787,7 +853,7 @@ details > summary {
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  opacity: 0.5;
+  opacity: 0.2;
 }
 
 /* Bundle icon tooltips */
