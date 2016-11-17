@@ -27,7 +27,7 @@ class StoreProductModel extends Model
 
     public static function getStoreProductById($id) {
     	$database = DatabaseFactory::getFactory()->getConnection();
-    	$sql = "SELECT product_id, purchase_url, active, name, type FROM store_product WHERE product_id = :id LIMIT 1";
+    	$sql = "SELECT product_id, purchase_url, active, name, type, price, tier FROM store_product WHERE product_id = :id LIMIT 1";
     	$query = $database->prepare($sql);
     	$query->execute(array(':id'=>$id));
     	return $query->fetch();
@@ -58,5 +58,13 @@ class StoreProductModel extends Model
             ':product_id' => $product_id
         );
         $query->execute($params);
+    }
+
+    public static function getPrice($product_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT price FROM store_product WHERE product_id = :product_id";
+        $query = $database->prepare($sql);
+        $query->execute(array(':product_id' => $product_id));
+        return $query->fetch();
     }
 }

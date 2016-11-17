@@ -17,16 +17,23 @@
 		<div class='bundle-contents'>
 			<h2>{{this.display_name}}</h2>
 			<p>{{{this.description}}}</p>
-			<a href='{{this.purchase_url}}' class=" bundle-purchase mdl-button mdl-js-button mdl-button--raised">Purchase</a>
+			<p>Contains the following items:</p>
+			<p class='bundle-contents-list'>{{#each this.apps}}{{this}}, {{/each}}</p>
+
+			{{#each this.products}}
+			<div class='bundle-price'><span class='bundle-price-inline'>${{this.price}}</span> Per Month</div>
+			<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised bundle-button">Buy {{this.tier}}</a>
+			{{/each}}
+
 		</div>
 		<div class='bundle-icons'>
 
 		<div class='bundle-icons-container'>
 		{{#each ../allAppNames}}
 			{{#isin this ../this.apps}}
-				<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}'></div></a>
+				<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}' style="background-image: url('/img/apps/bundleIcons/{{this}}.png');"></div></a>
 			{{else}}
-				<a href="#"><div class='bundle-icon-inactive'></div></a>
+				<a href="#"><div class='bundle-icon-inactive' style="background-image: url('/img/apps/bundleIcons/{{this}}.png');"></div></a>
 			{{/isin}}
 		{{/each}}
 		</div>
@@ -39,6 +46,7 @@
 
 <script type='text/javascript'>
 window.onload = function() {
+	// shrinkIcons();
 	var menuTabs = document.getElementsByClassName('bundle-sidebar-item');
 	for (var i = 0; i < menuTabs.length; i++) {
 		var item = menuTabs[i];
@@ -79,8 +87,11 @@ function setGradient(element) {
 	element.style.filter = "progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='#e1e1e1',GradientType=1 )";
 }
 
+
+
+
 /* shrinks all active (large) icons over 1 second */
-function shrinkIcons(removeAnimation) {
+function shrinkIcons() {
 	var icons = document.getElementsByClassName('bundle-icon');
 	for (i = 0; i < icons.length; i++) {
 		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
@@ -91,7 +102,7 @@ function shrinkIcons(removeAnimation) {
 	}	
 	// removeAnimation();
 }
-
+/*
 function growIcons(removeAnimation) {
 	var icons = document.getElementsByClassName('bundle-icon');
 	for (i = 0; i < icons.length; i++) {
@@ -114,5 +125,10 @@ function shrinkGrow(){
 	shrinkIcons(function(){
 		removeAnimation();
 	});
+}
+*/
+
+function morphIcons() {
+
 }
 </script>

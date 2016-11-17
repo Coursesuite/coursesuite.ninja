@@ -236,6 +236,7 @@ class FastSpring
 
     public function getProducts()
     {
+        //testing
         $url = "https://api.fastspring.com./company/" . $this->store_id . "/subscription/COU160707-6340-10138S";
         $ch = curl_init($url);
 
@@ -244,6 +245,25 @@ class FastSpring
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, "true");
 
         $response = curl_exec($ch);
+        return $response;
+    }
+
+    public function getProductPrice($productPath) {
+        $userIP = $_SERVER['REMOTE_ADDR'];
+        $userForward = getenv('HTTP_X_FORWARDED_FOR');
+        $userLang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+
+        $requestUri = "http://sites.fastspring.com/coursesuite/api/price?product_1_path=".$productPath . "&user_remote_addr=" . $userIP . "&user_x_forwarded_for=" . $userForward . "&user_accept_language=" . $userLang;
+
+        // ...
+        $response = file_get_contents($requestUri);
+
+        $unit_value_flag = "product_1_unit_html=";
+
+        $unit_value_arg_start = (strpos($response, $unit_value_flag) + strlen($unit_value_flag)); // string start
+        $unit_value_arg_end = strpos($response, "\n", $unit_value_arg_start); // string end
+        $unit_value_extract = substr($response, $unit_value_arg_start, ($unit_value_arg_end - $unit_value_arg_start));
+
         return $response;
     }
 

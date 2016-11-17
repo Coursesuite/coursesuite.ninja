@@ -795,10 +795,29 @@ details > summary {
   text-align: center;
 }
 
-.bundle-purchase {
-  position: absolute;
-  bottom: 20px;
-  left: 0;
+.bundle-contents-list {
+  font-style: italic;
+  font-size: 12px;
+}
+
+.bundle-price {
+  display: inline-block;
+  padding-left: 70px;
+}
+
+.bundle-price-inline {
+  font-size: 50px;
+}
+
+.bundle-button {
+  left: 5%;
+  width: 110px;
+  background-color: #7FB903;
+  color: #FFFFFF;
+}
+
+.bundle-button:hover {
+  background-color: #5C9021;
 }
 
 .bundle-icons {
@@ -819,14 +838,11 @@ details > summary {
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  /*margin: 25px;*/
 }
 
 .bundle-icon {
-  flex: 1 1 0;
-  flex-basis: 50%;
+  flex: 1 1 25%;
   margin: 10px;
-  background-image: url('/img/apps/appIcons/builderninja.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
@@ -843,10 +859,8 @@ details > summary {
   /*-webkit-transition: 1s ease-in-out;  for animating scale */ 
 
 .bundle-icon-inactive {
-  flex: 1 1 0;
-  flex-basis: 20%;
+  flex: 1 1 25%;
   margin: 10px;
-  background-image: url('/img/apps/appIcons/builderninja.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;

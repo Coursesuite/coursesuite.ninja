@@ -32,6 +32,14 @@ class BundleModel extends Model
         return $query->fetchAll();
     }
 
+    public static function getBundleProducts($bundle_id) { 
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT product_id FROM bundle_products WHERE bundle_id = :bundle_id";
+        $query = $database->prepare($sql);
+        $query->execute(array(':bundle_id' => $bundle_id));
+        return $query->fetchAll();
+    }
+
     public static function getBundleById($product_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
         $sql = "SELECT bundle_id, product_id, display_name, description FROM app_bundles WHERE product_id=:product_id";
