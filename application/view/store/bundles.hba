@@ -21,7 +21,7 @@
 			<p class='bundle-contents-list'>{{#each this.apps}}{{this}}, {{/each}}</p>
 
 			{{#each this.products}}
-			<div class='bundle-price'><span class='bundle-price-inline'>${{this.price}}</span> Per Month</div>
+			<div class='bundle-price'><span class='bundle-price-inline'>${{this.price}}</span>USD Per Month</div>
 			<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised bundle-button">Buy {{this.tier}}</a>
 			{{/each}}
 
