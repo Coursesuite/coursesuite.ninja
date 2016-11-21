@@ -28,8 +28,6 @@
 			<input type="hidden" name="csrf_token" value="<?= Csrf::makeToken(); ?>" />
             <p><input type="submit" name="submit_new_password" value="Submit" /> <a href="<?php echo Config::get('URL'); ?>user" class="cancel-link">Cancel</a></p>
         </form>
-<?php $fs = new Fastspring(Config::get('FASTSPRING_STORE'), Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
-      print_r($fs->getProductPrice('/docninja'));
- ?>
+<?php  print_r(AppModel::getAppById(7)); ?>
     </section>
 </article>

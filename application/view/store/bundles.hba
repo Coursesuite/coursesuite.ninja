@@ -18,17 +18,16 @@
 			<h2>{{this.display_name}}</h2>
 			<p>{{{this.description}}}</p>
 			<p>Contains the following items:</p>
-			<p class='bundle-contents-list'>{{#each this.apps}}{{this}}, {{/each}}</p>
-
+			<p class='bundle-contents-list'>{{#each this.apps}}{{this.name}}, {{/each}}</p>
 			{{#each this.products}}
 			<div class='bundle-price'><span class='bundle-price-inline'>${{this.price}}</span>USD Per Month</div>
 			<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised bundle-button">Buy {{this.tier}}</a>
 			{{/each}}
-
 		</div>
 		<div class='bundle-icons'>
 
 		<div class='bundle-icons-container'>
+		<!--
 		{{#each ../allAppNames}}
 			{{#isin this ../this.apps}}
 				<a href="#"><div class='bundle-icon' data-icontooltip='{{this}}' style="background-image: url('/img/apps/bundleIcons/{{this}}.png');"></div></a>
@@ -36,23 +35,25 @@
 				<a href="#"><div class='bundle-icon-inactive' style="background-image: url('/img/apps/bundleIcons/{{this}}.png');"></div></a>
 			{{/isin}}
 		{{/each}}
+		-->
+
 		</div>
 		</div>
 	</div>
 	{{/each}}
-
 </section>
 </article>
 
 <script type='text/javascript'>
 window.onload = function() {
-	shrinkGrow();
 	var menuTabs = document.getElementsByClassName('bundle-sidebar-item');
 	for (var i = 0; i < menuTabs.length; i++) {
 		var item = menuTabs[i];
 		// Add functions to the menu tabs
 		item.onclick = function(){
+			// shrinkIcons();
 			showHideBundle(this);
+
 			showHideTab(menuTabs, this);
 		};
 	}
@@ -86,50 +87,58 @@ function setGradient(element) {
 	element.style.background = 'linear-gradient(to right,  transparent 27%,#e1e1e1 100%)';
 	element.style.filter = "progid:DXImageTransform.Microsoft.gradient( startColorstr='transparent', endColorstr='#e1e1e1',GradientType=1 )";
 }
+// ------------------ shrink grow anims ----------------------------------------------
 
+function whichTransitionEvent(){
+    var t;
+    var el = document.createElement('fakeelement');
+    var transitions = {
+      'transition':'transitionend',
+      'OTransition':'oTransitionEnd',
+      'MozTransition':'transitionend',
+      'WebkitTransition':'webkitTransitionEnd'
+    }
 
-
+    for(t in transitions){
+        if( el.style[t] !== undefined ){
+            return transitions[t];
+        }
+    }
+}
 
 /* shrinks all active (large) icons over 1 second */
-function shrinkIcons(growIcons) {
+function shrinkIcons(showBundle) {
 	var icons = document.getElementsByClassName('bundle-icon');
+	var transitionEnd = whichTransitionEvent();
+	// icons[0].addEventListener(transitionEnd, showBundle, false);
 	for (i = 0; i < icons.length; i++) {
 		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
 		icons[i].style.width = '40px';
 		icons[i].style.height = '40px';
 		icons[i].style.opacity = '0.2';
-		// icons[i].style.removeProperty('-webkit-transition', '1s ease-in-out');
 	}	
-	growIcons;
 }
 
 function growIcons() {
 	var icons = document.getElementsByClassName('bundle-icon');
+	var transitionEnd = whichTransitionEvent();
+
 	for (i = 0; i < icons.length; i++) {
 		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
 		icons[i].style.width = '100px';
 		icons[i].style.height = '100px';
 		icons[i].style.opacity = '1';
 	}
-	removeAnimation;
+
 }
 
-function removeAnimation(){
+function removeAnim() {
 	var icons = document.getElementsByClassName('bundle-icon');
-	for (i = 0; i < icons.length; i++) {
-		icons[i].style.removeProperty('transition');
+	for (var i =0; i < icons.length; i++) {
+		icons[i].style.removeProperty('-webkit-transition', '1s ease-in-out');
 	}
 }
 
-function shrinkGrow(){
-	shrinkIcons(function(){
-		growIcons();
-	});
-	
-}
 
 
-function morphIcons() {
-
-}
 </script>

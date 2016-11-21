@@ -133,11 +133,11 @@ class StoreController extends Controller
         foreach ($model['bundles'] as $bundle) {
             // Add app names to bundle
             $appIds = BundleModel::getBundleContents($bundle->product_id);
-            $appNames = array();
+            $apps = array();
             foreach ($appIds as $id) {
-                array_push($appNames, AppModel::getAppById($id->app_id)->name);
+                array_push($apps, AppModel::getAppById($id->app_id));
             }
-            $bundle->apps = $appNames;
+            $bundle->apps = $apps;
             //$bundle->price = StoreProductModel::getPrice($bundle->product_id)->price;
             $bundleProducts = BundleModel::getBundleProducts($bundle->bundle_id);
             $products = array();
