@@ -46,7 +46,7 @@
 
 <script type='text/javascript'>
 window.onload = function() {
-	// shrinkIcons();
+	shrinkGrow();
 	var menuTabs = document.getElementsByClassName('bundle-sidebar-item');
 	for (var i = 0; i < menuTabs.length; i++) {
 		var item = menuTabs[i];
@@ -91,7 +91,7 @@ function setGradient(element) {
 
 
 /* shrinks all active (large) icons over 1 second */
-function shrinkIcons() {
+function shrinkIcons(growIcons) {
 	var icons = document.getElementsByClassName('bundle-icon');
 	for (i = 0; i < icons.length; i++) {
 		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
@@ -100,10 +100,10 @@ function shrinkIcons() {
 		icons[i].style.opacity = '0.2';
 		// icons[i].style.removeProperty('-webkit-transition', '1s ease-in-out');
 	}	
-	// removeAnimation();
+	growIcons;
 }
-/*
-function growIcons(removeAnimation) {
+
+function growIcons() {
 	var icons = document.getElementsByClassName('bundle-icon');
 	for (i = 0; i < icons.length; i++) {
 		icons[i].style.setProperty('-webkit-transition', '1s ease-in-out');
@@ -111,22 +111,23 @@ function growIcons(removeAnimation) {
 		icons[i].style.height = '100px';
 		icons[i].style.opacity = '1';
 	}
-	// removeAnimation();
+	removeAnimation;
 }
-//????????????
+
 function removeAnimation(){
 	var icons = document.getElementsByClassName('bundle-icon');
 	for (i = 0; i < icons.length; i++) {
-		icons[i].style.removeProperty('-webkit-transition', '1s ease-in-out');
+		icons[i].style.removeProperty('transition');
 	}
 }
 
 function shrinkGrow(){
 	shrinkIcons(function(){
-		removeAnimation();
+		growIcons();
 	});
+	
 }
-*/
+
 
 function morphIcons() {
 
