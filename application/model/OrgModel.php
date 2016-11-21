@@ -47,7 +47,11 @@ class OrgModel extends Model
         $sql = "SELECT org_id, name, logo_url, tier, active FROM orgs WHERE $field = :id $active_sql LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute($params);
-        return $query->fetch();
+        if ($data = $query->fetch()) {
+            return $data;
+        } else {
+            return null;
+        }
     }
 
 }
