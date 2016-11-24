@@ -127,18 +127,26 @@ class StoreController extends Controller
         $model = array(
             "baseurl" => Config::get('URL'),
             "bundles" => BundleModel::getBundles(),
-            "allApps" => AppModel::getActiveApps(),
+            "allApps" => AppModel::getAllApps(),
+            "scripts" => array("jquery.fancybox.js", "jquery.fancybox.pack.js", "bundles.js"),
+            "sheets" => array("jquery.fancybox.css"),
             );
         // Iterate through each bundle
         foreach ($model['bundles'] as $bundle) {
             // Add app names to bundle
             $appIds = BundleModel::getBundleContents($bundle->product_id);
-            $apps = array();
+            $bundleAppNames = array();
             foreach ($appIds as $id) {
-                array_push($apps, AppModel::getAppById($id->app_id));
+                array_push($bundleAppNames, AppModel::getAppById($id->app_id)->name);
             }
-            $bundle->apps = $apps;
-            //$bundle->price = StoreProductModel::getPrice($bundle->product_id)->price;
+            $bundle->bundleAppNames = $bundleAppNames;
+            // Add all app info to bundle
+            $bundleApps = array();
+            foreach ($appIds as $id) {
+                array_push($bundleApps, AppModel::getAppById($id->app_id));
+            }
+            $bundle->bundleApps = $bundleApps;
+            // Add product data to bundle
             $bundleProducts = BundleModel::getBundleProducts($bundle->bundle_id);
             $products = array();
             foreach ($bundleProducts as $bp) {
@@ -146,8 +154,9 @@ class StoreController extends Controller
             }
             $bundle->products = $products;
         }
+        $activeApps = AppModel::getActiveApps();
         $allAppNames = array();
-        foreach ($model['allApps'] as $app) {
+        foreach ($activeApps as $app) {
             array_push($allAppNames, $app->name);
         }
         $model['allAppNames'] = $allAppNames;
