@@ -774,7 +774,7 @@ details > summary {
 }
 
 /* Show only the first bundle */
-.bundle ~ .bundle {
+.bundle ~ .bundle { /* wat */
   display: none;
 }
 
@@ -927,6 +927,29 @@ details > summary {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
   filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
+}
+
+.tier-info {
+  font-size: 12px;
+  font-style: italic;
+  display: block;
+  width: 100%;
+  height: 20px;
+  padding-top: 10px;
+  text-align: center;
+  line-height: 100%;
+  left: 50%;
+}
+
+/* ------------------------------------ Bundle Matrix -------------------------- */
+
+.bundle-matrix {
+}
+
+.bundle-matrix > tbody > tr > td {
+  border: 1px solid black;
+  width: 33%;
+  text-align: center;
 }
 
 /* ==============================================================================

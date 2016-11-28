@@ -137,13 +137,17 @@ class StoreController extends Controller
             $appIds = BundleModel::getBundleContents($bundle->product_id);
             $bundleAppNames = array();
             foreach ($appIds as $id) {
-                array_push($bundleAppNames, AppModel::getAppById($id->app_id)->name);
+                $bundleApp = AppModel::getAppById($id->app_id);
+                $bundleApp->name = str_replace(' ', '-', $bundleApp->name); // add dashes to names to fix id problem
+                array_push($bundleAppNames, $bundleApp->name);
             }
             $bundle->bundleAppNames = $bundleAppNames;
             // Add all app info to bundle
             $bundleApps = array();
             foreach ($appIds as $id) {
-                array_push($bundleApps, AppModel::getAppById($id->app_id));
+                $app = AppModel::getAppById($id->app_id);
+                $app->name = str_replace(' ', '-', $app->name); // add dashes to names to fix id problem
+                array_push($bundleApps, $app);
             }
             $bundle->bundleApps = $bundleApps;
             // Add product data to bundle
@@ -154,13 +158,24 @@ class StoreController extends Controller
             }
             $bundle->products = $products;
         }
+        // Add all active app names
         $activeApps = AppModel::getActiveApps();
         $allAppNames = array();
         foreach ($activeApps as $app) {
+            $app->name = str_replace(' ', '-', $app->name); // add dashes to names to fix id problem
             array_push($allAppNames, $app->name);
         }
         $model['allAppNames'] = $allAppNames;
         $this->View->renderHandlebars("store/bundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function bundleInfo($id) {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "bundleId" => $id,
+            "tiers" => TierModel::getAllTiers(true),
+            );
+        $this->View->renderHandlebars("store/bundleInfo", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
 }

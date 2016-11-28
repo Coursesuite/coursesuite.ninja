@@ -12,15 +12,16 @@ class StoreProductModel extends Model
         return parent::create($table);
     }
 
-    public static function createStoreProduct($name, $active, $type, $purchase_url=null) {
+    public static function createStoreProduct($name, $active, $type, $tier, $purchase_url=null) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "INSERT INTO store_product (purchase_url, active, name, type) VALUES(:purchase_url, :active, :name, :type)";
+        $sql = "INSERT INTO store_product (purchase_url, active, name, type, tier) VALUES(:purchase_url, :active, :name, :type, :tier)";
         $query = $database->prepare($sql);
         $params = array(
             ':purchase_url' => $purchase_url,
             ':active' => $active,
             ':name' => $name,
-            ':type' => $type
+            ':type' => $type,
+            ':tier' => $tier,
         );
         $query->execute($params);
     }

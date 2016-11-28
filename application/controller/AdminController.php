@@ -339,6 +339,7 @@ class AdminController extends Controller
                     "popular" => Request::post("popular", false, FILTER_SANITIZE_NUMBER_INT),
                     "description" => Request::post("description"),
                     "media" => Request::post("media"),
+                    "summary" => Request::post("summary"),
                     "meta_description" => Request::post("meta_description"),
                     "meta_title" => Request::post("meta_title"),
                     "meta_keywords" => Request::post("meta_keywords"),
@@ -709,13 +710,14 @@ class AdminController extends Controller
                     'display_name' => Request::post('display_name'),
                     'description' => Request::post('description'),
                     'active' => Request::post('active'),
+                    'tier' => Request::post('tier'),
                 );
                 if (empty($postData['apps'])) {
                     Redirect::to('admin/editBundles');
                     break;
                 } else {
                     $active = (empty($postData['active']) ? false : true);
-                    StoreProductModel::createStoreProduct($postData['store_name'], $active, 2);
+                    StoreProductModel::createStoreProduct($postData['store_name'], $active, 2, $postData['tier']);
                     $product_id = StoreProductModel::getStoreProductByName($postData['store_name'])->product_id;
                     foreach ($postData['apps'] as $app) {
                         StoreProductModel::createProductAppLink($app, $product_id);

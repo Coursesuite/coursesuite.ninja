@@ -346,6 +346,41 @@ class Store
         return implode('', $table);
     }
 
+    public static function BundleMatrix($bundleId, $tiers) {
+        $table = array();
+        $colspan = count($tiers) + 1;
+        $table[] = "<table class='bundle-matrix'>";
+        $table[] = "<tbody>";
+        $appIds = BundleModel::getBundleContents($bundleId);
+        $table[] = "<tr><td><h4>Feature</h4></td>";
+        foreach ($tiers as $tier) {
+            $table[] = "<td><h4>" . $tier['name'] . "</h4></td>";
+        }
+        $table[] = "</tr>";
+        foreach ($appIds as $appId) { // iterate through apps contained in bundle
+            $id = $appId->app_id;
+            $appName = AppModel::getAppById($id)->name;
+            $table[] = "<tr><th colspan='" . $colspan . "'>" . $appName . "</th></tr>";
+            $appFeatures = TierModel::getAppFeatures($id);
+            foreach ($appFeatures as $info) {
+                $table[] = "<tr>";
+                $table[] = "<td><h4>" . $info->feature . "</h4>" . $info->details . "</td>";
+                foreach ($tiers as $tier) {
+                    $table[] = "<td>";
+                    if ($tier['tier_level'] >= $info->min_tier_level) {
+                        $table[] = $info->match_label;
+                    } else {
+                        $table[] = $info->mismatch_label;
+                    }
+                }
+            }
+        }
+
+
+        $table[] = '</table>';
+        return implode('', $table);
+    }
+
     public static function ContactForm()
     {
         return View::renderHandlebars("store/contactForm", array(

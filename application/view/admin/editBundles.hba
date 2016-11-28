@@ -20,6 +20,8 @@
 			<a href="{{../baseurl}}/admin/editBundles/{{product_id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>
 		{{/equals}}{{#equals ../action 'new'}}
 			<div class='no-flex'><input type="checkbox" name="active" value='true'>Active?</div>
+			<div class='no-flex'><label for='Basic'>Basic<input type='radio' id='Basic' label='Basic' name='tier' value='Basic' /></label></div>
+			<div class='no-flex'><label for='Pro'>Pro<input type='radio' id='Pro' label='Pro' value='Pro' name='tier' /></label></div>
 			<br>
 			<input type='submit' value='Create' class="submit button" />
 		{{/equals}}

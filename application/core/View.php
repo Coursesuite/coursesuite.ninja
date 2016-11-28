@@ -127,6 +127,7 @@ class View
             if (class_exists("StoreController")) {
                 $helper_functions[] = "Store::AppMatrix";
                 $helper_functions[] = "Store::TierMatrix";
+                $helper_functions[] = "Store::BundleMatrix";
                 $helper_functions[] = "Store::ContactForm";
             }
             $helper_functions[] = "Text::StaticPageRenderer";
