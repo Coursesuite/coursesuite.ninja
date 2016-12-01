@@ -693,7 +693,6 @@ class AdminController extends Controller
                     "product_id" => $id,
                     "display_name" => Request::post('display_name'),
                     "description" => Request::post('description'),
-                    "media" => Request::post('media'),
                     ));
                 Redirect::to('admin/editBundles');
                 break;
@@ -722,7 +721,7 @@ class AdminController extends Controller
                     foreach ($postData['apps'] as $app) {
                         StoreProductModel::createProductAppLink($app, $product_id);
                     }
-                    BundleModel::createBundle($product_id, $postData['display_name'], $postData['description'], $postData['media']);
+                    BundleModel::createBundle($product_id, $postData['display_name'], $postData['description']);
                     Redirect::to('admin/editBundles');
                     break;
                 }

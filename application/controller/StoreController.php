@@ -135,7 +135,7 @@ class StoreController extends Controller
         // Iterate through each bundle
         foreach ($model['bundles'] as $bundle) {
             // Add app names to bundle
-            $appIds = BundleModel::getBundleContents($bundle->product_id);
+            $appIds = BundleModel::getBundleApps($bundle->product_id);
             $bundleAppNames = array();
             foreach ($appIds as $id) {
                 $bundleApp = AppModel::getAppById($id->app_id);
@@ -175,7 +175,14 @@ class StoreController extends Controller
             "baseurl" => Config::get('URL'),
             "bundleId" => $id,
             "tiers" => TierModel::getAllTiers(true),
+            "userSubscription" => null,
             );
+
+        $submodel = SubscriptionModel::getCurrentSubscription(Session::currentUserId());
+            if (!empty($submodel) && $submodel->status == 'active') {
+                $model["userSubscription"] = $submodel;
+            }
+
         $this->View->renderHandlebars("store/bundleInfo", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 

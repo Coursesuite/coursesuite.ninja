@@ -346,13 +346,20 @@ class Store
         return implode('', $table);
     }
 
-    public static function BundleMatrix($bundleId, $tiers) {
+    public static function BundleMatrix($bundleId, $tiers, $userSubscription) {
         $table = array();
         $colspan = count($tiers) + 1;
         $table[] = "<table class='bundle-matrix'>";
         $table[] = "<tbody>";
-        $appIds = BundleModel::getBundleContents($bundleId);
-        $table[] = "<tr><td><h4>Feature</h4></td>";
+        $productIdsObject = BundleModel::getBundleProducts($bundleId); //[0]->product_id;
+        $productIds = array();
+        $bundleTiers = array();
+        foreach ($productIdsObject as $obj) {
+            array_push($productIds, $obj->product_id); // generate array of product ids in the bundle
+            array_push($bundleTiers, StoreProductModel::getStoreProductById($obj->product_id)->tier); // so we know what tiers the bundle has
+        }
+        $appIds = BundleModel::getBundleApps($productIds[0]);
+        $table[] = "<tr><td></td>";
         foreach ($tiers as $tier) {
             $table[] = "<td><h4>" . $tier['name'] . "</h4></td>";
         }
@@ -367,15 +374,35 @@ class Store
                 $table[] = "<td><h4>" . $info->feature . "</h4>" . $info->details . "</td>";
                 foreach ($tiers as $tier) {
                     $table[] = "<td>";
-                    if ($tier['tier_level'] >= $info->min_tier_level) {
-                        $table[] = $info->match_label;
-                    } else {
-                        $table[] = $info->mismatch_label;
+                    if (in_array($tier['name'], $bundleTiers)) {
+                        if ($tier['tier_level'] >= $info->min_tier_level) {
+                            $table[] = $info->match_label;
+                        } else {
+                            $table[] = $info->mismatch_label;
+                        }
                     }
+                    $table[] = "</td>";
                 }
+                $table[] = "</tr>";
             }
         }
-
+        $table[] = "</tbody><tfoot>";
+        if (KeyStore::find("purchasesystem")->get() == "true") {
+            $table[] = "<tr><th></th>";
+            if (Session::userIsLoggedIn()) {
+                if ($userSubscription === null) {
+                    foreach ($productIds as $id) {
+                        $product = StoreProductModel::getStoreProductById($id);
+                        $table[] = "<td>";
+                        $table[] = "<a href='$product->purchase_url'>Buy " . $product->tier . "</a>"; 
+                        $table[] = "</td>";
+                    }
+                }
+            } else {
+                $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'> Please login to susbcribe</a></td>";
+            }
+            $table[] = "</tr>";
+        }
 
         $table[] = '</table>';
         return implode('', $table);

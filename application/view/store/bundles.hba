@@ -23,6 +23,7 @@
 				<div class='bundle-price'><span class='bundle-price-inline'>${{this.price}}</span>USD Per Month</div>
 				<a href='{{this.purchase_url}}' class="mdl-button mdl-js-button mdl-button--raised bundle-button">Buy {{this.tier}}</a>
 			{{/each}}
+			<a href="{{baseurl}}bundleInfo/{{this.bundle_id}}" class='tier-info' target="_blank">Tier info</a>
 		</div>
 		<div class='bundle-icons'>
 		<div class='bundle-icons-container'>
@@ -31,7 +32,7 @@
 				<a class='fancybox' href="#{{this}}"><div class='bundle-icon' data-icontooltip='{{this}}' style="background-image: url('/img/apps/bundleIcons/{{this}}.png');"></div></a>
 				<div id='{{this}}' style='display: none;'>
 					{{#each ../this.bundleApps}}
-						{{#equals this.name ../this}}{{this.summary}}{{/equals}}
+						{{#equals this.name ../this}}{{{this.summary}}}{{/equals}}
 					{{/each}}
 				</div>
 			{{else}}
@@ -44,6 +45,3 @@
 	{{/each}}
 </section>
 </article>
-
-
-<div id='inline' style="display: none;">test</div>
