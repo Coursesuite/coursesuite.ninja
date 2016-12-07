@@ -14,6 +14,7 @@ $tools = array(
     "storeSettings" => array("label" => "Misc store settings", "icon" => "cs-cog", "active" => true),
     "mailTemplates" => array("label" => "Edit mail templates", "icon" => "cs-mail", "active" => true),
     "whiteLabelling" => array("label" => "White Labelling via API", "icon" => "cs-settings", "active" => true),
+    "editBundles" => array("label" => "Edit product bundles", "icon" => "cs-apps", "active" => true),
 );
 
 function renderTile($route, $data) {

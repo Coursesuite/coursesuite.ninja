@@ -28,6 +28,5 @@
 			<input type="hidden" name="csrf_token" value="<?= Csrf::makeToken(); ?>" />
             <p><input type="submit" name="submit_new_password" value="Submit" /> <a href="<?php echo Config::get('URL'); ?>user" class="cancel-link">Cancel</a></p>
         </form>
-
     </section>
 </article>

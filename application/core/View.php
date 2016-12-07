@@ -94,6 +94,13 @@ class View
                         return $options['inverse']();
                     }
                 },
+                "isin" => function ($arg1, $arg2, $options) {
+                    if (in_array($arg1, $arg2)) {
+                        return $options['fn']();
+                    } else if (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
                 "dump" => function ($arg1) {
                     return print_r($arg1, true);
                 },
@@ -129,6 +136,7 @@ class View
             if (class_exists("StoreController")) {
                 $helper_functions[] = "Store::AppMatrix";
                 $helper_functions[] = "Store::TierMatrix";
+                $helper_functions[] = "Store::BundleMatrix";
                 $helper_functions[] = "Store::ContactForm";
             }
             $helper_functions[] = "Text::StaticPageRenderer";

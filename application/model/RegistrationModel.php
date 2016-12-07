@@ -388,6 +388,11 @@ class RegistrationModel
 
         if ($query->rowCount() == 1) {
             Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_ACTIVATION_SUCCESSFUL'));
+            //send introduction email
+            $mail = new Mail;
+            $template = MailTemplateModel::getLiveTemplate('welcome');
+            $templateBody = $view->prepareString($template->body);
+            $mail->sendMail($userInfo[0]->user_email, Config::get('EMAIL_SUBSCRIPTION'), 'CourseSuite', $template->subject, $template->body);
             return true;
         }
 

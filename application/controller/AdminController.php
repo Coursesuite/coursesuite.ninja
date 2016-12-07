@@ -339,6 +339,7 @@ class AdminController extends Controller
                     "popular" => Request::post("popular", false, FILTER_SANITIZE_NUMBER_INT),
                     "description" => Request::post("description"),
                     "media" => Request::post("media"),
+                    "summary" => Request::post("summary"),
                     "meta_description" => Request::post("meta_description"),
                     "meta_title" => Request::post("meta_title"),
                     "meta_keywords" => Request::post("meta_keywords"),
@@ -749,7 +750,67 @@ class AdminController extends Controller
             $model["filename"] = Config::get('URL') . 'img/' . $diskname;
         };
         $this->View->renderJSON($model);
+    }
 
+    public function editBundles($id = 0, $action= "") {
+        $model = array(
+            "baseUrl" => Config::get('URL'),
+            "action" => $action,
+            "bundles" => BundleModel::getBundles(),
+            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
+            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            );
+        switch ($action) {
+            case 'edit':
+                $model["bundle"] = BundleModel::getBundleById($id);
+                break;
+
+            case 'save':
+                StoreProductModel::save('app_bundles', 'product_id', array(
+                    "product_id" => $id,
+                    "display_name" => Request::post('display_name'),
+                    "description" => Request::post('description'),
+                    ));
+                Redirect::to('admin/editBundles');
+                break;
+
+            case 'new':
+                $model['bundle'] = array('a'=>1);
+                $model['apps'] = AppModel::getAllApps(false);
+                break;
+
+            case 'create':
+                $postData = array(
+                    'apps' => Request::post('apps'),
+                    'store_name' => Request::post('store_name'),
+                    'display_name' => Request::post('display_name'),
+                    'description' => Request::post('description'),
+                    'active' => Request::post('active'),
+                    'tier' => Request::post('tier'),
+                );
+                if (empty($postData['apps'])) {
+                    Redirect::to('admin/editBundles');
+                    break;
+                } else {
+                    $active = (empty($postData['active']) ? false : true);
+                    StoreProductModel::createStoreProduct($postData['store_name'], $active, 2, $postData['tier']);
+                    $product_id = StoreProductModel::getStoreProductByName($postData['store_name'])->product_id;
+                    foreach ($postData['apps'] as $app) {
+                        StoreProductModel::createProductAppLink($app, $product_id);
+                    }
+                    BundleModel::createBundle($product_id, $postData['display_name'], $postData['description']);
+                    Redirect::to('admin/editBundles');
+                    break;
+                }
+                break;
+
+            case 'delete':
+                $model["action"] = "delete";
+                BundleModel::deleteBundle($id);
+                Redirect::to('admin/editBundles');
+                break;
+        }
+        $this->View->renderHandlebars("admin/editBundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
 }

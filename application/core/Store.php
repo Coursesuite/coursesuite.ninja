@@ -229,8 +229,8 @@ class Store
         if (KeyStore::find("purchasesystem")->get() == "true") {
             $table[] = "<div>";
             $buttonUrl = $product->purchase_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
-            $table[] = "<div class='purchase-buttons'><a href='$buttonUrl' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
-            $table[] = "<div class='purchase-buttons'><a href='t1' id='purchase-pack' class='mdl-button mdl-js-button mdl-button--raised'>Purchase in bundle</a></div>";
+            $table[] = "<div class='store-purchase-buttons'><a href='$buttonUrl' id='purchase-single' class='mdl-button mdl-js-button mdl-button--raised'>Purchase Single</a></div>";
+            $table[] = "<div class='store-purchase-buttons'><a href='".Config::get('URL')."store/bundles' id='purchase-pack' class='mdl-button mdl-js-button mdl-button--raised'>Purchase in bundle</a></div>";
             $table[] = "</div>";   
         }
 
@@ -343,6 +343,68 @@ class Store
 
         $table[] = '</tfoot></table>';
 
+        return implode('', $table);
+    }
+
+    public static function BundleMatrix($bundleId, $tiers, $userSubscription) {
+        $table = array();
+        $colspan = count($tiers) + 1;
+        $table[] = "<table class='bundle-matrix'>";
+        $table[] = "<tbody>";
+        $productIdsObject = BundleModel::getBundleProducts($bundleId); //[0]->product_id;
+        $productIds = array();
+        $bundleTiers = array();
+        foreach ($productIdsObject as $obj) {
+            array_push($productIds, $obj->product_id); // generate array of product ids in the bundle
+            array_push($bundleTiers, StoreProductModel::getStoreProductById($obj->product_id)->tier); // so we know what tiers the bundle has
+        }
+        $appIds = BundleModel::getBundleApps($productIds[0]);
+        $table[] = "<tr><td></td>";
+        foreach ($tiers as $tier) {
+            $table[] = "<td><h4>" . $tier['name'] . "</h4></td>";
+        }
+        $table[] = "</tr>";
+        foreach ($appIds as $appId) { // iterate through apps contained in bundle
+            $id = $appId->app_id;
+            $appName = AppModel::getAppById($id)->name;
+            $table[] = "<tr><th colspan='" . $colspan . "'>" . $appName . "</th></tr>";
+            $appFeatures = TierModel::getAppFeatures($id);
+            foreach ($appFeatures as $info) {
+                $table[] = "<tr>";
+                $table[] = "<td><h4>" . $info->feature . "</h4>" . $info->details . "</td>";
+                foreach ($tiers as $tier) {
+                    $table[] = "<td>";
+                    if (in_array($tier['name'], $bundleTiers)) {
+                        if ($tier['tier_level'] >= $info->min_tier_level) {
+                            $table[] = $info->match_label;
+                        } else {
+                            $table[] = $info->mismatch_label;
+                        }
+                    }
+                    $table[] = "</td>";
+                }
+                $table[] = "</tr>";
+            }
+        }
+        $table[] = "</tbody><tfoot>";
+        if (KeyStore::find("purchasesystem")->get() == "true") {
+            $table[] = "<tr><th></th>";
+            if (Session::userIsLoggedIn()) {
+                if ($userSubscription === null) {
+                    foreach ($productIds as $id) {
+                        $product = StoreProductModel::getStoreProductById($id);
+                        $table[] = "<td>";
+                        $table[] = "<a href='$product->purchase_url'>Buy " . $product->tier . "</a>"; 
+                        $table[] = "</td>";
+                    }
+                }
+            } else {
+                $table[] = "<td colspan='$colspan'><a href='" . Config::get('URL') . "login/'> Please login to susbcribe</a></td>";
+            }
+            $table[] = "</tr>";
+        }
+
+        $table[] = '</table>';
         return implode('', $table);
     }
 

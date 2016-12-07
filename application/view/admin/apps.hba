@@ -29,11 +29,13 @@
 			</div>
 			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
 			<div><label for="media">Slide data</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
+			<div><label for="summary">Summary:</label> <div><textarea id="summary" name="summary" rows="10" cols="80" data-markdown="true">{{summary}}</textarea></div></div>
 			<h4>SEO (Metadata)</h4>
 			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>.</div>
 			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
 			<div><label for="meta_description">descriptor:</label> <input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
 			<div><label for="meta_keywords">keywords:</label> <input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>
+
 			<div><span class="spacer"></span><input type="submit" value="Save" class="button"></div>
 		{{/with}}
 		</form>

@@ -30,6 +30,7 @@ class StoreController extends Controller
     public function info($app_key)
     {
         $app = AppModel::getAppByKey($app_key);
+        $spm = StoreProductModel::getProductsByAppId($app->app_id);
         $model = array(
             "baseurl" => Config::get("URL"),
             "App" => $app,
@@ -37,7 +38,7 @@ class StoreController extends Controller
             "AppTiers" => TierModel::getAllAppTiers((int) $app->app_id),
             "UserSubscription" => null,
             "user_id" => Session::get('user_id'),
-            "purchase_url" => StoreProductModel::getStoreProductById((int) StoreProductModel::getProductsByAppId($app->app_id)[0]->product_id)->purchase_url,
+            "purchase_url" => isset($spm[0]) ? StoreProductModel::getStoreProductById((int) $spm[0]->product_id)->purchase_url : "",
             "urlSuffix" => "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND'),
         );
         if (Session::currentUserId() > 0) {
@@ -121,6 +122,68 @@ class StoreController extends Controller
         }
         $this->View->renderJSON($model);
 
+    }
+
+    public function bundles() {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "bundles" => BundleModel::getBundles(),
+            "allApps" => AppModel::getAllApps(),
+            "scripts" => array("jquery.fancybox.js", "jquery.fancybox.pack.js", "bundles.js"),
+            "sheets" => array("jquery.fancybox.css"),
+            );
+        // Iterate through each bundle
+        foreach ($model['bundles'] as $bundle) {
+            // Add app names to bundle
+            $appIds = BundleModel::getBundleApps($bundle->product_id);
+            $bundleAppNames = array();
+            foreach ($appIds as $id) {
+                $bundleApp = AppModel::getAppById($id->app_id);
+                $bundleApp->name = str_replace(' ', '-', $bundleApp->name); // add dashes to names to fix id problem
+                array_push($bundleAppNames, $bundleApp->name);
+            }
+            $bundle->bundleAppNames = $bundleAppNames;
+            // Add all app info to bundle
+            $bundleApps = array();
+            foreach ($appIds as $id) {
+                $app = AppModel::getAppById($id->app_id);
+                $app->name = str_replace(' ', '-', $app->name); // add dashes to names to fix id problem
+                array_push($bundleApps, $app);
+            }
+            $bundle->bundleApps = $bundleApps;
+            // Add product data to bundle
+            $bundleProducts = BundleModel::getBundleProducts($bundle->bundle_id);
+            $products = array();
+            foreach ($bundleProducts as $bp) {
+                array_push($products, StoreProductModel::getStoreProductById($bp->product_id));
+            }
+            $bundle->products = $products;
+        }
+        // Add all active app names
+        $activeApps = AppModel::getActiveApps();
+        $allAppNames = array();
+        foreach ($activeApps as $app) {
+            $app->name = str_replace(' ', '-', $app->name); // add dashes to names to fix id problem
+            array_push($allAppNames, $app->name);
+        }
+        $model['allAppNames'] = $allAppNames;
+        $this->View->renderHandlebars("store/bundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function bundleInfo($id) {
+        $model = array(
+            "baseurl" => Config::get('URL'),
+            "bundleId" => $id,
+            "tiers" => TierModel::getAllTiers(true),
+            "userSubscription" => null,
+            );
+
+        $submodel = SubscriptionModel::getCurrentSubscription(Session::currentUserId());
+            if (!empty($submodel) && $submodel->status == 'active') {
+                $model["userSubscription"] = $submodel;
+            }
+
+        $this->View->renderHandlebars("store/bundleInfo", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
 }

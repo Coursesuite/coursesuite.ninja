@@ -61,7 +61,7 @@ class AppModel extends Model
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         if ($all_fields) {
-            $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular
+            $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular, summary
                     FROM apps
                     ORDER BY name";
         } else {
@@ -74,13 +74,22 @@ class AppModel extends Model
         return $query->fetchAll();
     }
 
+    // Get all active apps
+    public static function getActiveApps() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT app_key, name FROM apps WHERE active = 1";
+        $query = $database->prepare($sql);
+        $query->execute();
+        return $query->fetchAll();
+    }
+
     /**
      * get an app by its key (string)
      */
     public static function getAppByKey($app_key)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular
+        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular, summary
                 FROM apps
                 WHERE app_key = :app_key
                 LIMIT 1";
@@ -92,7 +101,7 @@ class AppModel extends Model
     public static function getAppById($app_id)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular
+        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular, summary
                 FROM apps
                 WHERE app_id = :app_id
                 LIMIT 1";
