@@ -1,77 +1,116 @@
 <?php
 
-class BundleModel extends Model 
+class BundleModel extends Model
 {
-	public function __construct() {
-		parent::__construct();
-	}
-	public static function save($table, $idrow_name, $data_model) {
-        return parent::update($table, $idrow_name, $data_model);
-    }
-    public static function make($table) {
-        return parent::create($table);
+    CONST TABLE_NAME = "bundle";
+    CONST ID_ROW_NAME = "id";
+
+    protected $data_model;
+    protected $product_model;
+    protected $bundledapps_model;
+
+    public function get_model()
+    {
+        $data = $this->data_model;
+        $data->Product = self::get_product();
+        $data->BundleApps = self::get_apps();
+        return (array) $data;
     }
 
-    public static function createBundle($product_id, $display_name, $description) {
-		$database = DatabaseFactory::getFactory()->getConnection();  
-		$sql = "INSERT INTO app_bundles (product_id, display_name, description) VALUES(:product_id, :display_name, :description)";
-		$query = $database->prepare($sql);
-		$params = array(
-			':product_id' => $product_id,
-			':display_name' => $display_name,
-			':description' => $description,
-		);
-		$query->execute($params);
+    protected function get_product()
+    {
+        if (!isset($this->product_model)) {
+            $idname = self::ID_ROW_NAME;
+            $this->product_model = (new ProductModel(self::TABLE_NAME, $this->data_model->$idname))->get_model();
+        }
+        return $this->product_model;
     }
 
-    public static function getBundles() {
+    protected function get_apps()
+    {
+        if (!isset($this->bundledapps_model)) {
+            $idname = self::ID_ROW_NAME;
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $sql = "SELECT at.name tier_name, a.app_key app_key, a.name app_name
+                FROM bundle b
+                INNER JOIN bundle_apps ba ON b.id = ba.bundle
+                INNER JOIN app_tiers at ON at.id = ba.app_tier
+                INNER JOIN apps a ON at.app_id = a.app_id
+                WHERE b.id = :id
+                ORDER BY at.tier_level, a.name
+            ";
+            $query = $database->prepare($sql);
+            $query->execute(array(
+                ':id' => $this->data_model->$idname
+            ));
+            $this->bundledapps_model = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $this->bundledapps_model;
+    }
+
+    public function set_model($data)
+    {
+
+        if (isset($data->Product)) unset($data->Product);
+        if (isset($data->BundleApps)) unset($data->BundleApps);
+        $this->data_model = $data;
+    }
+
+    public function __construct($row_id = 0)
+    {
+        parent::__construct();
+        if ($row_id > 0) {
+            self::load($row_id);
+        }
+        return $this;
+    }
+
+    public function delete($id = 0)
+    {
+        if ($id > 0) {
+            parent::Destroy(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id));
+        } else {
+            $idname = self::ID_ROW_NAME;
+            parent::Destroy(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $data_model->$idname));
+        }
+    }
+
+    public function load($id)
+    {
+        $this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id))[0]; // 0th of a fetchall
+        return $this;
+    }
+
+    public function make()
+    {
+        $this->data_model = parent::Create(self::TABLE_NAME);
+        return $this;
+    }
+
+    public function save()
+    {
+        return parent::Update(self::TABLE_NAME, self::ID_ROW_NAME, $this->data_model);
+    }
+
+    public static function get_bundles($app_id)
+    {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_bundles.product_id, bundle_id, display_name, description, purchase_url FROM app_bundles INNER JOIN store_product ON app_bundles.product_id = store_product.product_id";
+        $sql = "SELECT id
+            FROM bundle
+            WHERE id IN (
+                SELECT bundle FROM bundle_apps WHERE app_tier IN (
+                    SELECT id FROM app_tiers WHERE app_id = :id
+                )
+            )
+            ORDER BY sequence
+        ";
         $query = $database->prepare($sql);
-        $query->execute();
-        return $query->fetchAll();
+        $query->execute(array(':id' => $app_id));
+        $results = [];
+        foreach ($query->fetchAll() as $row) {
+            $results[] = (new BundleModel($row->id))->get_model();
+        }
+        return $results;
     }
 
-    public static function getBundleProducts($bundle_id) { 
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT product_id FROM bundle_products WHERE bundle_id = :bundle_id";
-        $query = $database->prepare($sql);
-        $query->execute(array(':bundle_id' => $bundle_id));
-        return $query->fetchAll();
-    }
-
-    public static function getBundleById($product_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT bundle_id, product_id, display_name, description FROM app_bundles WHERE product_id=:product_id";
-        $query = $database->prepare($sql);
-        $query->execute(array(':product_id'=>$product_id));
-        return $query->fetch();
-    }
-
-    public static function getBundleApps($product_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id FROM store_product_apps WHERE product_id = :product_id";
-        $query = $database->prepare($sql);
-        $query->execute(array(':product_id'=>$product_id));
-        return $query->fetchAll();
-    }
-
-    public static function deleteBundle($product_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "DELETE ab, sp, spa 
-                FROM app_bundles AS ab 
-                INNER JOIN store_product AS sp ON ab.product_id = sp.product_id 
-                INNER JOIN store_product_apps AS spa ON ab.product_id = spa.product_id 
-                WHERE ab.product_id=:product_id";
-        $query = $database->prepare($sql);
-        $query->execute(array(':product_id'=>$product_id));
-    }
-
-    public static function getBundleId($product_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT bundle_id FROM app_bundles WHERE product_id = :product_id";
-        $query = $database->prepare($sql);
-        $query->execute(array(":product_id" => $product_id));
-        return $query->fetch();
-    }
 }

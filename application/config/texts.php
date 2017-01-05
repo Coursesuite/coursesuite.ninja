@@ -95,7 +95,9 @@ return array(
 
     "EMAIL_COMMON_CONTENT_INTRO" => "Hi!\n\n",
     "EMAIL_COMMON_CONTENT_SIG" => "\n\nCheers,\nThe CourseSuite Team\ninfo@coursesuite.com.au\n",
+    "EMAIL_PASSWORD_SUBJECT" => "Your new CourseSuite password",
     "EMAIL_PASSWORD_RESET_CONTENT" => "Please click on this link to reset your password: ",
+    "EMAIL_PASSWORD_VALUE" => "This is your new CourseSuite password.\n-----------------------\n %s \n-----------------------\nOpen the store page to log on: %s",
     "EMAIL_VERIFICATION_CONTENT" => "Please click on this link to activate your account: ",
     "EMAIL_TRIAL_VERIFICATION_CONTENT" => "Thank you for registering for a trial account. Click the link to activate your 14 day trial: ",
 

@@ -9,10 +9,13 @@ class LaunchController extends Controller
         parent::__construct();
 
         $count = count($args[1]);
-        if ($count < 2) {
+
+        if ($count < 1) {
             Redirect::home(); // not enough params, reset
-        } else if ($count == 2) {
+
+        } else if ($count == 2 || $count == 1) {
             Auth::checkAuthentication(); // looks like an internal call
+
         } else {
             // No need to check Auth, it's a parameterised launch, let the index sort it out
         }
@@ -21,21 +24,27 @@ class LaunchController extends Controller
 
     public function index($appkey = "", ...$args)
     {
+        $cargs = count($args);
 
-        if (count($args) >= 2) {
-            // launch/docninja/apikey/f63bc5ae39
+        if ($cargs >= 2) { // launch/docninja/apikey/f63bc5ae39 or launch/docninja/token/e7847fds789
             $method = strtolower($args[0]);
             $token = $args[1];
-            // any more params than that are ignored
-        } else {
-            // launch/docninja/48fbaec24
+
+        } else if ($cargs == 1) {  // launch/docninja/48fbaec24
             $method = "token";
             $token = $args[0];
 
-            // TODO: validate this user has an active subscription to a product that contains this $appkey
+        } else if (!SubscriptionModel::user_has_active_subscription_to_app(Session::CurrentUserId(), $appkey)) { // launch/docninja
+                Redirect::to("store/$appkey/invalid/");
+
+        } else {
+            $token = "";
+            $method = "";
+
         }
 
         $url = AppModel::getLaunchUrl($appkey, $method, $token);
+
         if (!empty($url)) {
             Redirect::external($url);
         } else {

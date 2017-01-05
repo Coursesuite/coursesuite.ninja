@@ -20,12 +20,8 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
     <meta name="author" content="Avide eLearning">
     <title><?php echo $meta_title; ?></title>
     <link rel="icon" href="data:;base64,=">
-    <!-- link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' -->
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
-    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-    <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/material.css" />
-    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
     <link href='//r.coursesuite.ninja/mycoursesuite/style.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<?php echo $baseurl; ?>css/style.css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -59,63 +55,21 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
     </head>
 <body id="<?php echo str_replace("/", "_", $filename); ?>">
     <header>
-        <div><a href="<?php echo $baseurl; ?>" class="logo"><img src="http://r.coursesuite.ninja/logo/cs_logo_70px_colour.png"></a></div>
+        <div><a href="<?php echo $baseurl; ?>" class="logo"><img src="/img/cs_logo_70px_colour.png"></a></div>
         <div><nav>
         	<a href="<?php echo $baseurl; ?>"><i class='cs-home-filled'></i> Home</a>
         	<a href="http://forum.coursesuite.ninja/categories/" target="_blank">Forum</a>
             <a href="http://help.coursesuite.ninja/" target="_blank">Helpdesk</a>
-        <?php if (Session::userIsLoggedIn() && false) { ?>
-        	<a href="http://buggr.coursesuite.ninja/" target="_blank" data-tooltip="Found a bug? Log it!">Buggr!</a>
-        <?php } ?>
         <?php if (!Session::userIsLoggedIn()) { ?>
             <a href="<?php echo $baseurl; ?>login/"<?php if (View::checkForActiveControllerAndAction($filename, "login/index")) { echo ' class="active" '; } ?>>Login / Register</a>
-            <!-- a href="<?php echo $baseurl; ?>register/"<?php if (View::checkForActiveControllerAndAction($filename, "register/index")) { echo ' class="active" '; } ?>>Register</a -->
         <?php } else { ?>
             <a href="<?php echo $baseurl; ?>user/index"<?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?>>My Account</a>
-                <?php if (false) { ?><ul class="navigation-submenu">
-                    <li <?php if (View::checkForActiveControllerAndAction($filename, "dashboard/subscription")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>dashboard/subscription"><i class="cs-params"></i>My subscription</a>
-                    </li>
-                    <?php if (false) { ?>
-                    <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>user/changeUserRole"><i class="cs-lab"></i>Upgrade account</a>
-                    </li>
-                    <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>user/editAvatar"><i class="cs-camera"></i>Edit your avatar</a>
-                    </li>
-                    <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>user/editusername"><i class="cs-tag"></i>Edit my username</a>
-                    </li>
-                    <?php } ?>
-                    <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>user/edituseremail"><i class="cs-mail"></i>Edit my email</a>
-                    </li>
-                    <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>user/changePassword"><i class="cs-key"></i>Change Password</a>
-                    </li>
-                    <li class="seperator-top"></li>
-                    <li <?php if (View::checkForActiveController($filename, "login")) { echo ' class="active" '; } ?> >
-                        <a href="<?php echo $baseurl; ?>login/logout"><i class="cs-lock"></i>Logout</a>
-                    </li>
-                </ul><?php } ?>
         <?php if (Session::get("user_account_type") == 7) : ?>
             <a href="<?php echo $baseurl; ?>admin/" class="admin-link <?php if (View::checkForActiveController($filename, "admin")) { echo 'active'; } ?>"><i class='cs-spanner'></i> Admin</a>
         <?php endif; ?>
             <a href="<?php echo $baseurl; ?>login/logout">Logout</a>
         <?php } ?>
         </ul></div>
-        <?php
-        if (!Session::userIsLoggedIn()) {
-            if (KeyStore::find("freetrial")->get()=="true" && !empty(KeyStore::find("freetriallabel")->get())) {
-                echo "<a href='{$baseurl}register/index/freeTrial' class='free-trial green-button'>" . KeyStore::find("freetriallabel")->get() . "</a>";
-            }
-        // Free trial for logged in users
-        } elseif (UserModel::getTrialAvailability(Session::get('user_id')) && !SubscriptionModel::hasSubscription(Session::get('user_id'))) {
-            if (KeyStore::find("freetrial")->get()=="true" && !empty(KeyStore::find("freetriallabel")->get())) {
-                    echo "<a href='{$baseurl}register/registeredUserTrial' class='free-trial green-button'>" . KeyStore::find("freetriallabel")->get() . "</a>";   
-                }
-            }
-        ?>
     </header>
 
     <main><?php

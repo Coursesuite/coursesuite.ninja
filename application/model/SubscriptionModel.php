@@ -1,211 +1,155 @@
 <?php
 
-/**
- * undocumented class
- *
- * @package default
- * @author
- **/
-class SubscriptionModel
+class SubscriptionModel extends Model
 {
+    CONST TABLE_NAME = "subscriptions";
+    CONST ID_ROW_NAME = "subscription_id";
 
-    /*
-    tasks
-    -----
-    method                                                             | cooldown | lastrun | running
-    SubscriptionModel::validateSubscription                         | 1440        | 0          | 0
-     */
+    protected $data_model;
+    protected $product_model;
 
-    // ensure that user subscription active statuses are persisted properly
+    public function get_model($include_product_model = false)
+    {
+        $data = $this->data_model;
+        if ($include_product_model) {
+            $data->Product = self::get_product();
+        }
+        return (array) $data;
+    }
+
+    protected function get_product()
+    {
+        if (!isset($this->product_model)) {
+            $this->product_model = (new ProductModel($this->data_model->product_id))->get_model();
+        }
+        return $this->product_model;
+    }
+
+    public function set_model($data)
+    {
+    	if (isset($data->Product)) unset($data->Product);
+	$this->data_model = $data;
+    }
+
+    public function __construct($row_id = 0)
+    {
+        parent::__construct();
+        if ($row_id > 0) {
+            self::load($row_id);
+        }
+        return $this;
+    }
+
+    public function delete($id = 0)
+    {
+        if ($id > 0) {
+            parent::Destroy(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id));
+        } else {
+            $idname = self::ID_ROW_NAME;
+            parent::Destroy(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $data_model->$idname));
+        }
+    }
+
+    public function load($id)
+    {
+        $this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id))[0]; // 0th of a fetchall
+        return $this;
+    }
+
+    public function make()
+    {
+        $this->data_model = parent::Create(self::TABLE_NAME);
+        return $this;
+    }
+
+    public function save()
+    {
+        return parent::Update(self::TABLE_NAME, self::ID_ROW_NAME, $this->data_model);
+    }
+
+    // a cron routine that expires old subscription records based on the date (can only be run once per day, so it's reasonably safe to poll)
     public static function validateSubscriptions()
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-
         $query = $database->query("select count(1) from systasks where running=0 and task='validateSubscriptions' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
         if (1 == intval($query->fetchColumn())) {
-
-            // prevent duplicate processes
             $database->query("update systasks set running=1 where task='validateSubscriptions'");
-
-            //  expire subscriptions older than today
-            $database->query("update subscriptions set active = 0 where datediff(endDate, now()) < 0");
-
-            // begin subscriptions with a null end date (e.g. changed record)
-            $database->query("update subscriptions set active = 1 where endDate is null");
-
-            // work out if the user has been broadcast an alert saying their subscription will expire (ignore if they have dismissed it)
-
-            // sent a broadcast to the user
-
-            // prevent re-running this function for a day
+            $database->query("update subscriptions set active = 0, status='expired' where datediff(endDate, now()) < 0");
+            $database->query("update subscriptions set active = 1, status='active' where endDate is null");
         }
         $database->query("update systasks set running=0, lastrun=CURRENT_TIMESTAMP where task='validateSubscriptions'");
     }
 
-    public static function getAllSubscriptions($userid = 0, $include_app_model = false, $limit = false, $include_user = true, $include_pack = false, $order = 'added')
+    // a routine used by the store info page to know the models of each of a users' subscriptions, if any, for the app being rendered
+    // returns array of models
+    public static function get_subscriptions_for_user_for_app($user_id, $app_id) {
+	$database = DatabaseFactory::getFactory()->getConnection();
+	$idname = self::ID_ROW_NAME;
+	$sql = "select $idname FROM subscriptions WHERE user_id = :user_id AND status = 'active' AND product_id IN (
+		SELECT p.`id`
+		FROM product p
+		INNER JOIN bundle b ON (p.`entity` = 'bundle' AND p.`entity_id` = b.`id`)
+		INNER JOIN bundle_apps ba ON b.`id` = ba.`bundle`
+		INNER JOIN app_tiers at ON at.`id` = ba.`app_tier`
+		WHERE at.`app_id` = :app_id
+		UNION
+		SELECT p.`id`
+		FROM product p
+		INNER JOIN `app_tiers` at ON (p.`entity` = 'app_tiers' AND p.`entity_id` = at.`id`)
+		WHERE at.`app_id` = :app_id
+	)";
+            $query = $database->prepare($sql);
+            $query->execute(array(
+                ':app_id' => $app_id,
+                ':user_id' => $user_id
+            ));
+	$results = [];
+	foreach ($query->fetchAll() as $row) {
+                $model = (new SubscriptionModel($row->$idname))->get_model(false);
+                // TierLevel will be empty if the subscription instance is not for this app_id
+                $model["AppTierLevel"] = ProductModel::get_product_tier_level_for_app($model["product_id"], $app_id);
+                $results[] = $model;
+	}
+	return $results;
+    }
+
+    // a routine used by the store model to precache the app ids that the user is subscribed to for comparison in the tile renderer
+    // returns a raw array of the ids
+    public static function get_subscribed_app_ids_for_user($user_id)
     {
-
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $sql = "SELECT subscription_id, tier_id, user_id, added, endDate, referenceId, subscriptionUrl, status, statusReason, testMode, active, info FROM subscriptions";
-        $params = array();
-        if ($userid > 0) {
-            $sql .= " WHERE user_id = :user_id";
-            $sql .= " ORDER BY :order";
-            $params[":user_id"] = $userid;
-            $params[":order"] = $order;
-        }
-        if ($limit == true) {
-            $sql .= " LIMIT 1";
-        }
-
-        $query = $database->prepare($sql);
-        $query->execute($params);
-        $subscriptions = $query->fetchAll();
-        foreach ($subscriptions as &$subscription) {
-            if ($include_user) {
-                $subscription->user = UserModel::getPublicProfileOfUser($subscription->user_id);
-            }
-
-            $subscription->tier = TierModel::getTierById($subscription->tier_id, $include_app_model, $include_pack);
-            $subscription->subscriptionUrl = Encryption::decrypt(Text::base64dec($subscription->subscriptionUrl));
-        }
-        if ($limit == true && count($subscriptions) > 0) {
-            return $subscriptions[0];
-        }
-
-        return $subscriptions;
+	$database = DatabaseFactory::getFactory()->getConnection();
+	$sql = "SELECT at.`app_id`
+		FROM product p
+		INNER JOIN bundle b ON (p.`entity` = 'bundle' AND p.`entity_id` = b.`id`)
+		INNER JOIN bundle_apps ba ON b.`id` = ba.`bundle`
+		INNER JOIN app_tiers at ON at.`id` = ba.`app_tier`
+		WHERE p.`id` IN (SELECT product_id FROM subscriptions WHERE user_id = :user_id AND status='active')
+		UNION
+		SELECT at.`app_id` appId
+		FROM product p
+		INNER JOIN `app_tiers` at ON (p.`entity` = 'app_tiers' AND p.`entity_id` = at.`id`)
+		WHERE p.`id` IN (SELECT product_id FROM subscriptions WHERE user_id = :user_id AND status='active')";
+            $query = $database->prepare($sql);
+            $query->execute(array(
+                ':user_id' => $user_id
+            ));
+            return $query->fetchAll(PDO::FETCH_COLUMN, 0); // FETCH_ASSOC);
     }
 
-    // Gets the users currently active subscription
-    // Returns PDO Object
-    public static function getCurrentSubscription($user_id)
+    // check if a user has an active subscription to the specified app_key
+    // returns boolean
+    public static function user_has_active_subscription_to_app($user_id, $app_key)
     {
+        $ids = self::get_subscribed_app_ids_for_user($user_id); // an array
+        $in = join(',', array_fill(0, count($ids), '?'));
+        $sql = "SELECT count(1)
+            FROM apps WHERE app_key = ?
+            AND app_id IN ($in)
+        ";
+        array_unshift($ids, $app_key);
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT tier_id, added, endDate, referenceId, subscriptionUrl, status, info FROM subscriptions WHERE user_id = :user_id AND status = 'active' ";
-        $params = array(
-            ":user_id" => $user_id,
-        );
         $query = $database->prepare($sql);
-        $query->execute($params);
-        $result = $query->fetch();
-        if ($result != Null){
-            $result->subscriptionUrl = Encryption::decrypt(Text::base64dec($result->subscriptionUrl));
-        }
-        return $result;
+        $query->execute($ids);
+        return ($query->fetchAll(PDO::FETCH_COLUMN, 0) > 0);
     }
-
-    // Checks if user has any active subscriptions
-    // Returns true/false
-    public static function hasSubscription($user_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT subscription_id FROM subscriptions WHERE user_id = :user_id AND status = 'active'";
-        $query = $database->prepare($sql);
-        $query->execute(array(":user_id" => $user_id));
-        $result = $query->fetch();
-        if (empty($result)){
-            return(false);
-        } else {
-            return(true);
-        }
-    }
-
-    public static function addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "INSERT INTO subscriptions (user_id, tier_id, endDate, referenceId, subscriptionUrl, status, statusReason, testMode, active)
-            VALUES (:user_id, :tier_id, :end_date, :ref_id, :sub_id, :status, :status_reason, :test_mode, :active)";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":user_id" => intval($userid),
-            ":tier_id" => intval($tierid),
-            ":end_date" => (isset($endDate)) ? $enddate : null,
-            ":ref_id" => $referenceId,
-            ":sub_id" => $subscriptionUrl,
-            ":status" => (isset($status)) ? $status : null,
-            ":status_reason" => (isset($statusReason)) ? $statusReason : null,
-            ":test_mode" => intval($testMode),
-            ":active" => ($status == 'active') ? 1 : 0,
-        );
-        // LoggingModel::logInternal("addSubscription Query", $sql, print_r($params, true));
-        UserModel::setTrialUnavailable($userid);
-        return $query->execute($params);
-    }
-
-    public static function giveFreeSubscription($user_id, $tier_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "INSERT INTO subscriptions (user_id, tier_id, endDate, subscriptionUrl, status, info) VALUES (:user_id, :tier_id, :endDate, 'none', 'active', 'free subscription')";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":user_id" => $user_id,
-            ":tier_id" => $tier_id,
-            ":endDate" => date('Y-m-d', strtotime(Config::get('FREE_TRIAL_PERIOD'))),
-        );
-        $query->execute($params);
-        UserModel::setTrialUnavailable($user_id);
-    }
-
-    public static function removeSubscription($referenceId)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "DELETE FROM subscriptions WHERE referenceId = :referenceId LIMIT 1";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":referenceId" => $referenceId,
-        );
-        $query->execute($params);
-    }
-
-    public static function removeSubscriptionFromId($subscription_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "DELETE FROM subscriptions WHERE subscription_id = :subscription_id LIMIT 1";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":subscription_id" => $subscription_id,
-        );
-        $query->execute($params);
-    }
-
-    public static function updateSubscriptionTier($referenceId, $newTier, $oldTier)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "UPDATE subscriptions SET tier_id = :newTier, info = :oldTier WHERE referenceId = :referenceId";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":referenceId" => $referenceId,
-            ":newTier" => $newTier,
-            ":oldTier" => 'Changed from ' . TierModel::getTierNameById($oldTier),
-        );
-        $query->execute($params);
-    }
-
-    public static function updateSubscriptionStatus($referenceId, $status)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "UPDATE subscriptions SET status = :status WHERE referenceId = :referenceId";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":status" => $status,
-            ":referenceId" => $referenceId,
-        );
-        $query->execute($params);
-    }
-
-    public static function previouslySubscribed($user_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT tier_id FROM subscriptions WHERE user_id = :user_id AND status = 'inactive'";
-        $query = $database->prepare($sql);
-        $params = array(
-            ":user_id" => $user_id,
-        );
-        $query->execute($params);
-        $result = $query->fetchAll();
-        if (count($result) > 0) {
-            return $result[count($result) - 1]->tier_id;
-        }
-    }
-
-} // END class SubscriptionModel
+}

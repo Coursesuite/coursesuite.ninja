@@ -4,7 +4,7 @@
             <h3>Contact us</h3>
         </header>
         <article>
-            <form method="ajax" action="{{baseurl}}store/contactUs">
+            <form method="ajax" action="{{baseurl}}store/contact">
                 <div class="row-grouping flexible">
                     <div class="name-fields">
                         <input type="text" name="your-name" required placeholder="Your name (required)">
@@ -19,7 +19,7 @@
                     <script type="text/javascript" src="//www.google.com/recaptcha/api.js?hl=en"></script>
                     <div><input type="submit" name="action" value="Send message"></div>
                 </div>
-                <div id="contact-feedback"></div>
+                <div id="form-feedback" class="contact-feedback"></div>
             </form>
         </article>
     </div>

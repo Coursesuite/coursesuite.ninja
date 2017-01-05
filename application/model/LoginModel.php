@@ -232,6 +232,25 @@ class LoginModel
         }
     }
 
+    public static function softLogout()
+    {
+        Session::set('user_id', 0);
+        Session::remove('user_name');
+        Session::remove('user_email');
+        Session::remove('user_account_type');
+        Session::remove('user_provider_type');
+
+        // get and set avatars
+        Session::remove('user_avatar_file');
+        Session::remove('user_gravatar_image_url');
+
+        Session::remove('discourse_sso');
+        Session::remove('discourse_payload');
+        Session::remove('discourse_signature');
+
+        Session::set('user_logged_in', false);
+    }
+
     /**
      * Log out process: delete cookie, delete session
      */

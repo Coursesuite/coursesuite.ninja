@@ -128,22 +128,73 @@ class View
                     } elseif (isset($options['inverse'])) {
                         return $options['inverse']();
                     }
+                },
+                "length" => function ($arg1, $inc) {
+                    $len = count($arg1);
+                    return $len + $inc;
+                },
+                "add" => function ($arg1, $arg2) {
+                    return (int) $arg1 + (int) $arg2;
+                },
+                "cint" => function ($arg1) {
+                    return (int) $arg1;
+                },
+                "decodable" => function ($arg1, $options) {
+                    $value = Encryption::decrypt(Text::base64dec($arg1));
+                    //TODO inject private variable @decoded ; https://github.com/zordius/lightncandy
+                    if (empty($value) && isset($options['inverse'])) {
+                        return $options['inverse']();
+                    } else {
+                        return $options['fn']();
+                    }
+                },
+                "decode" => function ($arg1) {
+                    return Encryption::decrypt(Text::base64dec($arg1));
+                },
+                "Contact_Form_Placeholder" => function ($options) {
+                    return file_get_contents(Config::get('PATH_VIEW') . '_templates/contact_form_placeholder.html');
+                },
+                "plural" => function ($arg1, $options) {
+                    if (count($arg1) > 1) {
+                        return $options['fn']();
+                    } elseif (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
+                "morethanone" => function ($obj, $property, $options) { // does a pool of objects contain more than one with a property set?
+                    $bool = false;
+                    if (property_exists((object) $obj[0], $property)) {
+                        $count = 0;
+                        foreach ($obj as $instance) {
+                            if (!empty($instance[$property])) { $count++; }
+                        }
+                        $bool = ($count > 1);
+                    }
+                    if ($bool === true) {
+                        return $options['fn']();
+                    } elseif (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
+                "tweetable" => function ($string1, $string2) {
+                    $remaining = 140 - 27 - strlen($string2); // tweet length minus shortened url length (guess) minus title of page (social platform copies that in automatically)
+                    return trim(substr($string1, 0, $remaining - 3)) . "...";
                 }
             );
 
-            // extend helpers by adding methods when particular controllers are loaded.
-            // should kinda be a lib core class, but seems to work this way
+            $partials = array();
             if (class_exists("StoreController")) {
-                $helper_functions[] = "Store::AppMatrix";
-                $helper_functions[] = "Store::TierMatrix";
-                $helper_functions[] = "Store::BundleMatrix";
-                $helper_functions[] = "Store::ContactForm";
+                $partials = array(
+                    "logon_partial" => file_get_contents(Config::get('PATH_VIEW') . 'login/integrated.hbp'),
+                );
             }
+
             $helper_functions[] = "Text::StaticPageRenderer";
             $phpStr = LightnCandy::compile($template, array(
-                "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG,
+                "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS, // | LightnCandy::FLAG_JSOBJECT, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG,
                 "helpers" => $helper_functions,
                 "debug" => false,
+                "partials" => $partials,
             ));
             file_put_contents($precompiled, implode('', array('<', '?php', ' ', $phpStr, ' ', '?', '>'))); // so php tags are not recognised
         }
@@ -161,6 +212,7 @@ class View
 
         $renderer = include $precompiled; // so its in the lightncandy use namespace on this file
         echo $renderer($assoc);
+
         if ($template_folder !== null) {
             require Config::get('PATH_VIEW') . $template_folder . '/footer.php';
         }

@@ -57,8 +57,8 @@ class ApiController extends Controller
             'appkey' => $appkey,
             'valid' => $tokenIsValid,
             'api' => false,
-            'tier' => TierModel::getLevelForUser($userObj->user_id), // LEVEL (e.g. 0=bronze, 1=silver, etc) not ID; -1 means none
-            'username' => $userObj->user_name,
+            'tier' => ProductModel::get_highest_subscribed_tier_for_app(AppModel::app_id_for_key($appkey), $userObj->user_id), // LEVEL (e.g. 0=bronze, 1=silver, etc) not ID; -1 means none
+           //  'username' => $userObj->user_name,
             'useremail' => $userObj->user_email,
             'trial' => ($userObj->account_type == 3) ? true : false,
         );

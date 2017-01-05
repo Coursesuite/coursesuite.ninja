@@ -57,11 +57,13 @@ class AdminController extends Controller
 
     public function editSections($id = 0, $action = "")
     {
+        $url = Config::get("URL");
         $model = array(
-            "baseurl" => Config::get("URL"),
+
+            "baseurl" => $url,
             "sections" => SectionsModel::getAllStoreSections(true),
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", "Sortable.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", "Sortable.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
         );
         if (is_numeric($id) && intval($id) > 0) {
             $section = SectionsModel::getStoreSection($id);
@@ -110,11 +112,12 @@ class AdminController extends Controller
 
     public function editTiers($id = 0, $action = "")
     {
+        $url = Config::get("URL");
         $model = array(
-            "baseurl" => Config::get('URL'),
+            "baseurl" => $url,
             "tiers" => TierModel::getAllTiers(),
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
         );
         if (is_numeric($id) && intval($id) > 0) {
             $tier = TierModel::getTierById($id, false);
@@ -152,14 +155,16 @@ class AdminController extends Controller
         $this->View->renderHandlebars('admin/tiers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
+/*
     public function editAllProducts($id = 0, $action = "")
     {
+        $url = Config::get("URL");
         $model = array(
-            "baseurl" => Config::get('URL'),
+            "baseurl" => $url,
             "products" => ProductModel::getAllProducts(),
             "categories" => CategoryModel::getAllCategories(),
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
         );
         if (is_numeric($id) && intval($id) > 0) {
             $product = ProductModel::getProductById($id);
@@ -191,15 +196,15 @@ class AdminController extends Controller
         }
         $this->View->renderHandlebars('admin/products', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
-
+*/
     public function editApps($id = 0, $action = "", $filename = "")
     {
-
+        $url = Config::get("URL");
         $model = array(
-            "baseurl" => Config::get("URL"),
+            "baseurl" => $url,
             "apps" => AppModel::getAllApps(false),
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
         );
         if (is_numeric($id) && intval($id) > 0) {
 
@@ -333,19 +338,40 @@ class AdminController extends Controller
                     "icon" => Request::post("icon", false, FILTER_SANITIZE_URL),
                     "url" => Request::post("url", false, FILTER_SANITIZE_URL),
                     "launch" => Request::post("launch", false, FILTER_SANITIZE_URL),
-                    "feed" => Request::post("feed", false, FILTER_SANITIZE_URL),
                     "auth_type" => Request::post("auth_type", false, FILTER_SANITIZE_NUMBER_INT),
                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
                     "popular" => Request::post("popular", false, FILTER_SANITIZE_NUMBER_INT),
                     "description" => Request::post("description"),
                     "media" => Request::post("media"),
-                    "summary" => Request::post("summary"),
                     "meta_description" => Request::post("meta_description"),
                     "meta_title" => Request::post("meta_title"),
                     "meta_keywords" => Request::post("meta_keywords"),
                 );
                 $id = AppModel::Save("apps", "app_id", $app);
                 $model["action"] = "edit";
+
+                $appTiers = Request::post("AppTiers");
+                foreach ($appTiers as $apt) {
+                    $apptier = new AppTierModel();
+                    if (trim($apt["name"]) == "" && $apt["id"] > 0) {
+                            $apptier->delete($apt["id"]);
+                    } else if (trim($apt["name"]) > "") {
+                        if ($apt["id"] == -1) {
+                            $apptier->make();
+                        } else {
+                            $apptier->load($apt["id"]);
+                        }
+                        $at_model = $apptier->get_model();
+                        $at_model["app_id"] = $id;
+                        $at_model["tier_level"] = $apt["level"];
+                        $at_model["name"] = $apt["name"];
+                        $at_model["description"] = $apt["desc"];
+                        // $at_model["price"] = floatval($apt["price"]);
+                        $apptier->set_model($at_model);
+                        $apptier->save();
+                    }
+                }
+
                 // could do this to change the url, but whatever
                 // Redirect::to("admin/editApps/$id/edit");
                 break;
@@ -360,6 +386,7 @@ class AdminController extends Controller
         $model["id"] = $id;
         if (isset($app)) {
             $model["data"] = $app;
+            $model["AppTiers"] = AppTierModel::get_tiers($id);
         }
 
         $this->View->renderHandlebars('admin/apps', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
@@ -411,11 +438,12 @@ class AdminController extends Controller
 
     public function staticPage($id = 0, $action = "")
     {
+        $url = Config::get("URL");
         $model = array(
-            "baseurl" => Config::get("URL"),
+            "baseurl" => $url,
             "action" => $action,
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
         );
 
         if (is_numeric($id) && intval($id) > 0) {
@@ -464,8 +492,8 @@ class AdminController extends Controller
             "action" => $action,
             "message_id" => $message_id,
             "user_id" => $user_id,
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css", "$baseurl/css/flatpickr.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", "$baseurl/js/flatpickr.min.js"),
+            "sheets" => array($baseurl . "js/simplemde/simplemde.min.css", "$baseurl/css/flatpickr.min.css"),
+            "scripts" => array($baseurl . "js/simplemde/simplemde.min.js", "$baseurl/js/flatpickr.min.js", "$baseurl/js/inline-attachment/inline-attachment.js", "$baseurl/js/inline-attachment/codemirror.inline-attachment.js"),
         );
 
         switch ($action) {
@@ -540,6 +568,7 @@ class AdminController extends Controller
 
     public function storeSettings($action = "")
     {
+        $url = Config::get("URL");
         switch ($action) {
             case "update":
                 KeyStore::find("freetrial")->put(Request::post("freetrial"));
@@ -581,8 +610,8 @@ class AdminController extends Controller
             "freetrialheader" => KeyStore::find("freeTrialHeader")->get(),
             "freetrialdescription" => KeyStore::find("freeTrialDescription")->get(),
 
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
 
         );
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
@@ -682,8 +711,8 @@ class AdminController extends Controller
                 "orgs" => OrgModel::getAll(),
                 "apps" => AppModel::getAllAppKeys(),
                 "action" => $action,
-                "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-                "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
+                "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+                "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
         );
         switch($action) {
             case "edit":
@@ -753,12 +782,13 @@ class AdminController extends Controller
     }
 
     public function editBundles($id = 0, $action= "") {
+        $url = Config::get("URL");
         $model = array(
-            "baseUrl" => Config::get('URL'),
+            "baseUrl" => $url,
             "action" => $action,
             "bundles" => BundleModel::getBundles(),
-            "sheets" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"),
-            "scripts" => array("//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
             );
         switch ($action) {
             case 'edit':

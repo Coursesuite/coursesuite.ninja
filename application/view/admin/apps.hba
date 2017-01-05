@@ -1,7 +1,7 @@
 <article class="system-apps admin-tools">
 	{{#if action}}
 		<h3>
-			<a href="{{baseurl}}store/info/{{data.app_key}}" class="preview back button" target="preview" title="View in store"><i class="cs-eye"></i></a>
+			<a href="{{baseurl}}store/info/{{data.app_key}}" class="preview back button" title="View in store"><i class="cs-eye"></i></a>
 			<a href="{{baseurl}}admin/editApps/" class="back button">Back to edit apps</a>
 			Editing record {{id}}.
 		</h3>
@@ -13,7 +13,6 @@
 			<div><label for="icon">icon:</label> <input type="text" id="icon" name="icon" value="{{icon}}"></div>
 			<div><label for="url">domain url:</label> <input type="text" id="url" name="url" value="{{url}}"></div>
 			<div><label for="launch">launch url:</label> <input type="text" id="launch" name="launch" value="{{launch}}"></div>
-			<div><label for="feed">feed url:</label> <input type="text" id="feed" name="feed" value="{{feed}}"></div>
 			<div><label for="auth_type">Auth type:</label> <select id="auth_type" name="auth_type">
 				<option value="0"{{#equals "0" auth_type}} selected{{/equals}}>Integrated</option>
 				<option value="1"{{#equals "1" auth_type}} selected{{/equals}}>None</option>
@@ -28,16 +27,37 @@
 				<input type="radio" name="popular" value="0" {{#equals "0" popular}} checked{{/equals}} id="pn"><label for="pn">Nope</label>
 			</div>
 			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
-			<div><label for="media">Slide data</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
-			<div><label for="summary">Summary:</label> <div><textarea id="summary" name="summary" rows="10" cols="80" data-markdown="true">{{summary}}</textarea></div></div>
+			<h4>Slide data</h4>
+			<div><label for="media">JSON</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
 			<h4>SEO (Metadata)</h4>
 			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>.</div>
 			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
 			<div><label for="meta_description">descriptor:</label> <input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
 			<div><label for="meta_keywords">keywords:</label> <input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>
 
-			<div><span class="spacer"></span><input type="submit" value="Save" class="button"></div>
 		{{/with}}
+
+			<h4>Tier Info</h4>
+			<p>Blank out the names you don't want to delete that tier; fill in the last tier row then save to add another row.</p>
+			{{#each AppTiers}}
+				<input type="hidden" name="AppTiers[{{@index}}][id]" value="{{id}}">
+				<div>
+				        <label for="tier_{{@index}}_name">Tier {{add @index 1}} name:</label> <input type="text" id="tier_{{@index}}_name" name="AppTiers[{{@index}}][name]" value="{{name}}" placeholder="Enter tier name, or leave blank to remove this entry">
+				        <label for="tier_{{@index}}_level">Tier {{add @index 1}} level:</label> <input type="number" min="1" max="99" step="1" id="tier_{{@index}}_level" name="AppTiers[{{@index}}][level]" value="{{tier_level}}" placeholder="1">
+				        {{!-- <label for="tier_{{@index}}_price">Tier {{add @index 1}} price:</label> $<input type="number" min="0" max="99999" step="0.01" size="5" id="tier_{{@index}}_price" name="AppTiers[{{@index}}][price]" value="{{price}}"> --}}
+				</div>
+				<div class="short-editor"><label for="tier_{{@index}}_desc">Tier {{add @index 1}} description</label> <div><textarea id="tier_{{@index}}_desc" name="AppTiers[{{@index}}][desc]" rows="5" cols="80" data-markdown="true">{{description}}</textarea></div></div>
+			{{/each}}
+			<input type="hidden" name="AppTiers[{{length AppTiers 1}}][id]" value="-1">
+			<div>
+			        <label for="tier_{{length AppTiers 1}}_name">Tier {{length AppTiers 1}} name:</label> <input type="text" id="tier_{{length AppTiers 1}}_name" name="AppTiers[{{length AppTiers 1}}][name]" value="{{name}}" placeholder="Enter a name for your new tier">
+			        <label for="tier_{{length AppTiers 1}}_level">Tier {{length AppTiers 1}} level:</label> <input type="number" min="1" max="99" step="1" id="tier_{{length AppTiers 1}}_level" name="AppTiers[{{length AppTiers 1}}][level]" value="{{length AppTiers 1}}" placeholder="1">
+			        {{!-- <label for="tier_{{length AppTiers 1}}_price">Tier {{length AppTiers 1}} price:</label> $<input type="number" min="0" max="99999" step="0.01" size="5" id="tier_{{length AppTiers 1}}_price" name="AppTiers[{{length AppTiers 1}}][price]" value="{{price}}"> --}}
+			</div>
+			<div class="short-editor"><label for="tier_{{length AppTiers 1}}_desc">Tier {{tier_level}} description</label> <div><textarea id="tier_{{length AppTiers 1}}_desc" name="AppTiers[{{length AppTiers 1}}][desc]" rows="5" cols="80" data-markdown="true">{{description}}</textarea></div></div>
+
+
+			<div><span class="spacer"></span><input type="submit" value="Save" class="button"></div>
 		</form>
 		{{#gte id 1}}
 		<h4>Media file management</h4>

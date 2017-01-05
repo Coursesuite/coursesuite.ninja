@@ -59,4 +59,8 @@ class Csrf
         $token = Request::post('csrf_token');
         return $token === Session::get('csrf_token') && !empty($token);
     }
+
+    public static function validateToken($token) {
+        return $token === Session::get('csrf_token') && !empty($token);
+    }
 }

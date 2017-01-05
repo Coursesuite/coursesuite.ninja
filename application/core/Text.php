@@ -28,6 +28,17 @@ class Text
         return self::$texts[$key];
     }
 
+    public static function sprintf($key, $args) {
+        if (!$key) return null;
+        if (!self::$texts) {
+            self::$texts = require '../application/config/texts.php';
+        }
+        if (!array_key_exists($key, self::$texts)) {
+            return null;
+        }
+        return sprintf(self::$texts[key], $args);
+    }
+
     public static function output($ar, $key, $encode = false)
     {
         if (is_array($ar)) {
@@ -79,5 +90,10 @@ class Text
     public static function formatTime($seconds)
     {
         return gmdate("H:i:s", $seconds);
+    }
+
+    public static function generatePassword()
+    {
+        return substr(str_replace(["O","o","0","i","j","l","I","L","S","5","1"],"", base64_encode(md5(mt_rand()))),5,10);
     }
 }

@@ -104,9 +104,12 @@ class Model
         return $idvalue;
     }
 
-    public static function Destroy($table, $where_clause, $fields)
+    public static function Destroy($table, $where, $params) // $where_clause, $fields)
     {
-
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "DELETE FROM $table WHERE $where";
+        $query = $database->prepare($sql);
+        $query->execute($params);
     }
 
 }

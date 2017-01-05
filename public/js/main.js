@@ -178,14 +178,17 @@ function slideshow(index) {
 	}).find("a").removeClass("active");
 	$("a:eq(" + index + ")", "#slide_controls").addClass("active");
 
-	// transition the background to match the content of the image/slide predominant colour (precalculated - thanks ColorThief!)
-	$("section.info > div.media > div.slide-wrapper > .viewport.current_slide").css("box-shadow","0 0 25px " + slides[index].bgcolor);
-	$("section.info > div.media > a.slide_navigation").css("color",slides[index].bgcolor);
+	if (slides[index] && slides[index].bgcolor) {
+		var bg = slides[index].bgcolor;
 
-	var bg = slides[index].bgcolor;
-	if (bg.indexOf("rgba")!==-1) {
-		bg = "linear-gradient(to bottom, rgba(" + bg.substring(bg.lastIndexOf("(")+1,bg.lastIndexOf(",")) + ", 0.9) 0%, rgba(0,0,0,.5) 100%)";
-		$(".slide-wrapper .slide.active>figcaption").css("background", bg);
+		// transition the background to match the content of the image/slide predominant colour (precalculated - thanks ColorThief!)
+		$("section.info > div.media > div.slide-wrapper > .viewport.current_slide").css("box-shadow","0 0 25px " + bg);
+		$("section.info > div.media > a.slide_navigation").css("color", bg);
+
+		if (bg.indexOf("rgba")!==-1) {
+			bg = "linear-gradient(to bottom, rgba(" + bg.substring(bg.lastIndexOf("(")+1,bg.lastIndexOf(",")) + ", 0.9) 0%, rgba(0,0,0,.5) 100%)";
+			$(".slide-wrapper .slide.active>figcaption").css("background", bg);
+		}
 	}
 
 	_currentSlide = index;
@@ -197,12 +200,25 @@ window.addEventListener("load", function () {
 	document.querySelectorAll("form[method='ajax']").forEach(function (el, index) {
 		$(el).on("submit", function (e) {
 			e.preventDefault;
-			$("#contact-feedback").html("");
 			var $this = $(this);
+			$feedback = $("#form-feedback", $this).html("");
 			$.post($this.attr("action"), $this.serialize(), function (result) {
-				$("#contact-feedback").html("<p>" + result.message + "</p>");
+				if (result.csrf && $("input[name='csrf_token']", $this).length) {
+					$("input[name='csrf_token']", $this).val(result.csrf);
+				}
+				if (result.positive) {
+					$this.html(result.message); // replace form with message
+
+				} else {
+					var className = (result.className) ? " class='" + result.className + "'" : "";
+					$feedback.html("<p " + className + ">" + result.message + "</p>");
+					if (window.grecaptcha) grecaptcha.reset(); // ensure next form post is valid too
+				}
 				if (result.sent) {
 					el.reset();
+				}
+				if (result.reload) {
+					location.href = location.href;
 				}
 			});
 			return false;
@@ -256,6 +272,20 @@ function slideAdvance() {
 }
 
 $(function () {
+
+	// make store info page bundle tabs
+	$("[data-interaction='tabs']").on("click", "a[data-action='select-tab']", function (e) {
+		e.preventDefault();
+		var $this = $(this);
+		$this.addClass("active").siblings("a").removeClass("active");
+		$($this.attr("href")).addClass("active").siblings("div").removeClass("active");
+	});
+
+	// ajax load the contact form
+	$("#contact_form_placeholder").on("click", "a", function (e) {
+		e.preventDefault();
+		$("#contact_form_placeholder").load("/store/contactForm");
+	});
 
 	$("a[data-action='dismiss-message']").on("click", function(e) {
 		var $this = $(this);

@@ -1,0 +1,37 @@
+<h4>Register or Log In</h4>
+<p>You need to log on to purchase or launch apps. Sign in below, or just enter your email address and we'll send you an account activation/reset link and password.</p>
+<form method="ajax" action="{{baseurl}}login/authenticate" name="authenticate">
+	<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+	<input type="hidden" name="app_key" value="{{App.app_key}}">
+	<div class="row">
+		<label for="email">Email address:</label>
+		<input type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*">
+	</div>
+	<div class="row">
+		<label for="password">Password:</label>
+		<input type="password" name="password" id="password" placeholder="Your password (optional)">
+	</div>
+	<div class="row">
+		<label for="remember">Stay logged on:</label>
+		<input type="checkbox" name="remember" id="remember" value="yes"> Yes
+	</div>
+	{{#if ShowSubscribe}}
+	<div class="row">
+		<label for="subscribe">Join newsletter?</label>
+		<input type="checkbox" name="subscribe" id="subscribe" value="yes" checked="checked"> Yes
+	</div>
+	{{/if}}
+	<div class="row">
+		<label></label>
+	            <div class="g-recaptcha" data-sitekey="{{GoogleSiteKey}}"></div>
+	            <script src="//www.google.com/recaptcha/api.js?hl=en" type="text/javascript"></script>
+	</div>
+	<div class="row">
+		<label></label>
+		<div id="form-feedback">{{#if Feedback}}<p class="{{FeedbackClass}}">{{Feedback}}</p>{{/if}}</div>
+	</div>
+	<div class="row">
+		<label></label>
+		<input type="submit" value="Sign In or Register" id="form-submit-button">
+	</div>
+</form>

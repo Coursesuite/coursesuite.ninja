@@ -61,7 +61,7 @@ class AppModel extends Model
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         if ($all_fields) {
-            $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular, summary
+            $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, tagline, description, media, meta_keywords, meta_description, meta_title, popular
                     FROM apps
                     ORDER BY name";
         } else {
@@ -89,7 +89,7 @@ class AppModel extends Model
     public static function getAppByKey($app_key)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular, summary
+        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, tagline, description, media, meta_keywords, meta_description, meta_title, popular
                 FROM apps
                 WHERE app_key = :app_key
                 LIMIT 1";
@@ -101,7 +101,7 @@ class AppModel extends Model
     public static function getAppById($app_id)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, apienabled, tagline, description, media, meta_keywords, meta_description, meta_title, popular, summary
+        $sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, tagline, description, media, meta_keywords, meta_description, meta_title, popular
                 FROM apps
                 WHERE app_id = :app_id
                 LIMIT 1";
@@ -160,6 +160,14 @@ class AppModel extends Model
         }
         // unset($query);
         return $launchurl;
+    }
+
+    public static function app_id_for_key($app_key)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT app_id FROM apps WHERE app_key = :app_key LIMIT 1");
+        $query->execute(array(":app_key" => $app_key));
+        return $query->fetch(PDO::FETCH_COLUMN, 0);
     }
 
 } // END class AppModel

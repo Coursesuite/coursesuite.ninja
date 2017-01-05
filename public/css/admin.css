@@ -1,3 +1,151 @@
+/* ==============================================================================
+
+               ADMIN AREA
+
+============================================================================== */
+.system-sections, .system-apps, .system-log {}
+
+.admin-tools input[type='submit'] {
+    max-width: 120px;
+}
+
+.admin-tools ul.media-select a {
+    text-decoration: none;
+}
+.admin-tools ul.media-select code {
+	font-size: 12px;
+	background-color: #eee;
+	border: 1px solid #ddd;
+	padding: .3em;
+}
+
+.admin-tools .spacer {
+    visibility: hidden;
+}
+
+.admin-tools {
+    padding: 0 10px;
+}
+
+.admin-tools table {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+.admin-tools thead tr th {
+    background-color: rgba(0,0,0,.05);
+}
+.admin-tools tbody tr td {
+    background-color: rgba(255,255,255,.5);
+}
+.admin-tools tbody tr:nth-child(odd) td {
+    background-color: rgba(255,255,255,.25);
+}
+
+.admin-tools table th, .admin-tools table td {
+    border: 1px solid #ccc;
+    padding: 5px;
+    vertical-align: top;
+    text-align: left;
+    max-width: 400px;
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+.admin-tools h3,
+.admin-tools h4 {
+    background-color: rgba(0,0,0,.05);
+    border-bottom: 1px solid rgba(0,0,0,.1);
+    padding: 10px 5px;
+}
+.admin-tools h3 {
+    background-color: rgba(255,255,255,.5);
+    color: rgba(42,88,129,1.00);
+}
+.admin-tools h3 .button {
+    float: right;
+}
+.admin-tools h3:after {
+    clear:both;
+    display:table;
+    content:"";
+}
+
+.admin-tools form input:not([type='checkbox']):not([type='radio']):not([type='button']), .admin-tools form select, .admin-tools form textarea {
+    width: 100%;
+}
+
+.admin-tools form > div:not(.no-flex) {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.admin-tools form > div > *:first-child {
+    min-width: 120px;
+    background-color: rgba(0,0,0,.05);
+    display: inline-block;
+    padding: 5px;
+    align-self: flex-start;
+}
+.admin-tools form > div > div,
+.admin-tools form > div > select,
+.admin-tools form > div > textarea,
+.admin-tools form > div > input:not([type='radio']) {
+    flex: 1;
+    padding: 5px;
+    font-size: inherit;
+}
+.admin-tools form > div > select {
+    max-width: 10em;
+}
+.admin-tools form > div > input[type='number'] {
+    max-width: 5em;
+}
+.admin-tools form > div > input[type='radio'] + label {
+    margin-right: 10px;
+}
+
+.system-log .flatpickr-wrapper {
+	display: inline;
+}
+
+.admin-tools .CodeMirror {
+	height: 300px;
+}
+.admin-tools .CodeMirror, .CodeMirror-scroll {
+	min-height: 200px;
+}
+
+.admin-tools .mail-templates {
+    position: relative;
+}
+
+.admin-tools .mail-hidden {
+    display: none;
+}
+
+.admin-tools .mail-display {
+    display: block;
+}
+
+.admin-tools .live > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-tools .live div > label {
+    min-width: 120px;
+    background-color: rgba(0,0,0,0.05);
+    padding: 5px;
+}
+
+.admin-tools .live > div > *:last-child {
+    white-space: pre-wrap;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
 .admin-tiles {
 	text-align: center;
 }
@@ -53,4 +201,8 @@
 .white-labels ul.selection ul>li.selected a {
 	background-color: #fd792a;
 	color: #fff;
+}
+
+.admin-tools .short-editor .CodeMirror {
+	height: 150px;
 }

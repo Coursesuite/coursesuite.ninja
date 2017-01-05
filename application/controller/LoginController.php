@@ -78,10 +78,10 @@ class LoginController extends Controller
         }
     }
 
-    public function loginSingle(){
+    public function loginSingle()
+    {
         $this->View->render('login/loginSingle');
     }
-
 
     /**
      * The logout action
@@ -104,7 +104,7 @@ class LoginController extends Controller
 
         // if login successful, redirect to dashboard/index ...
         if ($login_successful) {
-            Redirect::to('dashboard/index');
+            Redirect::to('store/index');
         } else {
             // if not, delete cookie (outdated? attack?) and route user to login form to prevent infinite login loops
             LoginModel::deleteCookie();
@@ -204,6 +204,114 @@ class LoginController extends Controller
             Redirect::to('login/index');
         }
 
+    }
+
+    /* ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    STORE PAGE INTEGRATED REGISTRATION AND LOGON FORM HANDLER (ajax)
+
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+
+
+    // /login/authenticate called using ajax from store/info/app_key -> integrated.hbp
+    public function authenticate()
+    {
+
+        LoginModel::softLogout(); // to be sure, to be sure
+
+        $result = new stdClass();
+        $result->message = "No data.";
+
+        $email = trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
+        $password = trim(Request::post("password"));
+        $remember = Request::post("remember");
+        $remember = (isset($remember) && ($remember == "yes"));
+        $app_key = trim(Request::post("app_key", false, FILTER_SANITIZE_STRING));
+        $captcha = Request::post('g-recaptcha-response');
+
+        if (empty($captcha) || (!($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true)) {
+            $result->message = "You are apparently a robot. Did you forget to tick the box?";
+
+        } elseif (!Csrf::validateToken(Request::post("csrf_token"))) {
+            $result->message = "Form validation error. Please refresh and try again.";
+
+        } elseif ($email == "") {
+            $result->message = "Please enter your email address.";
+
+        } elseif ($password == "" && RegistrationModel::user_account_already_exists_and_is_usable($email)) {
+            // if email adress exists, then generate a password reset token and notify the user
+            RegistrationModel::send_password_reset($email, $app_key);
+            $result->message = "This account exists. We emailed a password reset link.";
+            $result->classname = "happy";
+
+        } elseif ($password == "" && RegistrationModel::register_new_account_and_send_verification($email)) {
+            $result->message = "Welcome! We just sent you a password and activation link.";
+            $result->classname = "happy";
+
+        } elseif ($email > "" && $password > "") {
+                $model = Model::Read("users", "user_email=:email", array(":email" => $email));
+                if (isset($model)) {
+                    if (!isset($model[0])) {
+                            $result->message = "Some of the account details are incorrect; try again after correcting them.";
+
+                    } else {
+                        $model = $model[0];
+                        if ($model->user_active == 0 || $model->user_deleted == 1) {
+                            $result->message = "Account is disabled, you cannot log in.";
+                        } elseif (isset($model->user_activation_hash)) {
+                            RegistrationModel::resend_the_existing_account_activation_hash($email, $app_key);
+                            $result->message = "Account still needs activation. We just re-sent the activation link.";
+
+                        } elseif (($model->user_failed_logins >= 3) && ($model->user_last_failed_login > (time() - 30))) {
+                            if (isset($model->user_password_reset_hash)) {
+                                $result->message = "You need to click your password reset link, or wait 30 minutes to try again.";
+                            } else {
+                                RegistrationModel::send_password_reset($email, $app_key);
+                                $result->message = "We just sent a password reset email. It seems you may need it.";
+                            }
+
+                        } elseif (!password_verify($password, $model->user_password_hash)) {
+                            $model->user_failed_logins = (int) $model->user_failed_logins + 1;
+                            $model->user_last_failed_login = time();
+                            Model::Update("users","user_id",$model);
+                            $result->message = "You got your account details wrong, please try again.";
+
+                        } else {
+
+                            // reset the bits of the model that might have been fiddled during the registration and logon process
+                            $model->user_activation_hash = NULL;
+                            $model->user_password_reset_hash = NULL;
+                            $model->user_failed_logins = 0;
+                            $model->user_last_failed_login = NULL;
+                            $model->user_suspension_timestamp = NULL;
+                            $model->user_password_reset_timestamp = NULL;
+                            $model->user_logon_count = (int) $model->user_logon_count + 1;
+                            Model::Update("users","user_id",$model);
+
+                            // the actual logon, which updates the session
+                            LoginModel::setSuccessfulLoginIntoSession($model->user_id, $model->user_name, $model->user_email, $model->user_account_type, null, null, null);
+
+                            // and finally, notify the user (which triggers a reload)
+                            $result->message = "<p class='happy'>You're logged on ... just reloading, won't be a sec ...</p>";
+                            $result->positive = true;
+                            $result->reload = true;
+
+                        }
+                    }
+                } else {
+                    $result->message = "The fandangulator glipped through the brushmodique splangefoiler.";
+
+                }
+
+        } else {
+            // not sure how you managed to get to this codepath
+            $result->message = "¯\_(ツ)_/¯";
+
+        }
+
+        // regen the csrf token for the next attempt
+        $result->csrf = Csrf::makeToken();
+        $this->View->renderJSON($result);
     }
 
 }

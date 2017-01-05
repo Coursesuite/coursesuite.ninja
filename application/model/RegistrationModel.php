@@ -291,22 +291,24 @@ class RegistrationModel
         // Free trial reigistration
         if ($user_account_type == 3) {
             $template = MailTemplateModel::getLiveTemplate('freeTrial');
-            if (!empty($template)){
+            if (!empty($template)) {
                 $templateBody = $view->prepareString($template->body);
                 $body = $templateBody(MailTemplateModel::getVars($user_id, $verification_url));
-            } else { // Fallback if template is empty
+            } else {
+                // Fallback if template is empty
                 $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
-                Text::get('EMAIL_TRIAL_VERIFICATION_CONTENT') . "\n\n" . 
+                Text::get('EMAIL_TRIAL_VERIFICATION_CONTENT') . "\n\n" .
                 $verification_url .
                 Text::get('EMAIL_COMMON_CONTENT_SIG');
             }
-        // Normal registration
+            // Normal registration
         } else {
             $template = MailTemplateModel::getLiveTemplate('register');
-            if (!empty($template)){
+            if (!empty($template)) {
                 $templateBody = $view->prepareString($template->body);
                 $body = $templateBody(MailTemplateModel::getVars($user_id, $verification_url));
-            } else { // Fallback if template is empty
+            } else {
+                // Fallback if template is empty
                 $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
                 Text::get('EMAIL_VERIFICATION_CONTENT') . "\n\n" .
                 $verification_url .
@@ -329,13 +331,14 @@ class RegistrationModel
         }
     }
 
-    public static function reSendVerificationEmail() {
+    public static function reSendVerificationEmail()
+    {
         $formData = Session::get('form_data');
         Session::set("feedback_area", "login");
         $userInfo = UserModel::getUserDataByUsername($formData['user_name']);
         $user_activation_hash = sha1(uniqid(mt_rand(), true));
         if (UserModel::saveUserActivationHash($userInfo->user_id, $user_activation_hash)) {
-            if (RegistrationModel::sendVerificationEmail($userInfo->user_id, $userInfo->user_email, $user_activation_hash, $userInfo->user_newsletter_subscribed, $userInfo->user_account_type  )) {
+            if (RegistrationModel::sendVerificationEmail($userInfo->user_id, $userInfo->user_email, $user_activation_hash, $userInfo->user_newsletter_subscribed, $userInfo->user_account_type)) {
                 Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_VERIFIFICATION_RESENT'));
             }
         }
@@ -381,7 +384,7 @@ class RegistrationModel
             MailChimp::subscribe($userInfo[0]->user_email, $userInfo[0]->user_name);
         }
 
-        if ($userInfo[0]->user_account_type == 3){
+        if ($userInfo[0]->user_account_type == 3) {
             $mail = new Mail;
             $mail->sendMail(Config::get('EMAIL_ADMIN'), Config::get('EMAIL_SUBSCRIPTION'), 'Coursesuite Admin', 'Free trial created', "User " . $user_id . ": " . $userInfo[0]->user_name . ", Just created a free trial account");
         }
@@ -397,6 +400,186 @@ class RegistrationModel
         }
 
         Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_ACTIVATION_FAILED'));
+        return false;
+    }
+
+    /* ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    STORE PAGE REGISTRATION AND ACCOUNT VALIDATION
+
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+
+    // is an account ready to be used?
+    public static function user_account_already_exists_and_is_usable($email)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $result = $database->prepare("SELECT COUNT(1)
+                                     FROM users
+                                     WHERE user_email=:email
+                                     AND user_active = 1
+                                     AND user_deleted = 0
+                                     AND user_activation_hash IS NULL
+                                     AND user_suspension_timestamp IS NULL");
+        $result->execute(array(":email" => $email));
+        return ($result->fetchColumn() > 0);
+    }
+
+    // returns TRUE if a password reset hash was sent
+    public static function send_password_reset($email, $app_key)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $result = $database->prepare("UPDATE users
+                                     SET user_password_reset_hash = :hash
+                                     WHERE user_email = :email
+                                     LIMIT 1");
+        $hash = sha1(uniqid(mt_rand(), true));
+        $result->execute(array(":email" => $email, ":hash" => $hash));
+
+        $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
+                    Text::get('EMAIL_PASSWORD_RESET_CONTENT') .
+                    "\n\n" .
+                    Config::get('URL') . "/store/info/$app_key/reset/" . $hash . "/" .
+                    Text::get('EMAIL_COMMON_CONTENT_SIG');
+
+        $mail = new Mail;
+        $mail_sent = $mail->sendMail($email,
+            Config::get('EMAIL_PASSWORD_RESET_FROM_EMAIL'),
+            Config::get('EMAIL_PASSWORD_RESET_FROM_NAME'),
+            Config::get('EMAIL_PASSWORD_RESET_SUBJECT'),
+            $body);
+        return $mail_sent;
+    }
+
+    public static function validate_password_reset_hash_and_genetate_new_password_and_email_it($hash, $app_key)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        // validate the hash and find the user it matched to
+        $query = $database->prepare("SELECT user_email
+                                     FROM users
+                                     WHERE user_password_reset_hash=:hash
+                                     LIMIT 1");
+        $query->execute(array(":hash" => $hash));
+        if (($email = $query->fetchColumn()) > "") {
+
+            // reset the various fields, including password
+            $password = Text::generatePassword();
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
+            $query = $database->prepare("UPDATE users
+                                        SET user_active = 1, user_activation_hash = NULL, user_password_reset_hash = NULL, user_password_hash = :password
+                                        WHERE user_password_reset_hash=:hash
+                                        LIMIT 1");
+            $query->execute(array(":hash" => $hash, ":password" => $password_hash));
+
+            // send the user their new password
+            $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
+                        Text::get('EMAIL_PASSWORD_VALUE', array("password" => $password, "url" => Config::get('URL') . "store/info/$app_key/")) .
+                        "\n\n" .
+                        Text::get('EMAIL_COMMON_CONTENT_SIG');
+
+            $mail = new Mail;
+            $mail_sent = $mail->sendMail($email,
+                Config::get('EMAIL_PASSWORD_RESET_FROM_EMAIL'),
+                Config::get('EMAIL_PASSWORD_RESET_FROM_NAME'),
+                Text::get('EMAIL_PASSWORD_SUBJECT'),
+                $body);
+            return $mail_sent;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    // return TRUE if a new account was registered and details sent
+    public static function register_new_account_and_send_verification($email)
+    {
+
+    }
+
+    // will probably need this eventually; would be called by cron
+    public static function cleanup_unverified_new_accounts_after_a_while()
+    {
+
+    }
+
+    public static function resend_the_existing_account_activation_hash($email, $app_key)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query->prepare("SELECT user_activation_hash
+                        FROM users
+                        WHERE user_email = :email
+                        AND user_activation_hash IS NOT NULL
+                        LIMIT 1");
+        $query->execute(array(":email" => $email));
+        if ($hash = $query->fetchColumn()) {
+
+            $body = Text::get('EMAIL_COMMON_CONTENT_INTRO') .
+                        "Your new password is between the lines below:\n--------------------\n$password\n--------------------\nClick this link to re-open the store page: " . Config::get('URL') . "store/info/$app_key/" .
+                        "\n\n" .
+                        Text::get('EMAIL_COMMON_CONTENT_SIG');
+
+            $mail = new Mail;
+            $mail_sent = $mail->sendMail($email,
+                Config::get('EMAIL_PASSWORD_RESET_FROM_EMAIL'),
+                Config::get('EMAIL_PASSWORD_RESET_FROM_NAME'),
+                Config::get('EMAIL_PASSWORD_SUBJECT'),
+                $body);
+            return $mail_sent;
+        }
+
+    }
+
+    // return true if a new account was created
+    public static function registerAccount($email)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $result = $database->prepare("SELECT COUNT(1)
+                                     FROM users
+                                     WHERE user_email=:email");
+        $result->execute(array(":email" => $email));
+        if ($result->fetchColumn() > 0) {
+            return false; // account already existed
+        } else {
+            $password = Text::generatePassword();
+            $username = $email; // you kinda could explode("@", $email)[0];
+            $user_password_hash = password_hash($password, PASSWORD_DEFAULT);
+            $user_activation_hash = sha1(uniqid(mt_rand(), true));
+
+            $sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_account_type, user_creation_timestamp, user_activation_hash, user_provider_type, user_newsletter_subscribed)
+                    VALUES (:user_name, :user_password_hash, :user_email, :user_account_type, :user_creation_timestamp, :user_activation_hash, 'DEFAULT', 0)";
+            $query = $database->prepare($sql);
+            $query->execute(array(':user_name' => $username,
+                ':user_password_hash' => $user_password_hash,
+                ':user_email' => $email,
+                ':user_account_type' => 1,
+                ':user_creation_timestamp' => time(),
+                ':user_activation_hash' => $user_activation_hash));
+
+            // now we have to send the user an email
+
+            return true;
+
+        }
+    }
+
+    // validate an account based on its verification hash; return true if it was updated
+    public static function validate_user_activation_hash_and_reset_condition($user_verification_hash)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $result = $database->prepare("SELECT COUNT(1)
+                                     FROM users
+                                     WHERE user_activation_hash=:hash");
+        $result->execute(array(":hash" => $user_activation_hash));
+        if ($result->fetchColumn() > 0) {
+            $query = $database->prepare("UPDATE users
+                                        SET user_active = 1, user_activation_hash = NULL
+                                        WHERE user_activation_hash=:hash
+                                        LIMIT 1");
+            $query->execute(array(":hash" => $user_activation_hash));
+            return true;
+        }
         return false;
     }
 }
