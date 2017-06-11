@@ -1,0 +1,105 @@
+/* ------------------------------------------------------------------------------------------------------------------------------------------
+                            GENERIC ARROW-TAB navigation (requires js)
+------------------------------------------------------------------------------------------------------------------------------------------ */
+.tabbed-content {
+    display: flex;
+    flex-direction: column;
+    > nav {
+        margin-bottom: 10px;
+    }
+
+     > nav {> a {
+        display: inline-block;
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+        border-radius: 3px;
+        padding: .3em .5em;
+        transition: background-color .1s ease;
+            &.active:after {
+                content: '';
+                position: absolute;
+                left: calc(50% - 5px);
+                top: 100%;
+                border: 10px solid transparent;
+            }
+        }
+    }
+    > div {
+        flex: 1;
+        display: none;
+        &.active {
+            display: block;
+        }
+    }
+
+    &.theme-green {
+        > nav {
+            > a {
+                background-color: rgba(0, 0, 0, .1);
+                color: #999;
+                &.active {
+                    color: rgba(255,255,255,.9);
+                    background-color: #7db100;
+                    &:after {
+                        border-top-color: #7db100;
+                    }
+                }
+            }
+        }
+    }
+
+    &.theme-teal {
+        > nav {
+            > a {
+                background-color: rgba(0, 0, 0, .1);
+                color: #999;
+                &.active {
+                    color: rgba(255,255,255,.9);
+                    background-color: #246a6a;
+                    &:after {
+                        border-top-color: #246a6a;
+                    }
+                }
+            }
+        }
+    }
+
+    &.theme-blue {
+        > nav {
+            > a {
+                background-color: rgba(0, 0, 0, .1);
+                color: #999;
+                &.active {
+                    color: rgba(255,255,255,.9);
+                    background-color: #8fd1ea;
+                    &:after {
+                        border-top-color: #8fd1ea;
+                    }
+                }
+            }
+        }
+    }
+
+    &.theme-yellow {
+        > nav {
+            > a {
+                background-color: rgba(0, 0, 0, .1);
+                color: #999;
+                &.active {
+                    color: rgba(255,255,255,.9);
+                    background-color: #ff7002;
+                    &:after {
+                        border-top-color: #ff7002;
+                    }
+                }
+            }
+        }
+    }
+
+    &.div-outline > div,
+    section.direct-login.div-outline {
+        background-color: #fff;
+        box-shadow: 0 0 1px rgba(0,0,0,.2);
+    }
+}

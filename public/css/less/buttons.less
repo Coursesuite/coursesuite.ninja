@@ -1,0 +1,101 @@
+.button {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    text-decoration: none;
+    > i.fa {
+        margin-right: .5em;
+    }
+    color: #ffffff;
+    background: #999;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    border-radius: 1px;
+    border: 0px solid #000000;
+    padding: 10px 20px 10px 15px;
+    -moz-box-shadow: 0px 1px 3px rgba(0,0,0,.15), inset 0px 0px 1px rgba(255,255,255,.3);
+    -webkit-box-shadow: 0px 1px 3px rgba(0,0,0,.15), inset 0px 0px 1px rgba(255,255,255,.3);
+    box-shadow: 0px 1px 3px rgba(0,0,0,.15), inset 0px 0px 1px rgba(255,255,255,.3);
+    text-shadow: 0px -1px 0px rgba(0,0,0,.3), 0px 1px 0px rgba(255,255,255,.3);
+    &.button-big {
+        padding: 25px;
+        width: 125px;
+        height: 125px;
+        text-align: center;
+        display: inline-block;
+        box-shadow: 0px 1px 3px rgba(0,0,0,.15), inset 1px 1px 1px rgba(255,255,255,.3), inset -1px -1px 1px rgba(0,0,0,.3);
+        border-radius: 100px;
+        transform: scale(1);
+        transition: box-shadow 1s ease, transform .2s ease;
+        > i {
+            margin: 0;
+            text-align: center;
+            display: block;
+            font-size: 4em;
+        }
+        &:hover {
+            box-shadow: 0px 3px 5px rgba(0,0,0,.15), inset 1px 2px 1px rgba(255,255,255,.3), inset 0px -1px 1px rgba(0,0,0,.3);
+            transform: scale(1.1);
+        }
+    }
+    &.button-hover-blue {
+        background: transparent;
+        transition: background .3s, color .1s;
+        color: #2ca0ca;
+        &:hover {
+            color: #fff;
+            .button-blue();
+
+        }
+    }
+    &.button-blue {
+        background: -moz-linear-gradient(
+            top,
+            #2ab8ec 0%,
+            #2ca0ca);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#2ab8ec),
+            to(#2ca0ca));
+    }
+
+    &.button-green {
+        background: -moz-linear-gradient(
+            top,
+            #1fad1f 0%,
+            #1f8f23);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#1fad1f),
+            to(#1f8f23));
+    }
+    &.button-orange {
+        background: -moz-linear-gradient(
+            top,
+            #ffab2e 0%,
+            #cc8c2d);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#ffab2e),
+            to(#cc8c2d));
+    }
+    &.button-red {
+        background: -moz-linear-gradient(
+            top,
+            #ff2e2e 0%,
+            #cc2d2d);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#ff2e2e),
+            to(#cc2d2d));
+    }
+    &.button-yellow {
+        background: -moz-linear-gradient(
+            top,
+            #f9c326 0%,
+            #e59f18);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#f9c326),
+            to(#e59f18));
+    }
+}

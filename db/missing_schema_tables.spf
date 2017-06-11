@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ContentFilters</key>
+	<dict/>
+	<key>auto_connect</key>
+	<true/>
+	<key>data</key>
+	<dict>
+		<key>connection</key>
+		<dict>
+			<key>database</key>
+			<string>csninja_prod</string>
+			<key>host</key>
+			<string>demo.avide.com.au</string>
+			<key>kcid</key>
+			<string>4196458417920811666</string>
+			<key>name</key>
+			<string>avide @intellex</string>
+			<key>rdbms_type</key>
+			<string>mysql</string>
+			<key>ssh_host</key>
+			<string>demo.avide.com.au</string>
+			<key>ssh_keyLocation</key>
+			<string></string>
+			<key>ssh_keyLocationEnabled</key>
+			<integer>0</integer>
+			<key>ssh_port</key>
+			<integer>21077</integer>
+			<key>ssh_user</key>
+			<string>tim</string>
+			<key>sslCACertFileLocation</key>
+			<string></string>
+			<key>sslCACertFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslCertificateFileLocation</key>
+			<string></string>
+			<key>sslCertificateFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslKeyFileLocation</key>
+			<string></string>
+			<key>sslKeyFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>type</key>
+			<string>SPSSHTunnelConnection</string>
+			<key>useSSL</key>
+			<integer>0</integer>
+			<key>user</key>
+			<string>root</string>
+		</dict>
+		<key>session</key>
+		<dict>
+			<key>connectionEncoding</key>
+			<string>utf8</string>
+			<key>contentFilter</key>
+			<dict/>
+			<key>contentPageNumber</key>
+			<integer>1</integer>
+			<key>contentSelection</key>
+			<data>
+			YnBsaXN0MDDUAQIDBAUGNjdYJHZlcnNpb25YJG9iamVjdHNZJGFy
+			Y2hpdmVyVCR0b3ASAAGGoK0HCBUWFxgZHSQoLDA0VSRudWxs0wkK
+			CwwQFFdOUy5rZXlzWk5TLm9iamVjdHNWJGNsYXNzow0OD4ACgAOA
+			BKMREhOABYAGgAiADFR0eXBlVHJvd3NUa2V5c18QJlNlbGVjdGlv
+			bkRldGFpbFR5cGVQcmltYXJ5S2V5ZWREZXRhaWxz0wkKCxobHKCg
+			gAfSHh8gIVokY2xhc3NuYW1lWCRjbGFzc2VzXxATTlNNdXRhYmxl
+			RGljdGlvbmFyeaMgIiNcTlNEaWN0aW9uYXJ5WE5TT2JqZWN00goL
+			JSehJoAJgAvSCykqK1lOUy5zdHJpbmeACl8QD3N1YnNjcmlwdGlv
+			bl9pZNIeHy0uXxAPTlNNdXRhYmxlU3RyaW5noy0vI1hOU1N0cmlu
+			Z9IeHzEyXk5TTXV0YWJsZUFycmF5ozEzI1dOU0FycmF50h4fIjWi
+			IiNfEA9OU0tleWVkQXJjaGl2ZXLRODlUZGF0YYABAAgAEQAaACMA
+			LQAyADcARQBLAFIAWgBlAGwAcAByAHQAdgB6AHwAfgCAAIIAhwCM
+			AJEAugDBAMIAwwDFAMoA1QDeAPQA+AEFAQ4BEwEVARcBGQEeASgB
+			KgE8AUEBUwFXAWABZQF0AXgBgAGFAYgBmgGdAaIAAAAAAAACAQAA
+			AAAAAAA6AAAAAAAAAAAAAAAAAAABpA==
+			</data>
+			<key>contentSortColIsAsc</key>
+			<true/>
+			<key>contentViewport</key>
+			<string>{{0, 219}, {999, 1270}}</string>
+			<key>isToolbarVisible</key>
+			<true/>
+			<key>queries</key>
+			<string>CREATE TABLE `app_bundles` (
+  `bundle_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL COMMENT 'REDUNDANT',
+  `display_name` varchar(50) NOT NULL,
+  `description` text NOT NULL COMMENT 'html description',
+  PRIMARY KEY (`bundle_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `bundle_products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bundle_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `store_product` (
+  `product_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `purchase_url` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(100) DEFAULT NULL,
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1 For single app, 2 for bundle',
+  `price` int(10) unsigned NOT NULL DEFAULT '1',
+  `tier` varchar(50) DEFAULT '1',
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `store_product_apps` (
+  `row_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `product_id` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`row_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+
+</string>
+			<key>table</key>
+			<string>subscriptions</string>
+			<key>view</key>
+			<string>SP_VIEW_CUSTOMQUERY</string>
+			<key>windowVerticalDividerPosition</key>
+			<real>266</real>
+		</dict>
+	</dict>
+	<key>encrypted</key>
+	<false/>
+	<key>format</key>
+	<string>connection</string>
+	<key>queryFavorites</key>
+	<array/>
+	<key>queryHistory</key>
+	<array>
+		<string>CREATE TABLE `store_product_apps` (
+  `row_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `product_id` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`row_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8</string>
+		<string>CREATE TABLE `store_product` (
+  `product_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `purchase_url` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(100) DEFAULT NULL,
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1 For single app, 2 for bundle',
+  `price` int(10) unsigned NOT NULL DEFAULT '1',
+  `tier` varchar(50) DEFAULT '1',
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8</string>
+		<string>CREATE TABLE `bundle_products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bundle_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8</string>
+		<string>CREATE TABLE `app_bundles` (
+  `bundle_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL COMMENT 'REDUNDANT',
+  `display_name` varchar(50) NOT NULL,
+  `description` text NOT NULL COMMENT 'html description',
+  PRIMARY KEY (`bundle_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8</string>
+		<string>CREATE DEFINER=`coursebuildr`@`%` PROCEDURE `GenericTree`(
+  edgeTable CHAR(64), edgeIDcol CHAR(64), edgeParentIDcol CHAR(64), ancestorID INT
+)
+BEGIN
+  DECLARE r INT DEFAULT 0;
+  DROP TABLE IF EXISTS subtree;
+  SET @sql = Concat( 'CREATE TABLE subtree ENGINE=MyISAM SELECT ',
+                     edgeIDcol,' AS childID, ',
+                     edgeParentIDcol, ' AS parentID,',
+                     '0 AS level FROM ',
+                     edgeTable, ' WHERE ', edgeParentIDcol, '=', ancestorID );
+  PREPARE stmt FROM @sql;
+  EXECUTE stmt;
+  DROP PREPARE stmt;
+  ALTER TABLE subtree ADD PRIMARY KEY(childID,parentID);
+  REPEAT
+    SET @sql = Concat( 'INSERT IGNORE INTO subtree SELECT a.', edgeIDcol,
+                       ',a.',edgeparentIDcol, ',b.level+1 FROM ',
+                       edgeTable, ' AS a JOIN subtree AS b ON a.',edgeParentIDcol, '=b.childID' );
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    SET r=Row_Count();  -- save row_count() result before DROP PREPARE loses the value
+    DROP PREPARE stmt;
+  UNTIL r &lt; 1 END REPEAT;
+END</string>
+		<string>drop procedure GenericTree</string>
+		<string>drop procedure 'GenericTree'</string>
+		<string>SET @v = ( select concat( 'drop table if exists ', group_concat(a.table_name))
+	from information_schema.tables a 
+	where a.table_name like concat('subtree_',tableId)
+	AND a.table_schema = DATABASE()
+  )</string>
+		<string>CREATE DEFINER=`coursebuildr`@`%` PROCEDURE `GenericTree`(
+  edgeTable CHAR(64), edgeIDcol CHAR(64), edgeParentIDcol CHAR(64), ancestorID INT, tableId CHAR(10)
+)
+BEGIN
+  DECLARE r INT DEFAULT 0;
+  SET @v = ( select concat( 'drop table if exists ', group_concat(a.table_name))
+	from information_schema.tables a 
+	where a.table_name like concat('subtree_',tableId)
+	AND a.table_schema = DATABASE()
+  ;);
+  prepare s from @v;
+  execute s;
+  drop prepare s;
+
+  SET @sql = Concat( 'CREATE TABLE subtree_', tableId, ' ENGINE=MyISAM SELECT ',
+                     edgeIDcol,' AS childID, ',
+                     edgeParentIDcol, ' AS parentID,',
+                     '0 AS level FROM ',
+                     edgeTable, ' WHERE ', edgeParentIDcol, '=', ancestorID );
+  PREPARE stmt FROM @sql;
+  EXECUTE stmt;
+  DROP PREPARE stmt;
+  ALTER TABLE subtree ADD PRIMARY KEY(childID,parentID);
+  REPEAT
+    SET @sql = Concat( 'INSERT IGNORE INTO subtree_', tableId, ' SELECT a.', edgeIDcol,
+                       ',a.',edgeparentIDcol, ',b.level+1 FROM ',
+                       edgeTable, ' AS a JOIN subtree_', tableId, ' AS b ON a.',edgeParentIDcol, '=b.childID' );
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    SET r=Row_Count();  -- save row_count() result before DROP PREPARE loses the value
+    DROP PREPARE stmt;
+  UNTIL r &lt; 1 END REPEAT;
+END</string>
+		<string>select * from information_schema.tables where table_schema = DATABASE()</string>
+		<string>select concat( 'drop table ', group_concat(a.table_name))
+    from information_schema.tables a 
+    where a.table_name like 'subtree'
+    AND a.table_schema = DATABASE()</string>
+		<string>select concat('subtree','123')</string>
+		<string>select exists subtree</string>
+		<string>select exists( subtree)</string>
+		<string>select exists('subtree')</string>
+		<string>CALL GenericTree('page','id','parent',118);
+select * from subtree</string>
+		<string>select * from subtree</string>
+		<string>select * from subpage</string>
+		<string>CALL GenericTree('page','id','parent',117)</string>
+		<string>CREATE DEFINER=`tardis`@`%` PROCEDURE `GenericTree`(
+  edgeTable CHAR(64), edgeIDcol CHAR(64), edgeParentIDcol CHAR(64), ancestorID INT
+)
+BEGIN
+  DECLARE r INT DEFAULT 0;
+  DROP TABLE IF EXISTS subtree;
+  SET @sql = Concat( 'CREATE TABLE subtree ENGINE=MyISAM SELECT ',
+                     edgeIDcol,' AS childID, ',
+                     edgeParentIDcol, ' AS parentID,',
+                     '0 AS level FROM ',
+                     edgeTable, ' WHERE ', edgeParentIDcol, '=', ancestorID );
+  PREPARE stmt FROM @sql;
+  EXECUTE stmt;
+  DROP PREPARE stmt;
+  ALTER TABLE subtree ADD PRIMARY KEY(childID,parentID);
+  REPEAT
+    SET @sql = Concat( 'INSERT IGNORE INTO subtree SELECT a.', edgeIDcol,
+                       ',a.',edgeparentIDcol, ',b.level+1 FROM ',
+                       edgeTable, ' AS a JOIN subtree AS b ON a.',edgeParentIDcol, '=b.childID' );
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    SET r=Row_Count();  -- save row_count() result before DROP PREPARE loses the value
+    DROP PREPARE stmt;
+  UNTIL r &lt; 1 END REPEAT;
+END</string>
+	</array>
+	<key>rdbms_type</key>
+	<string>mysql</string>
+	<key>rdbms_version</key>
+	<string>5.5.49-0+deb7u1</string>
+	<key>version</key>
+	<integer>1</integer>
+</dict>
+</plist>

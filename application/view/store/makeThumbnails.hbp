@@ -1,0 +1,3 @@
+{{#each App.media}}
+	<a href="javascript:gotoSlide({{@index}})"><img src="{{thumb}}"></a>
+{{/each}}

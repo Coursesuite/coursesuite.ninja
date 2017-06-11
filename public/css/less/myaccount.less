@@ -1,0 +1,51 @@
+/* ==============================================================================
+
+        MY ACCOUNT
+
+============================================================================== */
+
+article.my-account {
+    padding-bottom: 25px;
+    > section.profile-display,
+    > section.purchase-history {
+        border: 1px solid #eee;
+        background-color: #fff;
+        box-shadow: 0 0 1px rgba(0,0,0,.2);
+        padding: 10px;
+    }
+    > section.profile-display form {
+        > .row {
+            display: flex;
+            margin-bottom: 25px;
+            > label {
+                min-width: 15em;
+            }
+            > div {
+                flex: 1;
+                > input[type='email'] {
+                    min-width: 50%;
+                    padding: 10px;
+                    border: 1px solid #eee;
+                    background-color: #fff;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+    > section.purchase-history table {
+        width: 100%;
+        th, td {
+            padding: 10px 5px;
+        }
+        th, td a {
+            color: inherit;
+        }
+        thead th {
+            border-bottom: 1px solid #999;
+            text-align: left;
+        }
+        tbody tr:nth-child(odd) td {
+            background-color: rgba(0,0,0,.05);
+        }
+    }
+}

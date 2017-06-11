@@ -1,0 +1,7 @@
+{{#each App.media}}
+	<figure style="background-color: {{bgcolor}};" class="slide {{#equals @index 0}}active{{/equals}}">
+		<img src="{{preview}}">
+		{{#if caption}}<figcaption>{{caption}}</figcaption>{{/if}}
+		<a href="javascript:expandSlide({{@index}});"><i class='cs-{{#if video}}youtube{{else}}camera{{/if}}'></i></a>
+	</figure>
+{{/each}}

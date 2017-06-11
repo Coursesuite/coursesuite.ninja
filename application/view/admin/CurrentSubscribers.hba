@@ -1,0 +1,29 @@
+<article class="system-users admin-tools">
+
+    <h3>
+        <a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
+        Current Subscribers
+    </h3>
+
+<table>
+	<thead><tr>
+		<th>User Email</th>
+		<th>Subsription started</th>
+		<th>Subscription ends</th>
+		<th>Reference</th>
+		<th>Launch as this user</th>
+	</tr></thead>
+	<tbody>
+	{{#each user}}
+	<tr>
+		<td>{{user_email}}</td>
+		<td>{{added}}</td>
+		<td>{{endDate}}</td>
+		<td>{{referenceId}}</td>
+		<td>{{#each launchlinks}}<a href="{{url}}" target="_blank">{{name}}</a> {{/each}}</td>
+	</tr>
+	{{/each}}
+	</tbody>
+</table>
+
+</article>

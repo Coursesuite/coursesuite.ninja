@@ -1,0 +1,246 @@
+@import "slideshow.less";
+@import "sections.less";
+@import "ribbon.less";
+@import "tile.less";
+@import "timeline.less";
+
+// can't find a media query way to target narrow non-touch devices, so feature detection it is
+html.no-touch #store_info article.store-item-specific section.store-item-description {
+	padding-top: 10px;
+	article.app-info {
+		> aside {
+			width: 66%;
+			&.count-1 {
+				width: 33%;
+			}
+			float: right;
+			border: 2px solid rgba(255,255,255,.4);
+			border-radius: 10px;
+			margin-left: 10px;
+			box-shadow: 0 3px 5px rgba(0,0,0,.25);
+		}
+	}
+}
+
+body#store_info {
+	article {
+		&.store-item-specific {
+			> header > h1,
+			> header > p {
+				margin: 0;
+			}
+			background-color: @body-grey;
+			@media @medium {
+				> header.common-header {
+					display: block;
+					h1 {
+						margin: 0;
+						display: block;
+						text-align: center;
+						padding: 25px 0 10px;
+					}
+					nav {
+						text-align: center;
+						> div.social-buttons {
+							transform: scale(0.75);
+						}
+						margin-bottom: 10px;
+					}
+				}
+				> header.app-tagline {
+					p {
+						text-align: center;
+						padding: 0;
+						margin: 0 0 10px 0;
+					}
+				}
+				section.info {
+					flex-direction: column;
+					#slideshow {
+						margin-bottom: 10px;
+					}
+				}
+				&.subscriber {
+					#slideshow {
+						order: 2; // push underneath subscription box; you want to launch now
+					}
+				}
+			}
+			@media @tiny {
+				> header.common-header nav > div.social-buttons {
+					transform: scale(1);
+				}
+			}
+			section.info {
+				.standard-width();
+				margin-bottom: 10px;
+				display: flex;
+				> div {
+					flex: 1;
+					&.purchase-pane {
+						.div-outline {
+							.subtle-box(#fff);
+						}
+						.tabbed-content {
+							> .div-outline {
+								padding: 10px;
+							}
+						}
+						section.store-subscriptions {
+							#subscriptions {
+								.launch-buttons-container {
+									padding: 30px 0;
+									border-radius: 10px;
+									background-color: rgba(72, 236, 42, 0.08);
+									border: 1px solid rgba(42, 236, 48, 0.2);
+								}
+								p.subscription-overlap {
+									margin: 10px 0;
+									padding: 10px 0;
+									border-radius: 10px;
+									background-color: rgba(251,157,33,0.08);
+									border: 1px solid rgba(251,157,33,.2);
+    									color: #fb9d21;
+    									font-size: 0.8rem;
+								}
+								.subscription-buttons {
+									color: @logo-grey;
+    									font-size: 0.9rem;
+									a {
+										color: inherit;
+										&:hover {
+											color: @logo-blue;
+										}
+									}
+								}
+							}
+						}
+						.store-subscriptions,
+						.store-logon,
+						.store-purchase-links {
+							> nav {
+								display: flex;
+								> a {
+									text-align: center;
+									flex: 1;
+									&:first-of-type:not(:last-of-type) {
+										margin-right: 10px;
+									}
+								}
+							}
+							.quibble-points {
+								ul {
+									margin-top: 10px;
+									font-size: 10px;
+									color: #999;
+									line-height: 1.5;
+									a, a:visited {
+										color: inherit;
+										text-decoration: underline;
+									}
+								}
+							}
+							.bundle-buttons {
+								border-top: 1px solid #E8E8E8;
+								padding-top: 10px;
+								.gradow(rgba(255,255,255,1), 50px);
+								border-radius: 4px 4px 0 0;
+								nav {
+									text-align: center;
+								}
+							}
+							.purchase-buttons-container {
+								padding: 30px 0;
+								border-radius: 10px;
+								background-color: rgba(42, 184, 236, 0.08);
+								border: 1px solid rgba(42, 184, 236, 0.2);
+								> a:first-of-type:not(:last-of-type) {
+									margin-right: 1em;
+								}
+							}
+							ul.bundle-app-list a {
+								color: @logo-blue;
+								&:hover {
+									color: @logo-green;
+								}
+							}
+
+						}
+						.store-logon {
+						        input[type='submit'] {
+						            .button();
+						            .button-green();
+						        }
+						}
+					}
+				}
+			}
+		}
+		> header.common-header {
+			.standard-width();
+			display: flex;
+			align-items: center;
+			h1 {
+				flex:1;
+				font-weight: 300;
+				margin: 25px 0;
+			}
+			nav {
+				.edit-icon {
+					background-color: yellow;
+					color: black;
+				}
+			}
+		}
+		> header.app-tagline {
+			.standard-width();
+			p {
+				padding: 10px 0;
+			}
+		}
+
+		&.app-info {
+			@media @medium {
+				display: flex;
+				flex-direction: column;
+				> aside {
+					order: 2;
+					padding: 5px;
+					background: #59A047 !important;
+					.tiers {
+						flex-direction: column;
+					}
+				}
+				> main {
+					order: 1;
+				}
+			}
+			> aside.app-tier-info {
+				.gradient(@start: rgba(255,255,255,0); @end: rgba(255,255,255,.3));
+				padding: 10px;
+				color: inherit;
+				font-size: 0.85rem;
+				.tiers {
+					display: flex;
+					.tier {
+						flex: 1;
+						h4 {
+							border-bottom: 1px solid rgba(255,255,255,.1);
+						}
+					}
+				}
+				> h3 {
+					margin: 0;
+					text-align: center;
+					font-size: 1.15rem;
+					font-weight: 300;
+					text-shadow: 1px 1px 0 rgba(0,0,0,.2);
+				}
+			}
+		}
+		.h5 {
+			.float-right();
+			margin-left: 10px;
+		}
+	}
+}

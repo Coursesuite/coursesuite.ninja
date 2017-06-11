@@ -1,0 +1,95 @@
+<article class="my-account">
+
+	<header class="common-header">
+		<h1>My Account</h1>
+	</header>
+
+	<section class="profile-display standard-width">
+
+		<form method="post" action="{{baseurl}}me/update">
+			<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+			<div class="row">
+				<label for="email">Email address:</label>
+				<div>
+					<input type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*" value="{{user_email}}">
+					{{#if user_email_update}}<small class="block faded">Awaiting change verification from <em>{{user_email_update}}</em>. (<a href="{{baseurl}}me/reverify">Re-send verification</a> | <a href="{{baseurl}}me/cancelChange">Cancel change</a>)</small>{{/if}}
+					{{#equals Feedback.area "user_email"}}<small class="block red">{{{Feedback.negative}}}</small>{{/equals}}
+				</div>
+			</div>
+			<div class="row">
+				<label for="password">Password:</label>
+				<div>
+					<input type='checkbox' value="yes" name="reset_password" id="reset_password">
+					<label for="reset_password">Reset my password</label> <span id="feedback-reset">(Sends confirmation request to your <em>current</em> email address)</span>
+				</div>
+			</div>
+			<div class="row">
+				<label for="subscribe">Newsletters (from MailChimp):</label>
+				<div>
+					{{#each subscriptions}}
+					<input type='checkbox' value="{{id}}" name="mailchimp_list[]" id="list_{{id}}" {{#if subscribed}} checked="checked" {{/if}}>
+					<label for="list_{{id}}">{{name}}</label>
+					{{/each}}
+				</div>
+			</div>
+			<div class="row">
+				<label for="destroy">Account removal:</label>
+				<div>
+					<a href="#toggle-once">Show</a>
+					<span>
+						<input type="radio" name="destroy" id="destroy_no" value="no" checked="checked"><label for="destroy_no">Keep my account</label>
+						<input type="radio" name="destroy" id="destroy_yes" value="yes"><label for="destroy_yes">Delete my account</label>
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<label></label>
+				<div>
+					<input type="submit" value="Update account" id="form-submit-button" class="button">
+				</div>
+			</div>
+			{{#not Feedback.area "user_email"}}
+			<div class="row">
+				<label></label>
+				<div id="form-feedback">
+				{{#if Feedback.negative}}<span class="form-feedback-negative">{{{Feedback.negative}}}</span> {{/if}}
+				{{#if Feedback.positive}}<span class="form-feedback-positive">{{{Feedback.positive}}}</span> {{/if}}
+				</div>
+			</div>
+			{{/not}}
+		</form>
+
+	</section>
+
+	<header class="common-header">
+		<h1>Purchase history</h1>
+	</header>
+
+	<section class="purchase-history standard-width">
+	<table>
+		<thead>
+			<tr>
+			<th>Product</th>
+			<th>Item</th>
+			<th>Added</th>
+			<th>Expires</th>
+			<th>Status</th>
+			<th>Order Details</th>
+			</tr>
+		</thead>
+		<tbody>
+		{{#each history}}
+			<tr>
+			<td>{{productDescription Product.id}}</td>
+			<td>{{referenceId}}</td>
+			<td>{{added}}</td>
+			<td>{{endDate}}</td>
+			<td>{{status}}</td>
+			<td>{{#decodable subscriptionUrl}}<a target="_blank" href="{{decode subscriptionUrl}}"><i class='cs-stack-2'></i>Open</a>{{else}}n/a{{/decodable}}</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+	</section>
+
+</article>

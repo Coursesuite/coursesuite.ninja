@@ -1,0 +1,53 @@
+// logo colours
+@logo-blue: #3EA1EC;
+@logo-green: #7FBC03;
+@logo-grey: #969696;
+
+// store colours
+@header-blue: #043e52;
+@body-blue: #587285;
+@body-grey: #F5F5F5;
+@footer-grey: #3D3D3D;
+
+// app theme colours
+@vidninja: rgb(125, 173, 94);
+@docninja: rgb(63, 169, 202);
+@coursebuildr: rgb(36, 106, 106);
+
+// media queries (mostly we use "medium")
+@tiny: ~"only screen and (min-device-width: 320px) and (max-device-height: 568px) and (-webkit-device-pixel-ratio: 2)";
+@small: ~"only screen and (max-width: 479px)";
+@medium: ~"only screen and (min-width:320px) and (max-width:1024px)";
+@ipad: ~"only screen and (min-device-width : 768px) and (max-device-width : 1024px)";
+@large: ~"only screen  and (min-width : 1224px)";
+@huge: ~"only screen and (min-width: 1824px)";
+@desktop: ~"not all and (orientation: landscape), not all and (orientation: portrait)";
+
+// mixins
+.gradient (@start; @end) {
+            background: @start;
+            background: -moz-linear-gradient(top, @start 0%, mix(@start, @end, 52%) 50%, mix(@start, @end, 48%) 51%, @end 100%);
+            background: -webkit-linear-gradient(top, @start 0%, mix(@start, @end, 52%) 50%, mix(@start, @end, 48%) 51%, @end 100%);
+            background: linear-gradient(to bottom, @start 0%, mix(@start, @end, 52%) 50%, mix(@start, @end, 48%) 51%, @end 100%);
+            filter: ~"progid: DXImageTransform.Microsoft.gradient( startColorstr='@{start}', endColorstr='@{end}', GradientType=0)";
+}
+
+// gradient shadow; gradow
+.gradow (@color; @distance: 100%) {
+	background: transparent;
+            background: -moz-linear-gradient(top, @color 0%, fadeout(@color,100%) @distance);
+            background: -webkit-linear-gradient(top, @color 0%, fadeout(@color,100%) @distance);
+            background: linear-gradient(to bottom, @color 0%, fadeout(@color,100%) @distance);
+}
+
+.text-contrast(@background) when (abs(luma(@background)) > 50) {
+    color: #000;
+}
+.text-contrast(@background) when (abs(luma(@background)) < 51) {
+    color: #FFF;
+}
+
+.subtle-box(@background) {
+	background-color: @background;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+}

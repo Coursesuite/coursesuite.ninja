@@ -1,0 +1,63 @@
+/* ==============================================================================
+
+		Acknowledgement messages
+
+============================================================================== */
+
+section.user-acknowledgements {
+	position: fixed;
+	width: 50vw;
+	left: 25vw;
+	margin-top: -25px;
+	.acknowledgement-item {
+		color: #000;
+		background-color: rgba(255, 255, 255, .95);
+		text-shadow: none;
+		padding: 10px;
+		margin-bottom: 10px;
+		display: flex;
+		align-items: center;
+		border-radius: 10px;
+		box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+		border: 5px solid #fff;
+		transform: translateY(0);
+		transition: transform .1s ease, box-shadow .1s ease;
+		 .flex-1 {
+			flex: 1;
+		}
+		&:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
+		}
+		> p {
+			margin: 0;
+			padding: 0;
+			flex: 1;
+		}
+		> a {
+			color: inherit;
+			align-self: flex-start;
+			font-size: 2em;
+			text-shadow: none;
+			text-decoration: none;
+			line-height: 1em;
+			margin-left: 10px;
+		}
+		&.level-2 {
+			border-color: rgba(28, 189, 234, 0.75);
+			/* blue */
+		}
+
+		&.level-1 {
+			border-color: rgba(152, 28, 234, 0.75);
+			/* purple */
+			background-color: #f8edff;
+		}
+
+		&.level-0 {
+			border-color: rgba(218, 0, 0, 0.75);
+			/* red */
+			background-color: #ffe5e5;
+		}
+	}
+}

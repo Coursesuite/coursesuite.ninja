@@ -1,0 +1,142 @@
+body#login_index {
+    section.half-width {
+        @media @medium {
+            width: 100%;
+            margin: 10px 5px;
+            box-shadow: none;
+
+        }
+        width: 50%;
+        margin: 25px auto;
+        .subtle-box(#fff);
+        input[type='submit'] {
+            .button();
+            .button-green();
+        }
+    }
+}
+
+body#login_timeout {
+    background: -moz-radial-gradient(center, ellipse cover, #cccccc 0%, #999999 100%); /* ff3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #cccccc), color-stop(100%, #999999)); /* safari4+,chrome */
+    background: -webkit-radial-gradient(center, ellipse cover, #cccccc 0%, #999999 100%); /* safari5.1+,chrome10+ */
+    background: -o-radial-gradient(center, ellipse cover, #cccccc 0%, #999999 100%); /* opera 11.10+ */
+    background: -ms-radial-gradient(center, ellipse cover, #cccccc 0%, #999999 100%); /* ie10+ */
+    background: radial-gradient(ellipse at center, #cccccc 0%, #999999 100%); /* w3c */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#999999',GradientType=1 ); /* ie6-9 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    main {
+        flex: none;
+        max-width: 435px;
+        box-shadow: 0 0 100px rgba(0,0,0,.25);
+        padding: 25px;
+        color: white;
+        border-radius: 25px;
+        background-color: #777;
+        a {
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #fff;
+            text-decoration: none;
+            &:hover {
+                background-color: rgba(255,255,255,.2);
+            }
+        }
+    }
+}
+
+/* ---------------------------------------------- need to logon ---------------------------------------------- */
+
+section.direct-login {
+    margin-top: 25px;
+}
+
+section.direct-login.div-outline > div,
+.store-logon.tabbed-content.div-outline > div {
+    padding: 10px;
+}
+
+section.direct-login > div,
+.store-logon > div {
+    font-size: 13px;
+}
+
+
+section.direct-login h4,
+.store-logon h4 {
+    font-weight: 100;
+    margin: 0 0 10px;
+    padding: 0;
+    color: #ff7002;
+    border-bottom: 1px solid #ff7002;
+    font-size: 16px;
+}
+
+section.direct-login .row,
+.store-logon .row {
+    display: flex;
+    padding: 0 0 10px 0;
+    align-items: center;
+}
+
+section.direct-login .row > label:first-of-type,
+.store-logon .row > label:first-of-type {
+    min-width: 120px;
+}
+
+section.direct-login .row > input:not([type='checkbox']):not([type='submit']),
+.store-logon .row > input:not([type='checkbox']):not([type='submit']) {
+    flex: 1;
+    border: 1px solid rgba(0, 0, 0, .1);
+    transition: border .3s ease;
+    padding: 10px;
+}
+
+section.direct-login .row > input:not([type='checkbox']):not([type='submit']):focus,
+.store-logon .row > input:not([type='checkbox']):not([type='submit']):focus {
+    border-color: transparent;
+    border-bottom-color: #246a6a;
+    outline: none;
+}
+
+#form-feedback p.sad,
+section.direct-login form[name='authenticate'] #form-feedback span.form-feedback-negative,
+.store-logon form[name='authenticate'] #form-feedback span.form-feedback-negative {
+    display: block;
+    margin: 0;
+    background-color: #f12b24;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 4px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
+    color: #fff;
+}
+
+section.direct-login form[name='authenticate'] #form-feedback span.form-feedback-positive,
+.store-logon form[name='authenticate'] #form-feedback span.form-feedback-positive {
+    display: block;
+    margin: 0;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 4px;
+    background-color: #80b723;
+    text-shadow: none;
+    color: #000;
+}
+@media @medium {
+    .row.captcha {
+        label {
+            display: none;
+        }
+        div.g-recaptcha {
+            flex: 1;
+            > div {
+                margin: 0 auto;
+            }
+        }
+    }
+}

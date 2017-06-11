@@ -1,0 +1,6 @@
+<section class="integrated-logon direct-login half-width div-outline">
+	<div>
+		<h4>Logon required to continue</h4>
+		{{> logon_partial}}
+	</div>
+</section>

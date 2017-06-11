@@ -1,0 +1,6 @@
+<section class="single-message">
+	<div class="centered-box">
+		<p>{{{message}}}</p>
+		<p>You have been logged out.</p>
+	</div>
+</section>
