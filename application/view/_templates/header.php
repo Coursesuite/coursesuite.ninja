@@ -20,7 +20,7 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
     <meta name="author" content="Avide eLearning">
     <title><?php echo $meta_title; ?></title>
     <link rel="icon" href="data:;base64,=">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300|Open+Sans|Open+Sans+Condensed:300" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mb.YTPlayer/3.0.12/jquery.mb.YTPlayer.min.js"></script>
