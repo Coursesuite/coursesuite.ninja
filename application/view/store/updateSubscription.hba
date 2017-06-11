@@ -1,9 +1,0 @@
-<article class='store-index'>
-<div>You are about to change your subscription from {{current_tier.name}} to {{new_tier.name}}</div>
-<br/>
-<div>The new cost per month will be ${{new_tier.price}} USD</div>
-<br/>
-<div>You will be refunded the remaing time left on your current subscription and then be charged the same remaining time at the new price</div>
-<br/>
-<a class="button" href="{{baseurl}}">Cancel</a><a class="button" href="{{baseurl}}store/updateSubscription/{{new_tier.name}}/confirm">Confirm</a>
-</article>
