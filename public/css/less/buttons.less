@@ -98,4 +98,33 @@
             from(#f9c326),
             to(#e59f18));
     }
+    &.button-launch {
+        border-radius: 100px;
+        font-size: 18px;
+        background: -moz-linear-gradient(
+            top,
+            #ffffff 0%,
+            #ffff00);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#ffffff),
+            to(#ffff00));
+        color: #444;
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 0 10px rgba(0,0,0,.5);
+        transition: background .5s ease, transform .2s ease, box-shadow .5s ease;
+        &:hover {
+        background: -moz-linear-gradient(
+            top,
+            #ffff00 0%,
+            #ffff00);
+        background: -webkit-gradient(
+            linear, left top, left bottom,
+            from(#ffff00),
+            to(#ffff00));
+        box-shadow: 0 0 20px rgba(0,0,0,.5);
+        transform: scale(1.33) rotate(5deg);
+        }
+
+    }
 }

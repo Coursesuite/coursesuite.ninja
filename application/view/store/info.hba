@@ -1,4 +1,4 @@
-<article class="store-item-specific{{#if Subscriptions}} subscriber{{/if}}{{#if IsLoggedOn}} customer{{/if}}">
+<article class="store-item-specific{{#if Subscriptions}} subscriber{{/if}}{{#if IsLoggedOn}} customer{{/if}} app-{{App.app_key}}">
 
 	<header class='common-header app-{{App.app_key}}'>
 		<h1>{{App.name}}</h1>
@@ -11,127 +11,104 @@
 		<p>{{App.whatisit}}</p>
 	</header>
 
-	<section class="info">
+	<section class="store-item-description">
+
+	    <aside class="purchase-pane">
+	    {{#unless IsLoggedIn}}
+	    	<section class="box store-logon">
+			<header class="pre">Logon required to purchase or launch apps</header>
+			<div id="store-logon" class="content">
+				{{> logon_partial}}
+			</div>
+		</section>
+	    {{/unless}}
+	    {{#if Subscriptions}}
+	    	<section class='box launch'>
+	    		<header>
+	    			<h1>Ready to launch <i class='cs-arrow-right'></i></h1>
+		    		<a href="{{baseurl}}launch/{{App.app_key}}" ftarget="{{App.app_key}}" title="Launch the app!"><i class="fa fa-rocket"></i> Launch App</a>
+		    	</header>
+		    	<div class='content'>
+	    			{{#morethanone Subscriptions "AppTierLevel"}}<p class='subscription-overlap'><i class='fa fa-exclamation-triangle'></i> It looks like you have multiple active subscriptions that include this app!</p>{{/morethanone}}
+	    			{{#each Subscriptions}}
+	    			{{#if AppTierLevel}}<div>Tier {{AppTierLevel}} -
+	    			{{#decodable subscriptionUrl}}
+	    			<a href="{{decode subscriptionUrl}}" title="Order id: {{referenceId}}">Manage your subscription</a>
+	    			{{/decodable}}</div>{{/if}}
+	    			{{/each}}
+		    	</div>
+	    	</section>
+	    {{/if}}
+    	    {{#if Tiers}}
+    	    	<section class='box tiers'>
+    	    		<header class="pre">Standalone<span>{{FreeTrialDays}} day trial</span></header>
+			{{#each Tiers}}
+    	    		<header>
+    	    			<h1>{{name}}</h1>
+    	    			{{#if IsLoggedIn}}
+		    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
+		    		{{else}}
+		    		<a href="#" class="button button-disabled"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
+		    		{{/if}}
+			</header>
+			<div class='content'>
+				{{{htmlify description}}}
+			</div>
+			{{/each}}
+		</section>
+	    {{/if}}
+	    {{#if Bundles}}
+		<section class='box bundles'>
+    	    		<header class="pre">Bundled<span>{{FreeTrialDays}} day trial</span></header>
+    			{{#each Bundles}}
+			<header>
+				<h1>{{label}}</h1>
+    	    			{{#if IsLoggedIn}}
+		    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
+		    		{{else}}
+		    		<a href="#" class="button button-disabled"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
+		    		{{/if}}
+			</header>
+			<div class='content includes'>
+				<ul>
+				{{#each BundleApps}}
+				<li><a href="/store/info/{{app_key}}">{{app_name}} ({{tier_name}})</a></li>
+				{{/each}}
+				</ul>
+			</div>
+			<div class='content'>
+	    			{{{htmlify description}}}
+    			</div>
+    			{{/each}}
+    		</section>
+    	    {{/if}}
+
+		<section class="box quibble-points">
+			<div class="content">
+			<ul>
+				<li>Fast, Secure purchasing via <a href="https://fastspring.com/">FastSpring</a></li>
+				<li>Your subscription will be charged monthly until cancelled.</li>
+				<li>Try before you buy - first {{FreeTrialDays}} days are free!</li>
+				<li>All apps are desktop browser based and require Firefox, Safari, Chrome, Opera or Vivaldi.</li>
+				{{#if editlink}}<li><a href="{{editlink}}">Edit this app</a>.</li>{{/if}}
+			</ul>
+			</div>
+		</footer>
+
+	    </aside>
+
 	    {{#if App.media}}<div id="slideshow">
 	        <div class="slide-wrapper">
 	        	<div id="current_slide" class="viewport">{{> make_slides}}</div>
 	            <nav id="slide_controls" class="viewport">{{> make_thumbnails}}</nav>
 	        </div>
 	    </div>{{/if}}
-	    <div class="purchase-pane">
-	    {{#if Subscriptions}}
-    	    	<section class="store-subscriptions tabbed-content theme-teal">
-			<nav data-interaction="tabs">
-				<a href="#subscriptions" class="active">Your subscription{{#plural Subscriptions}}s{{/plural}}</a>
-			</nav>
-			<div id="subscriptions" class="active div-outline">
-				<p>Your current subscription{{#plural Subscriptions}}s{{/plural}} include{{#plural Subscriptions}}{{else}}s{{/plural}} access to this product.
-				Click the button below to launch!</p>
-		    		<div class="launch-buttons-container text-center">
-			    		<a href="{{baseurl}}launch/{{App.app_key}}" class="button button-green button-big" ftarget="{{App.app_key}}"><i class="fa fa-rocket"></i>Launch App</a>
-			    	</div>
-				{{#if Feedback.negative}}<p class="form-feedback-negative">{{Feedback.negative}}</p>{{/if}}{{#if Feedback.positive}}<p class="form-feedback-positive">{{Feedback.positive}}</p>{{/if}}
-		    		<div class="subscription-buttons text-center">
-		    			{{#morethanone Subscriptions "AppTierLevel"}}<p class='subscription-overlap'><i class='fa fa-exclamation-triangle'></i> It looks like you have multiple active subscriptions that include this app! The app will launch at the highest tier.</p>{{/morethanone}}
-		    			{{#each Subscriptions}}
-		    			{{#if AppTierLevel}}<div>Tier {{AppTierLevel}}:
-		    			{{#decodable subscriptionUrl}}
-		    			<a href="{{decode subscriptionUrl}}" title="Order id: {{referenceId}}">Manage your subscription</a>
-		    			{{/decodable}}</div>{{/if}}
-		    			{{/each}}
-			    	</div>
-			</div>
-		</section>
-	    {{else}}{{#if IsLoggedIn}}
-	    	<section class="store-purchase-links tabbed-content theme-green">
-	    		<nav data-interaction="tabs">
-	    		{{#if Tiers}}
-	    			<a href="#content-1" data-action="select-tab" class="active">Buy standalone</a>
-			{{/if}}
-			{{#if Bundles}}
-	    			<a href="#content-2" data-action="select-tab"{{#unless Tiers}} class="active"{{/unless}}>Buy bundled</a>
-			{{/if}}
-	    		</nav>
 
-			{{#if Tiers}}
-			<div id="content-1" class="standalone-buttons active div-outline">
-			<p>Check the Product Tiers box below for more information about each tier.</p>
-				<p>Press one of the store links below to begin.</p>
-		    		<div class="text-center purchase-buttons-container">
-		    			{{#each Tiers}}
-				    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>{{name}} ${{cint Product.price}} USD</a>
-		    			{{/each}}
-			    	</div>
-			</div>
-			{{/if}}
-
-			{{#if Bundles}}
-			<div id="content-2" class="bundle-buttons tabbed-content theme-blue tab-direction-vertical {{#unless Tiers}} active{{/unless}}">
-		    		<nav data-interaction="tabs">
-		    			{{#each Bundles}}
-		    			<a href="#bundle-{{id}}" data-action="select-tab"{{#equals @index 0}} class="active"{{/equals}}>{{label}}</a>
-		    			{{/each}}
-		    		</nav>
-		    		{{#each Bundles}}
-		    		<div id="bundle-{{id}}" class="div-outline {{#equals @index 0}}active{{/equals}}">
-		    			{{{htmlify description}}}
-		    			<ul class="bundle-app-list">
-		    				{{#each BundleApps}}
-		    				<li><a href="/store/info/{{app_key}}">{{app_name}} ({{tier_name}})</a></li>
-		    				{{/each}}
-		    			</ul>
-		    			<div class="purchase-buttons-container text-center">
-				    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>Buy now ${{cint Product.price}} USD</a>
-		    			</div>
-		    		</div>
-		    		{{/each}}
-			</div>
-			{{/if}}
-			<footer class="quibble-points">
-				<ul>
-					<li>Fast, Secure purchasing via <a href="https://fastspring.com/">FastSpring</a></li>
-					<li>Your subscription will be charged monthly until cancelled.</li>
-					<li>Try before you buy - first {{FreeTrialDays}} days are free!</li>
-					<li>All apps are desktop browser based and require Firefox, Safari, Chrome, or Vivaldi.</li>
-					{{#if editlink}}<li><a href="{{editlink}}">Edit this app</a>.</li>{{/if}}
-				</ul>
-			</footer>
-
-		</section>
-	    {{else}}{{!-- Not yet logged in --}}
-    	    	<section class="store-logon tabbed-content theme-yellow">
-			<nav data-interaction="tabs">
-				<a href="#store-logon" class="active">Register or Log In</a>
-			</nav>
-			<div id="store-logon" class="active div-outline">
-				<h4>Logon required to purchase or launch apps</h4>
-				{{> logon_partial}}
-			</div>
-		</section>
-	    {{/if}}{{/if}}
-	    </div>
+	    <article class="app-info">
+		{{{htmlify App.description}}}
+	    </article>
 	</section>
 
-	<section class="store-item-description app-{{App.app_key}}">
-		<article class="app-info standard-width">
-			{{#if Tiers}}
-			<aside class="app-tier-info count-{{count Tiers}}">
-				<h3>Product Tiers</h3>
-				<div class="tiers">
-				{{#each Tiers}}
-				<div class="tier">
-					<h4 class="name">{{name}}</h4>
-					<div class="description">{{{htmlify description}}}</div>
-				</div>
-				{{/each}}
-				</div>
-			</aside>
-			{{/if}}
-			<main class="clearfix">
-			{{{htmlify App.description}}}
-			</main>
-		</article>
-	</section>
 </article>
 
 {{{Contact_Form_Placeholder}}}
