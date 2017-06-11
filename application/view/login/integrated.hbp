@@ -1,5 +1,4 @@
-<p>To register (or retrieve your password), just enter your email address.<br />
-To log in, enter both your email and password.</p>
+<p class='make-bolder'>To <b>register</b> or <b>retrieve your password</b>, just enter your email address. To <b>log in</b>, enter both your email and password.</p>
 <form method="{{#if ajax}}ajax{{else}}post{{/if}}" action="{{baseurl}}login/authenticate" name="authenticate">
 	<input type="hidden" name="csrf_token" value="{{csrf_token}}">
 	<input type="hidden" name="app_key" value="{{App.app_key}}">
@@ -24,7 +23,7 @@ To log in, enter both your email and password.</p>
 	{{/if}}
 	<div class="row captcha">
 		<label></label>
-	            <div class="g-recaptcha" data-sitekey="{{GoogleSiteKey}}"></div>
+	            <div class="g-recaptcha" data-sitekey="{{GoogleSiteKey}}" style="transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;"></div>
 	            <script src="//www.google.com/recaptcha/api.js?hl=en" type="text/javascript"></script>
 	</div>
 	{{#if Feedback}}
