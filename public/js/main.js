@@ -183,7 +183,7 @@ $(function () {
 				el.reset();
 			}
 			if (result.reload) {
-				location.href = location.href;
+				location.reload(true); //  = location.href;
 			}
 		});
 		return false;
