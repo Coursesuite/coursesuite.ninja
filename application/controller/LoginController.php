@@ -219,7 +219,7 @@ class LoginController extends Controller
 
         // regen the csrf token for the next attempt
         $result->csrf = Csrf::makeToken();
-        if ($result->positive == true && isset($redirect) && !empty($redirect)) {
+        if (isset($result->positive) && $result->positive == true && isset($redirect) && !empty($redirect)) {
             Session::remove("RedirectTo");
             Redirect::to($redirect);
         } else {
