@@ -2,6 +2,7 @@
     <div class="standard-width">
         <header>
             <h3>Contact us</h3>
+            <p>*Note: for technical support, please use the <a href="http://help.coursesuite.ninja/" target="_blank" class="not-a-button">Helpdesk</a> or <a href="http://forum.coursesuite.ninja/" target="_blank" class="not-a-button">Forum</a>.</p>
         </header>
         <article>
             <form method="ajax" action="{{baseurl}}store/contact">

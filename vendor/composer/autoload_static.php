@@ -23,6 +23,7 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         'C' => 
         array (
             'Cviebrock\\DiscoursePHP\\' => 23,
+            'ColorThief\\' => 11,
         ),
     );
 
@@ -42,6 +43,10 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         'Cviebrock\\DiscoursePHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/cviebrock/discourse-php/src',
+        ),
+        'ColorThief\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief',
         ),
     );
 
@@ -67,13 +72,6 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
             'Mailchimp' => 
             array (
                 0 => __DIR__ . '/..' . '/mailchimp/mailchimp/src',
-            ),
-        ),
-        'C' => 
-        array (
-            'ColorThief' => 
-            array (
-                0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib',
             ),
         ),
     );

@@ -9,10 +9,12 @@ class AppTierModel Extends Model
     protected $data_model;
     protected $product_model;
 
-    public function get_model()
+    public function get_model($withProduct = true)
     {
         $data = $this->data_model;
-        $data->Product = self::get_product();
+        if ($withProduct) {
+            $data->Product = self::get_product();
+        }
         return (array) $data;
     }
 

@@ -1,10 +1,11 @@
 <?php
 
-class BlacklistModel extends Model
+class BlacklistModel
 {
 	public static function isBlacklisted($email) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$domain = array_pop(explode('@', $email));
+		$ar = explode('@', $email);
+		$domain = array_pop($ar);
 		$sql = "select count(1) from blacklist where domain = :domain";
 		$query = $database->prepare($sql);
 		$query->execute(array(':domain' => $domain));

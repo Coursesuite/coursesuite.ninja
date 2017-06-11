@@ -1,55 +1,61 @@
 <article class="store-settings admin-tools">
 
-	<h3>
-		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
-		Various store settings
-	</h3>
+	<header class='admin-header'>
+		<h1>Various store settings</h1>
+		<nav>
+			<a href="{{baseurl}}admin" class="back button"><i class="cs-chevron-with-circle-left"></i> Admin tools</a>
+		</nav>
+	</header>
+
+	<p>Note: If it's greyed out, then it's no longer applicable to the site. I'll clean up one day.</p>
 
 	<form method="post" action="{{baseurl}}admin/storeSettings/update">
-		<div>
+		<div class="depreciated">
 			<label>People can pay?</label>
 			<input type="radio" name="purchasesystem" value="false"{{#equals purchasesystem "true"}}{{else}} checked{{/equals}} id="pr01"><label for="pr01">No</label>
 			<input type="radio" name="purchasesystem" value="true"{{#equals purchasesystem "true"}} checked{{/equals}} id="pr02"><label for="pr02">Yes</label>
 		</div>
-		<div>
+		<div class="depreciated">
 			<label>Message when people can't pay</label>
 			<input type="text" name="nopurchases" value="{{nopurchases}}" size="40">
 		</div>
-
 		<div>
+			<label>"How else" section on storefront</label>
+			<input type="radio" name="howelse" value="false"{{#equals howelse "true"}}{{else}} checked{{/equals}} id="r21"><label for="r21">No</label>
+			<input type="radio" name="howelse" value="true"{{#equals howelse "true"}} checked{{/equals}} id="r22"><label for="r22">Yes</label>
+		</div>
+		<div class="depreciated">
 			<label>Enable "tier" system</label>
 			<input type="radio" name="tiersystem" value="false"{{#equals tiersystem "true"}}{{else}} checked{{/equals}} id="r01"><label for="r01">No</label>
 			<input type="radio" name="tiersystem" value="true"{{#equals tiersystem "true"}} checked{{/equals}} id="r02"><label for="r02">Yes</label>
 		</div>
 		<div>
-			<label>Enable "free trial" button</label>
-			<input type="radio" name="freetrial" value="false"{{#equals freetrial "true"}}{{else}} checked{{/equals}} id="r11"><label for="r11">No</label>
-			<input type="radio" name="freetrial" value="true"{{#equals freetrial "true"}} checked{{/equals}} id="r12"><label for="r12">Yes</label>
-		</div>
-		<div>
-			<label for="r13">"Free trial" button label</label>
-			<input type="text" name="freetriallabel" value="{{freetriallabel}}" id="r13" size="40">
-		</div>
-		<div>
-			<label for="r131">"Free trial" box label</label>
-			<input type="text" name="freeTrialHeader" value="{{freetrialheader}}" id="r131" size="40">
-		</div>
-		<div>
-			<label for="freeTrialDescription">Free trial description</label>
-			<div><textarea id='freeTrialDescription' name="freeTrialDescription" rows="5" cols="80" data-markdown="true">{{freetrialdescription}}</textarea></div>
-		</div>
-
-		<div>
 			<label>Contact Us (store pages)</label>
 			<input type="radio" name="contactform" value="false"{{#equals contactform "true"}}{{else}} checked{{/equals}} id="cf01"><label for="cf01">No</label>
 			<input type="radio" name="contactform" value="true"{{#equals contactform "true"}} checked{{/equals}} id="cf02"><label for="cf02">Yes</label>
 		</div>
-
-		<div>
-			<label>Enable "How else can we help you" section</label>
-			<input type="radio" name="howelse" value="false"{{#equals howelse "true"}}{{else}} checked{{/equals}} id="r21"><label for="r21">No</label>
-			<input type="radio" name="howelse" value="true"{{#equals howelse "true"}} checked{{/equals}} id="r22"><label for="r22">Yes</label>
+		<div class="depreciated">
+			<label>Enable "free trial" button</label>
+			<input type="radio" name="freetrial" value="false"{{#equals freetrial "true"}}{{else}} checked{{/equals}} id="r11"><label for="r11">No</label>
+			<input type="radio" name="freetrial" value="true"{{#equals freetrial "true"}} checked{{/equals}} id="r12"><label for="r12">Yes</label>
 		</div>
+		<div class="depreciated">
+			<label for="r13">"Free trial" button label</label>
+			<input type="text" name="freetriallabel" value="{{freetriallabel}}" id="r13" size="40">
+		</div>
+		<div class="depreciated">
+			<label for="r131">"Free trial" box label</label>
+			<input type="text" name="freeTrialHeader" value="{{freetrialheader}}" id="r131" size="40">
+		</div>
+		<div>
+			<label for="foobar">FastSpring Trial Days</label>
+			<input type="number" min="0" max="99" value="{{freetrialdays}}" step="1" id="foobar" name="freeTrialDays">
+		</div>
+		<div class="depreciated">
+			<label for="freeTrialDescription">Free trial description</label>
+			<div><textarea id='freeTrialDescription' name="freeTrialDescription" rows="5" cols="80" data-markdown="true">{{freetrialdescription}}</textarea></div>
+		</div>
+
 
 		<div><label for="description">Footer left column</label>
 		<div><textarea id="footer_col1" name="footer_col1" rows="5" cols="80" data-markdown="true">{{footer.0}}</textarea></div></div>

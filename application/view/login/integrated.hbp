@@ -1,11 +1,12 @@
-<h4>Register or Log In</h4>
-<p>You need to log on to purchase or launch apps. Sign in below, or just enter your email address and we'll send you an account activation/reset link and password.</p>
-<form method="ajax" action="{{baseurl}}login/authenticate" name="authenticate">
+<p>To register (or retrieve your password), just enter your email address.<br />
+To log in, enter both your email and password.</p>
+<form method="{{#if ajax}}ajax{{else}}post{{/if}}" action="{{baseurl}}login/authenticate" name="authenticate">
 	<input type="hidden" name="csrf_token" value="{{csrf_token}}">
 	<input type="hidden" name="app_key" value="{{App.app_key}}">
+	{{#if redirect}}<input type="hidden" name="redirect" value="{{redirect}}">{{/if}}
 	<div class="row">
 		<label for="email">Email address:</label>
-		<input type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*">
+		<input type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*" value="{{PreloadedEmail}}">
 	</div>
 	<div class="row">
 		<label for="password">Password:</label>
@@ -21,15 +22,17 @@
 		<input type="checkbox" name="subscribe" id="subscribe" value="yes" checked="checked"> Yes
 	</div>
 	{{/if}}
-	<div class="row">
+	<div class="row captcha">
 		<label></label>
 	            <div class="g-recaptcha" data-sitekey="{{GoogleSiteKey}}"></div>
 	            <script src="//www.google.com/recaptcha/api.js?hl=en" type="text/javascript"></script>
 	</div>
+	{{#if Feedback}}
 	<div class="row">
 		<label></label>
-		<div id="form-feedback">{{#if Feedback}}<p class="{{FeedbackClass}}">{{Feedback}}</p>{{/if}}</div>
+		<div id="form-feedback">{{#if Feedback.negative}}<span class="form-feedback-negative">{{Feedback.negative}}</span>{{/if}}{{#if Feedback.positive}}<span class="form-feedback-positive">{{Feedback.positive}}</span>{{/if}}</div>
 	</div>
+	{{/if}}
 	<div class="row">
 		<label></label>
 		<input type="submit" value="Sign In or Register" id="form-submit-button">

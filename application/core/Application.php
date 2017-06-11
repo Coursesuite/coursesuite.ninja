@@ -30,9 +30,9 @@ class Application
     /** @var string Just the name of the controller's method, useful for checks inside the view ("where am I ?") */
     private $action_name;
 
-    private $session;
+    // private $session;
 
-    public static function php_session()
+    public static function php_session ()
     {
         global $session;
         return $session;
@@ -43,7 +43,7 @@ class Application
      */
     public function __construct()
     {
-        global $session;
+        // global $session;
         $mysqli = DatabaseFactory::getFactory()->getMySqli();
 
         // IF the request is coming from a validator-request (CURL call from an external site) then we DO NOT want a new session record
@@ -54,7 +54,8 @@ class Application
         } else {
 
             // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
-            $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, true, false, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
+        //    $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, true, false, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
+            // print_r($session->get_settings());
 
         }
 
@@ -79,6 +80,7 @@ class Application
                     break;
 
                 case "LaunchController": // launch/app/param1/param2 becomes launch/index (app, param1, param2)
+                case "BlogController":
                     $params = $this->parameters;
                     array_unshift($params, $this->action_name);
                     $this->action_name = "index";

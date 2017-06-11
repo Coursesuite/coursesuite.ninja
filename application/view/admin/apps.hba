@@ -1,15 +1,18 @@
 <article class="system-apps admin-tools">
 	{{#if action}}
-		<h3>
-			<a href="{{baseurl}}store/info/{{data.app_key}}" class="preview back button" title="View in store"><i class="cs-eye"></i></a>
-			<a href="{{baseurl}}admin/editApps/" class="back button">Back to edit apps</a>
-			Editing record {{id}}.
-		</h3>
+		<header class="admin-header">
+			<h1>Editing App {{id}}.</h1>
+			<nav>
+				<a href="{{baseurl}}admin/editApps/" class="back button"><i class=" cs-chevron-with-circle-left"></i> Edit apps</a>
+				<a href="{{baseurl}}store/info/{{data.app_key}}" class="preview back button button-blue" title="View in store"><i class="cs-eye"></i> Open page</a>
+			</nav>
+		</header>
 		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/save">
 		{{#with data}}
 			<div><label for="app_key">App Key:</label> <input type="text" id="app_key" name="app_key" value="{{app_key}}"></div>
 			<div><label for="name">Name:</label> <input type="text" id="name" name="name" value="{{name}}"></div>
 			<div><label for="tagline">tagline:</label> <input type="text" id="tagline" name="tagline" value="{{tagline}}"></div>
+			<div><label for="whatisit">what is it:</label> <input type="text" id="whatisit" name="whatisit" value="{{whatisit}}"></div>
 			<div><label for="icon">icon:</label> <input type="text" id="icon" name="icon" value="{{icon}}"></div>
 			<div><label for="url">domain url:</label> <input type="text" id="url" name="url" value="{{url}}"></div>
 			<div><label for="launch">launch url:</label> <input type="text" id="launch" name="launch" value="{{launch}}"></div>
@@ -27,8 +30,10 @@
 				<input type="radio" name="popular" value="0" {{#equals "0" popular}} checked{{/equals}} id="pn"><label for="pn">Nope</label>
 			</div>
 			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
+
 			<h4>Slide data</h4>
 			<div><label for="media">JSON</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
+
 			<h4>SEO (Metadata)</h4>
 			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>.</div>
 			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
@@ -57,7 +62,7 @@
 			<div class="short-editor"><label for="tier_{{length AppTiers 1}}_desc">Tier {{tier_level}} description</label> <div><textarea id="tier_{{length AppTiers 1}}_desc" name="AppTiers[{{length AppTiers 1}}][desc]" rows="5" cols="80" data-markdown="true">{{description}}</textarea></div></div>
 
 
-			<div><span class="spacer"></span><input type="submit" value="Save" class="button"></div>
+			<div><span class="spacer"></span><input type="submit" value="Save" class="button button-orange"></div>
 		</form>
 		{{#gte id 1}}
 		<h4>Media file management</h4>
@@ -79,10 +84,12 @@
 		</form>
 		{{/gte}}
 	{{else}}
-	<h3>
-		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
-		Apps
-	</h3>
+	<header class="admin-header">
+		<h1>Apps.</h1>
+		<nav>
+			<a href="{{baseurl}}admin/" class="back button"><i class=" cs-chevron-with-circle-left"></i> Admin tools</a>
+		</nav>
+	</header>
 	<ul>
 		{{#each apps}}
 		<li><a href="{{../baseurl}}admin/editApps/{{app_id}}/edit">{{app_id}}. {{name}}</a></li>

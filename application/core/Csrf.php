@@ -24,43 +24,48 @@
 class Csrf
 {
 
-    /**
-     * get CSRF token and generate a new one if expired
-     *
-     * @access public
-     * @static static method
-     * @return string
-     */
-    public static function makeToken()
-    {
-        // token is valid for 1 day
-        $max_time = 60 * 60 * 24;
-        $stored_time = Session::get('csrf_token_time');
-        $csrf_token = Session::get('csrf_token');
+	/**
+	 * get CSRF token and generate a new one if expired
+	 *
+	 * @access public
+	 * @static static method
+	 * @return string
+	 */
+	public static function makeToken()
+	{
+		// token is valid for 1 day
+		$max_time = 60 * 60 * 24;
+		$stored_time = Session::get('csrf_token_time');
+		$csrf_token = Session::get('csrf_token');
 
-        if ($max_time + $stored_time <= time() || empty($csrf_token)) {
-            $csrf_token = md5(uniqid(rand(), true));
-            Session::set('csrf_token', $csrf_token);
-            Session::set('csrf_token_time', time());
-        }
+		if ($max_time + $stored_time <= time() || empty($csrf_token)) {
+			$csrf_token = md5(uniqid(rand(), true));
+			Session::set('csrf_token', $csrf_token);
+			Session::set('csrf_token_time', time());
+		}
 
-        return $csrf_token; // Session::get('csrf_token');
-    }
+		return $csrf_token; // Session::get('csrf_token');
+	}
 
-    /**
-     * checks if CSRF token in session is same as in the form submitted
-     *
-     * @access public
-     * @static static method
-     * @return bool
-     */
-    public static function isTokenValid()
-    {
-        $token = Request::post('csrf_token');
-        return $token === Session::get('csrf_token') && !empty($token);
-    }
+	public static function resetToken() {
+		Session::remove('csrf_token');
+		Session::remove('csrf_token_time');
+	}
 
-    public static function validateToken($token) {
-        return $token === Session::get('csrf_token') && !empty($token);
-    }
+	/**
+	 * checks if CSRF token in session is same as in the form submitted
+	 *
+	 * @access public
+	 * @static static method
+	 * @return bool
+	 */
+	public static function isTokenValid()
+	{
+		$token = Request::post('csrf_token');
+		return $token === Session::get('csrf_token') && !empty($token);
+	}
+
+	public static function validateToken($token) {
+		return $token === Session::get('csrf_token') && !empty($token);
+	}
 }

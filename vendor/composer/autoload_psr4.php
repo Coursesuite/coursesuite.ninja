@@ -10,5 +10,6 @@ return array(
     'Rakshazi\\' => array($vendorDir . '/rakshazi/digestauth/Rakshazi'),
     'LightnCandy\\' => array($vendorDir . '/zordius/lightncandy/src'),
     'Cviebrock\\DiscoursePHP\\' => array($vendorDir . '/cviebrock/discourse-php/src'),
+    'ColorThief\\' => array($vendorDir . '/ksubileau/color-thief-php/lib/ColorThief'),
     '' => array($baseDir . '/application/core', $baseDir . '/application/model'),
 );

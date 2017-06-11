@@ -1,113 +1,111 @@
-<article class="store-item-specific">
+<article class="store-item-specific{{#if Subscriptions}} subscriber{{/if}}{{#if IsLoggedOn}} customer{{/if}}">
 
 	<header class='common-header app-{{App.app_key}}'>
+		<h1>{{App.name}}</h1>
 		<nav>
-			{{#if editlink}}<a href="{{editlink}}" class="edit-icon">App admin</a>{{/if}}
-			<div class="social-buttons">
-				<span class='st_facebook_large' displayText='Facebook'></span>
-				<span class='st_twitter_large' displayText='Tweet' st_via=" " st_msg="{{tweetable App.meta_description App.meta_title}}"></span>
-				<span class='st_linkedin_large' displayText='LinkedIn'></span>
-				<span class='st_evernote_large' displayText='Evernote'></span>
-				<span class='st_email_large' displayText='Email'></span>
-			</div>
-			{{App.name}}
+			<div class="sharethis-inline-share-buttons"></div>
 		</nav>
 	</header>
 
-	<section class="info standard-width">
-	    {{#if App.media}}<div class="media">
-	    	<a href="javascript:slideshow('precede');" class="slide_navigation precede"><i class="cs-arrow-with-circle-left"></i></a>
+	<header class='app-tagline'>
+		<p>{{App.whatisit}}</p>
+	</header>
+
+	<section class="info">
+	    {{#if App.media}}<div id="slideshow">
 	        <div class="slide-wrapper">
-	        	<div class="current_slide viewport"><div id="current_slide">[no slides yet]</div></div>
-	            <div class="slide_controls viewport"><nav id="slide_controls">[...]</nav></div>
+	        	<div id="current_slide" class="viewport">{{> make_slides}}</div>
+	            <nav id="slide_controls" class="viewport">{{> make_thumbnails}}</nav>
 	        </div>
-	    	<a href="javascript:slideshow('advance');" class="slide_navigation advance"><i class="cs-arrow-with-circle-right"></i></a>
 	    </div>{{/if}}
 	    <div class="purchase-pane">
 	    {{#if Subscriptions}}
-	    	<section class="radio-tabs">
-			<input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" />
-			<label for="tab-1" class="tab-label-1 radio-label">Your subscription{{#plural Subscriptions}}s{{/plural}}</label>
-			<div class="clear-shadow"></div>
-			<div class="content">
-				<div class="content-1 your-subscription-info">
-					<p>Your current subscription{{#plural Subscriptions}}s{{/plural}} include{{#plural Subscriptions}}{{else}}s{{/plural}} access to this product.
-					Click the button below to launch!</p>
-			    		<div class="launch-buttons text-center">
-				    		<a href="{{baseurl}}launch/{{App.app_key}}" class="launch-button" target="{{App.app_key}}">Launch App</a>
-				    	</div>
-					{{#if Feedback}}<p class="{{FeedbackClass}} text-center">{{Feedback}}</p>{{/if}}
-			    		<div class="subscription-buttons text-center">
-			    			{{#morethanone Subscriptions "AppTierLevel"}}<p class='subscription-overlap'><i class='fa fa-exclamation-triangle'></i> It looks like you have multiple active subscriptions that include this app!</p>{{/morethanone}}
-			    			{{#each Subscriptions}}
-			    			{{#if AppTierLevel}}<div>Tier {{AppTierLevel}}:
-			    			{{#decodable subscriptionUrl}}
-			    			<a href="{{decode subscriptionUrl}}" title="Order id: {{referenceId}}">Manage your subscription</a>
-			    			{{/decodable}}</div>{{/if}}
-			    			{{/each}}
-				    	</div>
-				</div>
+    	    	<section class="store-subscriptions tabbed-content theme-teal">
+			<nav data-interaction="tabs">
+				<a href="#subscriptions" class="active">Your subscription{{#plural Subscriptions}}s{{/plural}}</a>
+			</nav>
+			<div id="subscriptions" class="active div-outline">
+				<p>Your current subscription{{#plural Subscriptions}}s{{/plural}} include{{#plural Subscriptions}}{{else}}s{{/plural}} access to this product.
+				Click the button below to launch!</p>
+		    		<div class="launch-buttons-container text-center">
+			    		<a href="{{baseurl}}launch/{{App.app_key}}" class="button button-green button-big" ftarget="{{App.app_key}}"><i class="fa fa-rocket"></i>Launch App</a>
+			    	</div>
+				{{#if Feedback.negative}}<p class="form-feedback-negative">{{Feedback.negative}}</p>{{/if}}{{#if Feedback.positive}}<p class="form-feedback-positive">{{Feedback.positive}}</p>{{/if}}
+		    		<div class="subscription-buttons text-center">
+		    			{{#morethanone Subscriptions "AppTierLevel"}}<p class='subscription-overlap'><i class='fa fa-exclamation-triangle'></i> It looks like you have multiple active subscriptions that include this app! The app will launch at the highest tier.</p>{{/morethanone}}
+		    			{{#each Subscriptions}}
+		    			{{#if AppTierLevel}}<div>Tier {{AppTierLevel}}:
+		    			{{#decodable subscriptionUrl}}
+		    			<a href="{{decode subscriptionUrl}}" title="Order id: {{referenceId}}">Manage your subscription</a>
+		    			{{/decodable}}</div>{{/if}}
+		    			{{/each}}
+			    	</div>
 			</div>
 		</section>
 	    {{else}}{{#if IsLoggedIn}}
-	    	<section class="radio-tabs">
+	    	<section class="store-purchase-links tabbed-content theme-green">
+	    		<nav data-interaction="tabs">
 	    		{{#if Tiers}}
-			<input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" />
-			<label for="tab-1" class="tab-label-1 radio-label">Buy standalone</label>
+	    			<a href="#content-1" data-action="select-tab" class="active">Buy standalone</a>
 			{{/if}}
 			{{#if Bundles}}
-			<input id="tab-2" type="radio" name="radio-set" class="tab-selector-2"{{#unless Tiers}} checked="checked"{{/unless}} />
-			<label for="tab-2" class="tab-label-2 radio-label">Buy as bundle</label>
+	    			<a href="#content-2" data-action="select-tab"{{#unless Tiers}} class="active"{{/unless}}>Buy bundled</a>
 			{{/if}}
-			<div class="clear-shadow"></div>
-			<div class="content">
-				{{#if Tiers}}
-				<div class="content-1 standalone-buttons">
-			    		<div class="purchase-buttons text-center">
-			    			{{#each Tiers}}
-					    		<a href="{{Product.store_url}}" class="purchase-button">{{name}} ${{cint Product.price}}</a>
-			    			{{/each}}
-				    	</div>
-				</div>
-				{{/if}}
-				{{#if Bundles}}
-				<div class="content-2 bundle-buttons">
-			    		<nav class="bundle-menu" data-interaction="tabs">
-			    			{{#each Bundles}}
-			    			<a href="#bundle-{{id}}" data-action="select-tab"{{#equals @index 0}} class="active"{{/equals}}>{{label}}</a>
-			    			{{/each}}
-			    		</nav>
-			    		{{#each Bundles}}
-			    		<div id="bundle-{{id}}"{{#equals @index 0}} class="active"{{/equals}}>
-			    			{{{htmlify description}}}
-			    			<ul class="bundle-app-list">
-			    				{{#each BundleApps}}
-			    				<li><a href="/store/info/{{app_key}}">{{app_name}} ({{tier_name}})</a></li>
-			    				{{/each}}
-			    			</ul>
-			    			<div class="purchase-buttons text-center">
-					    		<a href="{{Product.store_url}}" class="purchase-button">Buy now ${{cint Product.price}}</a>
-			    			</div>
-			    		</div>
-			    		{{/each}}
-				</div>
-				{{/if}}
+	    		</nav>
+
+			{{#if Tiers}}
+			<div id="content-1" class="standalone-buttons active div-outline">
+			<p>Check the Product Tiers box below for more information about each tier.</p>
+				<p>Press one of the store links below to begin.</p>
+		    		<div class="text-center purchase-buttons-container">
+		    			{{#each Tiers}}
+				    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>{{name}} ${{cint Product.price}} USD</a>
+		    			{{/each}}
+			    	</div>
 			</div>
+			{{/if}}
+
+			{{#if Bundles}}
+			<div id="content-2" class="bundle-buttons tabbed-content theme-blue tab-direction-vertical {{#unless Tiers}} active{{/unless}}">
+		    		<nav data-interaction="tabs">
+		    			{{#each Bundles}}
+		    			<a href="#bundle-{{id}}" data-action="select-tab"{{#equals @index 0}} class="active"{{/equals}}>{{label}}</a>
+		    			{{/each}}
+		    		</nav>
+		    		{{#each Bundles}}
+		    		<div id="bundle-{{id}}" class="div-outline {{#equals @index 0}}active{{/equals}}">
+		    			{{{htmlify description}}}
+		    			<ul class="bundle-app-list">
+		    				{{#each BundleApps}}
+		    				<li><a href="/store/info/{{app_key}}">{{app_name}} ({{tier_name}})</a></li>
+		    				{{/each}}
+		    			</ul>
+		    			<div class="purchase-buttons-container text-center">
+				    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>Buy now ${{cint Product.price}} USD</a>
+		    			</div>
+		    		</div>
+		    		{{/each}}
+			</div>
+			{{/if}}
+			<footer class="quibble-points">
+				<ul>
+					<li>Fast, Secure purchasing via <a href="https://fastspring.com/">FastSpring</a></li>
+					<li>Your subscription will be charged monthly until cancelled.</li>
+					<li>Try before you buy - first {{FreeTrialDays}} days are free!</li>
+					<li>All apps are desktop browser based and require Firefox, Safari, Chrome, or Vivaldi.</li>
+					{{#if editlink}}<li><a href="{{editlink}}">Edit this app</a>.</li>{{/if}}
+				</ul>
+			</footer>
+
 		</section>
-	    	<ul class="quibble-points">
-	    		<li>Fast, Secure purchasing via <a href="https://fastspring.com/">FastSpring</a></li>
-	    		<li>Your subscription will be charged monthly until cancelled.</li>
-	    		<li>Try before you buy - first 3 days are free!</li>
-	    		<li>All apps are desktop browser based and require Firefox, Safari, Chrome, or Vivaldi.</li>
-	    	</ul>
-	    {{else}}
-    	    	<section class="radio-tabs">
-			<input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" />
-			<div class="clear-shadow"></div>
-			<div class="content need-to-logon">
-				<div class="content-1">
+	    {{else}}{{!-- Not yet logged in --}}
+    	    	<section class="store-logon tabbed-content theme-yellow">
+			<nav data-interaction="tabs">
+				<a href="#store-logon" class="active">Register or Log In</a>
+			</nav>
+			<div id="store-logon" class="active div-outline">
+				<h4>Logon required to purchase or launch apps</h4>
 				{{> logon_partial}}
-				</div>
 			</div>
 		</section>
 	    {{/if}}{{/if}}
@@ -116,23 +114,26 @@
 
 	<section class="store-item-description app-{{App.app_key}}">
 		<article class="app-info standard-width">
-		{{#if Tiers}}
-		<aside class="app-tier-info">
-			<h3>Product Tiers</h3>
-			{{#each Tiers}}
-			<h4 class="tier-name">{{name}}</h4>
-			<div class="tier-description">{{{htmlify description}}}</div>
-			{{/each}}
-		</aside>
-		{{/if}}
-		{{{htmlify App.description}}}
+			{{#if Tiers}}
+			<aside class="app-tier-info count-{{count Tiers}}">
+				<h3>Product Tiers</h3>
+				<div class="tiers">
+				{{#each Tiers}}
+				<div class="tier">
+					<h4 class="name">{{name}}</h4>
+					<div class="description">{{{htmlify description}}}</div>
+				</div>
+				{{/each}}
+				</div>
+			</aside>
+			{{/if}}
+			<main class="clearfix">
+			{{{htmlify App.description}}}
+			</main>
 		</article>
 	</section>
 </article>
 
 {{{Contact_Form_Placeholder}}}
 
-<script type="text/javascript">var slidesZZZ = {{#if App.media}}{{{App.media}}}{{else}}undefined{{/if}};</script>
-<script type="text/javascript">var switchTo5x=true;</script>
-<script type="text/javascript" id="st_insights_js" src="//w.sharethis.com/button/buttons.js?publisher=f1e02e1a-0966-47bc-97ca-022fd9ff04e2"></script>
-<script type="text/javascript">stLight.options({publisher: "f1e02e1a-0966-47bc-97ca-022fd9ff04e2", doNotHash: true, doNotCopy: true, hashAddressBar: true});</script>
+<script type="text/javascript">window.slides = {{#if App.media}}{{{stringify App.media}}}{{else}}undefined{{/if}};</script>

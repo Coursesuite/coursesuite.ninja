@@ -17,8 +17,12 @@ class CronController extends Controller
         // keep subscription active states up to date
         SubscriptionModel::validateSubscriptions();
 
+        // kills off junk accounts
+        RegistrationModel::cleanup_unverified_new_accounts_after_a_while();
+
+        // start garbage collection
         $ssn = Application::php_session();
-        $ssn->get_active_sessions(); // internally garbage collects
+        $ssn->get_active_sessions();
 
         // Clean old sessions
         Session::clean();

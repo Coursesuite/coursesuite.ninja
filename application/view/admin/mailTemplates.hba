@@ -1,78 +1,27 @@
 <article class="admin-tools mail-templates">
-	{{#if action}}
-		{{#with template}}
-			<select id="templateVersion">
-				<option value="draft">Draft</option>
-				<option value="live">Live</option>
-			</select>
-			<div id="draft" class="admin-tools mail-display">
-				<form method="post">
-				{{#not ../action 'update'}}<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}"></div>{{/not}}
-				{{#equals ../action 'update'}}<div><label for='name'>Name: </label><input type="text" id="name" name="name" value="{{name}}" readonly></div>{{/equals}}
-				<div><label for='subject'>Subject: </label><textarea name="subject" rows="1" cols="80">{{subject}}</textarea></div>
-				<div><label for='body'>Body: </label><textarea name="body" rows="10" cols="80">{{body}}</textarea></div>
-				<div><label for='body_plain'>Plain Text: </label><textarea name="body_plain" rows="10" cols="80">{{body_plain}}</textarea></div>
-				<div><input type="submit" name="emailRecipient" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/test" value="Test" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"><input type="text" name="recipient" placeholder="Email address to send to"></div>
-				<br>
-				{{#equals ../action 'new'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/0/create" value="Create" class="submit button"></div>{{/equals}}
-				{{#equals ../action 'update'}}<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/{{id}}/save" value="Save" class="submit button"></div>{{/equals}}	
-				<div><input type="submit" formaction="{{../baseurl}}admin/mailTemplates/0/publish" value="Publish" class="submit button"></div>
-				</form>
-				<div style="position:relative;">
-					<a href="{{../baseurl}}admin/mailTemplates" class="back button">Cancel</a>
-					{{#not ../action 'new'}}<a href="{{../baseurl}}admin/mailTemplates/{{id}}/delete" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored delete-button" style="background:rgba(255,0,0,1);">DELETE</a>{{/not}}
-				</div>
-			</div>
-			<div id="live" class="admin-tools mail-hidden">
-			<div class="live">
-		{{/with}}
-		{{#with live}}
-			<div><label>Name: </label><div>{{name}}</div></div>
-			<div><label>Subject: </label><div>{{subject}}</div></div>
-			<div><label>Body: </label><div>{{body}}</div></div>
-			<div><label>Plain Text: </label><div>{{body_plain}}</div></div>
-		{{/with}}
-			</div>
-			<a href="{{../baseurl}}admin/mailTemplates" class="back button">Cancel</a>
-			</div>
-		
-	{{else}}
-		<h3>
-		Pre-Mailer
-		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
-		</h3>
-		<div>
-			Once your email is completed, copy and past the code into the <a href="http://premailer.dialect.ca/">Pre-Mailer</a> Then paste the output into your template.
-		<h3>Variable names</h3>
-		<div>
-			Use these anywhere in your email and they will resolve to their appropriate value <br><br>
-			&#123;&#123;userName&#125;&#125;<br>
-			&#123;&#123;userEmail&#125;&#125;<br>
-			&#123;&#123;verificationUrl&#125;&#125;
-		</div>
-		<h3>
-		Edit mail templates
-		</h3>
-		<p><a href="{{baseurl}}admin/mailTemplates/0/new" class="create button">Create a new template</a></p>
-		<ul>
-		{{#each allTemplates}}
-			<li><a href="{{baseurl}}/admin/mailTemplates/{{id}}/update">{{name}}</a></li>
-		{{/each}}
-		</ul>
-	{{/if}}
-</article>
+	<header class="common-header">
+		<h1>Mail Templates</h1>
+		<nav>
+			<a href="{{baseurl}}admin/" class="button">Return</a>
+		</nav>
+	</header>
+	<main class="standard-width">
 
-<script>
-var dropDown = document.getElementById("templateVersion");
-var draft = document.getElementById("draft");
-var live = document.getElementById("live");
-dropDown.addEventListener('change', function() {
-	if (dropDown.options[dropDown.selectedIndex].value == "draft") {
-		draft.className = "admin-tools mail-display"
-		live.className = "admin-tools mail-hidden"
-	} else {
-		draft.className = "admin-tools mail-hidden"
-		live.className = "admin-tools mail-display"
-	}
-});
-</script>
+	<p>Ok. so here's the deal with mail templates: there's only ONE, and it's HTML, and it's made with <a href="https://beefree.io/" target="_blank">BeeFree.io</a>.
+	HTML emails are XHTML full of tables and wierd comment blocks and all sorts of absurd hacks, because Microsoft.</p>
+	<p>It's a handlebars template that is evaluated inside code and has values injected into it.
+	To keep things simple, there are only a few variables you have to deal with.</p>
+	<ul>
+		<li>&#123;&#123;header&#125;&#125; - (required) Both the subject of the email, plus the Header of the email.</li>
+		<li>&#123;&#123;body&#125;&#125; - (required) Markdown version of your html to be sent.</li>
+		<li>&#123;&#123;link&#125;&#125; - (optional) Hyperlink to send, if any (e.g. for verification emails, etc)</li>
+	</ul>
+
+	<form method="post" action="{{baseurl}}admin/mailTemplates">
+		<input type="hidden" name="action" value="save">
+		<div><label for="content">Content</label> <div><textarea id="content" name="content" rows="10" cols="80" data-markdown="true">{{content}}</textarea></div></div>
+		<div><span class="spacer"></span><input type="button" value="Preview" class="preview button button-blue" data-action="previewEditor"> &nbsp; <input type="submit" value="Save" class="submit button"></div>
+	</form>
+
+	</main>
+</article>

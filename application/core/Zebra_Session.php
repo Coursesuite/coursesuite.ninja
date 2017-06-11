@@ -230,7 +230,7 @@ class Zebra_Session
 
         // store the connection link
         $this->link = $link;
-        
+
         // continue if there is an active MySQL connection
         if ($this->_mysql_ping()) {
 
@@ -428,6 +428,9 @@ class Zebra_Session
      */
     public function regenerate_id()
     {
+
+// php 7.1 causes a bug
+// uh oh! https://github.com/stefangabos/Zebra_Session/issues/13
 
         // regenerates the id (create a new session with a new id and containing the data from the old session)
         // also, delete the old session
@@ -671,7 +674,7 @@ class Zebra_Session
      */
     function write($session_id, $session_data)
     {
-	    
+
 	    $ua = empty($_SERVER['HTTP_USER_AGENT']) ? isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "unknown" : $_SERVER['HTTP_USER_AGENT'];
 
 

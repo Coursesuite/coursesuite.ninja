@@ -25,7 +25,10 @@ class Curl
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, $returnTransfer);
         if ($json) {curl_setopt($ch, CURLOPT_POSTFIELDS, $json);}
         ob_clean();
-        return curl_exec($ch);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        // LoggingModel::logInternal("mailChimpCurl", $url, $apiKey, $requestType, $returnTransfer, $json, $result);
+        return $result;
     }
 
     public static function cloudConvertHook($action, $param = "")
@@ -62,6 +65,7 @@ class Curl
 
         }
         curl_close($ch);
+        LoggingModel::logInternal("cloudConvertHook", $action, $param, $server_output);
         return $server_output;
     }
 }

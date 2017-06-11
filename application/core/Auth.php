@@ -24,11 +24,13 @@ class Auth
         // (if user IS logged in the application will not run the code below and therefore just go on)
         if (!Session::userIsLoggedIn()) {
             // ... then treat user as "not logged in", destroy session, redirect to login page
-            Session::destroy();
+            // Session::destroy();
+
             // send the user to the login form page, but also add the current page's URI (the part after the base URL)
             // as a parameter argument, making it possible to send the user back to where he/she came from after a
             // successful login
-            header('location: ' . Config::get('URL') . 'login?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+            Session::set("RedirectTo", urlencode($_SERVER['REQUEST_URI']));
+            header('location: ' . Config::get('URL') . 'login');
             // to prevent fetching views via cURL (which "ignores" the header-redirect above) we leave the application
             // the hard way, via exit(). @see https://github.com/panique/php-login/issues/453
             // this is not optimal and will be fixed in future releases
@@ -67,6 +69,7 @@ class Auth
      */
     public static function checkSessionConcurrency()
     {
+
         if (!Session::userIsLoggedIn()) {
             return;
         }
@@ -76,6 +79,7 @@ class Auth
         }
 
         if (Session::isConcurrentSessionExists()) {
+
             LoginModel::logout();
 
             Session::init(); // make a new session

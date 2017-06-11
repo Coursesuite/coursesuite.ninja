@@ -60,15 +60,23 @@ class View
         $precompiled = Config::get('PATH_VIEW_PRECOMPILED') . $hashname . '.php';
         $assoc = json_decode(json_encode($data), true); // data is now an associative array
 
-        // expose data so header and footer can also pick it up (includes, not handlebars tempaltes)
+        if (!array_key_exists("Feedback", $assoc)) {
+            $assoc["Feedback"] = array(
+                "positive" => Session::get('feedback_positive'),
+                "negative" => Session::get('feedback_negative'),
+                "area" => Session::get('feedback_area')
+            );
+        }
+
+        // expose data so header and footer can also pick it up (includes, not handlebars templates)
         if ($data) {
             foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
 
+        // if we have already compiled this page, don't compile it again unless being forced to
         if (!file_exists($precompiled) || $force == true) {
-            // if we have already compiled this page, don't compile it again unless being forced to
 
             $template = file_get_contents(Config::get('PATH_VIEW') . $filename . '.hba');
 
@@ -114,6 +122,10 @@ class View
                     $json = json_decode($arg1);
                     return json_encode($json, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
                 },
+                "stringify" => function($obj, $pretty = false) {
+                    $params = JSON_NUMERIC_CHECK; // | JSON_PRETTY_PRINT
+                    return json_encode($obj, $params);
+                },
                 "typeof" => function ($arg1) {
                     return gettype($arg1);
                 },
@@ -129,12 +141,25 @@ class View
                         return $options['inverse']();
                     }
                 },
+                "hasmorethan" => function ($arg1, $arg2, $options) {
+                    if (count($arg1) > $arg2) {
+                        return $options['fn']();
+                    } elseif (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
+                "count" => function ($arg1) {
+                    return count($arg1);
+                },
                 "length" => function ($arg1, $inc) {
                     $len = count($arg1);
                     return $len + $inc;
                 },
                 "add" => function ($arg1, $arg2) {
                     return (int) $arg1 + (int) $arg2;
+                },
+                "minus" => function ($arg1, $arg2) {
+                    return (int) $arg1 - (int) $arg2;
                 },
                 "cint" => function ($arg1) {
                     return (int) $arg1;
@@ -179,23 +204,52 @@ class View
                 "tweetable" => function ($string1, $string2) {
                     $remaining = 140 - 27 - strlen($string2); // tweet length minus shortened url length (guess) minus title of page (social platform copies that in automatically)
                     return trim(substr($string1, 0, $remaining - 3)) . "...";
+                },
+                "productDescription" => function ($productId) {
+                    return (new ProductModel($productId))->get_description();
+                },
+                "date" => function ($arg1) {
+                    // http://php.net/manual/en/function.date.php
+                    date_default_timezone_set('UTC');
+                   return date("jS M Y", strtotime($arg1));
+                },
+                "datetime" => function ($arg1) {
+                    date_default_timezone_set('UTC');
+                   return date("jS M Y h:ia", strtotime($arg1));
+                },
+                "cheapest" => function ($appId) {
+                    $database = DatabaseFactory::getFactory()->getConnection();
+                    $query = $database->prepare("select price from product p inner join app_tiers t on p.entity_id = t.id where p.entity = 'app_tiers' and t.app_id = :appid limit 1");
+                    $query->execute(array(":appid" => $appId));
+                    return "$" . floor($query->fetchColumn(0));
                 }
+
             );
 
             $partials = array();
-            if (class_exists("StoreController")) {
+            // $flags = ; // | LightnCandy::FLAG_JSOBJECT, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG
+
+            if (class_exists("StoreController") || class_exists("LoginController")) {
                 $partials = array(
                     "logon_partial" => file_get_contents(Config::get('PATH_VIEW') . 'login/integrated.hbp'),
+                    "make_slides" => file_get_contents(Config::get('PATH_VIEW') . 'store/makeSlides.hbp'),
+                    "make_thumbnails" => file_get_contents(Config::get('PATH_VIEW') . 'store/makeThumbnails.hbp'),
                 );
             }
 
+            if (class_exists("BlogController")) {
+                $helper_functions[] = "Text::Paginator";
+            }
+
             $helper_functions[] = "Text::StaticPageRenderer";
+
             $phpStr = LightnCandy::compile($template, array(
-                "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS, // | LightnCandy::FLAG_JSOBJECT, //  | LightnCandy::FLAG_RENDER_DEBUG | LightnCandy::FLAG_STANDALONEPHP | LightnCandy::FLAG_ERROR_LOG,
+                "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS,
                 "helpers" => $helper_functions,
                 "debug" => false,
                 "partials" => $partials,
             ));
+
             file_put_contents($precompiled, implode('', array('<', '?php', ' ', $phpStr, ' ', '?', '>'))); // so php tags are not recognised
         }
 

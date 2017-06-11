@@ -7,6 +7,11 @@ class Config
 
     public static function get($key)
     {
+
+        if ($key === "debug") {
+            return (Environment::get() === "tim");
+        }
+
         if (!self::$config) {
 
             $config_file = '../application/config/config.' . Environment::get() . '.php';

@@ -36,23 +36,23 @@
 	<h4>Search Results</h4>
 	<ul>
 		{{#if results}}{{#each results}}
-		<li><a href="{{baseurl}}/admin/messages/0/select/{{user_id}}">{{user_name}} &lt;{{user_email}}&gt;</a></li>
+		<li><a href="{{baseurl}}/admin/messages/0/select/{{user_id}}">{{user_email}}</a></li>
 		{{/each}}{{else}}
 	    <li>no results.</li>
 	    {{/if}}
 	</ul>
 	{{/equals}}
-	
+
 	{{#equals action "select"}}
 	{{#if user_messages}}
 	<h4>Existing user messages that they have not yet dismissed</h4>
 	<table class=
-	
+
 	{{/if}}
 	<h4>Create a new message</h4>
-	
+
 	<form method="post" action="{{baseurl}}admin/messages/0/send/{{user.user_id}}">
-		<div><label for="user">Target user:</label> {{#equals user.user_id 0}}All users{{else}}<output id="user">{{user.user_name}}{{#if user.user_email}} &lt;{{user.user_email}}&gt;{{/if}}{{/equals}}</div>
+		<div><label for="user">Target user:</label> {{#equals user.user_id 0}}All users{{else}}<output id="user">{{user.user_email}}{{/equals}}</div>
 		<div><label for="level">Importance:</label> <select name="level" id="level">
 			<option value="0">Sad (0 - Red)</option>
 			<option value="1">Meh (1 - Orange)</option>

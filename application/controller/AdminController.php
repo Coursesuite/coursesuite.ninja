@@ -155,48 +155,7 @@ class AdminController extends Controller
         $this->View->renderHandlebars('admin/tiers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-/*
-    public function editAllProducts($id = 0, $action = "")
-    {
-        $url = Config::get("URL");
-        $model = array(
-            "baseurl" => $url,
-            "products" => ProductModel::getAllProducts(),
-            "categories" => CategoryModel::getAllCategories(),
-            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
-            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
-        );
-        if (is_numeric($id) && intval($id) > 0) {
-            $product = ProductModel::getProductById($id);
-            $model["action"] = $action;
-        }
-        switch ($action) {
-            case 'save':
-                $product = array(
-                    "product_id" => $id,
-                    "display_name" => Request::post("display_name", false, FILTER_SANITIZE_STRING),
-                    "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
-                    "link_id" => Request::post("link_id", false, FILTER_SANITIZE_STRING),
-                    "type" => Request::post("type", false, FILTER_SANITIZE_STRING),
-                    "category" => Request::post("category", false, FILTER_SANITIZE_STRING),
-                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT),
-                );
-                $id = ProductModel::save("products", "product_id", $product);
-                Redirect::to("admin/editAllProducts");
-                break;
-            case 'new':
-                $id = 0;
-                $model["action"] = "new";
-                $product = ProductModel::make("products");
-                break;
-        }
-        $model["id"] = $id;
-        if (isset($product)) {
-            $model["data"] = $product;
-        }
-        $this->View->renderHandlebars('admin/products', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-    }
-*/
+
     public function editApps($id = 0, $action = "", $filename = "")
     {
         $url = Config::get("URL");
@@ -265,9 +224,9 @@ class AdminController extends Controller
                     $colour = Image::getBaseColour($diskpath);
 
                     $media[] = array(
+                        "preview" => $displaypath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg',
                         "image" => $displaypath,
                         "thumb" => $displaypath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg',
-                        "preview" => $displaypath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg',
                         "caption" => $display_caption,
                         "bgcolor" => "rgba(" . implode(",", $colour) . ",.5)",
                     );
@@ -291,26 +250,30 @@ class AdminController extends Controller
                         preg_match('/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/', $display_url, $matches);
 
                         $display_url = "https://www.youtube.com/embed/" . $matches[1] . "?rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1"; // https://developers.google.com/youtube/player_parameters
-                        $thumb = str_replace("hqdefault.jpg", "default.jpg", $json->thumbnail_url); // http://stackoverflow.com/a/2068371/1238884
+
+                        $image = $json->thumbnail_url; // 480px; we want >= 400, so this is ok
+                        $thumb = str_replace("hqdefault.jpg", "default.jpg", $json->thumbnail_url); // 120px - see http://stackoverflow.com/a/2068371/1238884
 
                     } else if (strpos($display_url, "vimeo") !== false) {
                         $json = json_decode(file_get_contents("https://vimeo.com/api/oembed.json?url=" . $display_url));
                         $display_url = "https://player.vimeo.com" . $json->uri;
+                        $image = "https://i.vimeocdn.com/video/" . $json->video_id . "_" . Config::get('SLIDE_PREVIEW_WIDTH') . ".jpg";
                         $thumb = "https://i.vimeocdn.com/video/" . $json->video_id . "_" . Config::get('SLIDE_THUMB_WIDTH') . ".jpg";
                         /* split thumbnail_url after last _ and replace with size.format, e.g.
-                    https://i.vimeocdn.com//video//563138102_120.jpg
-                    https://i.vimeocdn.com//video//563138102_1280.webp
-                    https://i.vimeocdn.com//video//563138102_400.png
-                     */
+                        https://i.vimeocdn.com//video//563138102_120.jpg
+                        https://i.vimeocdn.com//video//563138102_1280.webp
+                        https://i.vimeocdn.com//video//563138102_400.png
+                         */
                     }
                     // get base colour
-                    if ($thumb !== "/img/hqdefault.jpg") {
+                    // if ($thumb !== "/img/hqdefault.jpg") {
                         $colour = Image::getBaseColour($thumb);
-                    } else {
-                        $colour = [127, 127, 127];
-                    }
+                    // } else {
+                    //    $colour = [127, 127, 127];
+                    // }
 
                     $media[] = array(
+                        "preview" => $image,
                         "video" => $display_url,
                         "thumb" => $thumb,
                         "caption" => $display_caption,
@@ -335,6 +298,7 @@ class AdminController extends Controller
                     "app_key" => Request::post("app_key", false, FILTER_SANITIZE_STRING),
                     "name" => Request::post("name"),
                     "tagline" => Request::post("tagline"),
+                    "whatisit" => Request::post("whatisit"),
                     "icon" => Request::post("icon", false, FILTER_SANITIZE_URL),
                     "url" => Request::post("url", false, FILTER_SANITIZE_URL),
                     "launch" => Request::post("launch", false, FILTER_SANITIZE_URL),
@@ -361,12 +325,11 @@ class AdminController extends Controller
                         } else {
                             $apptier->load($apt["id"]);
                         }
-                        $at_model = $apptier->get_model();
+                        $at_model = $apptier->get_model(false);
                         $at_model["app_id"] = $id;
                         $at_model["tier_level"] = $apt["level"];
                         $at_model["name"] = $apt["name"];
                         $at_model["description"] = $apt["desc"];
-                        // $at_model["price"] = floatval($apt["price"]);
                         $apptier->set_model($at_model);
                         $apptier->save();
                     }
@@ -522,7 +485,7 @@ class AdminController extends Controller
                     $u->user_id = 0;
                     $u->user_name = "All users";
                 }
-                $model["q"] = $u->user_name;
+                $model["q"] = $u->user_email;
                 $model["user"] = $u;
                 break;
 
@@ -587,6 +550,8 @@ class AdminController extends Controller
                 KeyStore::find("freeTrialHeader")->put(Request::post("freeTrialHeader"));
                 KeyStore::find("freeTrialDescription")->put(Request::post("freeTrialDescription"));
 
+                KeyStore::find("freeTrialDays")->put(Request::post("freeTrialDays"));
+
                 Redirect::to("admin/storeSettings"); // to ensure it reloads
 
                 break;
@@ -609,6 +574,7 @@ class AdminController extends Controller
             "contactform" => KeyStore::find("contactform")->get(),
             "freetrialheader" => KeyStore::find("freeTrialHeader")->get(),
             "freetrialdescription" => KeyStore::find("freeTrialDescription")->get(),
+            "freetrialdays" => KeyStore::find("freeTrialDays")->get(3),
 
             "sheets" => array($url . "js/simplemde/simplemde.min.css"),
             "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
@@ -617,91 +583,24 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function mailTemplates($id = 0, $action = "") {
-        $model = array(
-                "baseurl" => Config::get("URL"),
-                "allTemplates" => MailTemplateModel::getAllTemplates(),
-                "live" => ""
-            );
-        switch($action){
-            // page with empty fields
-            case "new":
-                $model["action"] = 'new';
-                $model["template"] = array("a"=>1); //just for displaying empty page
-                break;
-            // adds to database
-            case "create":
-                $model["action"] = 'create';
-                $template = array(
-                    "name" => Request::post("name", false),
-                    "subject" => Request::post("subject", false),
-                    "body" => Request::post("body", false),
-                    "body_plain" => Request::post("body_plain", false)
-                );
-                MailTemplateModel::createTemplate($template);
-                Redirect::to('admin/mailTemplates');
-                break;
-            // page for updating templates
-            case "update":
-                $model["action"] = 'update';
-                $model["template"] = MailTemplateModel::getTemplate($id);
-                $model["live"] = MailTemplateModel::getLiveTemplate($model['template']->name);
-                break;
-            // saves updated template to database
-            case "save":
-                $template = array(
-                    "id" => $id,
-                    "name" => Request::post('name', false),
-                    "subject" => Request::post("subject", false),
-                    "body" => Request::post("body", false),
-                    "body_plain" => Request::post("body_plain", false)
-                );
-                MailTemplateModel::Save("mail_templates", "id", $template);
-                Redirect::to('admin/mailTemplates');
-                break;
-            // Send test email
-            case "test":
-                $template = array(
-                    "recipient" => Request::post("recipient", false),
-                    "id" => $id,
-                    "name" => Request::post("name", false),
-                    "subject" => Request::post("subject", false),
-                    "body" => Request::post("body", false),
-                    "body_plain" => Request::post("body_plain", false)
-                );
-                MailTemplateModel::Save("mail_templates", "id", $template);
-                $mailer = new Mail();
-                $templateBody = $this->View->prepareString($template["body"]);
-                $body = $templateBody(MailTemplateModel::getVars(Session::get('user_id')));
-                $templateAltBody = $this->View->prepareString($template["body_plain"]);
-                $altBody = $templateAltBody(MailTemplateModel::getVars(Session::get('user_id')));
-                $optionals = array(
-                        "altBody" => $altBody
-                    );
-                $mailer->sendMail($template["recipient"], Config::get('EMAIL_ADMIN'), 'CoursesuiteTest', $template["subject"], $body, $optionals);
-                Redirect::to('admin/mailTemplates');
-                break;
-            // deletes template from database
-            case "delete":
-                $model["action"] = 'delete';
-                MailTemplateModel::deleteTemplate($id);
-                Redirect::to('admin/mailTemplates');
-                break;
-            // adds template to mail_templates_published for live use
-            case "publish":
-                $template = array(
-                    "name" => Request::post("name", false),
-                    "subject" => Request::post("subject", false),
-                    "body" => Request::post("body", false),
-                    "body_plain" => Request::post("body_plain", false)
-                );
-                MailTemplateModel::ifNotSaved($template);
-                MailTemplateModel::publishTemplate($template);
-                Redirect::to('admin/mailTemplates');
-                break;
+    public function mailTemplates() {
+        $record = KeyStore::find("emailTemplate");
+        $postback = trim(Request::post("content"));
+        $url = Config::get("URL");
+
+        if (!empty($postback)) {
+            $record->put($postback);
         }
 
+        $model = array(
+            "baseurl" => $url,
+            "content" => $record->get(),
+            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
+            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
+        );
+
         $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+
     }
 
     public function whiteLabelling($org_id = 0, $app_key = "", $action = "") {
@@ -841,6 +740,12 @@ class AdminController extends Controller
                 break;
         }
         $this->View->renderHandlebars("admin/editBundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function Subscribers() {
+        $model = AdminModel::CurrentSubscribersModel();
+        $model["baseUrl"] = Config::get("URL");
+        $this->View->renderHandlebars("admin/CurrentSubscribers", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
 }

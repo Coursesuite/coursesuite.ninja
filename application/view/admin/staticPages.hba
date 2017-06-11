@@ -1,9 +1,11 @@
 <article class="system-sections admin-tools">
 	{{#if action}}
-		<h3>
-			<a href="{{baseurl}}admin/staticPage/" class="back button">Back to edit static pages</a>
-			Editing record {{id}}.
-		</h3>
+		<header class="admin-header">
+			<h1>Editing record {{id}}.</h1>
+			<nav>
+				<a href="{{baseurl}}admin/staticPage/" class="back button"><i class=" cs-chevron-with-circle-left"></i> Static pages</a>
+			</nav>
+		</header>
 		<form method="post" action="{{baseurl}}admin/staticPage/{{id}}/save">
 		{{#with data}}
 			<div><label for="page_key">path: /content/</label> <input type="text" id="page_key" name="page_key" value="{{page_key}}" pattern="[A-Za-z0-9]{5,}" placeholder="5 letters or more, no spaces or symbols"></div>
@@ -20,10 +22,12 @@
 		{{/with}}
 		</form>
 	{{else}}
-	<h3>
-		<a href="{{baseurl}}admin" class="back button">Back to admin tools</a>
-		Static pages sections
-	</h3>
+	<header class="admin-header">
+		<h1>Static Pages.</h1>
+		<nav>
+			<a href="{{baseurl}}admin/" class="back button"><i class=" cs-chevron-with-circle-left"></i> Admin tools</a>
+		</nav>
+	</header>
 	<p>Static pages are pages that are served under the url /content/stub/. They can be used for things like footer links, support information, or special links from product pages.</p>
 	<ul>
 		{{#each records}}

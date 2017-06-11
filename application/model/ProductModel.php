@@ -45,6 +45,12 @@ class ProductModel extends Model
         return $this;
     }
 
+    public function load_by_productId($productId)
+    {
+        $this->data_model = parent::Read(self::TABLE_NAME, "product_id=:id", array(":id" => $productId))[0]; // 0th of a fetchall
+        return $this;
+    }
+
     public function make()
     {
         $this->data_model = parent::Create(self::TABLE_NAME);
@@ -54,6 +60,28 @@ class ProductModel extends Model
     public function save()
     {
         return parent::Update(self::TABLE_NAME, self::ID_ROW_NAME, $this->data_model);
+    }
+
+    public function get_id() {
+        if (isset($this->data_model)) {
+            $idrowname = self::ID_ROW_NAME;
+            return $this->data_model->$idrowname;
+        }
+    }
+
+    public function get_description() {
+        $result = "";
+        if (!isset($this->data_model)) return "";
+        if ($this->data_model->entity == "bundle") {
+            $bm = (new BundleModel($this->data_model->entity_id))->get_model();
+            $result = $bm["label"] . " (" . $bm["description"] . ")";
+        } else if ($this->data_model->entity = "app_tiers") {
+            $apt = (new AppTierModel($this->data_model->entity_id))->get_model();
+            $app = AppModel::getAppById($apt["app_id"]);
+            $result = $app->name;
+            $result .= " (" . $apt["name"] . ")";
+        }
+        return $result;
     }
 
     // given a product and an app, find out the tier level (e.g. token logon, working out overlapping subscriptions, etc)
@@ -96,11 +124,11 @@ class ProductModel extends Model
                     INNER JOIN app_tiers ON bundle_apps.`app_tier` = app_tiers.`id` AND app_tiers.`app_id` = :app_id
                     WHERE bundle_apps.`bundle` IN (
                             SELECT product.`entity_id`
-                            FROM product INNER JOIN subscriptions
-                            ON product.`id` = subscriptions.`product_id`
-                            WHERE product.`entity` = 'app_tiers'
-                                AND subscriptions.`user_id` = :user_id
-                                AND subscriptions.`status` = 'active'
+                            FROM product WHERE product.`id` IN (
+                                SELECT `product_id` FROM subscriptions
+                                    WHERE `user_id` = :user_id
+                                    AND `status` = 'active'
+                                )
                     )
                     ORDER BY tier_level DESC
                     LIMIT 1";

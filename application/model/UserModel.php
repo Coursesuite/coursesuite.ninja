@@ -19,10 +19,10 @@ class UserModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT user_id, user_account_type, user_name, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap, DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y') AS 'user_last_login_timestamp' FROM users";
+        $sql = "SELECT user_id, user_account_type, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap, DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y') AS 'user_last_login_timestamp' FROM users";
         $params = array();
         if ($search != null) {
-            $sql .= " WHERE (user_name like :search OR user_email like :search)";
+            $sql .= " WHERE (user_email like :search)";
             $params = array(
                 ":search" => "%$search%",
             );
@@ -45,7 +45,7 @@ class UserModel
             $all_users_profiles[$user->user_id] = new stdClass();
             $all_users_profiles[$user->user_id]->user_id = $user->user_id;
             $all_users_profiles[$user->user_id]->user_account_type = $user->user_account_type;
-            $all_users_profiles[$user->user_id]->user_name = $user->user_name;
+            // $all_users_profiles[$user->user_id]->user_name = $user->user_name;
             $all_users_profiles[$user->user_id]->user_email = $user->user_email;
             $all_users_profiles[$user->user_id]->user_active = $user->user_active;
             $all_users_profiles[$user->user_id]->user_deleted = $user->user_deleted;
@@ -63,7 +63,7 @@ class UserModel
     public static function getAllUsers()
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT user_id, user_name FROM users ORDER BY user_name";
+        $sql = "SELECT user_id, user_email FROM users ORDER BY user_email";
         $query = $database->prepare($sql);
         $query->execute();
         return $query->fetchAll();
@@ -82,7 +82,7 @@ class UserModel
             return false;
         }
 
-        $sql = "SELECT user_id, user_name, user_email, user_active, user_account_type, user_has_avatar,  DATE_FORMAT(FROM_UNIXTIME(`user_creation_timestamp`) , '%e %b %Y %T') AS 'user_creation_timestamp', DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y %T') AS 'user_last_login_timestamp', user_newsletter_subscribed, user_free_trial_available, user_deleted
+        $sql = "SELECT user_id, user_email, user_active, user_account_type, user_has_avatar,  DATE_FORMAT(FROM_UNIXTIME(`user_creation_timestamp`) , '%e %b %Y %T') AS 'user_creation_timestamp', DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y %T') AS 'user_last_login_timestamp', user_newsletter_subscribed, user_free_trial_available, user_deleted
                 FROM users WHERE user_id = :user_id LIMIT 1";
         $query = $database->prepare($sql);
         $query->execute(array(':user_id' => $user_id));
@@ -111,7 +111,7 @@ class UserModel
     public static function getActiveUser($user_id)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT user_id, user_name, user_email
+        $sql = "SELECT user_id, user_email
                 FROM users
                 WHERE user_id = :user_id AND user_active = 1 AND user_deleted = 0 AND user_suspension_timestamp IS NULL
                 LIMIT 1";
@@ -133,9 +133,9 @@ class UserModel
             $matcher = "LIKE";
             $user_name_or_email = "%" . $user_name_or_email . "%";
         }
-        $sql = "SELECT user_id, user_name, user_email
+        $sql = "SELECT user_id, user_email
                 FROM users
-                WHERE (user_name $matcher :user_name_or_email OR user_email $matcher :user_name_or_email)
+                WHERE (user_email $matcher :user_name_or_email)
                 AND user_provider_type = :provider_type";
         if ($applyLimit) {
             $sql .= " LIMIT 1";
@@ -555,4 +555,37 @@ class UserModel
         $query->execute(array(":user_id"=>$user_id));
         return $query->fetch();
     }
+
+    public static function getAccountByHash($hash, $hash_type) {
+        $field = "";
+        if (empty($hash)) return null;
+        switch ($hash_type) {
+            case "cookie":
+                $field = "user_remember_me_token";
+                break;
+            case "activation":
+                $field = "user_activation_hash";
+                break;
+            case "reset":
+                $field = "user_password_reset_hash";
+                break;
+            case "change":
+                $field = "change_verification_hash";
+                break;
+        }
+        if (!empty($field)) {
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $sql = "SELECT user_id FROM users WHERE `$field` = :hash LIMIT 1";
+            $query = $database->prepare($sql);
+            $query->execute(array(
+                ":hash" => $hash
+            ));
+            $user_id = intval($query->fetchColumn(0));
+            if ($user_id > 0) {
+                return (new AccountModel($user_id));
+            }
+        }
+        return null;
+    }
+
 }

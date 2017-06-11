@@ -1,5 +1,6 @@
-@import url(keyframes.css);
-@import url(radio-tabs.css);
+
+
+
 *, *:before, *:after {
     box-sizing: border-box;
 }
@@ -25,12 +26,8 @@ body>main {
     flex: 1 0 auto;
 }
 
-body>footer {
-    flex-shrink: 0;
-}
-
+body>footer,
 body>header {
-    height: 175px;
     flex-shrink: 0;
 }
 
@@ -53,6 +50,19 @@ body>header {
 .float-none {
     clear: both;
     float: none;
+}
+
+small {
+    font-size: 12px;
+}
+.block {
+    display: block;
+}
+.faded {
+    opacity: 0.75;
+}
+.red {
+    color: red;
 }
 
 .conditional-ie {
@@ -103,14 +113,13 @@ body > footer
 }
 
 body > header {
+    background-color: #043e52;
     padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: rgba(255, 255, 255, .8);
     font-size: 14px;
-    /*    background: #fff url(shutterstock_222984970_crop.jpg) no-repeat center 65% / cover; */
-    background: rgba(72, 88, 114, 1.00) url(leaf_banner_light.png) no-repeat 25% center / cover;
 }
 
 body > header > div:last-of-type {
@@ -234,6 +243,10 @@ section.user-acknowledgements .acknowledgement-item {
     transition: transform .1s ease, box-shadow .1s ease;
 }
 
+section.user-acknowledgements .acknowledgement-item .flex-1 {
+    flex: 1;
+}
+
 section.user-acknowledgements .acknowledgement-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
@@ -332,6 +345,10 @@ section.user-acknowledgements .acknowledgement-item.level-0 {
 
 article > header.common-header > nav, .standard-width, section.contact-form .standard-width, #content_index main {
     width: 1100px;
+    margin: 0 auto;
+}
+.half-width {
+    width: 550px;
     margin: 0 auto;
 }
 
@@ -718,64 +735,207 @@ article > header.common-header > nav > .social-buttons {
     margin-right: .3em;
 }
 
-ul.quibble-points {
-    margin-top: 16px;
+
+/* ------------------------------------------------------------------------------------------------------------------------------------------
+                            GENERIC ARROW-TAB navigation (requires js)
+------------------------------------------------------------------------------------------------------------------------------------------ */
+.tabbed-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.tabbed-content > nav {
+    margin-bottom: 10px;
+}
+
+.tabbed-content > nav > a {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 3px;
+    padding: .3em .5em;
+    transition: background-color .1s ease;
+}
+.tabbed-content > nav > a.active:after {
+    content: '';
+    position: absolute;
+    left: calc(50% - 5px);
+    top: 100%;
+    border: 10px solid transparent;
+}
+
+.tabbed-content > div {
+    flex: 1;
+    display: none;
+}
+
+.tabbed-content > div.active {
+    display: block;
+}
+
+/* ---------------------------------------------- arrow-tab content colour themes ---------------------------------------------- */
+.tabbed-content.theme-green > nav > a {
+    background-color: rgba(0, 0, 0, .1);
+    color: #999;
+}
+.tabbed-content.theme-green > nav > a.active {
+    color: rgba(255,255,255,.9);
+    background-color: #7db100;
+}
+.tabbed-content.theme-green > nav > a.active:after {
+    border-top-color: #7db100;
+}
+
+.tabbed-content.theme-teal > nav > a {
+    background-color: rgba(0, 0, 0, .1);
+    color: #999;
+}
+
+.tabbed-content.theme-teal > nav > a.active {
+    color: rgba(255,255,255,.9);
+    background-color: #246a6a;
+}
+
+.tabbed-content.theme-teal > nav > a.active:after {
+    border-top-color: #246a6a;
+}
+
+.tabbed-content.theme-blue > nav > a {
+    background-color: rgba(0, 0, 0, .1);
+    color: #999;
+}
+.tabbed-content.theme-blue > nav > a.active {
+    background-color: #8fd1ea;
+    color: #fff;
+}
+.tabbed-content.theme-blue > nav > a.active:after {
+    border-top-color: #8fd1ea;
+}
+
+.tabbed-content.theme-yellow > nav > a {
+    background-color: rgba(0, 0, 0, .1);
+}
+.tabbed-content.theme-yellow > nav > a.active {
+    background-color: #ff7002;
+    color: #fff;
+}
+.tabbed-content.theme-yellow > nav > a.active:after {
+    border-top-color: #ff7002;
+}
+
+section.direct-login.div-outline,
+.tabbed-content.div-outline > div {
+    background-color: #fff;
+    box-shadow: 0 0 1px rgba(0,0,0,.2);
+}
+
+/* ---------------------------------------------- store purchase pages ---------------------------------------------- */
+
+.store-purchase-links {
+    height: 100%;
+}
+
+.store-purchase-links.tabbed-content > footer {
+    background-color: inherit;
+    color: inherit;
+}
+
+.store-purchase-links.tabbed-content.div-outline > div {
+    padding: 10px;
+}
+
+.store-purchase-links > div.bundle-buttons > div {
+    border-top: 1px solid #eee;
+}
+.store-purchase-links > div.bundle-buttons > div > p:first-of-type {
+    margin: .5em 0;
+}
+.store-purchase-links .bundle-app-list a {
+    text-decoration: none;
+    color: #3fa9ca;
+}
+
+.purchase-buttons-container {
+    padding: 30px 0;
+    border-radius: 10px;
+    background-color: rgba(42, 184, 236, 0.08);
+    border: 1px solid rgba(42, 184, 236, 0.2);
+}
+.purchase-buttons-container > a:first-of-type:not(:last-of-type) {
+    margin-right: 1em;
+}
+
+.quibble-points ul {
+    margin-top: 10px;
     font-size: 10px;
     color: #999;
     line-height: 1.5;
 }
 
-ul.quibble-points a, ul.quibble-points a:visited {
+.quibble-points a, .quibble-points a:visited {
     color: inherit;
     text-decoration: underline;
 }
 
-.content > div.standalone-buttons > .purchase-buttons {
-    padding-top: 75px;
+/* ---------------------------------------------- need to logon ---------------------------------------------- */
+
+section.direct-login {
+    margin-top: 25px;
 }
 
-.content > div.bundle-buttons .purchase-buttons {
-    padding-top: 25px;
+section.direct-login.div-outline > div,
+.store-logon.tabbed-content.div-outline > div {
+    padding: 10px;
 }
 
-.need-to-logon h4 {
+section.direct-login > div,
+.store-logon > div {
+    font-size: 13px;
+}
+
+
+section.direct-login h4,
+.store-logon h4 {
     font-weight: 100;
-    margin: 10px 0;
+    margin: 0 0 10px;
     padding: 0;
-    color: #246a6a;
-    border-bottom: 1px solid #246a6a;
-    font-size: 18px;
+    color: #ff7002;
+    border-bottom: 1px solid #ff7002;
+    font-size: 16px;
 }
 
-.need-to-logon .row {
+section.direct-login .row,
+.store-logon .row {
     display: flex;
     padding: 0 0 10px 0;
     align-items: center;
 }
 
-.need-to-logon .row > label:first-of-type {
+section.direct-login .row > label:first-of-type,
+.store-logon .row > label:first-of-type {
     min-width: 120px;
 }
 
-.need-to-logon .row > input:not([type='checkbox']):not([type='submit']) {
+section.direct-login .row > input:not([type='checkbox']):not([type='submit']),
+.store-logon .row > input:not([type='checkbox']):not([type='submit']) {
     flex: 1;
     border: 1px solid rgba(0, 0, 0, .1);
     transition: border .3s ease;
     padding: 10px;
 }
 
-.need-to-logon .row > input:not([type='checkbox']):not([type='submit']):focus {
+section.direct-login .row > input:not([type='checkbox']):not([type='submit']):focus,
+.store-logon .row > input:not([type='checkbox']):not([type='submit']):focus {
     border-color: transparent;
     border-bottom-color: #246a6a;
     outline: none;
 }
 
-.purchase-buttons {
-    width: 100%;
-    margin: 10px;
-}
-
-form[name='authenticate'] #form-feedback p {
+#form-feedback p.sad,
+section.direct-login form[name='authenticate'] #form-feedback span.form-feedback-negative,
+.store-logon form[name='authenticate'] #form-feedback span.form-feedback-negative {
+    display: block;
     margin: 0;
     background-color: #f12b24;
     padding: 5px;
@@ -784,10 +944,32 @@ form[name='authenticate'] #form-feedback p {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
     color: #fff;
 }
-form[name='authenticate'] #form-feedback p.happy {
+
+section.direct-login form[name='authenticate'] #form-feedback span.form-feedback-positive,
+.store-logon form[name='authenticate'] #form-feedback span.form-feedback-positive {
+    display: block;
+    margin: 0;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 4px;
     background-color: #80b723;
     text-shadow: none;
     color: #000;
+}
+
+
+
+/* ---------------------------------------------- store page subscribed product ---------------------------------------------- */
+
+.store-subscriptions.tabbed-content.div-outline > div {
+    padding: 10px;
+}
+
+.store-subscriptions > div > div.launch-buttons-container {
+    padding: 30px 0;
+    border-radius: 10px;
+    background-color: rgba(99, 236, 42, 0.08);
+    border: 1px solid rgba(99, 236, 42, 0.2);
 }
 
 .purchase-pane .subscription-overlap {
@@ -808,55 +990,6 @@ form[name='authenticate'] #form-feedback p.happy {
     color: inherit;
     text-decoration: underline;
 }
-
-.bundle-buttons {
-    display: flex;
-    flex-direction: column;
-}
-
-.bundle-buttons > div {
-    display: none;
-    border-top: 1px solid rgba(0, 0, 0, .1);
-    border-radius: 8px;
-}
-
-.bundle-buttons > div.active {
-    display: block;
-    flex: 1;
-}
-
-.bundle-buttons > nav.bundle-menu {
-    text-align: center;
-    margin: 0 0 10px;
-    padding: 0;
-}
-
-.bundle-buttons > nav.bundle-menu > a {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, .1);
-    text-decoration: none;
-    color: #999;
-}
-
-.bundle-buttons > nav.bundle-menu > a.active {
-    background-color: #8fd1ea;
-    position: relative;
-    color: #fff;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
-}
-
-.bundle-buttons > nav.bundle-menu > a.active:after {
-    content: '';
-    border: 10px solid transparent;
-    border-top-color: #8fd1ea;
-    position: absolute;
-    top: 0;
-    left: calc(50% - 10px);
-    margin-top: 2em;
-}
-
 
 /* ==============================================================================
 
@@ -1349,140 +1482,56 @@ section > article > .container {
     float: right;
 }
 
-
 /* ==============================================================================
 
-        MY PROFILE
+        MY ACCOUNT
 
 ============================================================================== */
 
-article.my-profile > header {
-    background-color: #009688;
-    color: #fff;
-    margin-bottom: 10px;
-    box-shadow: inset 0 10px 25px rgba(0, 0, 0, .1);
-    text-shadow: 2px 2px 3px rgba(0, 0, 0, .5);
-}
-
-article.my-profile > header > nav {
-    font-size: 22px;
-    font-weight: 300;
-    padding: 10px 0;
-    color: inherit;
-    max-width: 1100px;
-}
-
-article.my-profile > section {
-    max-width: 1100px;
-    margin: 0 auto 10px;
-}
-
-article.my-profile > section:after {
-    clear: both;
-    display: table;
-    content: '';
-}
-
-article.my-profile section a.cancel-link {
-    font-size: 0.8em;
-    margin-left: 1em;
-}
-
-article.my-profile form label {
-    display: block;
-}
-
-article.my-profile form input:not([type='submit']) {
-    padding: .3em;
-    min-width: 250px;
-    margin-bottom: .5em;
-}
-
-article.my-profile form input[type='submit'] {
-    display: inline-block;
-}
-
-article.my-profile section.profile-display {
-    display: flex;
-}
-
-article.my-profile div.profile-card, article.my-profile .upsell {
-    flex: 1;
-    background-color: rgba(255, 255, 255, .7);
-    box-shadow: 0 0 5px rgba(0, 0, 0, .1);
-    padding: 10px;
-}
-
-article.my-profile .upsell {
-    margin-left: 10px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-direction: column;
-}
-
-article.my-profile .upsell .buy-button {
-    flex: 1;
-}
-
-article.my-profile section .profile-card a {
-    color: rgba(28, 165, 234, 1.00);
-    transition: color .1s linear;
-    text-decoration: none;
-}
-
-article.my-profile section .profile-card a:hover {
-    color: #000;
-}
-
-article.my-profile div.profile-card > figure {
-    padding: 25px;
-    border: 1px solid #ccc;
+article.my-account > section.profile-display,
+article.my-account > section.purchase-history {
+    border: 1px solid #eee;
     background-color: #fff;
-    margin: 0 10px 0 0;
-    float: left;
+    box-shadow: 0 0 1px rgba(0,0,0,.2);
+    padding: 10px;
+}
+article.my-account > section.profile-display form > .row {
+    display: flex;
+    margin-bottom: 25px;
 }
 
-article.my-profile div.profile-card > div {
-    line-height: 26px;
+article.my-account > section.profile-display form > .row > label {
+    min-width: 15em;
 }
 
-article.my-profile div.profile-card > div.user-destroy {
-    text-align: right;
+article.my-account > section.profile-display form > .row > div {
+    flex: 1;
 }
 
-article.my-profile div.profile-card > div.user-destroy a {
-    color: rgba(224, 42, 54, 1.00);
-    font-size: .8em;
+article.my-account > section.profile-display form > .row > div > input[type='email'] {
+    min-width: 50%;
+    padding: 10px;
+    border: 1px solid #eee;
+    background-color: #fff;
+    font-size: 12px;
 }
 
-article.my-profile section.subscription-display h4 {
-    color: rgba(90, 90, 90, 1.00);
-    font-size: 26px;
-}
-
-article.my-profile section.subscription-display table {
+article.my-account > section.purchase-history table {
     width: 100%;
-    border-collapse: collapse;
-    border: 1px solid rgba(150, 150, 150, 1.00);
+}
+article.my-account > section.purchase-history table th, article.my-account > section.purchase-history table td {
+    padding: 10px 5px;
+}
+article.my-account > section.purchase-history table th, article.my-account > section.purchase-history table td a {
+    color: inherit;
 }
 
-article.my-profile section.subscription-display table th {
-    text-align: center;
-    background-color: rgba(150, 150, 150, 0.5);
-    color: #fff;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
-    padding: 10px;
-}
-
-article.my-profile section.subscription-display table td {
+article.my-account > section.purchase-history table thead th {
+    border-bottom: 1px solid #999;
     text-align: left;
-    vertical-align: top;
-    padding: 10px;
 }
-
-article.my-profile section.subscription-display div.product-subscribed {
-    color: red;
+article.my-account > section.purchase-history table tbody tr:nth-child(odd) td {
+    background-color: rgba(0,0,0,.05);
 }
 
 .unselectable {
@@ -1611,6 +1660,34 @@ article.my-profile section.subscription-display div.product-subscribed {
         MEDIA QUERIES FOR MOBILE DEVICES
 
 ============================================================================== */
+body > header > div > a.logo > span {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    body > header {
+        flex-direction: column;
+        padding: 10px;
+        align-items: flex-start;
+    }
+    body > header > div > nav > a:nth-child(2) {
+        margin-left: 0;
+    }
+    body > header > div > nav > a.home,
+    body > header > div > a.logo > img {
+        display: none;
+    }
+    body > header > div > a.logo {
+        color: #fff;
+        text-decoration: none;
+    }
+    body > header > div > a.logo > span {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.5em;
+    }
+}
+
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     /* iPad 2 era */
@@ -1627,14 +1704,14 @@ article.my-profile section.subscription-display div.product-subscribed {
     }
 }
 
-@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
+/* @media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
     body {
         min-height: 1024px;
     }
     body > header > div > img {
         max-width: 192px;
     }
-}
+} */
 
 @media all and (device-width: 768px) and (device-height: 1024px) and (orientation:landscape) {
     body {
@@ -1676,14 +1753,14 @@ article.my-profile section.subscription-display div.product-subscribed {
     }
 }
 
-@media only screen and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
+/* @media only screen and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
     body {
         min-height: 1024px;
     }
     body > header > div > img {
         max-width: 192px;
     }
-}
+} */
 
 @media all and (device-width: 768px) and (device-height: 1024px) and (orientation:landscape) {
     body {
@@ -1694,14 +1771,14 @@ article.my-profile section.subscription-display div.product-subscribed {
     }
 }
 
-@media only screen and (max-width: 960px) {
+/* @media only screen and (max-width: 960px) {
     body > header > div img {
         max-width: 288px;
     }
     .tile {
         width: calc(50% - 10px);
     }
-}
+}*/
 
 @media only screen and (max-width: 1024px) {
     footer .standard-width, .store-item-specific nav.crumb, .store-item-specific section.info, div.store-items {
@@ -1731,7 +1808,7 @@ article.my-profile section.subscription-display div.product-subscribed {
 
 ============================================================================== */
 
-.button {
+.orange-button {
     background-image: -webkit-linear-gradient(top, rgba(255, 162, 2, 1) 0%, rgba(255, 112, 2, 1) 100%);
     background-image: -moz-linear-gradient(top, rgba(255, 162, 2, 1) 0%, rgba(255, 112, 2, 1) 100%);
     background-image: -ms-linear-gradient(top, rgba(255, 162, 2, 1) 0%, rgba(255, 112, 2, 1) 100%);
@@ -1749,7 +1826,7 @@ article.my-profile section.subscription-display div.product-subscribed {
     -webkit-transition: all 0.1s linear;
     -moz-transition: all 0.1s linear;
     transition: all 0.1s linear;
-    font-size: 15px;
+    font-size: inherit;
     color: rgba(255, 255, 255, 1);
     font-weight: bold;
     text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.53);
@@ -1757,7 +1834,7 @@ article.my-profile section.subscription-display div.product-subscribed {
     text-decoration: none;
 }
 
-.button:hover {
+.orange-button:hover {
     background-image: -webkit-linear-gradient(top, rgba(255, 175, 3, 1) 0%, rgba(255, 112, 2, 1) 100%);
     background-image: -moz-linear-gradient(top, rgba(255, 175, 3, 1) 0%, rgba(255, 112, 2, 1) 100%);
     background-image: -ms-linear-gradient(top, rgba(255, 175, 3, 1) 0%, rgba(255, 112, 2, 1) 100%);
@@ -1765,7 +1842,7 @@ article.my-profile section.subscription-display div.product-subscribed {
     background-image: linear-gradient(top, rgba(255, 175, 3, 1) 0%, rgba(255, 112, 2, 1) 100%);
 }
 
-.button:active {
+.orange-button:active {
     -webkit-box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.57)inset, 0px 20px 0px 0px rgba(255, 255, 255, 0.18)inset, 0px 1px 0px 0px rgba(213, 96, 0, 1), 0px -1px 0px 0px rgba(255, 255, 255, 0.07)inset, 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.57)inset, 0px 20px 0px 0px rgba(255, 255, 255, 0.18)inset, 0px 1px 0px 0px rgba(213, 96, 0, 1), 0px -1px 0px 0px rgba(255, 255, 255, 0.07)inset, 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
     box-shadow: 0px 1px 0px 0px rgba(255, 255, 255, 0.57)inset, 0px 20px 0px 0px rgba(255, 255, 255, 0.18)inset, 0px 1px 0px 0px rgba(213, 96, 0, 1), 0px -1px 0px 0px rgba(255, 255, 255, 0.07)inset, 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
@@ -1967,94 +2044,129 @@ article.my-profile section.subscription-display div.product-subscribed {
     box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 0px 10px 5px #999;
 }
 
-.purchase-buttons a {
-    background-color: #3bb3e0;
+.button {
     font-family: 'Open Sans', sans-serif;
     font-size: 12px;
-    text-decoration: none;
-    color: #fff;
-    position: relative;
-    padding: 10px 20px;
-    border-left: solid 1px #2ab7ec;
-    margin-left: 35px;
-    margin-right: 10px;
-    background-image: linear-gradient(bottom, rgb(44, 160, 202) 0%, rgb(62, 184, 229) 100%);
-    background-image: -o-linear-gradient(bottom, rgb(44, 160, 202) 0%, rgb(62, 184, 229) 100%);
-    background-image: -moz-linear-gradient(bottom, rgb(44, 160, 202) 0%, rgb(62, 184, 229) 100%);
-    background-image: -webkit-linear-gradient(bottom, rgb(44, 160, 202) 0%, rgb(62, 184, 229) 100%);
-    background-image: -ms-linear-gradient(bottom, rgb(44, 160, 202) 0%, rgb(62, 184, 229) 100%);
-    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, rgb(44, 160, 202)), color-stop(1, rgb(62, 184, 229)));
-    -webkit-border-top-right-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
-    -moz-border-radius-bottomright: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    -webkit-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #156785, 0px 10px 5px #999;
-    -moz-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #156785, 0px 10px 5px #999;
-    -o-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #156785, 0px 10px 5px #999;
-    box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #156785, 0px 10px 5px #999;
+}
+.button > i.fa {
+    margin-right: .5em;
 }
 
-.purchase-buttons a:active {
-    top: 3px;
-    background-image: linear-gradient(bottom, rgb(62, 184, 229) 0%, rgb(44, 160, 202) 100%);
-    background-image: -o-linear-gradient(bottom, rgb(62, 184, 229) 0%, rgb(44, 160, 202) 100%);
-    background-image: -moz-linear-gradient(bottom, rgb(62, 184, 229) 0%, rgb(44, 160, 202) 100%);
-    background-image: -webkit-linear-gradient(bottom, rgb(62, 184, 229) 0%, rgb(44, 160, 202) 100%);
-    background-image: -ms-linear-gradient(bottom, rgb(62, 184, 229) 0%, rgb(44, 160, 202) 100%);
-    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, rgb(62, 184, 229)), color-stop(1, rgb(44, 160, 202)));
-    -webkit-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #156785, 0px 5px 3px #999;
-    -moz-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #156785, 0px 5px 3px #999;
-    -o-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #156785, 0px 5px 3px #999;
-    box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #156785, 0px 5px 3px #999;
-}
+.button.button-blue {
+    color: #ffffff;
+    padding: 10px 20px 10px 15px;
 
-.purchase-buttons a:active::before {
-    top: -3px;
-    -webkit-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 1px 1px 0px 0px #044a64, 2px 2px 0px 0px #044a64, 2px 5px 0px 0px #044a64, 6px 4px 2px #0b698b, 0px 10px 5px #999;
-    -moz-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 1px 1px 0px 0px #044a64, 2px 2px 0px 0px #044a64, 2px 5px 0px 0px #044a64, 6px 4px 2px #0b698b, 0px 10px 5px #999;
-    -o-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 1px 1px 0px 0px #044a64, 2px 2px 0px 0px #044a64, 2px 5px 0px 0px #044a64, 6px 4px 2px #0b698b, 0px 10px 5px #999;
-    box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 1px 1px 0px 0px #044a64, 2px 2px 0px 0px #044a64, 2px 5px 0px 0px #044a64, 6px 4px 2px #0b698b, 0px 10px 5px #999;
+    background: -moz-linear-gradient(
+        top,
+        #2ab8ec 0%,
+        #2ca0ca);
+    background: -webkit-gradient(
+        linear, left top, left bottom,
+        from(#2ab8ec),
+        to(#2ca0ca));
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    border-radius: 1px;
+    border: 0px solid #000000;
+    -moz-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    -webkit-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    text-shadow:
+        0px -1px 0px rgba(000,000,000,0.3),
+        0px 1px 0px rgba(255,255,255,0.3);
 }
+.button.button-green {
+    color: #ffffff;
+    padding: 10px 20px 10px 15px;
 
-.purchase-buttons a:last-of-type {
-    margin-right: 0;
+    background: -moz-linear-gradient(
+        top,
+        #1fad1f 0%,
+        #1f8f23);
+    background: -webkit-gradient(
+        linear, left top, left bottom,
+        from(#1fad1f),
+        to(#1f8f23));
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    border-radius: 1px;
+    border: 0px solid #000000;
+    -moz-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    -webkit-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    text-shadow:
+        0px -1px 0px rgba(000,000,000,0.3),
+        0px 1px 0px rgba(255,255,255,0.3);
 }
+.button.button-orange {
+    color: #ffffff;
+    padding: 10px 20px 10px 15px;
 
-.purchase-buttons a::before {
-    background-color: #2561b4;
-    content: "\f07a";
-    font-family: FontAwesome;
-    width: 35px;
-    min-height: 37px;
-    height: 100%;
-    position: absolute;
-    display: block;
-    padding: 10px;
-    top: 0px;
-    left: -36px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #8fd1ea;
-    text-shadow: 1px 1px 0px #07526e;
-    border-right: solid 1px #07526e;
-    background-image: linear-gradient(bottom, rgb(10, 94, 125) 0%, rgb(14, 139, 184) 100%);
-    background-image: -o-linear-gradient(bottom, rgb(10, 94, 125) 0%, rgb(14, 139, 184) 100%);
-    background-image: -moz-linear-gradient(bottom, rgb(10, 94, 125) 0%, rgb(14, 139, 184) 100%);
-    background-image: -webkit-linear-gradient(bottom, rgb(10, 94, 125) 0%, rgb(14, 139, 184) 100%);
-    background-image: -ms-linear-gradient(bottom, rgb(10, 94, 125) 0%, rgb(14, 139, 184) 100%);
-    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, rgb(10, 94, 125)), color-stop(1, rgb(14, 139, 184)));
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-bottomleft: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    -webkit-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 0px 10px 5px #999;
-    -moz-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 0px 10px 5px #999;
-    -o-box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 0px 10px 5px #999;
-    box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #032b3a, 0px 10px 5px #999;
+    background: -moz-linear-gradient(
+        top,
+        #ffab2e 0%,
+        #cc8c2d);
+    background: -webkit-gradient(
+        linear, left top, left bottom,
+        from(#ffab2e),
+        to(#cc8c2d));
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    border-radius: 1px;
+    border: 0px solid #000000;
+    -moz-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    -webkit-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    text-shadow:
+        0px -1px 0px rgba(000,000,000,0.3),
+        0px 1px 0px rgba(255,255,255,0.3);
+}
+.button.button-red {
+    color: #ffffff;
+    padding: 10px 20px 10px 15px;
+
+    background: -moz-linear-gradient(
+        top,
+        #ff2e2e 0%,
+        #cc2d2d);
+    background: -webkit-gradient(
+        linear, left top, left bottom,
+        from(#ff2e2e),
+        to(#cc2d2d));
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    border-radius: 1px;
+    border: 0px solid #000000;
+    -moz-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    -webkit-box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    box-shadow:
+        0px 1px 3px rgba(000,000,000,0.5),
+        inset 0px 0px 1px rgba(255,255,255,0.3);
+    text-shadow:
+        0px -1px 0px rgba(000,000,000,0.3),
+        0px 1px 0px rgba(255,255,255,0.3);
 }
 
 
@@ -2076,7 +2188,7 @@ article.my-profile section.subscription-display div.product-subscribed {
     color: #fff;
 }
 
-#contact_form_placeholder a {
+#contact_form_placeholder a:not(.not-a-button) {
     color: inherit;
     text-decoration: none;
     font-size: 20px;
@@ -2165,4 +2277,15 @@ section.contact-form .row-grouping.flexible > div:not(.action-fields) > input:fo
 .contact-form input[type='submit'] {
     max-width: 302px;
     margin: 0 auto;
+}
+
+.contact-form a.not-a-button {
+    border: inherit;
+    padding: inherit;
+    margin: inherit;
+    line-height: inherit;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    text-decoration: underline;
 }

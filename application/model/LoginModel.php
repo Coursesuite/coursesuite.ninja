@@ -16,7 +16,7 @@ class LoginModel
      *
      * @return bool success state
      */
-    public static function login($user_name, $user_password, $set_remember_me_cookie = null, $discourse_sso = false, $discourse_payload = null, $discourse_signature = null)
+    public static function login($user_email, $user_password, $set_remember_me_cookie = null, $discourse_sso = false, $discourse_payload = null, $discourse_signature = null)
     {
 
         Session::set("feedback_area", "login");
@@ -28,7 +28,7 @@ class LoginModel
         }
 
         // checks if user exists, if login is not blocked (due to failed logins) and if password fits the hash
-        $result = self::validateAndGetUser($user_name, $user_password);
+        $result = self::validateAndGetUser($user_email, $user_password);
 
         // check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
         if (!$result) {
@@ -51,11 +51,11 @@ class LoginModel
 
         // reset the failed login counter for that user (if necessary)
         if ($result->user_last_failed_login > 0) {
-            self::resetFailedLoginCounterOfUser($result->user_name);
+            self::resetFailedLoginCounterOfUser($result->user_email);
         }
 
         // save timestamp of this login in the database line of that user
-        self::saveTimestampOfLoginOfUser($result->user_name);
+        self::saveTimestampOfLoginOfUser($result->user_email);
 
         // if user has checked the "remember me" checkbox, then write token into database and into cookie
         if ($set_remember_me_cookie) {
@@ -64,7 +64,7 @@ class LoginModel
 
         // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
         self::setSuccessfulLoginIntoSession(
-            $result->user_id, $result->user_name, $result->user_email, $result->user_account_type, $discourse_sso, $discourse_payload, $discourse_signature
+            $result->user_id, $result->user_email, $result->user_account_type, $discourse_sso, $discourse_payload, $discourse_signature
         );
 
         // record how many logins by this user
@@ -232,6 +232,20 @@ class LoginModel
         }
     }
 
+    public static function loginWithAccount($AccountModel)
+    {
+        if (!is_null($AccountModel)) {
+            $model = $AccountModel->get_model();
+            self::setSuccessfulLoginIntoSession($model["user_id"], $model["user_name"], $model["user_email"], $model["user_account_type"], Session::get('discourse_sso'), Session::get('discourse_payload'), Session::get('discourse_signature'));
+            $model["user_last_login_timestamp"] = time();
+            $model["user_logon_count"] = intval($model["user_logon_count"]) + 1;
+            $AccountModel->set_model($model);
+            $AccountModel->save();
+            return true;
+        }
+        return false;
+    }
+
     public static function softLogout()
     {
         Session::set('user_id', 0);
@@ -273,7 +287,7 @@ class LoginModel
      * @param $user_email
      * @param $user_account_type
      */
-    public static function setSuccessfulLoginIntoSession($user_id, $user_name, $user_email, $user_account_type, $discourse_sso, $discourse_payload, $discourse_signature)
+    public static function setSuccessfulLoginIntoSession($user_id, $user_email, $user_account_type, $discourse_sso, $discourse_payload, $discourse_signature)
     {
         Session::init();
 
@@ -285,7 +299,6 @@ class LoginModel
         $_SESSION = array();
 
         Session::set('user_id', $user_id);
-        Session::set('user_name', $user_name);
         Session::set('user_email', $user_email);
         Session::set('user_account_type', $user_account_type);
         Session::set('user_provider_type', 'DEFAULT');

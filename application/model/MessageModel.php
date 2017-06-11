@@ -82,10 +82,10 @@ class MessageModel extends Model
         ));
     }
 
-    public static function notify_user($message, $level, $user_id, $expires = 0)
+    public static function notify_user($message, $level = MESSAGE_LEVEL_HAPPY, $user_id = 0, $expires = 0)
     {
         if (intval($user_id) < 1) {
-            return;
+            $user_id = Session::get('user_id');
         }
 
         $model = self::Make();

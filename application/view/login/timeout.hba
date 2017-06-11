@@ -1,5 +1,5 @@
  <div class="info">
- 	<header><img src='http://r.coursesuite.ninja/logo/cs_logo_70px_colour.png'></header>
+ 	<header><img src="/img/coursesuite.svg" width="384" height="70"></header>
  	<article>
  		<p>Sorry, it looks like your session may have timed out, was re-used by somebody else, or was invalid.</p>
  		<p>You'll have to log on again to continue using this app.</p>

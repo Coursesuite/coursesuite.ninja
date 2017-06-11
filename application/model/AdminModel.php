@@ -106,4 +106,48 @@ class AdminModel
             return true;
         }
     }
+
+    public static function CurrentSubscribersModel() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "
+                    select u.user_id, u.user_email, s.added, s.endDate, s.referenceId, p.product_id, p.entity, p.entity_id from users u
+                    inner join subscriptions s on s.user_id = u.user_id
+                    inner join product p on s.product_id = p.id
+                    where s.status = 'active' order by added desc
+        ";
+        $query = $database->prepare($sql);
+        $query->execute();
+        $users = $query->fetchAll();
+        foreach ($users as &$user) {
+            $token = ApiModel::encodeToken($user->user_id);
+            if ($user->entity == "app_tiers") {
+                $sql = "select concat(a.launch, '?data=', :token) url, a.name from apps a
+                        inner join app_tiers apt on apt.app_id = a.`app_id`
+                        where apt.id = :id";
+            } else if ($user->entity == "bundle") {
+                $sql = "SELECT concat(a.launch, '?data=', :token) url, a.name
+                    FROM bundle b
+                    INNER JOIN bundle_apps ba ON b.id = ba.bundle
+                    INNER JOIN app_tiers at ON at.id = ba.app_tier
+                    INNER JOIN apps a ON at.app_id = a.app_id
+                    WHERE b.id = :id
+                    ORDER BY at.tier_level, a.name";
+            }
+            $query = $database->prepare($sql);
+            $query->execute(array(":id" => $user->entity_id, ":token" => $token));
+            $user->launchlinks = $query->fetchAll();
+        }
+        return array(
+            "user" => $users
+        );
+/*
+    {{#each user}}
+    <tr>
+        <td>{{email}}</td>
+        <td>{{started}}</td>
+        <td>{{ends}}</td>
+        <td>{{product}}</td>
+        <td>{{#each launchlinks}}<a href="{{url}}" target="_blank">{{name}}</a> </td>
+*/
+    }
 }

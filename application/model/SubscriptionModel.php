@@ -56,6 +56,12 @@ class SubscriptionModel extends Model
         return $this;
     }
 
+    public function loadByReference($referenceId)
+    {
+        $this->data_model = parent::Read(self::TABLE_NAME, "referenceId=:id", array(":id" => $referenceId))[0]; // 0th of a fetchall
+        return $this;
+    }
+
     public function make()
     {
         $this->data_model = parent::Create(self::TABLE_NAME);
@@ -152,4 +158,21 @@ class SubscriptionModel extends Model
         $query->execute($ids);
         return ($query->fetchAll(PDO::FETCH_COLUMN, 0) > 0);
     }
+
+    public static function get_user_subscription_history($user_id)
+    {
+        $idname = self::ID_ROW_NAME;
+        $sql = "SELECT $idname FROM " . self::TABLE_NAME . " WHERE user_id = :user_id ORDER BY added DESC";
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare($sql);
+        $query->execute(array(
+            ':user_id' => $user_id
+        ));
+        $results = [];
+        foreach ($query->fetchAll() as $row) {
+            $results[] = (new SubscriptionModel($row->$idname))->get_model(true);
+        }
+        return $results;
+    }
+
 }

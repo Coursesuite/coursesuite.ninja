@@ -18,6 +18,7 @@ return array(
     "FEEDBACK_LOGIN_FAILED_3_TIMES" => "Login failed 3 or more times already. Please wait 30 seconds to try again.",
 
     "FEEDBACK_USER_EMAIL_ALREADY_TAKEN" => "Sorry, that email is already in use. Please choose another one.",
+    "FEEDBACK_USER_EMAIL_ALREADY_TAKEN_CHANGE" => "Sorry, someone is already using the email address you chose. It was not changed.",
     "FEEDBACK_USER_DOES_NOT_EXIST" => "This user does not exist.",
 
     "FEEDBACK_USERNAME_OR_PASSWORD_WRONG" => "The username or password is incorrect. Please try again.",
@@ -97,7 +98,8 @@ return array(
     "EMAIL_COMMON_CONTENT_SIG" => "\n\nCheers,\nThe CourseSuite Team\ninfo@coursesuite.com.au\n",
     "EMAIL_PASSWORD_SUBJECT" => "Your new CourseSuite password",
     "EMAIL_PASSWORD_RESET_CONTENT" => "Please click on this link to reset your password: ",
-    "EMAIL_PASSWORD_VALUE" => "This is your new CourseSuite password.\n-----------------------\n %s \n-----------------------\nOpen the store page to log on: %s",
+    "EMAIL_PASSWORD_VALUE" => "This is your new CourseSuite password.\n-----------------------\n{{password}}\n-----------------------\nOpen the store page to log on: {{logonurl}}",
+    "EMAIL_VERIFICATION_SUBJECT" => "Please verify your CourseSuite account",
     "EMAIL_VERIFICATION_CONTENT" => "Please click on this link to activate your account: ",
     "EMAIL_TRIAL_VERIFICATION_CONTENT" => "Thank you for registering for a trial account. Click the link to activate your 14 day trial: ",
 
@@ -137,6 +139,12 @@ return array(
 
     "CONTACT_FORM_OK" => "Your message has been sent! Thanks for your interest.",
     "CONTACT_FORM_SPAM" => "I have always wanted to meet a robot!",
+
     "REGISTRATION_DOMAIN_BLACKLISTED" => "Sorry, this domain has been blacklisted. Please email info@coursesuite.com.au to resolve this.",
+
+    "FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION" => "Please check your NEW email address for a verification email.",
+    "FEEDBACK_USER_PASSWORD_RESET_REQUEST" => "Please check your current email address for a link to reset your password.",
+    "EMAIL_USER_EMAIL_CHANGE_VERIFICATION" => "Hi\nSomeone (probably you) requested their CourseSuite email change from {{old}} to {{new}}. If this is good with you, click the link below to verify the change.\n-----------------------------\n{{link}}\n-----------------------------\nCheers\nThe CourseSuite Team.",
+    "EMAIL_USER_PASSWORD_RESET_REQUEST" => "Hi\nSomeone (probably you) requested their CourseSuite password be reset. If this is good with you, click the link below to link below to generate a new password (which will be emailed to you). Note: changing your password will log out out of any active sessions. This link will exipire in 30 minutes.\n-----------------------------\n{{link}}\n-----------------------------\nCheers\nThe CourseSuite Team.",
 
 );

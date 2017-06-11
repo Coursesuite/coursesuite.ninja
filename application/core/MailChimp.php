@@ -6,173 +6,146 @@
 
 class MailChimp
 {
+    protected $apiKey;
+    protected $baseUrl;
+    protected $listId;
+    protected $interestId;
+    protected $memberId;
+    protected $userEmail;
 
-    /**
-     * Subscribes the user to the mailchimp newsletter
-     * PUT request
-     *
-     * @param $user_email string
-     * @param $user_name string
-     *
-     * @return bool
-     */
-
-    public static function subscribe($user_email, $user_name)
-    {
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $memberId = md5($user_email);
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/members/' . $memberId;
-
-        $json = json_encode([
-            'email_address' => $user_email,
-            'status' => 'subscribed',
-            'merge_fields' => [
-                'FNAME' => $user_name,
-                'LNAME' => '.',
-            ],
-        ]);
-        return Curl::mailChimpCurl($url, $apiKey, 'PUT', true, $json);
-    }
-
-    /**
-     * Unsubscribes the user from the mailing list
-     * PUT request
-     *
-     * @param $user_email string
-     *
-     * @return bool
-     */
-
-    public static function unsubscribe($user_email)
-    {
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $memberId = md5($user_email);
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/members/' . $memberId;
-
-        $json = json_encode([
-            'status' => 'unsubscribed',
-        ]);
-
-        return Curl::mailChimpCurl($url, $apiKey, 'PUT', false, $json);
-    }
-
-    /**
-     * Checks if specified user is subscribed to the mailing list, returns true if they are
-     * GET request
-     *
-     * @param $user_email string
-     *
-     * @return bool
-     */
-
-    public static function isUserSubscribed($user_email)
-    {
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $memberId = md5($user_email);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/members/' . $memberId;
-        $result = json_decode(Curl::mailChimpCurl($url, $apiKey, "GET", true));
-        // Check if user is subbed to the list or not. status is 404 if the user has never subbed or was deleted
-        if ($result->status == 'subscribed') {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns the id of the interest categorie
-     *
-     * @return string
-     */
-
-    public static function getInterstsId()
-    {
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/interest-categories';
-        $result = json_decode(Curl::mailChimpCurl($url, $apiKey, 'GET', true));
-        return $result->categories[0]->id;
-    }
-
-    /**
-     * Returns a 2d array of the different categories and their ID's for the mailing list
-     * GET request
-     *
-     * @return array
-     */
-
-    public static function getListInterests()
-    {
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/interest-categories/' . config::get('MAILCHIMP_INTEREST_ID') . '/interests';
-        $result = json_decode(Curl::mailChimpCurl($url, $apiKey, "GET", true));
-        $interestNames = array();
-
-        foreach ($result->interests as $interests) {
-            array_push($interestNames, array($interests->name, $interests->id));
-        }
-        return $interestNames;
-    }
-
-    /**
-     * Same as getListInterests but also tells you which interests catagories the user is subbed to
-     *
-     * @param user_email string
-     *
-     * @return array
-     */
-
-    public static function getUserInterests($user_email)
-    {
-        $listInterests = MailChimp::getListInterests();
-
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $memberId = md5($user_email);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/members/' . $memberId;
-        $curlResult = json_decode(Curl::mailChimpCurl($url, $apiKey, 'GET', true));
-
-        $result = (isset($curlResult->interests) ? $curlResult->interests : null);
-        if ($result == null) {
-            return $listInterests;
+    public function __construct($user_email, $list = null, $interest = null) {
+        $this->memberId = md5($user_email);
+        $this->userEmail = $user_email;
+        if (!is_null($list)) {
+            $this->listId = $list;
         } else {
-            $final = array();
-            foreach ($listInterests as $list) {
-                $list[] = $result->$list[1];
-                $final[] = $list;
-            }
-            return $final;
+            $this->listId = Config::get('MAILCHIMP_LIST_ID');
+        }
+        if (!is_null($interest)) {
+            $this->interestId = $interest;
+        } else {
+            $this->interestId = Config::get('MAILCHIMP_INTEREST_ID');
+        }
+        $this->apiKey = Config::get('MAILCHIMP_API_KEY');
+        $dataCenter = substr($this->apiKey, strpos($this->apiKey, '-') + 1);
+        $this->baseUrl = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . $this->listId;
+        return $this;
+    }
+
+    protected function call($route, $method = 'GET', $json = null)
+    {
+        if (is_null($json)) {
+            return Curl::mailChimpCurl($this->baseUrl . $route, $this->apiKey, $method, true);
+        } else {
+            return Curl::mailChimpCurl($this->baseUrl . $route, $this->apiKey, $method, true, $json);
         }
     }
 
-    /**
-     * Can be used to update pretty much anything, just need to add it in
-     *
-     * @param $user_email string
-     * @param $user_name string optional
-     * @param $user_interests array optional
-     * @param $subscribed string optional
-     *
-     * @return bool
-     */
-    public static function updateUserInfo($user_email, $user_name = null, $user_interests = null, $subscribed = 'subscribed')
+    public function subscribe()
     {
-        $apiKey = Config::get('MAILCHIMP_API_KEY');
-        $dataCenter = substr($apiKey, strpos($apiKey, '-') + 1);
-        $memberId = md5($user_email);
-        $url = 'https://' . $dataCenter . '.api.mailchimp.com/3.0/lists/' . config::get('MAILCHIMP_LIST_ID') . '/members/' . $memberId;
+        $data = json_encode(array(
+            'email_address' => $this->userEmail,
+            'status' => 'subscribed',
+        ));
+        return $this->call("/members/" . $this->memberId, "PATCH", $json);
+    }
 
-        $json = array();
-        $json['status'] = $subscribed; //options are: subscribed, unsubscribed, cleaned, pending
-        $json['merge_fields'] = array();
-        if ($user_name) {$json['merge_fields']['FNAME'] = $user_name;}
-        if ($user_interests) {$json['interests'] = $user_interests;}
-        $json = json_encode($json);
+    public function unsubscribe()
+    {
+        $data = json_encode(array(
+            'status' => 'unsubscribed',
+        ));
+        return $this->call("/members/" . $this->memberId, "PATCH", $json);
+    }
 
-        return Curl::mailChimpCurl($url, $apiKey, 'PUT', false, $json);
+    public function isSubscribed()
+    {
+        return ($this->subscriptionStatus() == "subscribed");
+    }
+
+    public function subscriptionStatus()
+    {
+        $member = $this->load_member();
+        if (isset($member->status)) {
+            return $member->status;
+        }
+        return "";
+    }
+
+    // get the interests for the list, cached for up to 30 minutes
+    protected function load_interests()
+    {
+        $key = KeyStore::find("MCInterests" . $this->listId);
+        if ($key->age() < 30) {
+            $cache = $key->get();
+        } else {
+            $cache = $this->call("/interest-categories/" . $this->interestId . "/interests");
+            $key->put($cache);
+        }
+        $interests = json_decode($cache)->interests;
+        $result = [];
+        foreach ($interests as $interest) {
+            $result[] = array(
+                "id" => $interest->id,
+                "name" => $interest->name,
+            );
+        }
+        unset($interests);
+        return $result;
+    }
+
+    public function getAllInterests()
+    {
+        return $this->load_interests();
+    }
+
+    // loads a list in the context of a user
+    protected function load_member()
+    {
+        $result = json_decode($this->call("/members/" . $this->memberId));
+        if ($result->status == "404" || $result->status == 404 || $result->status == "cleaned") { // deleted, bounced or never been subscribed
+            return null;
+        }
+        return $result;
+    }
+
+    // get the (merged) list of a users interests, culling any lists that no longer exist
+    public function getInterests()
+    {
+        $list = $this->load_interests();
+        foreach ($list as &$entry) {
+            $entry["subscribed"] = false;
+        }
+        $member = $this->load_member();
+        if (isset($member->interests)) {
+            foreach ($list as &$entry) {
+                $entryId = $entry["id"];
+                if (property_exists($member->interests, $entryId)) {
+                    $entry["subscribed"] = $member->interests->$entryId;
+                }
+            }
+        }
+        return $list;
+    }
+
+    // set the list of interests that a user is subscribed to
+    // list is in the format [["9143cf3bd1" => true, "789cf3bds1" => true]]
+    public function setInterests($list)
+    {
+        $json = array(
+            "email_address" => $this->userEmail,
+            "status" => "subscribed",
+            "interests" => $list
+        );
+        if (count($list)===0) {
+            $json["status"] = "unsubscribed";
+            unset($json["interests"]);
+        }
+        $result = json_decode($this->call("/members/" . $this->memberId, "PATCH", json_encode($json)));
+        if ($result->status == "404" || $result->status == 404) {
+            $result = json_decode($this->call("/members/", "POST", json_encode($json)));
+        }
+        return $result;
     }
 
 }

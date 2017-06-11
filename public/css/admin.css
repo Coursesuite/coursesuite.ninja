@@ -5,8 +5,27 @@
 ============================================================================== */
 .system-sections, .system-apps, .system-log {}
 
+.admin-tools input[type='button'],
 .admin-tools input[type='submit'] {
     max-width: 120px;
+}
+
+form > div.depreciated {
+    text-decoration: line-through;
+    opacity: .5;
+}
+form > div.depreciated input, form > div.depreciated textarea {
+    text-decoration: none;
+}
+
+header.admin-header {
+        display: flex;
+        align-items: center;
+}
+header.admin-header h1 {
+    font-size: 48px;
+    font-weight: 100;
+    flex: 1;
 }
 
 .admin-tools ul.media-select a {
@@ -119,6 +138,14 @@
 .admin-tools .mail-templates {
     position: relative;
 }
+body article.admin-tools > header.common-header {
+    display: flex;
+    align-items: center;
+}
+body article.admin-tools > header.common-header h1 {
+    flex: 1;
+}
+
 
 .admin-tools .mail-hidden {
     display: none;
@@ -147,16 +174,17 @@
 }
 
 .admin-tiles {
-	text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .admin-tiles .admin-tile {
-	text-align: center;
-	display: inline-block;
-	box-shadow: 0 0 5px 2px rgba(0,0,0,.1);
-	background-color: #fff;
-	min-width: 20%;
-	color: #999;
+    flex: 1;
+    min-width: 10%;
+    text-align: center;
+    box-shadow: 0 0 5px 2px rgba(0,0,0,.1);
 }
 
 .admin-tiles a {
