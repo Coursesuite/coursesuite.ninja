@@ -9,218 +9,265 @@
 class ApiController extends Controller
 {
 
-    /*
-     * Construct this object by extending the basic Controller class
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $digest = new \Rakshazi\Digestauth;
-        $valid = $digest->setUsers(Config::get('DIGEST_USERS'))->setRealm("CourseSuite")->enable();
-        if (!$valid) {
-            header('HTTP/1.1 401 Unauthorized');
-            die("Digest Authentication Failed");
-        }
-        $this->username = $digest->user;
-    }
+	public function __construct()
+	{
+		parent::__construct();
+		$digest = new \Rakshazi\Digestauth;
+		$valid = $digest->setUsers(Config::get('DIGEST_USERS'))->setRealm("CourseSuite")->enable();
+		if (!$valid) {
+			header('HTTP/1.1 401 Unauthorized');
+			die("Digest Authentication Failed");
+		}
+		$this->username = $digest->user;
+	}
 
-    /*
-     * An Api call will create a sessionid, which puts a row in the session_data table. We don't want to persist this, so delete it afterwards
-     */
-    public function __destruct()
-    {
-        //    Session::clean();
-        //   Session::destroy();
-    }
+	/*
+	 * An Api call will create a sessionid, which puts a row in the session_data table. We don't want to persist this, so delete it afterwards
+	 */
+	public function __destruct()
+	{
+		//    Session::clean();
+		//   Session::destroy();
+	}
 
-    /*
-     *  verify an access token for a given app (id); effectively this is the encrypted php session id - is it still active?
-     *
-     * @access public
-     * @static false
-     * @param appkey - the appkey column from the apps table
-     * @param token - url encoded base64 string of the encrypted php sessionid
-     * @return JSON
-     * @see Session::isActiveSession()
+	/*
+	 *  verify an access token for a given app (id); effectively this is the encrypted php session id - is it still active?
+	 *
+	 * @access public
+	 * @static false
+	 * @param appkey - the appkey column from the apps table
+	 * @param token - url encoded base64 string of the encrypted php sessionid
+	 * @return JSON
+	 * @see Session::isActiveSession()
 
-     * input is bin2hex/encrypted: 663762623633626661393032373166353964393935333862313135336463386537646230636138336133343861633062323163343631643039386439353461334812d03b8951695b359bfbb7b8833e23684aea24450339659f1d02842e7c65abd49ed70ca651bb871aafecb74fbc145e
-     * output is a php session id, e.g. mog1suctkfbm5rii8fo2pla8j6
+	 * input is bin2hex/encrypted: 663762623633626661393032373166353964393935333862313135336463386537646230636138336133343861633062323163343631643039386439353461334812d03b8951695b359bfbb7b8833e23684aea24450339659f1d02842e7c65abd49ed70ca651bb871aafecb74fbc145e
+	 * output is a php session id, e.g. mog1suctkfbm5rii8fo2pla8j6
 
-     */
-    public function verifyToken($appkey, $token)
-    {
-        $session_id = ApiModel::decodeToken($token);
-        $tokenIsValid = Session::isActiveSession($session_id, $appkey);
-        $userObj = Session::UserDetailsFromSession($session_id);
-        $result = array(
-            'authuser' => $this->username,
-            'appkey' => $appkey,
-            'valid' => $tokenIsValid,
-            'api' => false,
-            'tier' => ProductModel::get_highest_subscribed_tier_for_app(AppModel::app_id_for_key($appkey), $userObj->user_id), // LEVEL (e.g. 0=bronze, 1=silver, etc) not ID; -1 means none
-           //  'username' => $userObj->user_name,
-            'useremail' => $userObj->user_email,
-            'trial' => ($userObj->account_type == 3) ? true : false,
-        );
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
-        $this->View->renderJSON($result);
-    }
+	 */
+	public function verifyToken($appkey, $token)
+	{
+		$session_id = ApiModel::decodeToken($token);
+		$tokenIsValid = Session::isActiveSession($session_id, $appkey);
+		$userObj = Session::UserDetailsFromSession($session_id);
+		$result = array(
+			'authuser' => $this->username,
+			'appkey' => $appkey,
+			'valid' => $tokenIsValid,
+			'api' => false,
+			'tier' => ProductModel::get_highest_subscribed_tier_for_app(AppModel::app_id_for_key($appkey), $userObj->user_id), // LEVEL (e.g. 0=bronze, 1=silver, etc) not ID; -1 means none
+		//  'username' => $userObj->user_name,
+			'useremail' => $userObj->user_email,
+		//	'app_id' => AppModel::app_id_for_key($appkey),
+		//	'user_id' => $userObj->user_id
+		);
+		LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
+		$this->View->renderJSON($result);
+	}
 
-    /*
-     *  verify an api token for a given app;
-     *
-     * @access public
-     * @static false
-     * @param key - base64 encoded encrypted string
-     * @return JSON
-     * @see ApiController::generateApiKey()
-     */
+	// this is basically the same as verifyToken except that it's an unexposed method that verifies a token without a session. the token represents the user instead.
+	// if the user has a subscription to appkey then they are considered valid.
+	// typical usage: admin log in as subscriber
+	public function verifyData($appkey, $token)
+	{
+		$user_id = ApiModel::decodeToken($token);
+		$tokenIsValid = false;
+		$result = array(
+			'authuser' => $this->username,
+			'appkey' => $appkey,
+			'api' => false,
+			'tier' => 0,
+			'useremail' => '',
+		);
+		if ($user_id > 0) {
+			$tokenIsValid = true;
+			$result["tier"] = ProductModel::get_highest_subscribed_tier_for_app(AppModel::app_id_for_key($appkey), $user_id);
+			$database =  DatabaseFactory::getFactory()->getConnection();
+			$query = $database->prepare("SELECT user_email FROM users WHERE user_id=:uid LIMIT 1");
+			$query->execute(array(":uid" => $user_id));
+			$result["useremail"] = $query->fetchColumn(0);
+		}
+		$result["valid"] = $tokenIsValid;
+		LoggingModel::logMethodCall(__METHOD__, $this->username, $appkey, $token, $tokenIsValid, $result);
+		$this->View->renderJSON($result);
+	}
 
-    public function verifyApiKey($key, $app_key = "")
-    {
-        $data = ApiModel::decodeApiToken($key, $app_key);
-        LoggingModel::logMethodCall(__METHOD__, $this->username, json_encode($data));
-        $this->View->renderJSON($data);
-    }
+	/*
+	 *  verify an api token for a given app;
+	 *
+	 * @access public
+	 * @static false
+	 * @param key - base64 encoded encrypted string
+	 * @return JSON
+	 * @see ApiController::generateApiKey()
+	 */
+	public function verifyApiKey($key, $app_key = "")
+	{
+		$data = ApiModel::decodeApiToken($key, $app_key);
+		LoggingModel::logMethodCall(__METHOD__, $this->username, json_encode($data));
+		$this->View->renderJSON($data);
+	}
 
-    /*
-     *  generate an api token, optionally for a given app;
-     *
-     * @access public
-     * @method POST
-     * @static false
+	/*
+	 *  generate an api token, optionally for a given app;
+	 *
+	 * @access public
+	 * @method POST
+	 * @static false
 
-     * @return JSON
-     * @see ApiController::generateApiKey()
-     */
-    public function generateApiKey()
-    {
+	 * @return JSON
+	 * @see ApiController::generateApiKey()
+	 */
+	public function generateApiKey()
+	{
 
-        $org = Request::post("org", true);
-        $app = Request::post("app", true);
-        $publish_url = Request::post("publish_url", true);
+		$org = Request::post("org", true);
+		$app = Request::post("app", true);
+		$publish_url = Request::post("publish_url", true);
 
-        $username = $this->username;
-        if (empty($username)) return;
+		$username = $this->username;
+		if (empty($username)) return;
 
-        if (empty($org)) { // empty($publish_url)
-            $this->View->renderJSON(array("error" => Text::get("MISSING_PARAMETERS")));
-            return false;
-        }
+		if (empty($org)) { // empty($publish_url)
+			$this->View->renderJSON(array("error" => Text::get("MISSING_PARAMETERS")));
+			return false;
+		}
 
-        $app_model = new stdClass();
-        $app_model->app_id = 0;
+		$app_model = new stdClass();
+		$app_model->app_id = 0;
 
-        LoggingModel::logMethodCall(__METHOD__, $username, file_get_contents("php://input"));
+		LoggingModel::logMethodCall(__METHOD__, $username, file_get_contents("php://input"));
 
-        if (!empty($app) && $app !== "*") {
-            $tmp = AppModel::getAppByKey($app);
-            if ($tmp) {
-                $app_model = $tmp;
-            } else {
-                $this->View->renderJSON(array("error" => "App name not found"));
-                return false;
-            }
-        }
+		if (!empty($app) && $app !== "*") {
+			$tmp = AppModel::getAppByKey($app);
+			if ($tmp) {
+				$app_model = $tmp;
+			} else {
+				$this->View->renderJSON(array("error" => "App name not found"));
+				return false;
+			}
+		}
 
-        $tmp = OrgModel::getApiModel($org);
-        if (isset($tmp)) {
-            $org_model = $tmp;
-        } else {
-            $org_model = OrgModel::Make();
-            $org_model["name"] = $org;
-            OrgModel::Save($org_model); // defaults to non-active
-            $org_model = OrgModel::getApiModel($org); // get full row once default are applied
-        }
+		$tmp = OrgModel::getApiModel($org);
+		if (isset($tmp)) {
+			$org_model = $tmp;
+		} else {
+			$org_model = OrgModel::Make();
+			$org_model["name"] = $org;
+			OrgModel::Save($org_model); // defaults to non-active
+			$org_model = OrgModel::getApiModel($org); // get full row once default are applied
+		}
 
-        $token = ApiModel::encodeApiToken($org_model, $app_model, $publish_url, $this->username);
-        $data = array("token" => $token);
-        $this->View->renderJSON($data);
+		$token = ApiModel::encodeApiToken($org_model, $app_model, $publish_url, $this->username);
+		$data = array("token" => $token);
+		$this->View->renderJSON($data);
 
-        return true;
-    }
+		return true;
+	}
 
-    /*
-     * get a list of the app names
-     */
-    public function appNames()
-    {
-        $this->View->renderJSON(AppModel::getAppKeys()); // Config::get('APP_NAMES')
-    }
+	/*
+	 * get a list of the app names
+	 */
+	public function appNames()
+	{
+		$this->View->renderJSON(AppModel::getAppKeys()); // Config::get('APP_NAMES')
+	}
 
-    public function tasks()
-    {
-        SubscriptionModel::validateSubscriptions();
-    }
+	public function tasks()
+	{
+		SubscriptionModel::validateSubscriptions();
+	}
 
-    /* -------------------------------- FASTSPRING -----------------------------------
+	/* -------------------------------- FASTSPRING -----------------------------------
 
-    Request all have these named parameters (post):
+	Request all have these named parameters (post):
 
-    accountUrl
-    email
-    productName
-    referenceId
-    referrer - Text::base64dec(value)
-    status
-    statusReason
-    subscriptionEndDate
-    subscriptionUrl
-    testmode
+	accountUrl
+	email
+	productName
+	referenceId
+	referrer - Text::base64dec(value)
+	status
+	statusReason
+	subscriptionEndDate
+	subscriptionUrl
+	testmode
 
-    security_data
-    security_hash
+	security_data
+	security_hash
 
-     */
+	 */
 
-    public function subscription(...$params)
-    {
-        LoggingModel::logMethodCall(__METHOD__, $this->username, $params, Request::post_debug());
-        extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
-        if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
-            $tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
-            $referrer = Request::post("referrer");
-            if (isset($referrer)) {
-                $userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
-            } else {
-                $userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ? wrong email entered during checkout could mess with this
-            }
-            $endDate = Request::post("subscriptionEndDate"); // date | empty
-            $endDateSet = isset($endDate); // if set then the subscription is inactive after this date
-            $referenceId = Request::post("referenceId"); // unique order id for fastspring dashboard use
-            $subscriptionUrl = Text::base64enc(Encryption::encrypt(Request::post("subscriptionUrl"))); // unique user-facing transaction id for users personal reference
-            $status = Request::post("status"); // active | inactive
-            $statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
-            $testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
-            $oldTier = SubscriptionModel::getCurrentSubscription($userid)->tier_id;
-            switch ($params[0]) {
-                case "activated":
-                    SubscriptionModel::addSubscription($userid, $tierid, $endDate, $referenceId, $subscriptionUrl, $status, $statusReason, $testMode);
-                    break;
-                case "deactivated":
-                    // deactivation will remove the subscription entry from the database
-                    SubscriptionModel::updateSubscriptionStatus($referenceId, $status);
-                    break;
-                case "failed":
-                case "changed":
+	function subscription(...$params)
+	{
+		LoggingModel::logMethodCall(__METHOD__, $this->username, $params, Request::post_debug());
+		extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
+		if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
 
-                    // do we need to log any of these statuses?
-                    if ($endDateSet) {
-                        if ($status == "inactive") {} // has become inactive and will deactivate soon
-                        if ($statusReason == "canceled") {} // we should next or soon see a deactivated
-                    }
-                    if ($status == "active") {
-                        if ($tierid != $oldTier) {
-                            // subscription upgraded/downgraded
-                            SubscriptionModel::updateSubscriptionTier($referenceId, $tierid, $oldTier);
-                            $mail = new Mail();
-                            $mail->sendMail(Config::get('EMAIL_SUBSCRIPTION'), Config::get('EMAIL_VERIFICATION_FROM_EMAIL'), 'SubscriptionInfo', 'User: ' . $userid . ' Updated their subscription', 'User: ' . $userid . ' Changed their subscription from ' . TierModel::getTierNameById($oldTier) . ' to ' . TierModel::getTierNameById($tierid));
-                            break;
-                        }
-                    }
-                    break;
-            }
-        }
-    }
+			// $tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
+
+			$fastspringProductId = Request::post("productName");
+			$product = (new ProductModel)->load_by_productId($fastspringProductId);
+			$product_id = $product->get_id();
+			unset($product);
+
+			$referrer = Request::post("referrer");
+			if (isset($referrer)) {
+				$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
+			} else {
+				$userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ? wrong email entered during checkout could mess with this
+			}
+
+			$endDate = Request::post("subscriptionEndDate"); // date | empty
+			$endDateSet = isset($endDate); // if set then the subscription is inactive after this date
+			$referenceId = Request::post("referenceId"); // unique order id for fastspring dashboard use
+			$subscriptionUrl = Text::base64enc(Encryption::encrypt(Request::post("subscriptionUrl"))); // unique user-facing transaction id for users personal reference
+			$status = Request::post("status"); // active | inactive
+			$statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
+			$testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
+
+			switch ($params[0]) {
+				case "activated":
+					$subscription = (new SubscriptionModel)->make();
+					$model = $subscription->get_model();
+					$model["user_id"] = $userid;
+					unset($model["added"]); // allow database default to apply
+					$model["endDate"] = empty($endDate) ? null : $endDate;
+					$model["referenceId"] = $referenceId;
+					$model["subscriptionUrl"] = $subscriptionUrl;
+					$model["status"] = $status;
+					$model["statusReason"] = $statusReason;
+					$model["testMode"] = $testMode;
+					$model["active"] = 1;
+					$model["info"] = null;
+					$model["product_id"] = $product_id;
+					$subscription->set_model($model);
+					$subscription->save();
+					break;
+
+				case "deactivated":
+					// deactivation will remove the subscription entry from the database
+					$subscription = (new SubscriptionModel)->loadByReference($referenceId);
+					$model = $subscription->get_model();
+					$model["active"] = 0;
+					$model["status"] = $status;
+					$model["statusReason"] = $statusReason;
+					$subscription->set_model($model);
+					$subscription->save();
+					break;
+
+				case "failed":
+				case "changed":
+					if ($endDateSet) {
+						if ($status == "inactive") { // has become inactive and will deactivate soon
+							MessageModel::notify_user("Your subscription has lapsed and will deactivate soon.", MESSAGE_LEVEL_MEH, $userid);
+						}
+						if ($statusReason == "canceled") { // we should next or soon see a deactivated
+							MessageModel::notify_user("Your subscription has been cancelled.", MESSAGE_LEVEL_MEH, $userid);
+						}
+					}
+					break;
+			}
+		}
+	}
 
 }
