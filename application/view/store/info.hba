@@ -45,7 +45,7 @@
 			{{#each Tiers}}
     	    		<header>
     	    			<h1>{{name}}</h1>
-    	    			{{#if IsLoggedIn}}
+    	    			{{#if ../IsLoggedIn}}
 		    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
 		    		{{else}}
 		    		<a href="#" class="button button-disabled"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
@@ -63,7 +63,7 @@
     			{{#each Bundles}}
 			<header>
 				<h1>{{label}}</h1>
-    	    			{{#if IsLoggedIn}}
+    	    			{{#if ../IsLoggedIn}}
 		    		<a href="{{Product.store_url}}{{../FastspringParams}}" class="button button-blue"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>
 		    		{{else}}
 		    		<a href="#" class="button button-disabled"><i class="fa fa-shopping-cart"></i>${{cint Product.price}} USD</a>

@@ -92,28 +92,6 @@ body#store_info {
 
 				.box {
 
-					&.launch {
-						margin-bottom: 50px;
-						.gradient(#1fad1f; #1f8f23);
-						color: #fff;
-						header:not(.pre) {
-							border-top: none;
-							color: inherit;
-							a {
-								.button();
-								.button-launch();
-							}
-						}
-						.content {
-							color: inherit;
-							border-top: 1px solid rgba(255,255,255,.2);
-							p.subscription-overlap {
-								color: #ff0;
-							}
-						}
-					}
-
-
 					background-color: #fff;
 					color: #777;
 					box-shadow: 0 0 3px rgba(0,0,0,.2);
@@ -135,7 +113,7 @@ body#store_info {
 						a {
 							.button();
 							&:not(.button-disabled) {
-								.button-green();
+								.button-blue();
 							}
 						}
 					}
@@ -180,6 +158,25 @@ body#store_info {
 					&.store-logon {
 						header.pre {
 							background-color: #ff7103;
+						}
+					}
+					&.launch {
+						.gradient(#1fad1f; #1f8f23);
+						color: #fff;
+						header:not(.pre) {
+							border-top: none;
+							color: inherit;
+							a {
+								.button();
+								.button-launch();
+							}
+						}
+						.content {
+							color: inherit;
+							border-top: 1px solid rgba(255,255,255,.2);
+							p.subscription-overlap {
+								color: #ff0;
+							}
 						}
 					}
 				}
