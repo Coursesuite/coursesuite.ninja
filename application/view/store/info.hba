@@ -41,7 +41,7 @@
 	    {{/if}}
     	    {{#if Tiers}}
     	    	<section class='box tiers'>
-    	    		<header class="pre">Standalone<span>{{FreeTrialDays}} day trial</span></header>
+    	    		<header class="pre">Standalone{{#unless Subscriptions}}<span>{{FreeTrialDays}} day trial</span>{{/unless}}</header>
 			{{#each Tiers}}
     	    		<header>
     	    			<h1>{{name}}</h1>
@@ -59,7 +59,7 @@
 	    {{/if}}
 	    {{#if Bundles}}
 		<section class='box bundles'>
-    	    		<header class="pre">Bundled<span>{{FreeTrialDays}} day trial</span></header>
+    	    		<header class="pre">Bundled{{#unless Subscriptions}}<span>{{FreeTrialDays}} day trial</span>{{/unless}}</header>
     			{{#each Bundles}}
 			<header>
 				<h1>{{label}}</h1>
