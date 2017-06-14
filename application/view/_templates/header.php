@@ -9,8 +9,21 @@ $baseurl = Config::get('URL');
 if (isset($this->App->meta_description) && !empty($this->App->meta_description)) { $meta_description = $this->App->meta_description; }
 if (isset($this->App->meta_keywords) && !empty($this->App->meta_keywords)) { $meta_keywords = $this->App->meta_keywords; }
 if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_title = $this->App->meta_title; }
-?><!doctype html>
-<html class="no-touch">
+?><!doctype html><!--
+
+      ______                          _____       _ __          _   ___         _       __
+     / ____/___  __  _______________ / ___/__  __(_) /____     / | / (_)___    (_)___ _/ /
+    / /   / __ \/ / / / ___/ ___/ _ \\__ \/ / / / / __/ _ \   /  |/ / / __ \  / / __ `/ /
+   / /___/ /_/ / /_/ / /  (__  )  __/__/ / /_/ / / /_/  __/  / /|  / / / / / / / /_/ /_/
+   \____/\____/\__,_/_/  /____/\___/____/\__,_/_/\__/\___/  /_/ |_/_/_/ /_/_/ /\__,_(_)
+                                                                         /___/
+
+Hey, thanks for checking out our source code... maybe we can tell you what you're looking for
+
+                                  info@coursesuite.com.au
+                                            =)
+
+--><html class="no-touch">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,15 +72,16 @@ if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
 
     </script>" . PHP_EOL;
 }
-$headerVideo = KeyStore::find("headerVideo")->get("");
-if (class_exists("BlogController")) {
-    $headerVideo = "https://www.youtube.com/watch?v=9cheCJhoa_A";
-}
-// if (Config::get("debug") == true) {
+if (Config::get("debug") === false) {
+    $headerVideo = KeyStore::find("headerVideo")->get("");
+    if (class_exists("BlogController")) {
+        $headerVideo = "https://www.youtube.com/watch?v=9cheCJhoa_A";
+    }
+} else {
 //     $headerVideo = "https://www.youtube.com/watch?v=L_5pV4PJV4c";
-// }
+    $headerVideo = "";
 
-$headerVideo = "";
+}
 
 $blog_badge = "";
 $blog_recent = BlogModel::recent_entry_count();
