@@ -142,6 +142,27 @@ class SubscriptionModel extends Model
             return $query->fetchAll(PDO::FETCH_COLUMN, 0); // FETCH_ASSOC);
     }
 
+    public static function get_current_subscribed_apps_model($user_id) {
+        $app_ids = self::get_subscribed_app_ids_for_user($user_id);
+        if (empty($app_ids)) return false;
+        $database =  DatabaseFactory::getFactory()->getConnection();
+        $ids = implode(",", $app_ids); // safe since the source is an internal function output,
+        $baseUrl = Config::get("URL");
+        $sql = "select app_key, name, icon from apps where active=1 and app_id in ($ids) order by popular";
+        $query = $database->prepare($sql);// , array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+        $query->execute();
+        $results = [];
+        while (list($app_key, $name, $icon) = $query->fetch(PDO::FETCH_NUM)) {  //, PDO::FETCH_ORI_NEXT)) {
+            $results[] =array(
+                "app_key" => $app_key,
+                "name" => $name,
+                "icon" => $icon,
+                "launch" => $baseUrl . "launch/" . $app_key,
+            );
+        }
+        return $results;
+    }
+
     // check if a user has an active subscription to the specified app_key
     // returns boolean
     public static function user_has_active_subscription_to_app($user_id, $app_key)

@@ -222,6 +222,9 @@ class View
                     $query = $database->prepare("select price from product p inner join app_tiers t on p.entity_id = t.id where p.entity = 'app_tiers' and t.app_id = :appid limit 1");
                     $query->execute(array(":appid" => $appId));
                     return "$" . floor($query->fetchColumn(0));
+                },
+                "thumbnail" => function ($path, $width) {
+                    return Config::get("URL") . "content/image/" . Text::base64_urlencode($path) . "/$width";
                 }
 
             );

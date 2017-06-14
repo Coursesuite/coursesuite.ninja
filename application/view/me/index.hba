@@ -61,6 +61,20 @@
 
 	</section>
 
+	{{#if CurrentSubs}}
+	<header class="common-header">
+		<h1>Subscribed apps</h1>
+	</header>
+	<section class="standard-width current-subscriptions">
+	{{#each CurrentSubs}}
+		<figure>
+			<a href="{{launch}}" target="{{app_key}}"><img src="{{thumbnail icon 150}}"></a>
+			<figcaption><a href="{{launch}}" target="{{app_key}}">{{name}}</a></figcaption>
+		</figure>
+	{{/each}}
+	</section>
+	{{/if}}
+
 	<header class="common-header">
 		<h1>Purchase history</h1>
 	</header>

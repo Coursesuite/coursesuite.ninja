@@ -73,10 +73,13 @@ class Application
             // so store/info/docninja/ becomes store::info(docninja)
             // When we have a non-standard route
             // we have to handle it here by modifying the action_name and parameters objects.
+
             switch ($this->controller_name) {
-                case "ContentController": // content/foo becomes content/index (foo)
-                    $this->parameters = array($this->action_name);
-                    $this->action_name = "index";
+                case "ContentController": // content/foo becomes content/index (foo), but content/image/foo stays content/image/foo .. hmm
+                    if ($this->action_name !== "image") {
+                        $this->parameters = array($this->action_name);
+                        $this->action_name = "index";
+                    }
                     break;
 
                 case "LaunchController": // launch/app/param1/param2 becomes launch/index (app, param1, param2)

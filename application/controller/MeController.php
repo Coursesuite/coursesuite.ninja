@@ -70,6 +70,9 @@ class MeController extends Controller
         }
         }
          */
+
+        $model["CurrentSubs"] = SubscriptionModel::get_current_subscribed_apps_model(Session::get("user_id"));
+
         $this->View->renderHandlebars("me/index", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
     }

@@ -218,4 +218,13 @@ class Text
 			return urldecode($string);
 		}
 	}
+
+	public static function base64_urlencode($input) {
+		return strtr(base64_encode($input), '+/=', '-_~');
+	}
+
+	public static function base64_urldecode($input) {
+		return base64_decode(strtr($input, '-_~', '+/='));
+	}
+
 }
