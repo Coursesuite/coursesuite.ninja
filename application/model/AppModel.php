@@ -149,6 +149,14 @@ class AppModel extends Model
         $encoded_identity = ApiModel::encodeToken(Session::get('user_id'));
 
         // well, without extending the app table with some kind of formatter for the launch url ...
+        if ($method == "apikey") { // logging on via portal
+            $launchurl = "{$url}apikey/$token/";
+
+        } else if ($app_key === "coursebuildr") {
+            $launchurl = "{$url}data/{$encoded_identity}/";
+
+        } else { // ordinary app launch
+/*
         if ($app_key === "coursebuildr") {
             $launchurl = "{$url}data/{$encoded_identity}/";
 
@@ -156,6 +164,8 @@ class AppModel extends Model
             $launchurl = $url . "?apikey=$token";
 
         } else { // ordinary app launch
+*/
+
             switch ($auth_type) {
                 case AUTH_TYPE_DIGEST:
                     $launchurl = Config::get("URL") . "launch/app/" . $query->fetchColumn(2); // unfinished, DO NOT USE
