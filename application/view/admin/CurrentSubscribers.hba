@@ -12,6 +12,7 @@
 		<th>Subscription ends</th>
 		<th>Reference</th>
 		<th>Launch as this user</th>
+		<th>FastSpring Referrer</th>
 	</tr></thead>
 	<tbody>
 	{{#each user}}
@@ -21,6 +22,7 @@
 		<td>{{endDate}}</td>
 		<td>{{referenceId}}</td>
 		<td>{{#each launchlinks}}<a href="{{url}}" target="_blank">{{name}}</a> {{/each}}</td>
+		<td><pre style="width:100%;overflow:scroll;">{{ref_id}}</pre></td>
 	</tr>
 	{{/each}}
 	</tbody>

@@ -44,4 +44,30 @@ class ContentController extends Controller
         $this->View->renderHandlebars("content/index", $model, "_overlay", Config::get("FORCE_HANDLEBARS_COMPILATION"));
     }
 
+
+    // return an image (jpeg) from the base64 encoded url and width.
+    // creates the thumb and saves it to disk in the /img/thumbs/ folder
+    public function image($path, $width) {
+
+        $path = Text::base64_urldecode($path);
+
+        if (strpos("/", $path) === 0) {
+            $path = trim($path,"/");
+        }
+        if (strpos("://", $path) === false) {
+            $path = Config::get("URL") . $path;
+        }
+
+        $thumb = "./img/thumb/" . md5($path) . "_$width.jpg";
+        if (!file_exists($thumb)) {
+            $image = Image::urlThumb($path, $thumb, $width, true);
+        }
+
+       header("Content-Type: image/jpeg");
+       $size = filesize($thumb);
+       header("Content-Length: $size");
+       readfile($thumb);
+
+    }
+
 }

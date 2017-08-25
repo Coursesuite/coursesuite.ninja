@@ -31,6 +31,7 @@ function renderTile($route, $data) {
 
 ?>
 <article class="system-index admin-tools">
+    <section class='section standard-width'>
     <header class="admin-header">
         <h1>Admin tools</h1>
     </header>
@@ -44,4 +45,5 @@ function renderTile($route, $data) {
         echo "</section>";
 
     ?>
+    </section>
 </article>

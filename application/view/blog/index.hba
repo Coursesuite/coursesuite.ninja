@@ -36,6 +36,18 @@
 		<div class="published-date">Posted on {{date entry_date}}</div>
 	</section>
 
+	<section class="comments">
+	<div id="disqus_thread"></div>
+	<script>
+	(function() {
+	var d = document, s = d.createElement('script');
+	s.src = 'https://coursesuite-ninja.disqus.com/embed.js';
+	s.setAttribute('data-timestamp', +new Date());
+	(d.head || d.body).appendChild(s);
+	})();
+	</script>
+	</section>
+
 	<footer>
 		<div class="entry-returnlink"><a href="{{@root.baseurl}}blog" rel="previous"><i class="fa fa-arrow-circle-o-left"></i> Return</a></div>
 		{{#if editable}}{{#gte published 1}}{{else}}
@@ -69,8 +81,11 @@
 		</div>
 
 		<footer>
-			<div class="entry-permalink"><a href="{{baseurl}}blog/{{entry_id}}" rel="bookmark"><i class="fa fa-link"></i> {{#if long_entry}}Full article...{{else}}Permalink{{/if}}</a></div>
-			{{#if ../editable}}<a href="{{../baseurl}}blog/{{entry_id}}/0/edit/" class="button button-yellow"><i class="fa fa-pencil"></i> Edit</a>{{/if}}
+			<div class="entry-permalink">
+				<a href="{{baseurl}}blog/{{entry_id}}" rel="bookmark"><i class="fa fa-link"></i> {{#if long_entry}}Full article...{{else}}Permalink{{/if}}</a>
+				<a href="{{baseurl}}blog/{{entry_id}}#disqus_thread">0 Comments</a>
+				{{#if ../editable}}<a href="{{../baseurl}}blog/{{entry_id}}/0/edit/" class="button button-yellow"><i class="fa fa-pencil"></i> Edit</a>{{/if}}
+			</div>
 		</footer>
 	</section>
 

@@ -28,9 +28,14 @@ return array(
     'DB_CHARSET' => 'utf8',
     'CAPTCHA_WIDTH' => 359,
     'CAPTCHA_HEIGHT' => 100,
+
     'GOOGLE_CAPTCHA_SECRET' => '6LerkRcTAAAAAEUuS9ihNcY5m1cal1atUwl3iPTa',
     'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
-    'GOOGLE_ANALYTICS_ID' => null,
+
+    'GOOGLE_INVISIBLE_CAPTCHA_SITEKEY' => '6LewIiYUAAAAAJcV-bQRfk824cYcsYwkIZ99Bpsy',
+    'GOOGLE_INVISIBLE_CAPTCHA_SECRET' => '6LewIiYUAAAAAJUOJL7dg8ImX06LZ0iyMqqOPh2-',
+
+    'GOOGLE_ANALYTICS_ID' => 'UA-68767047-1',
     'COOKIE_RUNTIME' => 1209600,
     'COOKIE_PATH' => '/',
     'COOKIE_DOMAIN' => "",
@@ -57,7 +62,7 @@ return array(
     'EMAIL_SMTP_USERNAME' => 'no.user', // 'no.user',
     'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
     'EMAIL_SMTP_PORT' => 465, // 587, // 465
-    'EMAIL_SMTP_ENCRYPTION' => false, 'tls', // 'ssl',
+    'EMAIL_SMTP_ENCRYPTION' => false, // 'tls', // 'ssl',
 
     'EMAIL_PASSWORD_RESET_URL' => 'login/verifypasswordreset',
     'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@coursesuite.ninja',
@@ -75,15 +80,17 @@ return array(
     'DIGEST_USERS' => array(
         'admin' => 'nT5YyYb233WB',
         'apiuser' => 'rpxC5kCmYuFn',
-        'apimatrix' => 'q6d5F4HHg2Fn',
         'tokenuser' => 'GEv6mJ7wJgWR',
         'fastspring' => 'e93NcNdpntFq',
         'discourse' => '3kurpzSGRAq4',
+        'apimatrix' => 'f56jPFGo85fs6',
+        'apianmf' => 'xGincUfPNB93L',
+        'apikaplan' => 'VCIg3OgyUM658e'
     ),
     'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
     'CLOUDCONVERT_API_KEY' => '8pxT0DHRE5lpcVzildrPoEbztL9rc5Es89xG0incUfPNB93LLZueEr7zTK7PTuZmcV1hXkRMITbhjS-U1NnnzQ',
     'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
-    'FASTSPRING_PARAM_APPEND' => '&mode=test',
+    'FASTSPRING_PARAM_APPEND' => '',
     'FASTSPRING_STORE' => 'coursesuite',
     'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
     'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
@@ -94,5 +101,5 @@ return array(
     'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
     'MAILCHIMP_LIST_ID' => '08344979e7',
     'MAILCHIMP_INTEREST_ID' => 'd3a65e22a1',
-    'FORCE_HANDLEBARS_COMPILATION' => true, // set to true to force recompilation of handlebars templates on the fly
+    'FORCE_HANDLEBARS_COMPILATION' => false, // set to true to force recompilation of handlebars templates on the fly
 );

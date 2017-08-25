@@ -147,4 +147,6 @@ return array(
     "EMAIL_USER_EMAIL_CHANGE_VERIFICATION" => "Hi\nSomeone (probably you) requested their CourseSuite email change from {{old}} to {{new}}. If this is good with you, click the link below to verify the change.\n-----------------------------\n{{link}}\n-----------------------------\nCheers\nThe CourseSuite Team.",
     "EMAIL_USER_PASSWORD_RESET_REQUEST" => "Hi\nSomeone (probably you) requested their CourseSuite password be reset. If this is good with you, click the link below to link below to generate a new password (which will be emailed to you). Note: changing your password will log out out of any active sessions. This link will exipire in 30 minutes.\n-----------------------------\n{{link}}\n-----------------------------\nCheers\nThe CourseSuite Team.",
 
+    "INVALID_URL" => "Was not able to validate the url",
+
 );

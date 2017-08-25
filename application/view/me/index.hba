@@ -13,14 +13,14 @@
 				<div>
 					<input type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*" value="{{user_email}}">
 					{{#if user_email_update}}<small class="block faded">Awaiting change verification from <em>{{user_email_update}}</em>. (<a href="{{baseurl}}me/reverify">Re-send verification</a> | <a href="{{baseurl}}me/cancelChange">Cancel change</a>)</small>{{/if}}
-					{{#equals Feedback.area "user_email"}}<small class="block red">{{{Feedback.negative}}}</small>{{/equals}}
+					{{#equals feedback_area "user_email"}}<output class="form-feedback-negative">{{{feedback_negative}}}</small>{{/equals}}
 				</div>
 			</div>
 			<div class="row">
 				<label for="password">Password:</label>
 				<div>
 					<input type='checkbox' value="yes" name="reset_password" id="reset_password">
-					<label for="reset_password">Reset my password</label> <span id="feedback-reset">(Sends confirmation request to your <em>current</em> email address)</span>
+					<label for="reset_password">Reset my password</label> <span id="feedback-reset">(Sends confirmation request to your <em>current</em> email address)<br><small>It is not possible to set your own password for security reasons.</small></span>
 				</div>
 			</div>
 			<div class="row">
@@ -42,24 +42,44 @@
 					</span>
 				</div>
 			</div>
+			{{#not feedback_area "user_email"}}
+			{{#either feedback_negative feedback_positive}}
+			<div class="row">
+				<label></label>
+				{{#if feedback_negative}}<output class="form-feedback-negative">{{{feedback_negative}}}</output> {{/if}}
+				{{#if feedback_positive}}<output class="form-feedback-positive">{{{feedback_positive}}}</output> {{/if}}
+			</div>
+			{{/either}}
+			{{/not}}
 			<div class="row">
 				<label></label>
 				<div>
 					<input type="submit" value="Update account" id="form-submit-button" class="button">
 				</div>
 			</div>
-			{{#not Feedback.area "user_email"}}
-			<div class="row">
-				<label></label>
-				<div id="form-feedback">
-				{{#if Feedback.negative}}<span class="form-feedback-negative">{{{Feedback.negative}}}</span> {{/if}}
-				{{#if Feedback.positive}}<span class="form-feedback-positive">{{{Feedback.positive}}}</span> {{/if}}
-				</div>
-			</div>
-			{{/not}}
 		</form>
 
 	</section>
+
+	{{#if CurrentSubs}}
+	<header class="common-header">
+		<h1>Subscribed apps</h1>
+	</header>
+	<section class="standard-width current-subscriptions">
+	{{#each CurrentSubs}}
+		<div class="outer-tile">
+			<header>{{name}}</header>
+			<a href="{{launch}}" target="{{app_key}}"><img src="{{thumbnail icon 238}}"></a>
+			<footer>
+				<a href="{{launch}}" target="{{app_key}}" class="launch-button">Launch app</a>
+				{{#each subs}}
+				<a href="{{decode subscriptionUrl}}" class="unsub-button">Cancel {{ProductName}}</a>
+				{{/each}}
+			</footer>
+		</div>
+	{{/each}}
+	</section>
+	{{/if}}
 
 	<header class="common-header">
 		<h1>Purchase history</h1>
@@ -84,7 +104,7 @@
 			<td>{{referenceId}}</td>
 			<td>{{added}}</td>
 			<td>{{endDate}}</td>
-			<td>{{status}}</td>
+			<td>{{status}}{{#if statusReason}}<br><small>{{statusReason}}</small>{{/if}}</td>
 			<td>{{#decodable subscriptionUrl}}<a target="_blank" href="{{decode subscriptionUrl}}"><i class='cs-stack-2'></i>Open</a>{{else}}n/a{{/decodable}}</td>
 			</tr>
 		{{/each}}

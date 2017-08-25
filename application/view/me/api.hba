@@ -1,0 +1,25 @@
+<article class="my-api">
+
+	<header class="common-header">
+		<h1>API</h1>
+	</header>
+
+	<section class="api-display standard-width">
+	<p>Your API KEY is public. Include it with your authorization header on api requests. It is also your digest username.</p>
+	<p><code>{{apikey}}</code></p>
+
+	<p>Your SECRET KEY is private. It is used to authenticate private api requests. Mouse over to see / copy it.</p>
+	<p><code class="hide" onclick="copyToClipboard(this)" data-label="Copy to clipboard">{{secret_key}}</code></p>
+
+	<p>Your subscription for {{subscription.ProductName}} began {{subscription.added}} and is {{subscription.status}}.</p>
+	</section>
+
+	<header class="common-header">
+		<h1>Documentation</h1>
+	</header>
+
+	<section class="documentation-display standard-width">
+		<p>Use the API documentation below to access the apps. You can open this documentation in a <a href="/apidoc/" target="_blank">new window</a>.</p>
+		<iframe width="100%" height="500" frameborder="0" src="/apidoc/"></iframe>
+	</section>
+</article>

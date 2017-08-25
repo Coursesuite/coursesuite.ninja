@@ -2,6 +2,11 @@
 	<figure style="background-color: {{bgcolor}};" class="slide {{#equals @index 0}}active{{/equals}}">
 		<img src="{{preview}}">
 		{{#if caption}}<figcaption>{{caption}}</figcaption>{{/if}}
-		<a href="javascript:expandSlide({{@index}});"><i class='cs-{{#if video}}youtube{{else}}camera{{/if}}'></i></a>
+		<nav>
+		<a href="javascript:gotoSlide('precede');" class="nav"><i class='cs-arrow-left'></i></a>
+		<a href="javascript:expandSlide({{@index}});" class='{{#if video}}youtube{{else}}camera{{/if}}'><i class='cs-{{#if video}}youtube{{else}}camera{{/if}}'></i></a>
+		<a href="javascript:gotoSlide('advance');" class="nav"><i class='cs-arrow-right'></i></a>
+		</nav>
 	</figure>
 {{/each}}
+<

@@ -12,6 +12,10 @@ class AccountModel extends Model
     protected $data_model;
     protected $product_model;
 
+    public function get_property($name) {
+        return $this->data_model->$name;
+    }
+
     public function get_model()
     {
         $data = $this->data_model;

@@ -12,6 +12,9 @@ DEFINE('USER_TYPE_STANDARD', 1);
 DEFINE('USER_TYPE_TRIAL', 3);
 DEFINE('USER_TYPE_ADMIN', 7);
 
+DEFINE("APP_CSS", "css/compiled.201708011443.css");
+DEFINE("APP_JS", "js/main.201706271130.min.js");
+
 /**
  * Class Application
  * The heart of the application
@@ -32,7 +35,7 @@ class Application
 
     // private $session;
 
-    public static function php_session ()
+    public static function php_session()
     {
         global $session;
         return $session;
@@ -73,10 +76,13 @@ class Application
             // so store/info/docninja/ becomes store::info(docninja)
             // When we have a non-standard route
             // we have to handle it here by modifying the action_name and parameters objects.
+
             switch ($this->controller_name) {
-                case "ContentController": // content/foo becomes content/index (foo)
-                    $this->parameters = array($this->action_name);
-                    $this->action_name = "index";
+                case "ContentController": // content/foo becomes content/index (foo), but content/image/foo stays content/image/foo .. hmm
+                    if ($this->action_name !== "image") {
+                        $this->parameters = array($this->action_name);
+                        $this->action_name = "index";
+                    }
                     break;
 
                 case "LaunchController": // launch/app/param1/param2 becomes launch/index (app, param1, param2)

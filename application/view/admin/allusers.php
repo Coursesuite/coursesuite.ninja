@@ -25,12 +25,16 @@
             <td>Last Login</td>
             <td>Suspension time in days</td>
             <td>Action</td>
+            <th>Referrer</th>
             <td>Submit</td>
         </tr>
         </thead>
         <?php foreach ($this->users as $user) { ?>
             <tr>
-                <td><a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>"><?= $user->user_id; ?></a></td>
+                <td>
+                    <a href="<?= Config::get('URL') . 'profile/showProfile/' . $user->user_id; ?>"><?= $user->user_id; ?></a>
+                    <a href="<?= Config::get('URL') . 'login/impersonate/' . Text::base64_urlencode(Encryption::encrypt($user->user_id)); ?>">Impersonate</a>
+                </td>
                 <td class="avatar">
                     <?php if (isset($user->user_avatar_link)) { ?>
                         <img src="<?= $user->user_avatar_link; ?>"/>
@@ -57,8 +61,9 @@
                         <label><input type="checkbox" name="hardDelete" /> Delete from database (hard)</label>
                         <?php if ($user->user_active == 0) { ?><label><input type='checkbox' name='manualActivation' /> Manually activate user</label><?php } ?>
                     </td>
+                    <td><pre style="width:100%;overflow:scroll;"><?php echo $user->ref_id; ?></pre></td>
                     <td>
-                        <input type="hidden" name="user_id" value="<?= $user->user_id; ?>" />
+                        <input type="hidden" name="user_id" value="<?php echo $user->user_id; ?>" />
                         <input type="submit" />
                     </td>
                 </form>

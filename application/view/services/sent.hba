@@ -1,0 +1,14 @@
+<article class='services-index'>
+	<section class='section'>
+	<div class='standard-width'>
+		{{#if mail_sent}}
+		<h2>Your message has been delivered.</h2>
+		<p>Thanks for your time. We will endeavour to get back to you shortly!</p>
+		{{else}}
+		<h2>There was a problem delivering your message.</h2>
+		<p>Please send this message as an email, and let us know you had problems with this form (so we can check what happend!)</p>
+		<pre class='boxx'>{{message}}</pre>
+		{{/if}}
+	</div>
+	</section>
+</article>

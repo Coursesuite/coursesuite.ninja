@@ -127,7 +127,8 @@ section.direct-login form[name='authenticate'] #form-feedback span.form-feedback
     text-shadow: none;
     color: #000;
 }
-@media @medium {
+
+/*@media @medium {
     .row.captcha {
         label {
             display: none;
@@ -139,4 +140,25 @@ section.direct-login form[name='authenticate'] #form-feedback span.form-feedback
             }
         }
     }
+} */
+.row.captcha .recaptcha-holder {
+    margin: 0 auto;
 }
+.row.captcha .grecaptcha-badge {
+    box-shadow: 0 0 1px grey !important;
+}
+form[method='ajax'] {
+    p {
+        color: darkred;
+    }
+    p.happy {
+        color: green;
+    }
+}
+
+p.make-bolder {
+    b {
+        color: #000;
+    }
+}
+

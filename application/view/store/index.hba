@@ -1,9 +1,9 @@
 <article class='store-index'>
 {{#each Section}}
-    {{#equals visible 1}}<section class='{{cssclass}}'>
+    {{#equals route "store"}}<section class='{{cssclass}}'>
 <div class="store-items standard-width">
-        {{#if label}}<h3>{{label}}</h3>{{/if}}
-        {{#if epiphet}}<h4>{{{epiphet}}}</h4>{{/if}}
+        {{#if label}}<h1>{{label}}</h1>{{/if}}
+        {{#if epiphet}}<h2>{{{epiphet}}}</h2>{{/if}}
         {{#if html_pre}}{{{htmlify html_pre}}}{{/if}}
         <nav class='app-section-names'>
             {{#each Apps}}
@@ -15,16 +15,14 @@
                     <p class="price" title="$USD Price starts at ...">{{cheapest app_id}}</p>
                     {{/equals}}
                 </figure>
-                {{#if tagline}}<div class='information'>
-                    {{tagline}}
-                </div>{{/if}}
+                {{#if tagline}}<div class='information'>{{tagline}}</div>{{/if}}
                 <div class='actions'>
                 {{#equals auth_type 1}}
                     <a href='{{url}}' target='_blank'><i class='fa fa-rocket'></i> Launch</a>
                 {{else}}
                     <a href='{{../../storeurl}}{{app_key}}'>More info</a>
                     {{#if ../../SubscribedApps}}{{#isin app_id ../../SubscribedApps}}
-                        <a href='{{../baseurl}}/launch/{{app_key}}' ftarget='_{{app-key}}' class='launch'><i class='fa fa-rocket'></i> Launch</a>
+                        <a href='{{../baseurl}}/launch/{{app_key}}' target='_{{app-key}}' class='launch'><i class='fa fa-rocket'></i> Launch</a>
                     {{/isin}}{{/if}}
                 {{/equals}}
                 </div>
@@ -36,12 +34,4 @@
 </div>
     </section>{{/equals}}
 {{/each}}
-{{#if howelse}}
-	<section class='static-content'>
-		<div class='standard-width store-items how-else'>
-		{{{Text::StaticPageRenderer "howelse"}}}
-		</div>
-	</section>
-{{/if}}
-{{{Contact_Form_Placeholder}}}
 </article>

@@ -1,3 +1,8 @@
+body#freebies_index {
+	.tile {
+		width: ~"calc(25% - 10px)";
+	}
+}
 nav.app-section-names {
 	display: flex;
 	flex-flow: row wrap;
@@ -13,6 +18,7 @@ nav.app-section-names {
 		flex-direction: column;
 		width: ~"calc(33% - 10px)";
 		position: relative;
+		font-size: 16px;
 		&:hover {
 			box-shadow: 0 3px 10px rgba(0, 0, 0, .1);
 			transform: translateY(-3px);
@@ -24,6 +30,7 @@ nav.app-section-names {
 			background-repeat: no-repeat;
 			background-size: cover;
 			background-position: center;
+			cursor: pointer;
 			&:before {
 				display: block;
 				content: "";
@@ -37,9 +44,9 @@ nav.app-section-names {
 				left: 0px;
 				width: 100%;
 				padding: 10px;
-				font-size: 20px;
 				color: #fff;
 				text-shadow: 1px 1px 5px rgba(0, 0, 0, .5), 2px 1px 0 rgba(0, 0, 0, .25);
+				font-size: 18px;
 			}
 			> p.price {
 				position: absolute;
@@ -59,7 +66,6 @@ nav.app-section-names {
 		}
 		> div.information {
 			padding: 10px;
-			font-size: 14px;
 			color: #757575;
 			flex: 1;
 		}
@@ -78,7 +84,6 @@ nav.app-section-names {
 				&.launch {
 					padding: .3em .7em;
 					line-height: inherit;
-					font-size: 14px;
 					background-color: #8fd1ea;
 					color: #fff;
 					text-shadow: 1px 1px 1px rgba(7, 82, 110, 0.43);

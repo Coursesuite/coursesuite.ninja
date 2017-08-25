@@ -19,17 +19,24 @@ html.no-touch #store_info article.store-item-specific section.store-item-descrip
 			margin-left: 10px;
 			box-shadow: 0 3px 5px rgba(0,0,0,.25);
 		}
+
+		h2:not(:first-of-type) {
+		    font-family: 'Montserrat', sans-serif;
+		    font-weight: 300;
+		    margin: 50px 0;
+		}
 	}
 }
 
 body#store_info {
 	article {
 		&.store-item-specific {
+			padding-top: 25px;
 			> header > h1,
 			> header > p {
 				margin: 0;
 			}
-			background-color: @body-grey;
+			/* background-color: @body-grey; */
 			@media @medium {
 				> header.common-header {
 					display: block;
@@ -71,176 +78,218 @@ body#store_info {
 					transform: scale(1);
 				}
 			}
-			section.info {
+
+			> header,
+			> section {
 				.standard-width();
-				margin-bottom: 10px;
-				display: flex;
-				> div {
-					flex: 1;
-					&.purchase-pane {
-						.div-outline {
-							.subtle-box(#fff);
-						}
-						.tabbed-content {
-							> .div-outline {
-								padding: 10px;
-							}
-						}
-						section.store-subscriptions {
-							#subscriptions {
-								.launch-buttons-container {
-									padding: 30px 0;
-									border-radius: 10px;
-									background-color: rgba(72, 236, 42, 0.08);
-									border: 1px solid rgba(42, 236, 48, 0.2);
-								}
-								p.subscription-overlap {
-									margin: 10px 0;
-									padding: 10px 0;
-									border-radius: 10px;
-									background-color: rgba(251,157,33,0.08);
-									border: 1px solid rgba(251,157,33,.2);
-    									color: #fb9d21;
-    									font-size: 0.8rem;
-								}
-								.subscription-buttons {
-									color: @logo-grey;
-    									font-size: 0.9rem;
-									a {
-										color: inherit;
-										&:hover {
-											color: @logo-blue;
-										}
-									}
-								}
-							}
-						}
-						.store-subscriptions,
-						.store-logon,
-						.store-purchase-links {
-							> nav {
-								display: flex;
-								> a {
-									text-align: center;
-									flex: 1;
-									&:first-of-type:not(:last-of-type) {
-										margin-right: 10px;
-									}
-								}
-							}
-							.quibble-points {
-								ul {
-									margin-top: 10px;
-									font-size: 10px;
-									color: #999;
-									line-height: 1.5;
-									a, a:visited {
-										color: inherit;
-										text-decoration: underline;
-									}
-								}
-							}
-							.bundle-buttons {
-								border-top: 1px solid #E8E8E8;
-								padding-top: 10px;
-								.gradow(rgba(255,255,255,1), 50px);
-								border-radius: 4px 4px 0 0;
-								nav {
-									text-align: center;
-								}
-							}
-							.purchase-buttons-container {
-								padding: 30px 0;
-								border-radius: 10px;
-								background-color: rgba(42, 184, 236, 0.08);
-								border: 1px solid rgba(42, 184, 236, 0.2);
-								> a:first-of-type:not(:last-of-type) {
-									margin-right: 1em;
-								}
-							}
-							ul.bundle-app-list a {
-								color: @logo-blue;
-								&:hover {
-									color: @logo-green;
-								}
-							}
+			}
 
+
+			aside.purchase-pane {
+				float: right;
+				width: 40%;
+				margin-left: 10px;
+
+				section.bundles header.pre {
+					background-color: #777;
+				}
+
+				.box {
+
+					background-color: #fff;
+					color: #777;
+					box-shadow: 0 0 3px rgba(0,0,0,.2);
+					margin-bottom: 10px;
+
+					header:not(.pre) {
+						padding: 10px;
+						display: flex;
+						align-items: center;
+						border-top: 1px solid #eee;
+						h1 {
+							flex: 1;
+							margin: 0;
+							padding: 0;
+							text-transform: uppercase;
+							font-weight: bold;
+							font-size: inherit;
 						}
-						.store-logon {
-						        input[type='submit'] {
-						            .button();
-						            .button-green();
-						        }
+						a {
+							.button();
+							&:not(.button-disabled) {
+								.button-blue();
+							}
+						}
+					}
+					header.pre {
+						padding: 5px 10px;
+						background-color: #bbb;
+						color: #fff;
+						text-shadow: 0 1px 1px rgba(0,0,0,.2);
+						span {
+							float: right;
+							font-size: 10px;
+							display: inline-block;
+							padding: .3em .7em;
+							background-color: rgba(255,255,255,.5);
+							color: #777;
+							text-shadow: none;
+							border-radius: 16px;
+						}
+					}
+					.content {
+						border-top: 1px solid #eee;
+						padding: 10px;
+						font-size: 12px;
+						color: #777;
+						p {
+							padding: 0;
+							margin: 0;
+						}
+						ul {
+							margin: .3em 0;
+							list-style-position: outside;
+							padding: 0 0 0 20px;
+							li {
+								padding: 0;
+								margin: 0;
+							}
+						}
+						a {
+							color: inherit;
+						}
+					}
+					&.store-logon {
+						header.pre {
+							background-color: #ff7103;
+						}
+					}
+					&.launch {
+						.gradient(#1fad1f; #1f8f23);
+						color: #fff;
+						header:not(.pre) {
+							border-top: none;
+							color: inherit;
+							a {
+								.button();
+								.button-launch();
+							}
+						}
+						.content {
+							color: inherit;
+							border-top: 1px solid rgba(255,255,255,.2);
+							p.subscription-overlap {
+								color: #ff0;
+							}
 						}
 					}
 				}
 			}
-		}
-		> header.common-header {
-			.standard-width();
-			display: flex;
-			align-items: center;
-			h1 {
-				flex:1;
-				font-weight: 300;
-				margin: 25px 0;
-			}
-			nav {
-				.edit-icon {
-					background-color: yellow;
-					color: black;
-				}
-			}
-		}
-		> header.app-tagline {
-			.standard-width();
-			p {
-				padding: 10px 0;
-			}
-		}
 
-		&.app-info {
-			@media @medium {
-				display: flex;
-				flex-direction: column;
-				> aside {
-					order: 2;
-					padding: 5px;
-					background: #59A047 !important;
-					.tiers {
-						flex-direction: column;
-					}
-				}
-				> main {
-					order: 1;
-				}
-			}
-			> aside.app-tier-info {
-				.gradient(@start: rgba(255,255,255,0); @end: rgba(255,255,255,.3));
-				padding: 10px;
-				color: inherit;
-				font-size: 0.85rem;
-				.tiers {
+
+			.app-info {
+				@media @medium {
 					display: flex;
-					.tier {
-						flex: 1;
-						h4 {
-							border-bottom: 1px solid rgba(255,255,255,.1);
+					flex-direction: column;
+					> aside {
+						order: 2;
+						padding: 5px;
+						background: #59A047 !important;
+						.tiers {
+							flex-direction: column;
 						}
 					}
+					> main {
+						order: 1;
+					}
 				}
-				> h3 {
-					margin: 0;
-					text-align: center;
-					font-size: 1.15rem;
-					font-weight: 300;
-					text-shadow: 1px 1px 0 rgba(0,0,0,.2);
+				> aside.app-tier-info {
+					.gradient(@start: rgba(255,255,255,0); @end: rgba(255,255,255,.3));
+					padding: 10px;
+					color: inherit;
+					font-size: 0.85rem;
+					.tiers {
+						display: flex;
+						.tier {
+							flex: 1;
+							h4 {
+								border-bottom: 1px solid rgba(255,255,255,.1);
+							}
+						}
+					}
+					> h3 {
+						margin: 0;
+						text-align: center;
+						font-size: 1.15rem;
+						font-weight: 300;
+						text-shadow: 1px 1px 0 rgba(0,0,0,.2);
+					}
 				}
 			}
-		}
-		.h5 {
-			.float-right();
-			margin-left: 10px;
+			.h5 {
+				.float-right();
+				margin-left: 10px;
+			}
 		}
 	}
+}
+
+header.common-header {
+	margin-top: 25px;
+	font-family: 'Open Sans Condensed', sans-serif;
+	display: flex;
+	align-items: center;
+	h1 {
+		flex: 1;
+	}
+	nav {
+		width: 250px;
+	}
+}
+
+header.app-tagline {
+	font-family: 'Montserrat', sans-serif;
+}
+
+article.app-vidninja {
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgb(255,255,255) 350px, rgb(125, 173, 94) 750px);
+            color: #fff;
+
+	header.common-header {
+		color: rgb(125, 173, 94);
+	}
+
+            header.app-tagline {
+            	color: #444;
+            	padding: 25px 0;
+            }
+}
+
+article.app-docninja {
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgb(255,255,255) 350px, rgb(63, 169, 202) 750px);
+            color: #fff;
+
+	header.common-header {
+		color: rgb(63, 169, 202);
+	}
+
+            header.app-tagline {
+            	color: #444;
+            	padding: 25px 0;
+            }
+
+}
+
+article.app-coursebuildr {
+           background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgb(255,255,255) 350px, rgb(126, 57, 109) 750px);
+            color: #fff;
+
+	header.common-header {
+		color: rgb(126, 57, 109);
+	}
+
+            header.app-tagline {
+            	color: #444;
+            	padding: 25px 0;
+            }
 }

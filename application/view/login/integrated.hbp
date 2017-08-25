@@ -1,5 +1,4 @@
-<p>To register (or retrieve your password), just enter your email address.<br />
-To log in, enter both your email and password.</p>
+<p class='make-bolder'>To <b>register</b> or <b>retrieve your password</b>, just enter your email address. To <b>log in</b>, enter both your email and password.</p>
 <form method="{{#if ajax}}ajax{{else}}post{{/if}}" action="{{baseurl}}login/authenticate" name="authenticate">
 	<input type="hidden" name="csrf_token" value="{{csrf_token}}">
 	<input type="hidden" name="app_key" value="{{App.app_key}}">
@@ -22,15 +21,28 @@ To log in, enter both your email and password.</p>
 		<input type="checkbox" name="subscribe" id="subscribe" value="yes" checked="checked"> Yes
 	</div>
 	{{/if}}
-	<div class="row captcha">
-		<label></label>
-	            <div class="g-recaptcha" data-sitekey="{{GoogleSiteKey}}"></div>
-	            <script src="//www.google.com/recaptcha/api.js?hl=en" type="text/javascript"></script>
-	</div>
-	{{#if Feedback}}
+	{{#if feedback_negative}}
 	<div class="row">
 		<label></label>
-		<div id="form-feedback">{{#if Feedback.negative}}<span class="form-feedback-negative">{{Feedback.negative}}</span>{{/if}}{{#if Feedback.positive}}<span class="form-feedback-positive">{{Feedback.positive}}</span>{{/if}}</div>
+		<output name="negative" class="form-feedback-negative">{{{feedback_negative}}}</output>
+	</div>
+	{{/if}}
+	{{#if feedback_meh}}
+	<div class="row">
+		<label></label>
+		<output name="meh" class="form-feedback-meh">{{{feedback_meh}}}</output>
+	</div>
+	{{/if}}
+	{{#if feedback_intermediate}}
+	<div class="row">
+		<label></label>
+		<output name="intermediate" class="form-feedback-intermediate">{{{feedback_intermediate}}}</output>
+	</div>
+	{{/if}}
+	{{#if feedback_positive}}
+	<div class="row">
+		<label></label>
+		<output name="positive" class="form-feedback-positive">{{{feedback_positive}}}</output>
 	</div>
 	{{/if}}
 	<div class="row">

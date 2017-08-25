@@ -270,12 +270,16 @@
     xhr.onload = function() {
       // If HTTP status is OK or Created
       if (xhr.status === 200 || xhr.status === 201) {
-        me.onFileUploadResponse(xhr);
+        console.log("ME", me);
+        me.onFileUploadResponse(xhr, me);
       } else {
         me.onFileUploadError(xhr);
       }
     };
     if (settings.beforeFileUpload(xhr) !== false) {
+        for (var pair of formData.entries()) {
+            console.log("formData", pair[0], pair[1]);
+        }
       xhr.send(formData);
     }
     return xhr;

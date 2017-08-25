@@ -121,11 +121,11 @@ class AdminModel
         foreach ($users as &$user) {
             $token = ApiModel::encodeToken($user->user_id);
             if ($user->entity == "app_tiers") {
-                $sql = "select concat(a.launch, '?data=', :token) url, a.name from apps a
+                $sql = "SELECT case when a.app_key = 'coursebuildr' then concat(a.launch,'data/',:token) else concat(a.launch, '?data=', :token) end url, a.name from apps a
                         inner join app_tiers apt on apt.app_id = a.`app_id`
                         where apt.id = :id";
             } else if ($user->entity == "bundle") {
-                $sql = "SELECT concat(a.launch, '?data=', :token) url, a.name
+                $sql = "SELECT case when a.app_key = 'coursebuildr' then concat(a.launch,'data/',:token) else concat(a.launch, '?data=', :token) end url, a.name
                     FROM bundle b
                     INNER JOIN bundle_apps ba ON b.id = ba.bundle
                     INNER JOIN app_tiers at ON at.id = ba.app_tier
@@ -135,7 +135,9 @@ class AdminModel
             }
             $query = $database->prepare($sql);
             $query->execute(array(":id" => $user->entity_id, ":token" => $token));
-            $user->launchlinks = $query->fetchAll();
+            $launchlinks = $query->fetchAll();
+            $user->launchlinks = $launchlinks;
+            $user->ref_id = Text::base64enc(Encryption::encrypt($user->user_id));
         }
         return array(
             "user" => $users

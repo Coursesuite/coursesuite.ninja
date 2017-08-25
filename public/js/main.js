@@ -16,6 +16,45 @@ f=null;for(c.createElement("summary").appendChild(c.createTextNode("Details"));e
 b[e].childNodes[g]));f.legend=!0;f.tabIndex=0}c.createElement("details");h(b,"click",n);h(b,"keypress",n);(function(){var a=c.createElement("style"),b=c.getElementsByTagName("head")[0],f=void 0===a.innerText?"textContent":"innerText",g="details{display: block;},details > *{display: none;},details.open > *{display: block;},details[open] > *{display: block;},details > summary:first-child{display: block;cursor: pointer;},details[open]{display: block;}".split(",");e=g.length;a[f]=g.join("\n");b.insertBefore(a,
 b.firstChild)})()}})(window,document);
 
+// Copies a string to the clipboard. Must be called from within an
+// event handler such as click. May return false if it failed, but
+// this is not always possible. Browser support for Chrome 43+,
+// Firefox 42+, Safari 10+, Edge and IE 10+.
+// IE: The clipboard feature may be disabled by an administrator. By
+// default a prompt is shown the first time the clipboard is
+// used (per session).
+function copyToClipboard(element) {
+    var text = element.textContent;
+    if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return clipboardData.setData("Text", text);
+
+    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        var r = false;
+        try {
+            r = document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+        } finally {
+            document.body.removeChild(textarea);
+        }
+        if (r) {
+        	var label = element.dataset.label;
+        	element.dataset.label = "Copied!";
+        	setTimeout(function() {
+        		element.dataset.label = label;
+        	},2000);
+        }
+        return r;
+    }
+}
+
+
 // a slideshow
 (function (window, $, undefined) {
 
@@ -61,7 +100,7 @@ b.firstChild)})()}})(window,document);
 		$("figure.slide img", $Display).each(function() {
 			$(this).css({
 				"width": _slideWidth + "px",
-				"max-height": "344px"
+				"max-height": "424px" // "344px"
 			});
 		});
 		if (_mobile) {
@@ -161,32 +200,75 @@ b.firstChild)})()}})(window,document);
 
 })(window, jQuery);
 
+  var ajaxSubmit = function (frm) {
+
+	var $this = $(frm);
+	$feedback = $("#form-feedback", $this).html("").removeAttr("class");
+	$.post($this.attr("action"), $this.serialize(), function (result) {
+
+		if (result.csrf && $("input[name='csrf_token']", $this).length) {
+			$("input[name='csrf_token']", $this).val(result.csrf);
+		}
+
+		if (result.positive) {
+			$this.html(result.message); // replace form with message
+
+		} else {
+			$p = $("<p>").addClass(result.className).html(result.message);
+			$feedback.html($p);
+			grecaptcha.reset(); // ensure next form post is valid too
+		}
+
+		if (result.sent) {
+			$this.get(0).reset();
+			grecaptcha.reset(); // ensure next form post is valid too
+		}
+
+		if (result.reload) {
+			location.reload(true); // true means force recache
+		}
+	});
+
+  }
+
+  var renderGoogleInvisibleRecaptcha = function() {
+    for (var i = 0; i < document.forms.length; ++i) {
+      var form = document.forms[i];
+      var holder = form.querySelector('.recaptcha-holder');
+      var ajax = (form.getAttribute("method") == "ajax");
+      if (null === holder){
+        continue;
+      }
+
+      (function(frm){
+        var holderId = grecaptcha.render(holder,{
+          'sitekey': '6LewIiYUAAAAAJcV-bQRfk824cYcsYwkIZ99Bpsy',
+          'size': 'invisible',
+          'badge' : 'inline', // possible values: bottomright, bottomleft, inline
+          'callback' : function (recaptchaToken) {
+	if (ajax) {
+		ajaxSubmit(frm);
+	} else {
+            	HTMLFormElement.prototype.submit.call(frm);
+        	}
+          }
+        });
+
+        frm.onsubmit = function (evt){
+          evt.preventDefault();
+          grecaptcha.execute(holderId);
+        };
+
+      })(form);
+    }
+  };
+
+
+
 $(function () {
 
-	$("form[method='ajax']").on("submit", function (event) {
-		event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-		var $this = $(this);
-		$feedback = $("#form-feedback", $this).html("").removeAttr("class");
-		$.post($this.attr("action"), $this.serialize(), function (result) {
-			if (result.csrf && $("input[name='csrf_token']", $this).length) {
-				$("input[name='csrf_token']", $this).val(result.csrf);
-			}
-			if (result.positive) {
-				$this.html(result.message); // replace form with message
-
-			} else {
-				$p = $("<p>").addClass(result.className).html(result.message);
-				$feedback.html($p);
-				if (window.grecaptcha) grecaptcha.reset(); // ensure next form post is valid too
-			}
-			if (result.sent) {
-				el.reset();
-			}
-			if (result.reload) {
-				location.href = location.href;
-			}
-		});
-		return false;
+	$("#store_index").on("click", ".tile.app > figure", function (e) {
+		$(this).closest(".tile").find("a:first").get(0).click();
 	});
 
 	$("textarea[data-markdown]").each(function (index, el) {
@@ -196,9 +278,32 @@ $(function () {
 			placeholder: "Markdown / HTML is allowed.\nDrag images onto this editor to upload & link them\nTo nest markdown inside html, add attribute markdown=\"1\" of tags containing markdown.",
 		});
 		inlineAttachment.editors.codemirror4.attach(el.simplemde.codemirror, {
-			uploadUrl: "/admin/uploadMDE/"
-		});
+			// uploadUrl: "/admin/uploadMDE/"
+			uploadUrl: "https://api.imgur.com/3/image",
+			extraHeaders: {
+				Authorization: "Client-ID 662ce7a8f142394",
+			},
+			extraParams: {
+				name: "Your image title",
+				description: "Dragged onto editor using inline-attachment"
+			},
+			uploadFieldName: "image",
+			onFileUploadResponse: function(xhr) {
+				// "this" is now the inlineAttachment instance, not a XHR
+				var result = JSON.parse(xhr.responseText),
+					id = result.data.id,
+					ext = result.data.type.split("/")[1],
+					title = result.data.title || "Untitled",
+					href = "https://i.imgur.com/" + id + "." + ext,
+					src = "http://i.imgur.com/" + id + "m." + ext,
+					newValue = "[![" + title + "](" + src + ")](" + href + ")";
+				var text = this.editor.getValue().replace(this.lastValue, newValue);
+				this.editor.setValue(text);
 
+				// prevent internal upload
+				return false;
+			}
+		});
 	}),
 
 	$("[data-sortable]").each(function (el, index) {
@@ -229,10 +334,8 @@ $(function () {
 	$("#store_index .timeline-heading h4").on("click", function (e) {
 		var subject = $(this).text();
 		e.preventDefault();
-		$("#contact_form_placeholder").empty().load("/store/contactForm", function() {
-			$("textarea[name='your-message']").val("Hi,\nI'm contacting about a service listed on your CourseSuite website - " + subject + "\n\nHere are my needs:\n-");
-			document.querySelector("#contact_form_placeholder").scrollIntoView();
-		});
+		$("textarea[name='your-message']", "#contact-form").val("Hi,\nI'm contacting about a service listed on your CourseSuite website - " + subject + "\n\nHere are my needs:\n-");
+		document.querySelector("#contact-form").scrollIntoView();
 	})
 
 	$("input[data-action='previewEditor']").on("click", function (e) {

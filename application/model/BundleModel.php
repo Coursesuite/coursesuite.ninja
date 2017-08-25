@@ -37,6 +37,7 @@ class BundleModel extends Model
                 INNER JOIN app_tiers at ON at.id = ba.app_tier
                 INNER JOIN apps a ON at.app_id = a.app_id
                 WHERE b.id = :id
+                AND b.active = 1
                 ORDER BY at.tier_level, a.name
             ";
             $query = $database->prepare($sql);
@@ -102,6 +103,7 @@ class BundleModel extends Model
                     SELECT id FROM app_tiers WHERE app_id = :id
                 )
             )
+            AND active = 1
             ORDER BY sequence
         ";
         $query = $database->prepare($sql);

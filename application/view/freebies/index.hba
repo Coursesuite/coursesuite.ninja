@@ -1,0 +1,28 @@
+<article class='store-index'>
+{{#each Section}}
+    {{#equals route "freebies"}}<section class='{{cssclass}}'>
+<div class="store-items standard-width">
+        {{#if label}}<h1>{{label}}</h1>{{/if}}
+        {{#if epiphet}}<h2>{{{epiphet}}}</h2>{{/if}}
+        {{#if html_pre}}{{{htmlify html_pre}}}{{/if}}
+        <nav class='app-section-names'>
+            {{#each Apps}}
+            <div class='tile app'>
+                <figure style="background-image:url({{icon}})">
+                    <img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'>
+                    <figcaption>{{name}}</figcaption>
+                    {{#equals auth_type "0"}}
+                    <p class="price" title="$USD Price starts at ...">{{cheapest app_id}}</p>
+                    {{/equals}}
+                </figure>
+                {{#if tagline}}<div class='information'>{{tagline}}</div>{{/if}}
+                <div class='actions'><a href='{{url}}' target='_blank'><i class='fa fa-rocket'></i> Launch</a></div>
+                {{#equals popular 1}}<div class="ribbon"><span>Popular</span></div>{{/equals}}
+            </div>
+            {{/each}}
+        </nav>
+        {{#if html_post}}{{{htmlify html_post}}}{{/if}}
+</div>
+    </section>{{/equals}}
+{{/each}}
+</article>
