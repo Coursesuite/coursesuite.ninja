@@ -37,7 +37,7 @@ class Licence {
 				$licenses = intval($row->concurrency,10);
 				if (!$redis->exists($row->refId)) {
 					$redis->incrBy($row->refId, $licenses);
-					$redis->expire($row->redId, 86400); // expire this key after 1 day
+					$redis->expire($row->refId, 86400); // expire this key after 1 day
 					$touched = true;
 				}
 			}
