@@ -44,7 +44,9 @@ article.blog {
 		a {
 			display: inline-block;
 			.button();
-			.button-hover-blue();
+			&:not(.button-yellow) {
+				.button-hover-blue();
+			}
 		}
 	}
 
@@ -68,6 +70,8 @@ article.blog {
 		> header {
 			display: flex;
 			align-items: center;
+			font-family: 'Open Sans Condensed';
+			font-size: 20px;
 			> h1 {
 				flex: 1;
 				font-size: 1.5rem;

@@ -1,0 +1,7 @@
+{{#if howelse}}
+	<section class='static-content'>
+		<div class='standard-width store-items how-else'>
+		{{{Text::StaticPageRenderer "howelse"}}}
+		</div>
+	</section>
+{{/if}}

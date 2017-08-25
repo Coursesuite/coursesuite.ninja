@@ -1,4 +1,8 @@
 body {
+	/* font-size: 20px; */
+	line-height: 1.5;
+	font-weight: normal;
+
 	&.no-scroll {
 		overflow: hidden;
 	}
@@ -13,27 +17,29 @@ body {
 		color: rgba(255, 255, 255, .8);
 		font-size: 14px;
 		> div {
-			&:last-of-type {
-				flex: 1;
-			}
+			flex: 1;
 			img {
 				max-width: 384px;
 				transition: max-width .3s ease;
 			}
+			&:last-of-type {
+				text-align: right;
+			}
 			> nav {
-				display: flex;
-				flex-direction: row;
-				flex-wrap: nowrap;
-				justify-content: flex-end;
-				align-items: center;
+				display: inline-block;
+				white-space: nowrap;
 				> a {
-					margin-left: 1.5em;
-					text-transform: uppercase;
+					font-family: 'Open Sans Condensed';
+					font-size: 20px;
+					margin-left: 20px;
 					text-decoration: none;
 					color: inherit;
 					transition: color .2s ease;
 					letter-spacing: .1em;
 					text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+					&.selected {
+						border-bottom: 1px solid #fff;
+					}
 					&:first-of-type {
 						margin-left: 0;
 					}
@@ -43,6 +49,7 @@ body {
 					span.badge {
 						background-color: #fc3;
 						color: #000;
+						font-family: 'Open Sans';
 						text-shadow: none;
 						font-weight: bold;
 						border-radius: 50px;
@@ -93,18 +100,48 @@ body {
 	}
 	> main {
 		flex: 1 0 auto;
+		background-size: cover;
+		background-image: url(/img/sparkles-half.jpg);
 		.static-page {
 			.standard-width();
+		}
+		#nav-sections {
+			> div {
+				.standard-width();
+				span > a, > a {
+					position: relative;
+					color: #1b2a9c;
+					font-family: 'Open Sans Condensed';
+					font-size: 24px;
+					padding: 10px 25px 10px 0;
+					text-decoration: none;
+					display: inline-block;
+					&::before {
+						content: '';
+						border: 10px solid transparent;
+						position: absolute;
+						top: 0;
+						left: ~"calc(50% - 17px)";
+					}
+					&.selected::before {
+						border-top-color: #00073a;
+					}
+				}
+				.my-services {
+					float: right;
+				}
+			}
 		}
 	}
 	> footer {
 		flex-shrink: 0;
-		background-color: @footer-grey;
+		background: @footer-grey; /* url(../map-image.png) no-repeat center 75% / cover; */
 		color: lighten(@footer-grey, 50%);
 		.footer-columns {
 		    display: flex;
 		    flex-flow: row wrap;
 		    justify-content: space-around;
+		    background-color: fadeout(@footer-grey, 50%);
 		    > div {
 			flex: 1;
 			width: ~"calc(33% - 10px)";
@@ -141,12 +178,17 @@ body {
 			}
 		}
 	}
-	article > header.common-header {
-		.standard-width();
-		> h1 {
-			font-size: 48px;
-			font-weight: 100;
-			text-shadow: none;
+	article {
+		/* can't figure out why I need to pad then negate margin */
+		padding-bottom: 1em;
+		margin-bottom: -1em;
+		> header.common-header {
+			.standard-width();
+			> h1 {
+				font-size: 48px;
+				font-weight: 100;
+				text-shadow: none;
+			}
 		}
 	}
 }
@@ -177,4 +219,34 @@ body {
 		width: 100%;
 	}
 
+}
+
+
+form {
+    output {
+        border-radius: 5px;
+        padding: 5px;
+        color: #333;
+        text-shadow: 0 1px rgba(255,255,255,.5);
+        background-color: #f9c326;
+        border: 2px solid #e59f18;
+        &.form-feedback-intermediate {
+            background-color: #2ab8ec;
+            border: 2px solid #2ca0ca;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+        &.form-feedback-positive {
+            background-color: #1fad1f;
+            border: 2px solid #1f8f23;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+        &.form-feedback-negative {
+            background-color: #ff2e2e;
+            border: 2px solid #cc2d2d;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+    }
 }

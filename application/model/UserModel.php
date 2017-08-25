@@ -19,7 +19,7 @@ class UserModel
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT user_id, user_account_type, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap, DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y') AS 'user_last_login_timestamp' FROM users";
+        $sql = "SELECT user_id, user_account_type, user_name, user_email, user_active, user_has_avatar, user_deleted, user_logon_count, user_logon_cap, DATE_FORMAT(FROM_UNIXTIME(`user_last_login_timestamp`), '%e %b %Y') AS 'user_last_login_timestamp' FROM users";
         $params = array();
         if ($search != null) {
             $sql .= " WHERE (user_email like :search)";
@@ -45,13 +45,14 @@ class UserModel
             $all_users_profiles[$user->user_id] = new stdClass();
             $all_users_profiles[$user->user_id]->user_id = $user->user_id;
             $all_users_profiles[$user->user_id]->user_account_type = $user->user_account_type;
-            // $all_users_profiles[$user->user_id]->user_name = $user->user_name;
+            $all_users_profiles[$user->user_id]->user_name = $user->user_name;
             $all_users_profiles[$user->user_id]->user_email = $user->user_email;
             $all_users_profiles[$user->user_id]->user_active = $user->user_active;
             $all_users_profiles[$user->user_id]->user_deleted = $user->user_deleted;
             $all_users_profiles[$user->user_id]->logon_cap = $user->user_logon_cap;
             $all_users_profiles[$user->user_id]->logon_count = $user->user_logon_count;
             $all_users_profiles[$user->user_id]->last_login = $user->user_last_login_timestamp;
+            $all_users_profiles[$user->user_id]->ref_id = Text::base64enc(Encryption::encrypt($user->user_id));
             $all_users_profiles[$user->user_id]->user_avatar_link = (Config::get('USE_GRAVATAR') ? AvatarModel::getGravatarLinkByEmail($user->user_email) : AvatarModel::getPublicAvatarFilePathOfUser($user->user_has_avatar, $user->user_id));
         }
 
@@ -586,6 +587,18 @@ class UserModel
             }
         }
         return null;
+    }
+
+    // does the requested user have an active api subscription?
+    public static function has_api($user_id) {
+            $database = DatabaseFactory::getFactory()->getConnection();
+            $sql = "select count(1) from subscriptions s
+                        where s.user_id = :uid
+                        and s.product_id in (select id from product where product_id like 'api-%')
+                        and s.active = 1";
+            $query = $database->prepare($sql);
+            $query->execute(array(":uid" => $user_id));
+            return ($query->fetchColumn() > 0);
     }
 
 }

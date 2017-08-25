@@ -1,0 +1,53 @@
+<article class='services-index'>
+{{#each Section}}
+    {{#equals route "services"}}<section class='{{cssclass}}'>
+	<div class='standard-width'>
+		{{#if label}}<h1>{{label}}</h1>{{/if}}
+		{{#if epiphet}}<h2>{{{epiphet}}}</h2>{{/if}}
+		{{#if html_pre}}{{{htmlify html_pre}}}{{/if}}
+		{{#if html_post}}{{{htmlify html_post}}}{{/if}}
+		<form method='post' class='contact-form' action='{{../baseurl}}services/email' onsubmit='return false;'>
+			<input type='hidden' name='csrf_token' value='{{../csrf_token}}'>
+			<fieldset>
+				<legend>Contact information</legend>
+				<div>
+					<label for="name" class="sr-only">Your name</label>
+					<input type="text" name="name" placeholder="Your name">
+				</div>
+				<div>
+					<label for="email" class="sr-only">Your email</label>
+					<input type="text" name="email" placeholder="Your email address" required>
+				</div>
+				<div>
+					<label for="website" class="sr-only">Your website</label>
+					<input type="text" name="website" placeholder="Your website">
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>Project information</legend>
+				<div>
+					<label for="budget" class="sr-only">Budget</label>
+					<input type="text" name="budget" placeholder="Your estimated budget (e.g. $10k)" required>
+				</div>
+				<div>
+					<label for="timeframe" class="sr-only">Timeframe</label>
+					<input type="text" name="timeframe" placeholder="Your project timeframe (3 months)">
+				</div>
+				<div>
+					<label for="details" class="sr-only">Details</label>
+					<textarea rows="10" name="details" placeholder="Please describe your needs in detail." required></textarea>
+				</div>
+			</fieldset>
+			<div>
+				<label for="submit" class="sr-only"></label>
+				<script type="text/javascript">
+				document.open();
+				document.write('<input type="submit" value="Send now" name="submit" onclick="document.querySelector(\'form.contact-form\').removeAttribute(\'onsubmit\');">');
+				document.close();
+				</script>
+			</div>
+		</form>
+	</div>
+	</section>{{/equals}}
+{{/each}}
+</article>

@@ -7,7 +7,7 @@
 	</header>
 	<main class="standard-width">
 
-	<p>Ok. so here's the deal with mail templates: there's only ONE, and it's HTML, and it's made with <a href="https://beefree.io/" target="_blank">BeeFree.io</a>.
+	<p>Ok. so here's the deal with mail templates: there's only ONE, and it's HTML, and it's made with <a href="https://beefree.io/" target="_blank">BeeFree.io</a>. Here's some <a href="https://css-tricks.com/visual-email-builder-apps/" target="_blank">more email editors</a>.
 	HTML emails are XHTML full of tables and wierd comment blocks and all sorts of absurd hacks, because Microsoft.</p>
 	<p>It's a handlebars template that is evaluated inside code and has values injected into it.
 	To keep things simple, there are only a few variables you have to deal with.</p>

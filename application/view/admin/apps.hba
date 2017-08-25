@@ -1,4 +1,5 @@
 <article class="system-apps admin-tools">
+    <section class='section standard-width'>
 	{{#if action}}
 		<header class="admin-header">
 			<h1>Editing App {{id}}.</h1>
@@ -97,5 +98,5 @@
 	</ul>
 	<p><a href="{{baseurl}}admin/editApps/0/new" class="create button">Create a new app</a></p>
 	{{/if}}
-
+	</section>
 </article>

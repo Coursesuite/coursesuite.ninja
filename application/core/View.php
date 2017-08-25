@@ -9,9 +9,14 @@ use LightnCandy\LightnCandy;
 class View
 {
 
-    public function __construct()
+    private $class_controller_name;
+
+    public function __construct($creator = null)
     {
         $this->SystemMessages = MessageModel::getMyUnreadMessages();
+        if (!is_null($creator)) {
+            $this->class_controller_name = $creator;
+        }
     }
 
     /* For parsing strings instead of files
@@ -51,7 +56,7 @@ class View
     public function renderHandlebars($filename, $data = null, $template_folder = false, $force = false, $return = false)
     {
 
-        $hashname = md5($filename);
+        $hashname = md5($filename) . "_" . str_replace("/","_", $filename);
 
         if ($template_folder === false) {
             $template_folder = "_templates";
@@ -60,12 +65,34 @@ class View
         $precompiled = Config::get('PATH_VIEW_PRECOMPILED') . $hashname . '.php';
         $assoc = json_decode(json_encode($data), true); // data is now an associative array
 
-        if (!array_key_exists("Feedback", $assoc)) {
-            $assoc["Feedback"] = array(
-                "positive" => Session::get('feedback_positive'),
-                "negative" => Session::get('feedback_negative'),
-                "area" => Session::get('feedback_area')
-            );
+        // if (!array_key_exists("Feedback", $assoc)) {
+        //     $assoc["Feedback"] = array(
+        //         "positive" => Session::get('feedback_positive'),
+        //         "negative" => Session::get('feedback_negative'),
+        //         "area" => Session::get('feedback_area')
+        //     );
+        // }
+
+        $assoc["feedback_area"] = Session::get("feedback_area");
+
+        $feedback_positive = Session::get("feedback_positive");
+        if (!array_key_exists("feedback_positive", $assoc) && !empty($feedback_positive)) {
+            $assoc["feedback_positive"] = $feedback_positive;
+        }
+
+        $feedback_negative = Session::get("feedback_negative");
+        if (!array_key_exists("feedback_negative", $assoc) && !empty($feedback_negative)) {
+            $assoc["feedback_negative"] = $feedback_negative;
+        }
+
+        $feedback_meh = Session::get("feedback_meh");
+        if (!array_key_exists("feedback_meh", $assoc) && !empty($feedback_meh)) {
+            $assoc["feedback_meh"] = $feedback_meh;
+        }
+
+        $feedback_intermediate = Session::get("feedback_intermediate");
+        if (!array_key_exists("feedback_intermediate", $assoc) && !empty($feedback_intermediate)) {
+            $assoc["feedback_intermediate"] = $feedback_intermediate;
         }
 
         // expose data so header and footer can also pick it up (includes, not handlebars templates)
@@ -88,6 +115,13 @@ class View
                         return $options['inverse']();
                     }
                 },
+                "contains" => function ($arg1, $arg2, $options) {
+                    if (strpos((string) $arg1, (string) $arg2) !== false) {
+                        return $options['fn']();
+                    } else if (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
                 "not" => function ($arg1, $arg2, $options) {
                     if (strcasecmp((string) $arg1, (string) $arg2) == 0) {
                         return $options['inverse']();
@@ -104,6 +138,14 @@ class View
                 },
                 "isin" => function ($arg1, $arg2, $options) {
                     if (in_array($arg1, $arg2)) {
+                        return $options['fn']();
+                    } else if (isset($options['inverse'])) {
+                        return $options['inverse']();
+                    }
+                },
+                "either" => function ($arg1, $arg2, $options) {
+                    $bool = (!empty($arg1) || !empty($arg2));
+                    if ($bool) {
                         return $options['fn']();
                     } else if (isset($options['inverse'])) {
                         return $options['inverse']();
@@ -225,6 +267,12 @@ class View
                 },
                 "thumbnail" => function ($path, $width) {
                     return Config::get("URL") . "content/image/" . Text::base64_urlencode($path) . "/$width";
+                },
+                "trim" => function ($content) {
+                    return trim($content);
+                },
+                "tierlevelname" => function ($atl) {
+                    return $atl;
                 }
 
             );
@@ -337,10 +385,14 @@ class View
      * Renders pure JSON to the browser, useful for API construction
      * @param $data
      */
-    public function renderJSON($data)
+    public function renderJSON($data, $prettify = false)
     {
         header("Content-Type: application/json");
-        echo json_encode($data);
+        if ($prettify) {
+            echo json_encode($data, JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
+        } else {
+            echo json_encode($data, JSON_NUMERIC_CHECK);
+        }
     }
 
     /**
@@ -366,6 +418,8 @@ class View
         Session::set('feedback_positive', null);
         Session::set('feedback_negative', null);
         Session::set('feedback_area', null);
+        Session::set('feedback_meh', null);
+        Session::set('feedback_intermediate', null);
     }
 
     /**

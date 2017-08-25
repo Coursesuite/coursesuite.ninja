@@ -12,6 +12,9 @@ DEFINE('USER_TYPE_STANDARD', 1);
 DEFINE('USER_TYPE_TRIAL', 3);
 DEFINE('USER_TYPE_ADMIN', 7);
 
+DEFINE("APP_CSS", "css/compiled.201708011443.css");
+DEFINE("APP_JS", "js/main.201706271130.min.js");
+
 /**
  * Class Application
  * The heart of the application
@@ -32,7 +35,7 @@ class Application
 
     // private $session;
 
-    public static function php_session ()
+    public static function php_session()
     {
         global $session;
         return $session;

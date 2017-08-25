@@ -27,9 +27,9 @@ class SectionsModel extends Model
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         if ($basic) {
-            $sql = "SELECT id, label, epiphet FROM store_sections ORDER BY sort";
+            $sql = "SELECT id, label, epiphet, route, routeLabel FROM store_sections ORDER BY sort";
         } else {
-            $sql = "SELECT id, label, epiphet, cssclass, html_pre, html_post, visible, sort
+            $sql = "SELECT id, label, epiphet, cssclass, html_pre, html_post, visible, sort, route, routeLabel
                 FROM store_sections
                 ORDER BY sort";
         }

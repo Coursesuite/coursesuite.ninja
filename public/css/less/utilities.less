@@ -4,12 +4,26 @@ body {
     }
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
 .text-center {
     text-align: center;
 }
 
 .fill-white {
     background-color: #fff;
+}
+.fill-white-50 {
+    background-color: rgba(255,255,255,.5);
 }
 
 .float-right {
@@ -65,6 +79,17 @@ small {
 .cs-muted {
     opacity: .5;
 }
+.flex-no-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    width: 100%;
+    > * {
+        flex: 1;
+        text-align: center;
+    }
+}
 
 
 .feedback {
@@ -110,4 +135,11 @@ small {
             text-align: center;
         }
     }
+}
+
+.boxx {
+    background-color: #fff;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 5px;
 }

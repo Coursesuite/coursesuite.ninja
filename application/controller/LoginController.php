@@ -29,7 +29,7 @@ class LoginController extends Controller
                 'redirect' => Text::unescape(Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo") ? Session::get("RedirectTo") : null),
                 'baseurl' => Config::get('URL'),
                 'formdata' => Session::get('form_data'),
-                'GoogleSiteKey' => Config::get('GOOGLE_CAPTCHA_SITEKEY'),
+                // 'GoogleSiteKey' => Config::get('GOOGLE_CAPTCHA_SITEKEY'),
                 'csrf_token' => Csrf::makeToken(),
             );
             $this->View->renderHandlebars('login/index', $data, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
@@ -99,6 +99,24 @@ class LoginController extends Controller
     STORE PAGE INTEGRATED REGISTRATION AND LOGON FORM HANDLER (ajax)
 
     ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    public function impersonate($enc = '') {
+        $dec = Text::base64_urldecode($enc);
+        $uid = Encryption::decrypt($dec);
+        if ($uid > 0) {
+            echo " uid=$uid";
+            LoginModel::softLogout();
+            $ac = new AccountModel($uid);
+            $model = $ac->get_model();
+            $mail = $model["user_email"];
+            $type = $model["user_account_type"];
+            LoginModel::setSuccessfulLoginIntoSession($uid, $mail, $type, null, null, null);
+            Redirect::to('me/');
+            exit;
+
+        }
+        header('HTTP/1.0 404 Not Found', true, 404);
+        $this->View->render('error/404');
+    }
 
 
     // /login/authenticate called using ajax from store/info/app_key -> integrated.hbp
@@ -111,19 +129,21 @@ class LoginController extends Controller
 
         $result = new stdClass();
         $result->message = "No data.";
+        $result->className = "meh";
 
         $email = trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
         $password = trim(Request::post("password"));
         $remember = Request::post("remember");
         $remember = (isset($remember) && ($remember == "yes"));
         $app_key = trim(Request::post("app_key", false, FILTER_SANITIZE_STRING));
-        $captcha = Request::post('g-recaptcha-response');
+        // $captcha = Request::post('g-recaptcha-response');
 
-        if (!Config::get("debug") && ((empty($captcha) || (!($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true)))) {
-            $result->message = "You are apparently a robot. Did you forget to tick the box?";
+        // if (!Config::get("debug") && ((empty($captcha) || (!($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true)))) {
+        //    $result->message = "You are apparently a robot. Did you forget to tick the box?";
+        //} else
 
-        } elseif (!Config::get("debug") && (!Csrf::validateToken(Request::post("csrf_token")))) {
-            $result->message = "Form validation error. Please refresh and try again. " . Request::post("csrf_token");
+        if (!Csrf::validateToken(Request::post("csrf_token"))) {
+            $result->message = "Invalid CSRF token. Please refresh and try again. ";
 
         } elseif ($email == "") {
             $result->message = "Please enter your email address.";
@@ -135,7 +155,7 @@ class LoginController extends Controller
         } elseif ($password == "" && RegistrationModel::user_account_already_exists_and_is_usable($email)) { // if email adress exists but they did not enter a password, then generate a password reset token and notify the user
             RegistrationModel::send_password_reset($email, $app_key);
             $result->message = "This account exists! We emailed a password reset link.";
-            $result->className = "happy";
+            $result->className = "intermediate";
 
         } elseif ($password == "" && RegistrationModel::register_new_account_and_send_verification($email, $app_key)) { // insert this as an unverified user, and send them a verification + password combo email
             $result->message = "Welcome! We just sent you a password and activation link.";
@@ -154,6 +174,9 @@ class LoginController extends Controller
                     } else {
 
                         $model = $model[0];
+                        $model->last_browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "";
+                        $model->last_ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "";
+
                         if ($model->user_active == 0 || $model->user_deleted == 1) {
 
                             $result->message = "Account is disabled, you cannot log in.";
@@ -197,7 +220,7 @@ class LoginController extends Controller
                             LoginModel::setSuccessfulLoginIntoSession($model->user_id, $model->user_email, $model->user_account_type, null, null, null);
 
                             // and finally, notify the user (which triggers a reload)
-                            $result->message = "<p class='happy'>You're logged on ... just reloading, won't be a sec ...</p>";
+                            $result->message = "You're logged on ... just reloading, won't be a sec ...";
                             $result->positive = true;
                             $result->reload = true;
 
@@ -217,14 +240,18 @@ class LoginController extends Controller
 
         }
 
-        // regen the csrf token for the next attempt
-        $result->csrf = Csrf::makeToken();
-        if (isset($result->positive) && $result->positive == true && isset($redirect) && !empty($redirect)) {
-            Session::remove("RedirectTo");
-            Redirect::to($redirect);
+        // well the feedback has become a sorry mess
+        if ($result->className === "sad") {
+            Session::set("feedback_negative", $result->message);
+        } else if ($result->className === "happy") {
+            Session::set("feedback_positive", $result->message);
+        } else if ($result->className === "intermediate") {
+            Session::set("feedback_intermediate", $result->message);
         } else {
-            $this->View->renderJSON($result);
+            Session::set("feedback_meh", $result->message);
         }
+
+        Redirect::to($redirect);
     }
 
 }
