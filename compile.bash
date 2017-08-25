@@ -1,0 +1,1 @@
+apidoc -i application/ -o public/apidoc/
