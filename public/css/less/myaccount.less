@@ -33,22 +33,44 @@ article.my-account {
         }
     }
     > section.current-subscriptions {
-        figure {
+        div.outer-tile {
             display: inline-block;
             margin: 0 10px 10px 0;
             background-color: #fff;
             box-shadow: 0 0 3px rgba(0,0,0,.2);
             padding: 10px;
-            color: #444;
-            figcaption {
+            width: 238px;
+            header {
+                font-weight: bold;
+                font-size: 16px;
                 text-align: center;
-                a {
-                    text-decoration: none;
-                    color: inherit;
-                }
             }
-            &:hover {
-                color: #69c;
+            img {
+                width: 100%;
+                max-height: 128px;
+            }
+            footer {
+                a {
+                    display: block;
+                    text-decoration: none;
+                    text-align: center;
+                    &.unsub-button {
+                        color: #c36;
+                        font-size: 0.9rem;
+                    }
+                    &.launch-button {
+                        padding: 5px;
+                        font-size: 1.25rem;
+                        color: rgba(96,148,224,1);
+                        border: 1px solid rgba(96,148,224,.5);
+                        border-radius: 4px;
+                        font-weight: bold;
+                        margin-bottom: 10px;
+                        &:hover {
+                            background-color: rgba(96,148,224,.25);
+                        }
+                    }
+                }
             }
         }
     }
@@ -66,6 +88,41 @@ article.my-account {
         }
         tbody tr:nth-child(odd) td {
             background-color: rgba(0,0,0,.05);
+        }
+    }
+}
+
+
+
+article.my-api {
+    code {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #eee;
+        padding: 25px;
+        font-size: 18px;
+        display: block;
+        &.hide {
+            background-color: #fff;
+            color: #fff;
+            position: relative;
+            &:hover {
+                color: #333;
+                background-color: #eee;
+                &:after {
+                    position: absolute;
+                    font-size: 10px;
+                    margin-top: -1px;
+                    margin-right: -1px;
+                    top: 0;
+                    right: 0;
+                    padding: 5px;
+                    border-radius: 0 4px 0 4px;
+                    background-color: #333;
+                    color: #fff;
+                    content: attr(data-label);
+                }
+            }
         }
     }
 }

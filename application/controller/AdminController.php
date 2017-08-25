@@ -12,6 +12,9 @@ class AdminController extends Controller
         // special authentication check for the entire controller: Note the check-ADMIN-authentication!
         // All methods inside this controller are only accessible for admins (= users that have role type 7)
         Auth::checkAdminAuthentication();
+
+        // ensure licences are up to date (cron does this anyway)
+        Licence::refresh_licencing_info();
     }
 
     /**
@@ -746,6 +749,25 @@ class AdminController extends Controller
         $model = AdminModel::CurrentSubscribersModel();
         $model["baseUrl"] = Config::get("URL");
         $this->View->renderHandlebars("admin/CurrentSubscribers", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function encrypt() {
+        $val = Request::post("value");
+        $model = new stdClass();
+        $model->value = $val;
+        if (!empty($val)) {
+            $model->output = Text::base64enc(Encryption::encrypt($val));
+        }
+        $this->View->renderHandlebars("admin/encrypt", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+    }
+
+    public function checkSSL() {
+        $ch = curl_init("https://www.howsmyssl.com/a/check");
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $server_output = json_decode(curl_exec($ch));
+        $this->View->renderJSON($server_output, true);
     }
 
 }

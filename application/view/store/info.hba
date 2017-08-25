@@ -26,12 +26,12 @@
 	    	<section class='box launch'>
 	    		<header>
 	    			<h1>Ready to launch <i class='cs-arrow-right'></i></h1>
-		    		<a href="{{baseurl}}launch/{{App.app_key}}" ftarget="{{App.app_key}}" title="Launch the app!"><i class="fa fa-rocket"></i> Launch App</a>
+		    		<a href="{{baseurl}}launch/{{App.app_key}}" target="{{App.app_key}}" title="Launch the app!"><i class="fa fa-rocket"></i> Launch App</a>
 		    	</header>
 		    	<div class='content'>
 	    			{{#morethanone Subscriptions "AppTierLevel"}}<p class='subscription-overlap'><i class='fa fa-exclamation-triangle'></i> It looks like you have multiple active subscriptions that include this app!</p>{{/morethanone}}
 	    			{{#each Subscriptions}}
-	    			{{#if AppTierLevel}}<div>Tier {{AppTierLevel}} -
+	    			{{#if AppTierLevel}}<div>{{ProductName}} ({{status}}{{#if statusReason}} {{statusReason}}{{/if}}) :
 	    			{{#decodable subscriptionUrl}}
 	    			<a href="{{decode subscriptionUrl}}" title="Order id: {{referenceId}}">Manage your subscription</a>
 	    			{{/decodable}}</div>{{/if}}
@@ -93,7 +93,7 @@
 				{{#if editlink}}<li><a href="{{editlink}}">Edit this app</a>.</li>{{/if}}
 			</ul>
 			</div>
-		</footer>
+		</section>
 
 	    </aside>
 
@@ -110,7 +110,5 @@
 	</section>
 
 </article>
-
-{{{Contact_Form_Placeholder}}}
 
 <script type="text/javascript">window.slides = {{#if App.media}}{{{stringify App.media}}}{{else}}undefined{{/if}};</script>

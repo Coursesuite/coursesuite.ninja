@@ -54,7 +54,8 @@ class AppTierModel Extends Model
 
     public function load($id)
     {
-    	$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id))[0]; // 0th of a fetchall
+    	$model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id));
+            $this->data_model = $model[0];
     	return $this;
     }
 
@@ -84,6 +85,20 @@ class AppTierModel Extends Model
 		$results[] = (new AppTierModel($row->id))->get_model();
 	}
 	return $results;
+    }
+
+    public static function get_highest_tier_level($app_id)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("
+            SELECT tier_level
+                FROM app_tiers
+                WHERE app_id = :id
+                ORDER BY tier_level DESC
+                LIMIT 1
+        ");
+        $query->execute(array(":id" => $app_id));
+        return $query->fetch(PDO::FETCH_COLUMN, 0);
     }
 
 }

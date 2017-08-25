@@ -36,12 +36,16 @@ class StoreController extends Controller
         $user_name = Request::post("your-name", true);
         $message = Request::post("your-message", true);
         $captcha = Request::post("g-recaptcha-response");
+        $mail_sent = false;
 
         if (($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true) {
 
             $mailer = new Mail;
             $mail_sent = $mailer->sendMail(Config::get('EMAIL_SUBSCRIPTION'), $user_email, $user_name, "CourseSuite Contact Form", $message);
 
+        };
+
+        if ($mail_sent) {
             $model = array(
                 "sent" => true, // $mail_sent,
                 "message" => Text::get("CONTACT_FORM_OK"),

@@ -45,7 +45,7 @@ class MeController extends Controller
     {
 
         // get the view model (which is the account)
-        $account = new AccountModel(Session::get('user_id'));
+        $account = new AccountModel(Session::CurrentUserId());
         $model = $account->get_model();
 
         // and other stuff we need in the view
@@ -53,7 +53,7 @@ class MeController extends Controller
         $model["csrf_token"] = Csrf::makeToken();
         $model["history"] = SubscriptionModel::get_user_subscription_history(Session::get("user_id"));
 
-           // 'subscriptions' => array_reverse(SubscriptionModel::getAllSubscriptions(Session::get('user_id'), false, false, false, true, 'added')),
+           // 'subscriptions' => array_reverse(SubscriptionModel::getAllSubscriptions(Session::CurrentUserId(), false, false, false, true, 'added')),
            // 'products' => ProductModel::getAllSubscriptionProducts(),
            // 'store_url' => TierModel::getTierById(1, false)->store_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND'),
 
@@ -79,6 +79,8 @@ class MeController extends Controller
 
     public function update() {
 
+        $send_positive_feedback = true;
+
         // try to ward off attacks
          if (!Csrf::isTokenValid()) {
             LoginModel::logout();
@@ -94,13 +96,13 @@ class MeController extends Controller
 
             $mail_sent = (new Mail)->sendGoodbye(Session::get("user_email"));
             LoginModel::logout();
-            UserModel::destroyUserForever(Session::get('user_id'));
+            UserModel::destroyUserForever(Session::CurrentUserId());
             Redirect::home();
             exit();
         }
 
         // the user model
-        $account = new AccountModel(Session::get('user_id'));
+        $account = new AccountModel(Session::CurrentUserId());
         $model = $account->get_model();
 
         // the things we might have updated
@@ -135,12 +137,14 @@ class MeController extends Controller
 
                     Session::set("feedback_negative", "Sorry, this email domain has been blacklisted and cannot be used. Please email us for more information.");
                     Session::set("feedback_area", "user_email");
+                    $send_positive_feedback = false;
 
                 } else if (UserModel::doesEmailAlreadyExist($email)) {
 
                     // form-based feedback
                     Session::set("feedback_negative", Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN_CHANGE'));
                     Session::set("feedback_area", "user_email");
+                    $send_positive_feedback = false;
 
                 } else {
 
@@ -160,8 +164,12 @@ class MeController extends Controller
                     // set a persistent message so they know they have a pending change
                     MessageModel::notify_user(Text::get("FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION"));
 
+                    $send_positive_feedback = true;
+
                 }
 
+        } else {
+            $send_positive_feedback = true;
         }
 
         $mc = new MailChimp(Session::get("user_email"));
@@ -174,6 +182,10 @@ class MeController extends Controller
         }
         $mc->setInterests($interests);
 
+        if ($send_positive_feedback) {
+            Session::set("feedback_positive","Your changes have been saved");
+        }
+
         // redirect back to /me/
         Redirect::to("me/");
 
@@ -182,7 +194,7 @@ class MeController extends Controller
     // send the change verification email again
     public function reverify()
     {
-        $account = new AccountModel(Session::get('user_id'));
+        $account = new AccountModel(Session::CurrentUserId());
         $model = $account->get_model();
         self::sendChangeVerificationEmail($model);
         MessageModel::notify_user(Text::get("FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION"));
@@ -192,13 +204,19 @@ class MeController extends Controller
     // cancel an email change
     public function cancelChange()
     {
-        $account = new AccountModel(Session::get('user_id'));
+        $account = new AccountModel(Session::CurrentUserId());
         $model = $account->get_model();
         $model["user_email_update"] = NULL;
         $model["change_verification_hash"] = NULL;
         $account->set_model($model);
         $account->save();
         Redirect::to("me/");
+    }
+
+    public function api() {
+        $model = ApiModel::publicApi(Session::CurrentUserId());
+        $this->View->renderHandlebars("me/api", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+
     }
 
 }

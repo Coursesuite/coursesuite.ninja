@@ -24,7 +24,12 @@ class ProductModel extends Model
         if (count($params) == 1 && (int) $params[0] > 0) { // new ProductModel(1)
             self::load($params[0]);
         } else if (count($params) == 2) { // new ProductModel("bundle", 3)
-            $this->data_model = parent::Read(self::TABLE_NAME, "entity=:entity AND entity_id=:id", array(":entity" => $params[0], ":id" => $params[1]))[0]; // 0th of a fetchall
+            $read = parent::Read(self::TABLE_NAME, "entity=:entity AND entity_id=:id", array(":entity" => $params[0], ":id" => $params[1]));
+            if (!empty($read)) {
+                $this->data_model = $read[0]; // 0th of a fetchall
+            } else {
+                return null;
+            }
         }
         return $this;
     }
@@ -84,6 +89,12 @@ class ProductModel extends Model
         return $result;
     }
 
+    // quick check to see if this product relates to an api
+    public function is_api() {
+        if (!isset($this->data_model)) return null; // not sure
+        return (substr($this->data_model->product_id, 0, 4) === "api-");
+    }
+
     // given a product and an app, find out the tier level (e.g. token logon, working out overlapping subscriptions, etc)
     public static function get_product_tier_level_for_app($product_id, $app_id)
     {
@@ -107,7 +118,7 @@ class ProductModel extends Model
             return $query->fetch(PDO::FETCH_COLUMN, 0);
     }
 
-    // when validating a token, we know the APP and the USER, but not the product or products they are subscribed to;
+     // when validating a token, we know the APP and the USER, but not the product or products they are subscribed to;
     // return (int) highest Tier Level for this app for all active subscriptions
     public static function get_highest_subscribed_tier_for_app($app_id, $user_id)
     {
@@ -140,6 +151,5 @@ class ProductModel extends Model
             ));
             return $query->fetch(PDO::FETCH_COLUMN, 0);
     }
-
 
 }
