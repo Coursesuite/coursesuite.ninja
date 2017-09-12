@@ -8,6 +8,7 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
 {
     public static $files = array (
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -72,6 +73,13 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
             'Mailchimp' => 
             array (
                 0 => __DIR__ . '/..' . '/mailchimp/mailchimp/src',
+            ),
+        ),
+        'H' => 
+        array (
+            'HTMLPurifier' => 
+            array (
+                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
     );
