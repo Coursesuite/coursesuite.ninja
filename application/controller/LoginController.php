@@ -177,7 +177,7 @@ class LoginController extends Controller
                         $model->last_browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "";
                         $model->last_ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : "";
 
-                        if ($model->user_active == 0 || $model->user_deleted == 1) {
+                        if (!isset($model->user_activation_hash) && ($model->user_active == 0 || $model->user_deleted == 1)) {
 
                             $result->message = "Account is disabled, you cannot log in.";
 

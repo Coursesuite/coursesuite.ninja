@@ -31,6 +31,18 @@ class Request
         }
     }
 
+    // return the html purified version of a post value
+    public static function post_html($key) {
+        $clean_html = "";
+        if (isset($_POST[$key])) {
+            $dirty_html = $_POST[$key];
+            $config = HTMLPurifier_Config::createDefault();
+            $purifier = new HTMLPurifier($config);
+            $clean_html = $purifier->purify( $dirty_html );
+        }
+        return $clean_html;
+    }
+
     public static function post_debug()
     {
         return print_r($_POST, true);

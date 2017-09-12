@@ -220,6 +220,54 @@ class ApiModel
 		return false;
 	}
 
+	public static function get_white_label($app_key, $subscription_id) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->prepare("
+			SELECT html, css FROM whitelabel
+			WHERE subscription_id=:id
+			AND app_key=:key
+			LIMIT 1
+		");
+		$query->execute(array(
+			":key"=>$app_key,
+			":id"=>$subscription_id
+		));
+		$result = $query->fetch(PDO::FETCH_ASSOC);
+		if (is_array($result)) {
+			return $result;
+		} else {
+			return array(
+			             "html" => "",
+			             "css" => ""
+			);
+		}
+	}
+
+	// set the values of a white labelled app. if html and css is null, erase the record.
+	public static function set_white_label($app_key, $subscription_id, $html = null, $css = null) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		if (is_null($html) && is_null($css)) {
+			$query = $database->prepare("
+				DELETE from whitelabel
+				WHERE app_key=:key
+				AND subscription_id=:sub
+			");
+			$query->execute();
+		} else {
+			$query = $database->prepare("
+				INSERT INTO whitelabel (app_key, subscription_id, html, css)
+				VALUES (:key, :id, :html, :css)
+				ON DUPLICATE KEY UPDATE html=:html, css=:css
+			");
+			$query->execute(array(
+				":id" => $subscription_id,
+				":key" => $app_key,
+				":html" => $html,
+				":css" => $css
+			));
+		}
+	}
+
 	public static function get_publish_url($hash, $token) {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$query = $database->prepare("

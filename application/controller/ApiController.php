@@ -111,9 +111,11 @@ class ApiController extends Controller
 				$result->api->bearer = md5($model->hash . Encryption::decrypt(Text::base64dec($user->get_property("secret_key")))); // bearer = md5 of apikey + secret key
 				$result->api->publish = ApiModel::get_publish_url($model->hash, $token); // since token is a unique version of hash this is an easy match
 
+				$white_label = get_white_label($app_key, $model->subscription);
+
 				$result->api->header = new stdClass();
-				$result->api->header->html = ""; // todo: this users white label for this app_key
-				$result->api->header->css = ""; // todo: this users white label for this app_key
+				$result->api->header->html = $white_label["html"];
+				$result->api->header->css = $white_label["css"];
 
 			} else {
 				// highest tier available in the subscriptions for this user
@@ -216,21 +218,76 @@ class ApiController extends Controller
 	*     }
 	* @apiSuccess {Array} app List of app properties
 	* @apiSuccess {String} app.app_key Internal identifier of app
+	* @apiSuccess {String} app.name Name of app
+	* @apiSuccess {String} app.tagline Short descriptor for the app
 	* @apiSuccess {String} app.launch Launch url for app.
 					You need to replace {token} with the value returned by the /createToken/ method
+	* @apiSuccess {String} app.icon Full url to icon used by CourseSuite for this app
 	* @apiSuccessExample {json} Success-Response:
 	*     HTTP/1.1 200 OK
 	*     [
 	*       	{
 	*		"app_key": "docninja",
-	*		"launch": "https://www.coursesuite.ninja/launch/docninja/{token}/"
+	*		"launch": "https://www.coursesuite.ninja/launch/docninja/{token}/",
+	*		"icon": "https://www.coursesuite.ninja/img/apps/docninja/3114fbf5f4d83a87b7842d1aa561b34a.png",
+	*		"name": "Document Ninja",
+	*		"tagline": "Add a SCORM wrapper to your existing content by converting it to modern, industry standard device-ready HTML5"
 	*	}
 	*     }
 	*/
 
 	public function info()
 	{
-		$this->View->renderJSON(AppModel::getAppKeys()); // Config::get('APP_NAMES')
+		$model = AppModel::public_info_model(); // AppModel::getAppKeys()
+		$this->View->renderJSON($model);
+	}
+
+	/**
+	* @api {post} /white_label/ Set the header style for a single app
+	* @apiName White Label
+	* @apiGroup App
+	* @apiVersion 0.1.0
+	* @apiPermission digest
+	* @apiDescription Set the header and css styles for a single app
+	*   		      HTML is injected between the <header> ... </header> tags in the app
+	*		      CSS is included in a style tag before the </head> tag
+	*		      If both HTML and CSS are empty, the white label is deleted
+	* @apiParam {String} app_key App Key to set.
+	* @apiParam {String} [html] HTML header code (e.g. image or hyperlink). Content will be filtered using HTMLPurifier
+	* @apiParam {String} [css] CSS styles
+	* @apiSuccessExample {json} Success-Response:
+	*    HTTP/1.1 200 OK
+	*    {
+	*	"status": "ok",
+	*	"message": ""
+	*    }
+	* @apiErrorExample {json} Success-Response:
+	*    HTTP/1.1 200 OK
+	*    {
+	*	"status": "error",
+	*	"message": "app_key was not found"
+	*    }
+	*/
+	public function white_label() {
+
+		$username = parent::requiresAuth();
+
+		$html = Request::post_html("html");
+		if (empty($html)) $html = null;
+		$css = Request::post("css", true);
+		if (empty($css)) $css = null;
+		$app_key = Request::post("app_key", true);
+
+		if (!AppModel::exists($app_key)) {
+			$this->View->renderJSON(array(
+				"status" => "error",
+				"message" => "app_key was not found"
+			));
+			die();
+		}
+
+		$sub_id = SubscriptionModel::get_subscription_id_for_hash($username);
+		ApiModel::set_white_label($app_key, $sub_id, $html, $css);
 	}
 
 	public function tasks()

@@ -353,6 +353,17 @@ class SubscriptionModel extends Model
         return $results;
     }
 
+    public static function get_subscription_id_for_hash($hash) {
+        $idname = self::ID_ROW_NAME;
+        $tablename = self::TABLE_NAME;
+        $sql = "SELECT $idname FROM $tablename WHERE md5(referenceId) = :hash LIMIT 1";
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare($sql);
+        $query->execute(array(
+            ':hash' => $hash
+        ));
+        return intval($query->fetchColumn(),10);
+    }
 
 
 }

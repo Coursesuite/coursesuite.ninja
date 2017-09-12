@@ -54,6 +54,26 @@ class AppModel extends Model
 		return $query->fetchAll();
 	}
 
+	/*
+	*	app apps that this user is able to access
+	*/
+	public static function public_info_model() {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->prepare("
+			SELECT app_key, name, tagline, launch, replace(concat(:url, icon),'//','/') icon from apps
+			where active = 1
+			and app_id in (
+				select app_id from app_tiers
+				where name not like :api
+			)
+		");
+		$query->execute(array(
+			':api' => 'api-%',
+			':url' => Config::get("URL")
+		));
+		return $query->fetchAll();
+	}
+
 	/**
 	 * get an associative array of all records in the apps table
 	 */
@@ -81,6 +101,14 @@ class AppModel extends Model
 		$query = $database->prepare($sql);
 		$query->execute();
 		return $query->fetchAll();
+	}
+
+	public static function exists($app_key) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$sql = "SELECT count(1) FROM apps WHERE app_key = :key";
+		$query = $database->prepare($sql);
+		$query->execute(array(":key" => $app_key));
+		return ($query->fetchColumn() > 0);
 	}
 
 	/**
