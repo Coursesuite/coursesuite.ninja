@@ -1,25 +1,26 @@
 <article class="my-api">
 
-	<header class="common-header">
+	<section class="standard-width" id="api-details">
+
 		<h1>API</h1>
-	</header>
 
-	<section class="api-display standard-width">
-	<p>Your API KEY is public. Include it with your authorization header on api requests. It is also your digest username.</p>
-	<p><code>{{apikey}}</code></p>
+		<div class="boxed-container">
 
-	<p>Your SECRET KEY is private. It is used to authenticate private api requests. Mouse over to see / copy it.</p>
-	<p><code class="hide" onclick="copyToClipboard(this)" data-label="Copy to clipboard">{{secret_key}}</code></p>
+			<p>Your API KEY is public. Include it with your authorization header on api requests. It is also your digest username.</p>
+			<p><code>{{apikey}}</code></p>
 
-	<p>Your subscription for {{subscription.ProductName}} began {{subscription.added}} and is {{subscription.status}}.</p>
-	</section>
+			<p>Your SECRET KEY is private. It is used to authenticate private api requests. Mouse over to see / copy it.</p>
+			<p><code class="hide" onclick="copyToClipboard(this)" data-label="Copy to clipboard">{{secret_key}}</code></p>
 
-	<header class="common-header">
+			<p>Your subscription for {{subscription.ProductName}} began <b>{{subscription.added}}</b> and is <b>{{subscription.status}}</b>.</p>
+
+		</div>
+
 		<h1>Documentation</h1>
-	</header>
 
-	<section class="documentation-display standard-width">
-		<p>Use the API documentation below to access the apps. You can open this documentation in a <a href="/apidoc/" target="_blank">new window</a>.</p>
-		<iframe width="100%" height="500" frameborder="0" src="/apidoc/"></iframe>
+		<p>Use the API documentation as a guide for creating your software solution for launching our apps. <a href="/apidoc/" target="_blank"><i class='fa fa-clone'></i> Open in new window</a>.</p>
+
+		<iframe width="100%" height="500" frameborder="0" src="/apidoc/" seamless allowtransparency></iframe>
+
 	</section>
 </article>

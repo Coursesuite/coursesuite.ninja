@@ -25,11 +25,11 @@ class ApiController extends Controller
 	*/
 
 	/**
-	* @api {get} /validate/app_key/hash/
+	* @api {get} /api/validate/app_key/hash/
 	* @apiPrivate
 	* @apiName Validate
-	* @apiGroup Token
-	* @apiVersion 0.1.0
+	* @apiGroup Authenication
+	* @apiVersion 0.9.0
 	* @apiDescription Internal method for validating the has value sent to apps. Requires a specific digest authentication user
 	* @apiParam {String} app_key The keyname of the app being validated (e.g. docninja)
 	* @apiParam {String} hash The hash to be validated
@@ -88,6 +88,7 @@ class ApiController extends Controller
 		$result->app = new stdClass();
 		$result->app->addons = array();
 		$result->app->socket = "";
+		$result->app->layer = "";
 
 		if ($model = ApiModel::find_model_for_token($token)) {
 
@@ -123,27 +124,28 @@ class ApiController extends Controller
 			}
 			$result->licence->tier = $tier;
 			$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . ":" . Config::get("WEBSOCKET_PORT") . "/" . $model->hash;
-			ws://coursesuite.ninja.dev/"
+			$result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
+			// ws://coursesuite.ninja.dev/"
 		}
 
 		$this->View->renderJSON((array) $result);
 	}
 
 	/**
-	* @api {post} /createToken/ Generate an access token for lauching apps
+	* @api {post} /api/createToken/ Generate an access token for lauching apps
 	* @apiName Generate
-	* @apiGroup Token
-	* @apiVersion 0.1.0
+	* @apiGroup Authentication
+	* @apiVersion 0.9.0
 	* @apiPermission digest
 	* @apiDescription In order to launch apps, you need to generate an access token.
 	* 		It validates your access using your api key and secret, and stores the publish-url (if set).
 	* 		When opening apps, this key will be validated for concurrency: you can only have as many
-	* 		apps running at the same time as you paid for.
+	* 		apps running at the same time as you are licensed for.
 	*
-	* @apiParam {String} [publish_url] Url to enable publish-to feature (in supported apps)
-	*					Apps will POST the generated package to this URL and attach
-	*					the header Authorization: Bearer <hash>, where <hash> is
-	*					the MD5 of your apikey and secret key, which you can use to
+	* @apiParam {String} [publish_url] Url to enable publish-to feature (in supported apps).
+	*					Apps will POST the generated zip package to this URL and attach
+	*					the header Authorization: Bearer &lt;hash&gt;, where &lt;hash&gt; is
+	*					the MD5 of your apikey appended with your secret key, which you can use to
 	*					validate / accept the input.
 	*
 	* @apiSuccess {String} token App access token
@@ -204,10 +206,10 @@ class ApiController extends Controller
 	}
 
 	/**
-	* @api {post} /info/ List available apps and their launch points
+	* @api {post} /api/info/ List available apps and their launch points
 	* @apiName Names
 	* @apiGroup App
-	* @apiVersion 0.1.0
+	* @apiVersion 0.9.0
 	* @apiPermission bearer
 	* @apiDescription List the app keys and their launch points that your subscription allows
 	*
@@ -221,7 +223,7 @@ class ApiController extends Controller
 	* @apiSuccess {String} app.name Name of app
 	* @apiSuccess {String} app.tagline Short descriptor for the app
 	* @apiSuccess {String} app.launch Launch url for app.
-					You need to replace {token} with the value returned by the /createToken/ method
+					You need to replace {token} with the value returned by the /api/createToken/ method.
 	* @apiSuccess {String} app.icon Full url to icon used by CourseSuite for this app
 	* @apiSuccessExample {json} Success-Response:
 	*     HTTP/1.1 200 OK
@@ -243,15 +245,15 @@ class ApiController extends Controller
 	}
 
 	/**
-	* @api {post} /white_label/ Set the header style for a single app
+	* @api {post} /api/white_label/ Set the header style for a single app
 	* @apiName White Label
-	* @apiGroup App
-	* @apiVersion 0.1.0
+	* @apiGroup Customisation
+	* @apiVersion 0.9.0
 	* @apiPermission digest
-	* @apiDescription Set the header and css styles for a single app
-	*   		      HTML is injected between the <header> ... </header> tags in the app
-	*		      CSS is included in a style tag before the </head> tag
-	*		      If both HTML and CSS are empty, the white label is deleted
+	* @apiDescription Set the header and css styles for a single app.
+	*  		      HTML is injected between the &lt;header&gt; ... &lt;/header&gt; tags in the app.
+	*		      CSS is included in a style tag before the &lt;/head&gt; tag.
+	*		      If both HTML and CSS are empty, the white label is deleted.
 	* @apiParam {String} app_key App Key to set.
 	* @apiParam {String} [html] HTML header code (e.g. image or hyperlink). Content will be filtered using HTMLPurifier
 	* @apiParam {String} [css] CSS styles
@@ -261,7 +263,7 @@ class ApiController extends Controller
 	*	"status": "ok",
 	*	"message": ""
 	*    }
-	* @apiErrorExample {json} Success-Response:
+	* @apiErrorExample {json} Error-Response:
 	*    HTTP/1.1 200 OK
 	*    {
 	*	"status": "error",

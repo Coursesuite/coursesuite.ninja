@@ -9,33 +9,21 @@ class MeController extends Controller
     /**
      * Construct this object by extending the basic Controller class.
      */
-    public function __construct()
+    public function __construct($action_name)
     {
-        parent::__construct();
-
-        // VERY IMPORTANT: All controllers/areas that should only be usable by logged-in users
-        // need this line! Otherwise not-logged in users could do actions.
+        parent::__construct(true,$action_name);
         Auth::checkAuthentication();
     }
 
     // internal function for sending the email change verification email
-    // probably should be statics on the account model
     private function sendChangeVerificationEmail($model)
     {
-                $message = Text::formatString("EMAIL_USER_EMAIL_CHANGE_VERIFICATION", array(
-                    "old" => $model["user_email"],
-                    "new" => $model["user_email_update"],
-                    "link" => Config::get("URL") . "email/verifyChange/" . $model["change_verification_hash"],
-                ));
-                Mail::sendMail($model["user_email_update"], Config::get("EMAIL_VERIFICATION_FROM_EMAIL"), Config::get("EMAIL_VERIFICATION_FROM_NAME"), Text::get("EMAIL_VERIFICATION_SUBJECT"), $message);
-    }
-
-    private function sendPasswordResetEmail($model)
-    {
-                $message = Text::formatString("EMAIL_USER_PASSWORD_RESET_REQUEST", array(
-                    "link" => Config::get("URL") . "email/confirmResetPassword/" . $model["user_password_reset_hash"],
-                ));
-                Mail::sendMail($model["user_email"], Config::get("EMAIL_VERIFICATION_FROM_EMAIL"), Config::get("EMAIL_VERIFICATION_FROM_NAME"), Text::get("EMAIL_PASSWORD_SUBJECT"), $message);
+        $message = Text::formatString("EMAIL_USER_EMAIL_CHANGE_VERIFICATION", array(
+            "old" => $model["user_email"],
+            "new" => $model["user_email_update"],
+            "link" => Config::get("URL") . "email/verifyChange/" . $model["change_verification_hash"],
+        ));
+        Mail::sendMail($model["user_email_update"], Config::get("EMAIL_VERIFICATION_FROM_EMAIL"), Config::get("EMAIL_VERIFICATION_FROM_NAME"), Text::get("EMAIL_VERIFICATION_SUBJECT"), $message);
     }
 
     /**
@@ -53,23 +41,8 @@ class MeController extends Controller
         $model["csrf_token"] = Csrf::makeToken();
         $model["history"] = SubscriptionModel::get_user_subscription_history(Session::get("user_id"));
 
-           // 'subscriptions' => array_reverse(SubscriptionModel::getAllSubscriptions(Session::CurrentUserId(), false, false, false, true, 'added')),
-           // 'products' => ProductModel::getAllSubscriptionProducts(),
-           // 'store_url' => TierModel::getTierById(1, false)->store_url . "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND'),
-
         $mc = new MailChimp(Session::get("user_email"));
         $model["subscriptions"] = $mc->getInterests();
-
-        /*
-        if (isset($model["subscriptions"]) && sizeof($model["subscriptions"]) > 0) {
-        $fsprg = new Fastspring('coursesuite', Config::get('FASTSPRING_API_USER'), Config::get('FASTSPRING_API_PASSWORD'));
-        try {
-        $model["subscription_type"] = $fsprg->getSubscription($model['subscriptions'][0]->referenceId)->productName;
-        } catch (Exception $e) {
-        echo($e->getMessage());
-        }
-        }
-         */
 
         $model["CurrentSubs"] = SubscriptionModel::get_current_subscribed_apps_model(Session::get("user_id"));
 
@@ -79,7 +52,9 @@ class MeController extends Controller
 
     public function update() {
 
-        $send_positive_feedback = true;
+        $result = new stdClass();
+        $result->message = "Updated"; // "¯\_(ツ)_/¯";
+        $result->className = "happy";
 
         // try to ward off attacks
          if (!Csrf::isTokenValid()) {
@@ -105,73 +80,51 @@ class MeController extends Controller
         $account = new AccountModel(Session::CurrentUserId());
         $model = $account->get_model();
 
-        // the things we might have updated
+
+        /* ---------------------- email ---------------------- */
         $email = trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
-        $reset_password = (Request::post("reset_password") === "yes");
-        $lists = Request::post("mailchimp_list") ?: [];
-
-        // has the user requested a new password?
-        // !important - do this BEFORE a requested email change
-        if ($reset_password) {
-
-            // generate a password reset hash
-            $model["user_password_reset_hash"] = sha1(uniqid(mt_rand(), true));
-            $model["user_password_reset_timestamp"] = time();
-
-            // persist the change
-            $account->set_model($model);
-            $account->save();
-
-             // email them the change hash to the NEW email, so that has to exist
-            self::sendPasswordResetEmail($model);
-
-           // set a persistent message so they know they have a pending change
-            MessageModel::notify_user(Text::get("FEEDBACK_USER_PASSWORD_RESET_REQUEST"));
-
-        }
-
-        // has the user updated their email? Reverify the account
         if (!empty($email) && $email <> $model["user_email"]) {
 
-                if (BlacklistModel::isBlacklisted($email)) {
+            if (BlacklistModel::isBlacklisted($email)) {
 
-                    Session::set("feedback_negative", "Sorry, this email domain has been blacklisted and cannot be used. Please email us for more information.");
-                    Session::set("feedback_area", "user_email");
-                    $send_positive_feedback = false;
+                $result->message = Text::get('REGISTRATION_DOMAIN_BLACKLISTED');
+                $result->className = "sad";
+                $result->csrf_token = Csrf::makeToken();
 
-                } else if (UserModel::doesEmailAlreadyExist($email)) {
+            } else if (UserModel::doesEmailAlreadyExist($email)) {
 
-                    // form-based feedback
-                    Session::set("feedback_negative", Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN_CHANGE'));
-                    Session::set("feedback_area", "user_email");
-                    $send_positive_feedback = false;
+                $result->message = Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN_CHANGE');
+                $result->className = "intermediate";
+                $result->csrf_token = Csrf::makeToken();
 
-                } else {
+            } else {
 
-                    // store the requested email
-                    $model["user_email_update"] = $email;
+                // store the requested email
+                $model["user_email_update"] = $email;
 
-                    // generate a change hash
-                    $model["change_verification_hash"] = sha1(uniqid(mt_rand(), true));
+                // generate a change hash
+                $model["change_verification_hash"] = sha1(uniqid(mt_rand(), true));
 
-                    // persist the change
-                    $account->set_model($model);
-                    $account->save();
+                // persist the change
+                $account->set_model($model);
+                $account->save();
 
-                     // email them the change hash to the NEW email, so that has to exist
-                    self::sendChangeVerificationEmail($model);
+                 // email them the change hash to the NEW email, so that has to exist
+                self::sendChangeVerificationEmail($model);
 
-                    // set a persistent message so they know they have a pending change
-                    MessageModel::notify_user(Text::get("FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION"));
+                // set a persistent message so they know they have a pending change
+                $notify_text = Text::get("FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION");
+                MessageModel::notify_user($notify_text);
+                $result->csrf_token = Csrf::makeToken();
+                $result->message = $notify_text;
+                $result->className = "happy";
 
-                    $send_positive_feedback = true;
+            }
 
-                }
-
-        } else {
-            $send_positive_feedback = true;
         }
 
+        /* ---------------------- mailchimp ---------------------- */
+        $lists = Request::post("mailchimp_list") ?: [];
         $mc = new MailChimp(Session::get("user_email"));
         $possible_interests = $mc->getAllInterests();
         $interests = new stdClass();
@@ -182,12 +135,13 @@ class MeController extends Controller
         }
         $mc->setInterests($interests);
 
-        if ($send_positive_feedback) {
-            Session::set("feedback_positive","Your changes have been saved");
-        }
-
         // redirect back to /me/
-        Redirect::to("me/");
+
+        if ($this->Method === "AJAX") {
+            $this->View->renderJSON($result);
+        } else {
+            Redirect::to("me/");
+        }
 
     }
 
@@ -202,7 +156,7 @@ class MeController extends Controller
     }
 
     // cancel an email change
-    public function cancelChange()
+    public function expunge()
     {
         $account = new AccountModel(Session::CurrentUserId());
         $model = $account->get_model();

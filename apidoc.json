@@ -1,7 +1,7 @@
 {
-  "name": "CourseSuite",
-  "version": "0.1.0",
-  "description": "CourseSuite API documentation",
-  "title": "CourseSuite API",
-  "url" : "https://www.coursesuite.ninja/api"
+  "name": "CourseSuite API Documentation",
+  "version": "0.9.0",
+  "description": "Authenticate and Launch CourseSuite Apps using programmatic access",
+  "title": "CSAPI",
+  "url" : "https://www.coursesuite.ninja"
 }

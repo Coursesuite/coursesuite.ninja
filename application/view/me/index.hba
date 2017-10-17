@@ -1,26 +1,19 @@
 <article class="my-account">
 
-	<header class="common-header">
+	<section class="standard-width" id="manage-details">
+
 		<h1>My Account</h1>
-	</header>
 
-	<section class="profile-display standard-width">
+		<p>You can change your email address, but we'll have to send you a verification email just to confirm that it works. You can also change your newsletter subscriptions here too (remember to press 'update' :)</p>
 
-		<form method="post" action="{{baseurl}}me/update">
+		<div class="boxed-container">
+		<form method="ajax" action="{{baseurl}}me/update">
 			<input type="hidden" name="csrf_token" value="{{csrf_token}}">
 			<div class="row">
 				<label for="email">Email address:</label>
 				<div>
 					<input type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*" value="{{user_email}}">
-					{{#if user_email_update}}<small class="block faded">Awaiting change verification from <em>{{user_email_update}}</em>. (<a href="{{baseurl}}me/reverify">Re-send verification</a> | <a href="{{baseurl}}me/cancelChange">Cancel change</a>)</small>{{/if}}
-					{{#equals feedback_area "user_email"}}<output class="form-feedback-negative">{{{feedback_negative}}}</small>{{/equals}}
-				</div>
-			</div>
-			<div class="row">
-				<label for="password">Password:</label>
-				<div>
-					<input type='checkbox' value="yes" name="reset_password" id="reset_password">
-					<label for="reset_password">Reset my password</label> <span id="feedback-reset">(Sends confirmation request to your <em>current</em> email address)<br><small>It is not possible to set your own password for security reasons.</small></span>
+					{{#if user_email_update}}<small class="block faded">Awaiting change verification from <em>{{user_email_update}}</em> (<a href="/me/reverify">Re-send verification</a> | <a href="/me/expunge">Cancel change</a>)</small>{{/if}}
 				</div>
 			</div>
 			<div class="row">
@@ -33,42 +26,36 @@
 				</div>
 			</div>
 			<div class="row">
-				<label for="destroy">Account removal:</label>
-				<div>
-					<a href="#toggle-once">Show</a>
-					<span>
-						<input type="radio" name="destroy" id="destroy_no" value="no" checked="checked"><label for="destroy_no">Keep my account</label>
-						<input type="radio" name="destroy" id="destroy_yes" value="yes"><label for="destroy_yes">Delete my account</label>
-					</span>
+				<label></label>
+				<div class='ajax-submit'>
+					<button type="submit" id="form-submit-button" class="button">Update account</button>
 				</div>
 			</div>
-			{{#not feedback_area "user_email"}}
-			{{#either feedback_negative feedback_positive}}
-			<div class="row">
-				<label></label>
-				{{#if feedback_negative}}<output class="form-feedback-negative">{{{feedback_negative}}}</output> {{/if}}
-				{{#if feedback_positive}}<output class="form-feedback-positive">{{{feedback_positive}}}</output> {{/if}}
-			</div>
-			{{/either}}
-			{{/not}}
-			<div class="row">
-				<label></label>
-				<div>
-					<input type="submit" value="Update account" id="form-submit-button" class="button">
-				</div>
-			</div>
+			<div class="output"></div>
 		</form>
+		</div>
 
 	</section>
 
 	{{#if CurrentSubs}}
-	<header class="common-header">
+	<section class="standard-width" id="current-subscriptions">
+
 		<h1>Subscribed apps</h1>
-	</header>
-	<section class="standard-width current-subscriptions">
-	{{#each CurrentSubs}}
+
+		<p>To <b>cancel a subscription</b>, use the appropriate links in the products below to open the store page, then press Cancel. You cancellation will apply immediately, however you'll still have access to the app until the date shown on your purchase history.</p>
+
+		<div class="boxed-container">
+		{{#each CurrentSubs}}
 		<div class="outer-tile">
 			<header>{{name}}</header>
+			{{#equals app_key "api"}}
+			<img src="{{thumbnail icon 238}}">
+			<footer>
+				{{#each subs}}
+				<a href="{{decode subscriptionUrl}}" class="unsub-button">Cancel {{ProductName}}</a>
+				{{/each}}
+			</footer>
+			{{else}}
 			<a href="{{launch}}" target="{{app_key}}"><img src="{{thumbnail icon 238}}"></a>
 			<footer>
 				<a href="{{launch}}" target="{{app_key}}" class="launch-button">Launch app</a>
@@ -76,40 +63,47 @@
 				<a href="{{decode subscriptionUrl}}" class="unsub-button">Cancel {{ProductName}}</a>
 				{{/each}}
 			</footer>
+			{{/equals}}
 		</div>
-	{{/each}}
+		{{/each}}
+		</div>
+
 	</section>
 	{{/if}}
 
-	<header class="common-header">
-		<h1>Purchase history</h1>
-	</header>
+	<section class="standard-width" id="purchase-history">
 
-	<section class="purchase-history standard-width">
-	<table>
-		<thead>
-			<tr>
-			<th>Product</th>
-			<th>Item</th>
-			<th>Added</th>
-			<th>Expires</th>
-			<th>Status</th>
-			<th>Order Details</th>
-			</tr>
-		</thead>
-		<tbody>
-		{{#each history}}
-			<tr>
-			<td>{{productDescription Product.id}}</td>
-			<td>{{referenceId}}</td>
-			<td>{{added}}</td>
-			<td>{{endDate}}</td>
-			<td>{{status}}{{#if statusReason}}<br><small>{{statusReason}}</small>{{/if}}</td>
-			<td>{{#decodable subscriptionUrl}}<a target="_blank" href="{{decode subscriptionUrl}}"><i class='cs-stack-2'></i>Open</a>{{else}}n/a{{/decodable}}</td>
-			</tr>
-		{{/each}}
-		</tbody>
-	</table>
+		<h1>Purchase history</h1>
+
+		<p>You can see your purchase history. To explore in more detail click the link in the Order Details column to visit the store page.</p>
+
+		<div class="boxed-container">
+		<table>
+			<thead>
+				<tr>
+				<th>Product</th>
+				<th>Item</th>
+				<th>Added</th>
+				<th>Expires</th>
+				<th>Status</th>
+				<th>Order Details</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{#each history}}
+				<tr>
+				<td>{{productDescription Product.id}}</td>
+				<td>{{referenceId}}</td>
+				<td>{{added}}</td>
+				<td>{{endDate}}</td>
+				<td>{{status}}{{#if statusReason}}<br><small>{{statusReason}}</small>{{/if}}</td>
+				<td>{{#decodable subscriptionUrl}}<a target="_blank" href="{{decode subscriptionUrl}}"><i class='cs-stack-2'></i>Open</a>{{else}}n/a{{/decodable}}</td>
+				</tr>
+			{{/each}}
+			</tbody>
+		</table>
+		</div>
+
 	</section>
 
 </article>
