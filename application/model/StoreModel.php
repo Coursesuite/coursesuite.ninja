@@ -16,12 +16,12 @@ class StoreModel
 		$model->Section = $sections;
 		$model->baseurl = $url;
 
-		if (Session::userIsLoggedIn()) {
+        if (Session::userIsLoggedIn()) {
 			// these are the app ids that a user has a current subscription
 			$model->SubscribedApps = SubscriptionModel::get_subscribed_app_ids_for_user(Session::CurrentUserId());
 
 			// admins get to see all store sections
-			if (Session::get("user_account_type") == 7) {
+			if (Session::userIsAdmin()) {
 				foreach ($sections as &$section) {
 					$section->visible = 1;
 				}
@@ -50,13 +50,6 @@ class StoreModel
 				$action = "";
 			}
 		}
-
-		//if (null !== Session::get("feedback_positive")) {
-		//	$model->Feedback->positive = Session::get("feedback_positive");
-		//}
-		//if (null !== Session::get("feedback_negative")) {
-		//	$model->Feedback->negative = Session::get("feedback_negative");
-		//}
 
 		switch ($action) {
 			case "validate":
@@ -105,7 +98,7 @@ class StoreModel
 		$model->FreeTrialDays = KeyStore::find("freeTrialDays")->get(3);
 		$model->scripts = ["//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"];
 
-		if (Session::currentUserId() > 0) {
+		if (Session::userIsLoggedIn()) {
 
 			// subscription model(s) for the current app/user (e.g. products that contain this app; may be one or more if they bought the app as well as a bundle containing the app)
 			$model->Subscriptions = SubscriptionModel::get_subscriptions_for_user_for_app(Session::CurrentUserId(), $app->app_id);
@@ -114,7 +107,7 @@ class StoreModel
 			$model->FastspringParams = "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
 
 			// page edit link for admins
-			if (Session::get("user_account_type") == 7) {
+			if (Session::userIsAdmin()) {
 				$model->editlink = $url . 'admin/editApps/' . $app->app_id . '/edit';
 			}
 		} else {
@@ -122,7 +115,7 @@ class StoreModel
 
 		}
 
-		$model->ajax = false; // true;
+		$model->ajax = true; // true;
 		$model->redirect = "store/info/$app_key";
 
 		return $model;

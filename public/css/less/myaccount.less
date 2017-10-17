@@ -4,19 +4,46 @@
 
 ============================================================================== */
 
-article.my-account {
-    padding-bottom: 25px;
-    > section.profile-display,
-    > section.purchase-history {
-        border: 1px solid #eee;
-        background-color: #fff;
-        box-shadow: 0 0 1px rgba(0,0,0,.2);
-        padding: 10px;
+article.my-account, article.my-api {
+    .standard-width();
+
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+
+    h1 {
+
+        text-align: center;
+        font-size: 48px;
+        font-family: 'Caveat';
+        color: #1b2a9c;
+        font-weight: 400;
+        margin: 25px 0;
+        text-shadow: 2px 2px 0 #fff, 3px 3px 1px rgba(0,0,0,.05);
     }
-    > section.profile-display form {
+
+    .boxed-container {
+        background-color: white;
+        box-shadow: 0 0 5px rgba(0,0,0,.1);
+        padding: 15px;
+    }
+
+    a {
+        color: blue;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+article.my-account {
+
+    form {
         > .row {
             display: flex;
-            margin-bottom: 25px;
+            &:not(:last-of-type) {
+                margin-bottom: 25px;
+            }
             > label {
                 min-width: 15em;
             }
@@ -32,49 +59,57 @@ article.my-account {
             }
         }
     }
-    > section.current-subscriptions {
-        div.outer-tile {
-            display: inline-block;
-            margin: 0 10px 10px 0;
-            background-color: #fff;
-            box-shadow: 0 0 3px rgba(0,0,0,.2);
-            padding: 10px;
-            width: 238px;
-            header {
-                font-weight: bold;
-                font-size: 16px;
+    div.outer-tile {
+        display: inline-block;
+        margin: 0 10px 10px 0;
+        background-color: #fff;
+        box-shadow: 0 0 3px rgba(0,0,0,.2);
+        padding: 10px;
+        width: 238px;
+        header {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+        img {
+            width: 100%;
+            max-height: 128px;
+        }
+        footer {
+            a {
+                display: block;
+                text-decoration: none;
                 text-align: center;
-            }
-            img {
-                width: 100%;
-                max-height: 128px;
-            }
-            footer {
-                a {
-                    display: block;
-                    text-decoration: none;
-                    text-align: center;
-                    &.unsub-button {
-                        color: #c36;
-                        font-size: 0.9rem;
+                &.unsub-button {
+                    padding: 5px;
+                    font-size: 0.8rem;
+                    color: #c36;
+                    border: 1px solid #c36;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    &:hover {
+                        background-color: #c36;
+                        color: #fff;
                     }
-                    &.launch-button {
-                        padding: 5px;
-                        font-size: 1.25rem;
-                        color: rgba(96,148,224,1);
-                        border: 1px solid rgba(96,148,224,.5);
-                        border-radius: 4px;
-                        font-weight: bold;
-                        margin-bottom: 10px;
-                        &:hover {
-                            background-color: rgba(96,148,224,.25);
-                        }
+                }
+                &.launch-button {
+                    padding: 5px;
+                    font-size: 1.25rem;
+                    color: rgba(96,148,224,1);
+                    border: 1px solid rgba(96,148,224,.5);
+                    border-radius: 4px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                    &:hover {
+                        background-color: rgba(96,148,224,.25);
                     }
                 }
             }
         }
     }
-    > section.purchase-history table {
+
+    #purchase-history table {
         width: 100%;
         th, td {
             padding: 10px 5px;

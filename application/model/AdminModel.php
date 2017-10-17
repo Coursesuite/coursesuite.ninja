@@ -142,14 +142,5 @@ class AdminModel
         return array(
             "user" => $users
         );
-/*
-    {{#each user}}
-    <tr>
-        <td>{{email}}</td>
-        <td>{{started}}</td>
-        <td>{{ends}}</td>
-        <td>{{product}}</td>
-        <td>{{#each launchlinks}}<a href="{{url}}" target="_blank">{{name}}</a> </td>
-*/
     }
 }

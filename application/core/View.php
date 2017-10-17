@@ -197,6 +197,9 @@ class View
                     $len = count($arg1);
                     return $len + $inc;
                 },
+                "concat" => function ($a, $b) {
+                    return $a . $b;
+                },
                 "add" => function ($arg1, $arg2) {
                     return (int) $arg1 + (int) $arg2;
                 },
@@ -259,6 +262,10 @@ class View
                     date_default_timezone_set('UTC');
                    return date("jS M Y h:ia", strtotime($arg1));
                 },
+                "tsdatetime" => function ($arg1) {
+                    date_default_timezone_set('UTC');
+                   return date("jS M Y h:ia", $arg1);
+               },
                 "cheapest" => function ($appId) {
                     $database = DatabaseFactory::getFactory()->getConnection();
                     $query = $database->prepare("select price from product p inner join app_tiers t on p.entity_id = t.id where p.entity = 'app_tiers' and t.app_id = :appid limit 1");
@@ -288,6 +295,16 @@ class View
                 );
             }
 
+            if (class_exists("AdminController")) {
+                $assoc["toolbar"] = Config::get("ADMIN_TOOLS");
+                $fn = explode('/',$filename);
+                $assoc["toolbar_page"] = array_pop($fn);
+                $partials = array(
+                    "admin_toolbar" => file_get_contents(Config::get('PATH_VIEW') . 'admin/toolbar.hbp'),
+                    "user_record" => file_get_contents(Config::get('PATH_VIEW') . 'admin/userrecord.hbp'),
+                );
+            }
+
             if (class_exists("BlogController")) {
                 $helper_functions[] = "Text::Paginator";
             }
@@ -297,10 +314,9 @@ class View
             $phpStr = LightnCandy::compile($template, array(
                 "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS,
                 "helpers" => $helper_functions,
-                "debug" => false,
+                "debug" => true,
                 "partials" => $partials,
             ));
-
             file_put_contents($precompiled, implode('', array('<', '?php', ' ', $phpStr, ' ', '?', '>'))); // so php tags are not recognised
         }
 

@@ -63,33 +63,7 @@ class SectionsModel extends Model
             $sql[] = "UPDATE store_sections SET sort = $order WHERE id = $id";
         }
         $query = $database->prepare(implode(";", $sql));
-//        print_r($query);
-        //exit;
         $query->execute();
     }
-/*
-public static function setStoreSection($model) {
 
-$database = DatabaseFactory::getFactory()->getConnection();
-
-$params["method_name"] = $methodName;
-$params["digest_user"] = $digestUser;
-for ($i = 0 ; $i < count($args) ; $i += 1) {
-$params["param" . $i] = $args[$i];
-}
-$sql = "INSERT INTO applog(" . implode(", ", array_keys($params)) . ") VALUES (";
-$modded = array();
-foreach ($params as $param => $value) {
-$modded[":$param"] = is_array($value) ? serialize($value) : $value;
-}
-unset($params);
-$sql .= implode(", ", array_keys($modded)) . ")";
-$query = $database->prepare($sql);
-$query->execute($modded);
-if ($query->rowCount() == 1) {
-return true;
-}
-
-}
- */
 }

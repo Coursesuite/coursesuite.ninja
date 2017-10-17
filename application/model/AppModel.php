@@ -142,8 +142,7 @@ class AppModel extends Model
 	public static function getAppsByStoreSection($section_id)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$admin = (Session::get("user_account_type") == 7);
-		$active = ($admin == true) ? "" : "AND a.active = 1";
+		$active = (Session::userIsAdmin()) ? "" : "AND a.active = 1";
 		$sql = "SELECT a.app_id, a.app_key, a.name, a.tagline, a.whatisit, a.icon, a.launch, a.active, a.status, a.auth_type, a.url, a.popular
 				FROM apps a INNER JOIN store_section_apps s ON a.app_id = s.app
 				WHERE s.section = :section

@@ -37,9 +37,9 @@ Hey, thanks for checking out our source code... maybe we can tell you what you'r
     <link href="https://fonts.googleapis.com/css?family=Caveat|Open+Sans|Open+Sans+Condensed:300" rel="stylesheet">
     <link  href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<?php if (Config::get("debug") === false) { ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mb.YTPlayer/3.0.12/jquery.mb.YTPlayer.min.js"></script>
     <link rel="stylesheet" href="<?php echo $baseurl; ?>css/jquery.mb.YTPlayer/jquery.mb.YTPlayer.min.css">
-<?php if (Config::get("debug") === false) { ?>
     <link rel="stylesheet" href="<?php echo $baseurl . APP_CSS; ?>">
 <?php } else { ?>
     <link rel="stylesheet/less" type="text/css" href="<?php echo $baseurl; ?>css/less/styles.less">
@@ -117,7 +117,7 @@ if ($blog_recent > 0) {
             <a href="https://guide.coursesuite.ninja/" target="_blank">User Guides</a>
             <a href="<?php echo $baseurl; ?>blog"<?php if (true===class_exists("BlogController")) { echo " class='selected'"; } ?>>Blog<?php echo $blog_badge; ?></a>
             <?php if (Session::userIsLoggedIn()) { ?>
-            <?php if (Session::get("user_account_type") == 7) : ?>
+            <?php if (Session::userIsAdmin()) : ?>
             <a href="<?php echo $baseurl; ?>admin/" class="admin-link <?php if (View::checkForActiveController($filename, "admin")) { echo 'active'; } ?>"><i class='cs-spanner'></i> Admin</a>
             <?php endif; ?>
             <a href="<?php echo $baseurl; ?>login/logout">Logout</a>
@@ -143,26 +143,17 @@ if ($blog_recent > 0) {
         }
         echo "<span class='my-services'>";
         if (UserModel::has_api(Session::CurrentUserId())) {
-            echo "<a href='${baseurl}me/api'>API</a>";
+            echo "<a href='${baseurl}me/api'";
+            if ($filename === "me/api") echo " class='selected'";
+            echo ">API</a>";
         }
 
         echo "<a href='${baseurl}me/'  class='my-account";
-        if ($this->class_controller_name === "MeController" || $this->class_controller_name === "LoginController") echo " selected";
+        if ($filename === "me/index" || $this->class_controller_name === "LoginController") echo " selected";
         echo "'>My Account</a>";
         echo "</span>";
         echo "</div></nav>";
      }
-
-    // $cc_logout = Session::get("concurrency_logout");
-    // if (isset($cc_logout) && !empty($cc_logout)) {
-    //     Session::remove("concurrency_logout");
-    //     if (!isset($this->SystemMessages)) $this->SystemMessages = array();
-    //     $this->SystemMessages[] = array(
-    // 	    "level" => 0,
-    // 	    "text" => $cc_logout,
-    // 	    "dismissable" => false
-    //     );
-    // }
 
     // if the user has any messages that they haven't acknowledged, render them here using some kind of template
     // this is an example only, it needs to know about the kind of message so it can add a class to the acknowledgement-item box

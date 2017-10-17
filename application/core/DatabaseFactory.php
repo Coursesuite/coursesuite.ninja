@@ -58,7 +58,7 @@ class DatabaseFactory
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,
                     //     PDO::ATTR_PERSISTENT => true, // at some point this will become useful, but when do we clean it up? http://www.php.net/manual/en/features.persistent-connections.php
                     PDO::ATTR_STRINGIFY_FETCHES => false, // http://stackoverflow.com/a/10455228/1238884
-                    //PDO::ATTR_EMULATE_PREPARES => false, // This stops PDO from adding single quotes around integer values. https://bugs.php.net/bug.php?id=44639, but also breaks logon somehow .. hmm
+                    // PDO::ATTR_EMULATE_PREPARES => false, // This stops PDO from adding single quotes around integer values. https://bugs.php.net/bug.php?id=44639, but also breaks logon somehow .. hmm
 
                 );
                 $this->database = new PDO(

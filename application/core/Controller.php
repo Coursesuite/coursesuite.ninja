@@ -8,32 +8,28 @@
  */
 class Controller
 {
-    /** @var View View The view object */
+
     public $View;
+    public $ControllerName;
     public $ActionName;
+    public $Method;
 
     /**
      * Construct the (base) controller. This happens when a real controller is constructed, like in
      * the constructor of IndexController when it says: parent::__construct();
      */
-    public function __construct($requires_session = true)
+    public function __construct($requires_session = true, $action_name = "")
     {
-        // always initialize a session
+        global $PAGE; // a place to store variables for the duration of this controller, such as logon from cookie, a part of the Application
+
         if ($requires_session) {
             Session::init();
-
-            // check session concurrency
-            // Auth::checkSessionConcurrency();
-
-            // user is not logged in but has remember-me-cookie ? then try to login with cookie ("remember me" feature)
-            if (!Session::userIsLoggedIn() and Request::cookie('remember_me')) {
-                header('location: ' . Config::get('URL') . 'login/loginWithCookie');
-            }
+            $PAGE = PageFactory::getFactory(Request::cookie('login'));
         }
-
-        // create a view object to be able to use it inside a controller, like $this->View->render();
-        // @param (optional): the name of the constructor class
+        $this->Method = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? "AJAX" : $_SERVER['REQUEST_METHOD'];
         $this->View = new View(get_class($this));
+        $this->ActionName = $action_name;
+        $this->ControllerName = strtolower(substr(get_class($this), 0, -10)); // LoginController -> login
     }
 
     public function requiresAuth($key = null) {

@@ -3,7 +3,7 @@
 class LoggingModel
 {
 
-    public static function systemLog($filter = "", $value = "")
+    public static function systemLog($filter = "", $value = "", $limit = 100, $order_by = "id", $order_dir = "desc")
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         $clause = "";
@@ -20,7 +20,7 @@ class LoggingModel
                 break;
 
         }
-        $sql = "SELECT method_name, digest_user, added, message, param0, param1, param2, param3 FROM applog $clause ORDER BY id DESC";
+        $sql = "SELECT method_name, digest_user, added, message, param0, param1, param2, param3 FROM applog $clause ORDER BY $order_by $order_dir LIMIT $limit";
         $query = $database->prepare($sql);
         $query->execute($params);
         return $query->fetchAll();
@@ -32,7 +32,7 @@ class LoggingModel
         $sql = "SELECT DISTINCT(digest_user) as digest_user FROM applog WHERE NOT (digest_user IS NULL OR digest_user = '')";
         $query = $database->prepare($sql);
         $query->execute();
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_COLUMN);
 
     }
 

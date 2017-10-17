@@ -33,34 +33,15 @@ class Application
     /** @var string Just the name of the controller's method, useful for checks inside the view ("where am I ?") */
     private $action_name;
 
-    // private $session;
-
-    public static function php_session()
-    {
-        global $session;
-        return $session;
-    }
+    protected $PAGE;
+    private $mem;
 
     /**
      * Start the application, analyze URL elements, call according controller/method or relocate to fallback location
      */
     public function __construct()
     {
-        // global $session;
-        $mysqli = DatabaseFactory::getFactory()->getMySqli();
-
-        // IF the request is coming from a validator-request (CURL call from an external site) then we DO NOT want a new session record
-        if (Environment::NinjaValidator()) {
-
-            // header_remove('Set-Cookie');
-
-        } else {
-
-            // over-ride php session handling by storing them in the database (not in /tmp); salt the hash using the standard salt (or, like, whatever)
-        //    $session = new Zebra_Session($mysqli, Config::get('HMAC_SALT'), 3600, true, false, 1, 100); // debugging: set timeout to 1 hour, 1% chance for gc
-            // print_r($session->get_settings());
-
-        }
+        $this->mem = memory_get_usage();
 
         // create array with URL parts in $url
         $this->splitUrl();
@@ -135,15 +116,8 @@ class Application
 
             // split URL
             $url = trim(Request::real_get('url'), '/'); // real_get replaces space with +, since $_GET urldecodes then converts plus to space automatically, which invalidates the base64 string
-
             $url = filter_var($url, FILTER_SANITIZE_URL);
             $url = explode('/', $url);
-
-            /*
-             * stupid hacks are stupid
-            $q = trim(Request::real_get('q')); // FORM GET creates a ?, so if we always use "q" for queries, we can hack it. Don't form get.
-            if (isset($q)) $url[] = $q;
-             */
 
             // put URL parts into according properties
             $this->controller_name = isset($url[0]) ? $url[0] : null;
@@ -175,5 +149,10 @@ class Application
 
         // rename controller name to real controller class/file name ("index" to "IndexController")
         $this->controller_name = ucwords($this->controller_name) . 'Controller';
+    }
+
+    function __destruct() {
+         // $used = round((memory_get_usage() - $this->mem) / 1024 / 1024, 2);
+         // echo "Memory used: $used M";
     }
 }

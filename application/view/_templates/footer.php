@@ -52,15 +52,20 @@ if (isset($this->scripts)) {
 		}
     }
 }
-    echo "<script src='{$baseurl}js/jquery.mb.YTPlayer/jquery.mb.YTPlayer.min.js'></script>" . PHP_EOL;
+	// if (Config::get("debug") === false) {
+	//     echo "<script src='{$baseurl}js/jquery.mb.YTPlayer/jquery.mb.YTPlayer.min.js'></script>" . PHP_EOL;
+	// }
 
     if (Config::get("debug") === true) {
 	echo "<script src='${baseurl}js/main.js'></script>" . PHP_EOL;
+	if (Session::userIsAdmin()) echo "<script src='${baseurl}js/admin.js'></script>" . PHP_EOL;
     } else {
 	echo "<script src='" . $baseurl . APP_JS . "'></script>" . PHP_EOL;
     }
-    echo "<script src='https://www.google.com/recaptcha/api.js?onload=renderGoogleInvisibleRecaptcha&render=explicit' async defer></script>" . PHP_EOL;
-    echo "<script id='dsq-count-scr' src='//coursesuite-ninja.disqus.com/count.js' async></script>";
+   // echo "<script src='https://www.google.com/recaptcha/api.js?onload=renderGoogleInvisibleRecaptcha&render=explicit' async defer></script>" . PHP_EOL;
+    if (class_exists("BlogController")) {
+    	echo "<script id='dsq-count-scr' src='//coursesuite-ninja.disqus.com/count.js' async></script>";
+	}
 
         $end = microtime(true);
         $timestamp = ($end - $start);

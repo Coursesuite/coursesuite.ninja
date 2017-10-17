@@ -200,7 +200,7 @@ function copyToClipboard(element) {
 
 })(window, jQuery);
 
-  var ajaxSubmit = function (frm) {
+var ajaxSubmit = function (frm) {
 
 	var $this = $(frm);
 	$feedback = $("#form-feedback", $this).html("").removeAttr("class");
@@ -263,73 +263,53 @@ function copyToClipboard(element) {
     }
   };
 
+function bindAjaxSubmits() {
 
+	$("form[method='ajax']").on("submit", function(e) {
+		var $this = $(this), $feedback = $("div.output", $this), $container = $this.parent(), $submit = $("[type='submit']", $this);
+		$feedback.empty();
+		console.log("submit",$submit);
+		$submit.addClass("submitting");
+		$.post($this.attr("action"), $this.serialize(), function (result) {
+
+			$submit.removeClass("submitting");
+
+			if (result.html) {
+				$container.html(result.html);
+				bindAjaxSubmits();
+				return;
+			}
+
+			// update csrf if present
+			if (result.csrf && $("input[name='csrf_token']", $this).length) {
+				$("input[name='csrf_token']", $this).val(result.csrf);
+			}
+			// update feedback if present
+			if (result.message && $feedback) {
+				$feedback.addClass("row").append($("<label></label>"));
+				$("<output>").addClass(result.className).val(result.message).appendTo($feedback);
+			}
+
+			if (result.redirect) {
+				location.href = result.redirect;
+			}
+
+			if (result.reload) {
+				location.reload(true); // true means force recache
+			}
+		});
+		return false;
+	});
+}
 
 $(function () {
+
+	bindAjaxSubmits();
 
 	$("#store_index").on("click", ".tile.app > figure", function (e) {
 		$(this).closest(".tile").find("a:first").get(0).click();
 	});
 
-	$("textarea[data-markdown]").each(function (index, el) {
-		el.simplemde = new SimpleMDE({
-			element: el,
-			spellChecker: false,
-			placeholder: "Markdown / HTML is allowed.\nDrag images onto this editor to upload & link them\nTo nest markdown inside html, add attribute markdown=\"1\" of tags containing markdown.",
-		});
-		inlineAttachment.editors.codemirror4.attach(el.simplemde.codemirror, {
-			// uploadUrl: "/admin/uploadMDE/"
-			uploadUrl: "https://api.imgur.com/3/image",
-			extraHeaders: {
-				Authorization: "Client-ID 662ce7a8f142394",
-			},
-			extraParams: {
-				name: "Your image title",
-				description: "Dragged onto editor using inline-attachment"
-			},
-			uploadFieldName: "image",
-			onFileUploadResponse: function(xhr) {
-				// "this" is now the inlineAttachment instance, not a XHR
-				var result = JSON.parse(xhr.responseText),
-					id = result.data.id,
-					ext = result.data.type.split("/")[1],
-					title = result.data.title || "Untitled",
-					href = "https://i.imgur.com/" + id + "." + ext,
-					src = "http://i.imgur.com/" + id + "m." + ext,
-					newValue = "[![" + title + "](" + src + ")](" + href + ")";
-				var text = this.editor.getValue().replace(this.lastValue, newValue);
-				this.editor.setValue(text);
-
-				// prevent internal upload
-				return false;
-			}
-		});
-	}),
-
-	$("[data-sortable]").each(function (el, index) {
-		Sortable.create(el, {
-			handle: ".cs-air",
-			onEnd: function (evt) {
-				console.log(evt, evt.oldIndex, evt.newIndex);
-				if (evt.from.getAttribute("data-table")) {
-					$.post("/admin/editSections/0/order", {
-						"table": evt.from.getAttribute("data-table"),
-						"field": evt.from.getAttribute("data-field"),
-						"order": function () {
-							var ids = [];
-							$(evt.item).parent().children().each(function(index,el) {
-								ids[ids.length] = el.getAttribute("data-id");
-							});
-							return ids;
-						}
-					}, function (result) {
-						console.log(result);
-					});
-				}
-			},
-			animation: 350
-		});
-	});
 
 	$("#store_index .timeline-heading h4").on("click", function (e) {
 		var subject = $(this).text();
@@ -338,23 +318,7 @@ $(function () {
 		document.querySelector("#contact-form").scrollIntoView();
 	})
 
-	$("input[data-action='previewEditor']").on("click", function (e) {
-		e.preventDefault();
-		var html = $("textarea#content").val(),
-			$body = $("body");
-		$body.removeClass("no-scroll");
-		$("#preview").remove();
-		document.querySelector("body").scrollTop = 0;
-		$("<div id='preview'><div class='content'><iframe src='about:blank' width='100%' height='100%' frameborder='0' id='editorPreview'></iframe></div>").on("click", function (e) {
-			$("#preview").addClass("closing");
-			$body.removeClass("no-scroll");
-			setTimeout(function() { $("#preview").remove() }, 250);
-		}).appendTo($body.addClass("no-scroll"));
-		var doc = document.getElementById("editorPreview").contentWindow.document;
-		doc.open();
-		doc.write(html);
-		doc.close();
-	});
+
 
 	$("a[href='#toggle-once']").each(function (index, el) {
 		$(el).next().hide();
@@ -365,18 +329,18 @@ $(function () {
 	});
 
 	// make store info page bundle tabs
-	$("[data-interaction='tabs']").on("click", "a[data-action='select-tab']", function (e) {
-		e.preventDefault();
-		var $this = $(this);
-		$this.addClass("active").siblings("a").removeClass("active");
-		$($this.attr("href")).addClass("active").siblings("div").removeClass("active");
-	});
+	// $("[data-interaction='tabs']").on("click", "a[data-action='select-tab']", function (e) {
+	// 	e.preventDefault();
+	// 	var $this = $(this);
+	// 	$this.addClass("active").siblings("a").removeClass("active");
+	// 	$($this.attr("href")).addClass("active").siblings("div").removeClass("active");
+	// });
 
-	// ajax load the contact form
-	$("#contact_form_placeholder").on("click", "a", function (e) {
-		e.preventDefault();
-		$("#contact_form_placeholder").load("/store/contactForm");
-	});
+	// // ajax load the contact form
+	// $("#contact_form_placeholder").on("click", "a", function (e) {
+	// 	e.preventDefault();
+	// 	$("#contact_form_placeholder").load("/store/contactForm");
+	// });
 
 	$("a[data-action='dismiss-message']").on("click", function(e) {
 		var $this = $(this);
@@ -388,47 +352,9 @@ $(function () {
 		});
 	});
 
-	if (typeof flatpickr === "function") {
-		flatpickr("input.flatpickr", {
-			onOpen: function () {
-				this.hasBeenShown = true;
-			},
-			onChange: function (d) {
-				if (this.hasBeenShown) {
-					document.location = document.location.origin + '/admin/showLog/date/'+escape(d.toISOString().slice(0,10));
-				}
-			}
-		});
-		flatpickr("input[type='datetime']");
-
-	}
-
-	$("a[data-action='hover-thumb']")
-		.hover(function(e) {
-			var img = $("<img>").attr({
-				src: this.href,
-				id: "hoverThumb"
-			}).css({
-				"position": "absolute",
-				"top": (e.pageY+10) + "px", // fixed position then window.pageYOffset || document.documentElement.scrollTop
-				"left": (e.pageX+10) + "px",
-				// "max-width": "50%",
-				"box-shadow": "0 0 25px rgba(0,0,0,.25)"
-			});
-			$("body").append(img);
-		}, function () {
-			$("#hoverThumb").remove();
-		})
-		.mousemove(function(e) {
-			$("#hoverThumb").css({
-				"top": (e.pageY+10) + "px",
-				"left": (e.pageX+10) + "px",
-			});
-		});
-
 	// youtube background video, but delay it a little
 	setTimeout(function() {
 		if ($("#bgndVideo").length) $("#bgndVideo").YTPlayer(); // .YTPApplyFilter('invert',100);
-	}, 500);
+	}, 150);
 });
 

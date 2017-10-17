@@ -8,17 +8,18 @@ class BlogController extends Controller
 		parent::__construct();
 	}
 
-	public function index($entry = 0, $page = 0, $action = "")
+	public function index($entry = 0, $page_id = 0, $action = "")
 	{
-		$page = intval($page);
+
+		$page_id = intval($page_id);
 		$entry = intval($entry);
 		$url = Config::get("URL");
 
-		$blog = new BlogModel($entry, $page);
+		$blog = new BlogModel($entry, $page_id);
 		$model = $blog->get_model();
 
 		// admins can edit blog posts
-		if (Session::userIsLoggedIn() && Session::get("user_account_type") == 7) {
+		if (Session::userIsAdmin()) {
 			switch ($action) {
 				case "create":
 					$blog->make();
@@ -66,7 +67,7 @@ class BlogController extends Controller
 
 		$model["baseurl"] = $url;
 		$model["Pagination"] = array(
-			"page" => $page,
+			"page" => $page_id,
 			"total" => BlogModel::entry_count(),
 			"size" => 10
 		);

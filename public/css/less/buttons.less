@@ -127,4 +127,30 @@
         }
 
     }
+
+}
+
+.ajax-submit {
+    button[type='submit'] {
+        position: relative;
+        transition: color .2s;
+        outline: none;
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0px;
+            height: 100%;
+            background-color: #fff;
+            transition: width 0.4s cubic-bezier(0.42, 0, 0.58, 1);
+        }
+
+        &.submitting {
+            color: #333;
+            &:before {
+                width: 100%;
+            }
+        }
+    }
 }

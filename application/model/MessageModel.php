@@ -32,12 +32,9 @@ class MessageModel extends Model
 
 	public static function getMyUnreadMessages()
 	{
-		$user_id = Session::CurrentUserId();
-		if ($user_id < 1) {
-			return;
+		if (Session::userIsLoggedIn()) {
+			return self::getUnreadMessagesByUserId(Session::CurrentUserId());
 		}
-
-		return self::getUnreadMessagesByUserId($user_id);
 	}
 
 	public static function getUnreadMessagesByUserId($user_id)
@@ -53,39 +50,38 @@ class MessageModel extends Model
 						where user_id = :user_id)
 				ORDER BY created";
 		$query = $database->prepare($sql);
-		$query->execute(array(':user_id' => Session::get('user_id')));
+		$query->execute(array(':user_id' => $user_id));
 		return $query->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	public static function markAsRead($message_id)
 	{
-		$user_id = Session::CurrentUserId();
-		if ($user_id < 1) {
-			return;
-		}
+		if (Session::userIsLoggedIn()) {
+			$database = DatabaseFactory::getFactory()->getConnection();
+			$sql = "SELECT COUNT(1) FROM message WHERE message_id = :mid";
+			$query = $database->prepare($sql);
+			$query->execute(array(
+				":mid" => $message_id,
+			));
+			if ($query->fetchColumn() < 1) {
+				return;
+			}
 
-		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT COUNT(1) FROM message WHERE message_id = :mid";
-		$query = $database->prepare($sql);
-		$query->execute(array(
-			":mid" => $message_id,
-		));
-		if ($query->fetchColumn() < 1) {
-			return;
+			$sql = "INSERT INTO messageread (message_id,user_id) VALUES (:msg,:usr)";
+			$query = $database->prepare($sql);
+			return $query->execute(array(
+				":msg" => $message_id,
+				":usr" => Session::CurrentUserId(),
+			));
 		}
-
-		$sql = "INSERT INTO messageread (message_id,user_id) VALUES (:msg,:usr)";
-		$query = $database->prepare($sql);
-		return $query->execute(array(
-			":msg" => $message_id,
-			":usr" => $user_id,
-		));
 	}
 
 	public static function notify_user($message, $level = MESSAGE_LEVEL_HAPPY, $user_id = 0, $expires = 0, $single_instance = true)
 	{
-		if (intval($user_id) < 1) {
-			$user_id = Session::get('user_id');
+
+
+		if ($user_id < 1) {
+			$user_id = Session::CurrentUserId();
 		}
 
 		if ($single_instance === true) {

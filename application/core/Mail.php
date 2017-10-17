@@ -142,12 +142,6 @@ class Mail
         if (Config::get('EMAIL_USED_MAILER') == "log") {
             LoggingModel::logInternal("Send email", $user_email, $from_email, $from_name, $subject, $body);
             return true;
-            /*
-        ob_start();
-        var_dump($user_email, $from_email, $from_name, $subject, $body);
-        $result = ob_get_clean();
-        return error_log($result);
-         */
         }
     }
 
@@ -170,46 +164,12 @@ class Mail
 
     }
 
-    /*
-        we have a few standard emails, so lets just be able to call them as methods to ensure standards
-    */
-    public function sendPasswordReset($email, $link) {
-        $header = "Reset your CourseSuite Password";
-        $body = "Hi!\nSomeone (probably you) wants to reset your CourseSuite password.\nWe thought we better confirm this first, so if that's cool with you, click on the link below to start the process.";
-        return $this->emailUser($email, $header, $body, $link);
+    public function sendOneTimePassword($email, $password, $link, $tail = '') {
+        $header = "Your Coursesuite one-time password";
+        $body = Text::compileHtml(Text::get('EMAIL_ONE_TIME_PASSWORD'), array("link" => $link, "password" => $password));
+        return $this->emailUser($email, $header, $body, $tail);
     }
 
-    public function sendPassword($email, $password, $link) {
-        $header = "Your CourseSuite Password";
-        $body = "Hi!\nWe have generated a new password for you, so keep it safe.\nAnyway, click on the link below to open the site, and enter this as your password:\n\n`$password`\n\nIt's case-sensitive, by the way. Ok, I'm done.";
-        return $this->emailUser($email, $header, $body, $link);
-    }
-
-    public function sendVerificationAndPassword($email, $password, $link) {
-        $header = "Verify your CourseSuite account";
-        $body = "Hi!\nSomeone (probably you) is using this email address for their CourseSuite account! Great stuff, but we just need to make sure that it's a valid email address and that it's something you really want.\nOh yeah, you'll need a password to log in, so use this one:\n\n`$password`\n\nLastly, as part of registration we're going to pop you onto our MailChimp list - you won't neccesarily get any mail from us, and you can always manage your subscription preferences through our site.\n\nSo if it's good with you, click on the link below to verify and get started.";
-        return $this->emailUser($email, $header, $body, $link);
-    }
-
-    public function resendVerification($email, $link)
-    {
-        $header = "Verify your CourseSuite account";
-        $body = "Hello again,\nWe previously tried to send you an account verification link but we guess it got lost or something went wrong with it. It's ok, since this one seems to have found you. Please click on the link below to verify the account.\nBy the way, if you've forgotten your password (or never received it) you'll have to reset it once you are verified (we don't know your password either).";
-        return $this->emailUser($email, $header, $body, $link);
-    }
-
-    public function sendGoodbye($email) {
-        $header = "CourseSuite account closed";
-        $body = "Oh ;-(\nWe're sorry to see you go, but we wanted to let you know that your CourseSuite account has now been deleted.\nWell, good-bye!";
-        return $this->emailUser($email, $header, $body);
-    }
-
-    /**
-     * The different mail sending methods write errors to the error property $this->error,
-     * this method simply returns this error / error array.
-     *
-     * @return mixed
-     */
     public function getError()
     {
         return $this->error;

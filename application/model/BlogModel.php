@@ -49,9 +49,7 @@ class BlogModel extends Model
 		$start = ($page * $pagesize);
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT * FROM " . self::TABLE_NAME . " WHERE 1=1";
-		if (Session::userIsLoggedIn() && Session::get("user_account_type") == 7) {
-			//ok
-		} else {
+        if (!Session::userIsAdmin()) {
 			$sql .= " AND published=1";
 		}
 		$sql .= " ORDER BY entry_date DESC LIMIT :page, :pagesize";
@@ -78,9 +76,7 @@ class BlogModel extends Model
 	public static function entry_count() {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT count(1) FROM " . self::TABLE_NAME;
-		if (Session::userIsLoggedIn() && Session::get("user_account_type") == 7) {
-			//ok
-		} else {
+        if (!Session::userIsAdmin()) {
 			$sql .= " WHERE published=1";
 		}
 		$query = $database->prepare($sql);
