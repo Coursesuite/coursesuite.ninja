@@ -484,33 +484,33 @@ class UserModel
     }
 
     // system task to check all trial users and remove their subscription if they have expired
-    public static function trialUserExpire()
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->query("select count(1) from systasks where running=0 and task='trialUserExpire' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
-        if (intval($query->fetchColumn()) == 1) {
-            $database->query("update systasks set running=1 where task='trialUserExpire'");
-            UserModel::updateTrialUsers();
-        }
-        $database->query("update systasks set running=0, lastrun=CURRENT_TIMESTAMP where task='trialUserExpire'");
-    }
+    // public static function trialUserExpire()
+    // {
+    //     $database = DatabaseFactory::getFactory()->getConnection();
+    //     $query = $database->query("select count(1) from systasks where running=0 and task='trialUserExpire' and lastrun < (CURRENT_TIMESTAMP - INTERVAL 1 DAY)");
+    //     if (intval($query->fetchColumn()) == 1) {
+    //         $database->query("update systasks set running=1 where task='trialUserExpire'");
+    //         UserModel::updateTrialUsers();
+    //     }
+    //     $database->query("update systasks set running=0, lastrun=CURRENT_TIMESTAMP where task='trialUserExpire'");
+    // }
 
-    public static function updateTrialUsers()
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $sql = "SELECT subscription_id, user_id, endDate
-            FROM subscriptions
-            WHERE user_id IN (SELECT user_id FROM users WHERE user_account_type = :type)";
-        $query = $database->prepare($sql);
-        $query->execute(array(":type" => USER_TYPE_TRIAL));
-        $trialUsers = $query->fetchAll();
-        foreach ($trialUsers as $sub) {
-            if (date_diff(date('Y-m-d'), $sub->endDate) < 0) {
-                SubscriptionModel::removeSubscriptionFromId($sub->subscription_id);
-                UserRoleModel::changeRoleById($sub->user_id, USER_TYPE_STANDARD); //change state to something other than 1 maybe?
-            }
-        }
-    }
+    // public static function updateTrialUsers()
+    // {
+    //     $database = DatabaseFactory::getFactory()->getConnection();
+    //     $sql = "SELECT subscription_id, user_id, endDate
+    //         FROM subscriptions
+    //         WHERE user_id IN (SELECT user_id FROM users WHERE user_account_type = :type)";
+    //     $query = $database->prepare($sql);
+    //     $query->execute(array(":type" => USER_TYPE_TRIAL));
+    //     $trialUsers = $query->fetchAll();
+    //     foreach ($trialUsers as $sub) {
+    //         if (date_diff(date('Y-m-d'), $sub->endDate) < 0) {
+    //             SubscriptionModel::removeSubscriptionFromId($sub->subscription_id);
+    //             UserRoleModel::changeRoleById($sub->user_id, USER_TYPE_STANDARD); //change state to something other than 1 maybe?
+    //         }
+    //     }
+    // }
 
     /**
      * Returns whether the user can get a free trial
@@ -521,19 +521,19 @@ class UserModel
      *
      */
 
-    public static function getTrialAvailability($user_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->prepare("SELECT user_free_trial_available FROM users WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(":user_id" => intval($user_id)));
-        $result = $query->fetch();
-        //return $result->user_free_trial_available == 1 ? true : false;
-        if ($result->user_free_trial_available == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // public static function getTrialAvailability($user_id)
+    // {
+    //     $database = DatabaseFactory::getFactory()->getConnection();
+    //     $query = $database->prepare("SELECT user_free_trial_available FROM users WHERE user_id = :user_id LIMIT 1");
+    //     $query->execute(array(":user_id" => intval($user_id)));
+    //     $result = $query->fetch();
+    //     //return $result->user_free_trial_available == 1 ? true : false;
+    //     if ($result->user_free_trial_available == 1) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     /**
      * Stops the user from activating a free trial.
@@ -542,12 +542,12 @@ class UserModel
      *
      */
 
-    public static function setTrialUnavailable($user_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->prepare("UPDATE users SET user_free_trial_available = 0 WHERE user_id = :user_id");
-        $query->execute(array(":user_id" => $user_id));
-    }
+    // public static function setTrialUnavailable($user_id)
+    // {
+    //     $database = DatabaseFactory::getFactory()->getConnection();
+    //     $query = $database->prepare("UPDATE users SET user_free_trial_available = 0 WHERE user_id = :user_id");
+    //     $query->execute(array(":user_id" => $user_id));
+    // }
 
     public static function getUserNameById($user_id)
     {

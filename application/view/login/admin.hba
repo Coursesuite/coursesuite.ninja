@@ -1,0 +1,28 @@
+<article class="admin-logon">
+
+	<header class="common-header">
+		<h1>This area requires a password</h1>
+	</header>
+
+	<section class="direct-login standard-width">
+		<div>
+			<form method="post" action="{{baseurl}}login/admin" name="authenticate">
+				<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+				<div class="row">
+					<label for="password">Enter the password:</label>
+					<input type="password" name="password" id="password" required="required">
+				</div>
+				{{#if feedback}}
+				<div class="row">
+					<label></label>
+					<output>{{feedback}}</output>
+				</div>
+				{{/if}}
+				<div class="row">
+					<label></label>
+					<input type="submit" value="Log in" id="form-submit-button">
+				</div>
+			</form>
+		</div>
+	</section>
+</article>

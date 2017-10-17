@@ -103,6 +103,8 @@ return array(
     "EMAIL_VERIFICATION_CONTENT" => "Please click on this link to activate your account: ",
     "EMAIL_TRIAL_VERIFICATION_CONTENT" => "Thank you for registering for a trial account. Click the link to activate your 14 day trial: ",
 
+    "EMAIL_ONE_TIME_PASSWORD" => "Hi!\n\nSomeone (probably you) wants to <a href='{{link}}'>log on to CourseSuite</a> with this email address. Go back to your browser window and enter the following password:\n\n#{{password}}\n\nNote: this password can only be used once - don't save it! You will remain logged in until you press Logout. Logging on to our service indicates that you have read and accept our <a href='" . Config::get('URL') . "/content/terms'>Terms and Conditions</a>.",
+
     "TIER_MATRIX_HEADER" => "<h4>One subscription <i class='cs-loader cs-super'></i>.</h4>
 							 <h3>Multiple products.</h3>",
     "TIER_MATRIX_CAVEATS" => "<div class='fine-print'>
@@ -140,7 +142,7 @@ return array(
     "CONTACT_FORM_OK" => "Your message has been sent! Thanks for your interest.",
     "CONTACT_FORM_SPAM" => "I have always wanted to meet a robot!",
 
-    "REGISTRATION_DOMAIN_BLACKLISTED" => "Sorry, this domain has been blacklisted. Please email info@coursesuite.com.au to resolve this.",
+    "REGISTRATION_DOMAIN_BLACKLISTED" => "Sorry, this email domain has been blacklisted due to repeat fraudulent or abusive behaviour and cannot be used.",
 
     "FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION" => "Please check your NEW email address for a verification email.",
     "FEEDBACK_USER_PASSWORD_RESET_REQUEST" => "Please check your current email address for a link to reset your password.",

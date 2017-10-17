@@ -57,7 +57,7 @@ return array(
 
     'EMAIL_USED_MAILER' => 'phpmailer',
     'EMAIL_USE_SMTP' => false,
-    'EMAIL_SMTP_HOST' => 'mail.coursesuite.hosting24.com.au',
+    'EMAIL_SMTP_HOST' => 'mail.coursesuite.com.au',
     'EMAIL_SMTP_AUTH' => true,
     'EMAIL_SMTP_USERNAME' => 'no.user', // 'no.user',
     'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
@@ -102,4 +102,7 @@ return array(
     'MAILCHIMP_LIST_ID' => '08344979e7',
     'MAILCHIMP_INTEREST_ID' => 'd3a65e22a1',
     'FORCE_HANDLEBARS_COMPILATION' => false, // set to true to force recompilation of handlebars templates on the fly
+
+    'ADMIN_ACCOUNT_LEVEL' => 7,
+    'ADMIN_ACCOUNT_EMAIL' => '%@coursesuite.com.au',
 );
