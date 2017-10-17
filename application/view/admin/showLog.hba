@@ -1,0 +1,51 @@
+<article class="system-log admin-tools">
+    <section class='standard-width'>
+
+    <header class="admin-header">
+        {{> admin_toolbar}}
+    </header>
+
+    <div class="tabs">
+    	{{#each digest_users}}
+    	{{dump this.digest_user.0}}
+        <a href="/admin/showLog/user/{{.}}"{{#equals ../filter_value .}} class="active"{{/equals}}>{{.}}</a>
+        {{/each}}
+    </div>
+
+	<form>
+		<div class="field-row">
+			<label>Order by:</label>
+			<select onchange="document.location=this.value">
+				<optgroup label="Descending">
+					{{#each fields}}<option value="/admin/showLog/user/{{../filter_value}}/100/{{.}}/desc/"{{#equals "desc" ../order_dir}}{{#equals . ../order_by}} selected{{/equals}}{{/equals}}>{{.}}</option>{{/each}}
+				</optgroup>
+				<optgroup label="Ascending">
+					{{#each fields}}<option value="/admin/showLog/user/{{../filter_value}}/100/{{.}}/"{{#not "desc" ../order_dir}}{{#equals . ../order_by}} selected{{/equals}}{{/not}}>{{.}}</option>{{/each}}
+				</optgroup>
+			</select>
+		</div>
+	</form>
+
+	</section>
+
+	<table>
+		<thead>
+			<tr><th>method</th><th>digest user</th><th>date</th><th>message</th><th>param0</th><th>param1</th><th>param2</th><th>param3</th></tr>
+		</thead>
+		<tbody>
+		{{#each syslog}}
+			<tr>
+				<td>{{method_name}}</td>
+				<td>{{digest_user}}</td>
+				<td>{{added}}</td>
+				<td>{{message}}</td>
+				<td class="pre">{{param0}}</td>
+				<td class="pre">{{param1}}</td>
+				<td class="pre">{{param2}}</td>
+				<td class="pre">{{param3}}</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+
+</article>

@@ -1,0 +1,9 @@
+<article class="system-index admin-tools">
+    <section class='standard-width'>
+
+    <header class="admin-header">
+        {{> admin_toolbar}}
+    </header>
+
+    </section>
+</article>

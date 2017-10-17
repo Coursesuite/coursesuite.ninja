@@ -1,0 +1,11 @@
+<tr>
+	<td>{{#if impersonate}}<a href="/login/impersonate/{{impersonate}}" title="Click to log on as this user">{{user_id}}</a>{{else}}{{user_id}}{{/if}}</td>
+	<td>{{user_email}}</td>
+	<td>{{tsdatetime user_last_login_timestamp}}</td>
+	<td>{{user_logon_count}}</td>
+	<td>{{last_browser}}</th>
+	<td>{{subscription_status}}</td>
+	<td>{{subscription_starts}}</td>
+	<td>{{subscription_ends}}</td>
+	<td>{{order_id}}</td>
+</tr>

@@ -1,0 +1,99 @@
+<article class="edit-apps admin-tools">
+    <section class='standard-width'>
+
+    <header class="admin-header">
+        {{> admin_toolbar}}
+    </header>
+
+	{{#if action}}
+		<header class="section-header">
+			<h1>Editing {{#if data.app_key}}"{{data.app_key}}". <a href="{{baseurl}}store/info/{{data.app_key}}" target="_preview"><i class="cs-eye"></i> Preview</a>{{else}}record {{id}}{{/if}}.</h1>
+
+		</header>
+
+		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/save">
+		{{#with data}}
+			<div><label for="app_key">App Key:</label> <input type="text" id="app_key" name="app_key" value="{{app_key}}"></div>
+			<div><label for="name">Name:</label> <input type="text" id="name" name="name" value="{{name}}"></div>
+			<div><label for="tagline">tagline:</label> <input type="text" id="tagline" name="tagline" value="{{tagline}}"></div>
+			<div><label for="whatisit">what is it:</label> <input type="text" id="whatisit" name="whatisit" value="{{whatisit}}"></div>
+			<div><label for="icon">icon:</label> <input type="text" id="icon" name="icon" value="{{icon}}"></div>
+			<div><label for="url">domain url:</label> <input type="text" id="url" name="url" value="{{url}}"></div>
+			<div><label for="launch">launch url:</label> <input type="text" id="launch" name="launch" value="{{launch}}"></div>
+			<div><label for="auth_type">Auth type:</label> <select id="auth_type" name="auth_type">
+				<option value="0"{{#equals "0" auth_type}} selected{{/equals}}>Integrated</option>
+				<option value="1"{{#equals "1" auth_type}} selected{{/equals}}>None</option>
+				</select>
+			</div>
+			<div><span>It is:</span>
+				<input type="radio" name="active" value="1" {{#equals "1" active}} checked{{/equals}} id="y"><label for="y">Visible</label>
+				<input type="radio" name="active" value="0" {{#equals "0" active}} checked{{/equals}} id="n"><label for="n">Hidden</label>
+			</div>
+			<div><span>Popular:</span>{{!-- http://www.cssportal.com/css-ribbon-generator/ --}}
+				<input type="radio" name="popular" value="1" {{#equals "1" popular}} checked{{/equals}} id="py"><label for="py">Yep</label>
+				<input type="radio" name="popular" value="0" {{#equals "0" popular}} checked{{/equals}} id="pn"><label for="pn">Nope</label>
+			</div>
+			<div><label for="description">Description</label> <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{description}}</textarea></div></div>
+
+			<h4>Slide data</h4>
+			<div><label for="media">JSON</label> <textarea id="media" name="media" rows=10 cols=80>{{jsonformat media}}</textarea></div>
+
+			<h4>SEO (Metadata)</h4>
+			<div><b>Hot Tip!</b> Analyse your text for keywords and readability at &nbsp;<a href="http://textalyser.net/" target="_blank">textalyser.net</a>.</div>
+			<div><label for="meta_title">browser title:</label> <input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
+			<div><label for="meta_description">descriptor:</label> <input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
+			<div><label for="meta_keywords">keywords:</label> <input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>
+
+		{{/with}}
+
+			<h4>Tier Info</h4>
+			<p>Blank out the names you don't want to delete that tier; fill in the last tier row then save to add another row.</p>
+			{{#each AppTiers}}
+				<input type="hidden" name="AppTiers[{{@index}}][id]" value="{{id}}">
+				<div>
+				        <label for="tier_{{@index}}_name">Tier {{add @index 1}} name:</label> <input type="text" id="tier_{{@index}}_name" name="AppTiers[{{@index}}][name]" value="{{name}}" placeholder="Enter tier name, or leave blank to remove this entry">
+				        <label for="tier_{{@index}}_level">Tier {{add @index 1}} level:</label> <input type="number" min="1" max="99" step="1" id="tier_{{@index}}_level" name="AppTiers[{{@index}}][level]" value="{{tier_level}}" placeholder="1">
+				        {{!-- <label for="tier_{{@index}}_price">Tier {{add @index 1}} price:</label> $<input type="number" min="0" max="99999" step="0.01" size="5" id="tier_{{@index}}_price" name="AppTiers[{{@index}}][price]" value="{{price}}"> --}}
+				</div>
+				<div class="short-editor"><label for="tier_{{@index}}_desc">Tier {{add @index 1}} description</label> <div><textarea id="tier_{{@index}}_desc" name="AppTiers[{{@index}}][desc]" rows="5" cols="80" data-markdown="true">{{description}}</textarea></div></div>
+			{{/each}}
+			<input type="hidden" name="AppTiers[{{length AppTiers 1}}][id]" value="-1">
+			<div>
+			        <label for="tier_{{length AppTiers 1}}_name">Tier {{length AppTiers 1}} name:</label> <input type="text" id="tier_{{length AppTiers 1}}_name" name="AppTiers[{{length AppTiers 1}}][name]" value="{{name}}" placeholder="Enter a name for your new tier">
+			        <label for="tier_{{length AppTiers 1}}_level">Tier {{length AppTiers 1}} level:</label> <input type="number" min="1" max="99" step="1" id="tier_{{length AppTiers 1}}_level" name="AppTiers[{{length AppTiers 1}}][level]" value="{{length AppTiers 1}}" placeholder="1">
+			        {{!-- <label for="tier_{{length AppTiers 1}}_price">Tier {{length AppTiers 1}} price:</label> $<input type="number" min="0" max="99999" step="0.01" size="5" id="tier_{{length AppTiers 1}}_price" name="AppTiers[{{length AppTiers 1}}][price]" value="{{price}}"> --}}
+			</div>
+			<div class="short-editor"><label for="tier_{{length AppTiers 1}}_desc">Tier {{tier_level}} description</label> <div><textarea id="tier_{{length AppTiers 1}}_desc" name="AppTiers[{{length AppTiers 1}}][desc]" rows="5" cols="80" data-markdown="true">{{description}}</textarea></div></div>
+
+
+			<div><span class="spacer"></span><input type="submit" value="Save" class="button button-orange"></div>
+		</form>
+		{{#gte id 1}}
+		<h4>Media file management</h4>
+		<p>Push the bin to immediately delete a file. Mouse over the eye icon preview that file. Copy the code block to use it in markdown.</p>
+		<ul class="media-select">
+			{{#unless files}}<li>No media found.</li>{{/unless}}
+			{{#each files}}<li><a href="{{../baseurl}}admin/editApps/{{../id}}/delete/{{.}}" title="Delete file now" class="inline-delete"><i class="cs-trash"></i></a>
+								<a href="{{../baseurl}}img/apps/{{../data.app_key}}/{{.}}" data-action="hover-thumb" target="_blank"><i class='cs-eye'></i></a>
+								<code>![image](/img/apps/{{../data.app_key}}/{{.}})</code></li>{{/each}}
+		</ul>
+		<form method="post" action="{{baseurl}}admin/editApps/{{id}}/upload" enctype="multipart/form-data">
+		    <div><label>Specify URL:</label> <input type="text" name="url" id="url" placeholder="E.g. youtube url"></div>
+		    <div>- or -</div>
+		    <div><label>Upload media:</label> <input type="file" name="imageUpload" id="imageUpload"></div>
+		    <div><label>Make image thumbs?</label> <input type="checkbox" value="yes" name="autothumb" id="autoThumb" checked></div>
+		    <div><label>Slideshow caption:</label> <input type="text" name="caption" id="caption" placeholder="short caption for media"></div>
+		    <div><label>Add to Slideshow?</label> <input type="checkbox" value="yes" name="addslide" id="addSlide" checked></div>
+		    <div><span class="spacer"></span><input type="submit" value="Upload" name="submit" class="button"></div>
+		</form>
+		{{/gte}}
+	{{else}}
+	<ul>
+		{{#each apps}}
+		<li><a href="{{../baseurl}}admin/editApps/{{app_id}}/edit">{{app_id}}. {{name}}</a></li>
+		{{/each}}
+	</ul>
+	<p><a href="{{baseurl}}admin/editApps/0/new" class="create button">Create a new app</a></p>
+	{{/if}}
+	</section>
+</article>

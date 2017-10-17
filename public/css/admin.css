@@ -10,12 +10,24 @@
     max-width: 120px;
 }
 
-form > div.depreciated {
-    text-decoration: line-through;
-    opacity: .5;
+.admin-toolbar {
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #333;
 }
-form > div.depreciated input, form > div.depreciated textarea {
+.admin-toolbar a {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
     text-decoration: none;
+    margin-bottom: .3em;
+    color: #333;
+    font-size: 12px;
+}
+.admin-toolbar a.selected {
+    background-color: #fd7123;
+    color: #fff;
 }
 
 header.admin-header {
@@ -67,8 +79,6 @@ header.admin-header h1 {
     vertical-align: top;
     text-align: left;
     max-width: 400px;
-    overflow: hidden;
-    overflow-x: scroll;
 }
 
 .admin-tools h3,
@@ -233,4 +243,20 @@ body article.admin-tools > header.common-header h1 {
 
 .admin-tools .short-editor .CodeMirror {
 	height: 150px;
+}
+
+.admin-tools .tabs {
+    padding: 5px 0;
+}
+.admin-tools .tabs > a {
+    display: inline-block;
+    padding: .3em .7em;
+    background-color: #eee;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+}
+.admin-tools .tabs > a.active {
+    background-color: #167714;
+    color: #fff;
 }

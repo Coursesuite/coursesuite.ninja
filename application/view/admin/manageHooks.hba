@@ -1,14 +1,9 @@
-<article class="manage-hooks admin-tools">
+<article class="manage hooks admin-tools">
+    <section class='standard-width'>
 
-	<h3>
-		{{#if action}}
-		<a href="{{baseurl}}admin/manageHooks" class="back button">Back to Manage hooks</a>
-		Manage Hooks - {{action}}
-		{{else}}
-		<a href="{{baseurl}}admin" class="back button">Back to admin</a>
-		Manage Hooks
-		{{/if}}
-	</h3>
+    <header class="admin-header">
+        {{> admin_toolbar}}
+    </header>
 
 {{#equals action "unsubscribe"}}
 	<p>Ok, we are no longer listening to CloudConvert.</p>
@@ -41,3 +36,7 @@
 </ul>
 
 <p>Further statistics can be gathered by examining the application log table.</p>
+
+</section>
+
+</article>

@@ -1,0 +1,5 @@
+<div class="admin-toolbar">
+	{{#each toolbar}}{{#if active}}
+		<a href="/admin/{{@key}}"{{#equals ../toolbar_page @key}} class="selected"{{/equals}}><i class="{{icon}}"></i> {{label}}</a>
+	{{/if}}{{/each}}
+</div>

@@ -1,11 +1,9 @@
-<article class="admin-tools mail-templates">
-	<header class="common-header">
-		<h1>Mail Templates</h1>
-		<nav>
-			<a href="{{baseurl}}admin/" class="button">Return</a>
-		</nav>
-	</header>
-	<main class="standard-width">
+<article class="mail-template admin-tools">
+    <section class='standard-width'>
+
+    <header class="admin-header">
+        {{> admin_toolbar}}
+    </header>
 
 	<p>Ok. so here's the deal with mail templates: there's only ONE, and it's HTML, and it's made with <a href="https://beefree.io/" target="_blank">BeeFree.io</a>. Here's some <a href="https://css-tricks.com/visual-email-builder-apps/" target="_blank">more email editors</a>.
 	HTML emails are XHTML full of tables and wierd comment blocks and all sorts of absurd hacks, because Microsoft.</p>
@@ -23,5 +21,4 @@
 		<div><span class="spacer"></span><input type="button" value="Preview" class="preview button button-blue" data-action="previewEditor"> &nbsp; <input type="submit" value="Save" class="submit button"></div>
 	</form>
 
-	</main>
 </article>

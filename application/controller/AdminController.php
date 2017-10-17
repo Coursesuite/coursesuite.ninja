@@ -2,60 +2,112 @@
 
 class AdminController extends Controller
 {
+
     /**
      * Construct this object by extending the basic Controller class
      */
-    public function __construct()
+    public function __construct($action_name)
     {
-        parent::__construct();
+        parent::__construct(true, $action_name);
 
         // special authentication check for the entire controller: Note the check-ADMIN-authentication!
         // All methods inside this controller are only accessible for admins (= users that have role type 7)
+
         Auth::checkAdminAuthentication();
 
         // ensure licences are up to date (cron does this anyway)
         Licence::refresh_licencing_info();
     }
 
-    /**
-     * This method controls what happens when you move to /admin or /admin/index in your app.
-     */
     public function index()
     {
-        $this->View->render('admin/index');
+        $model = array();
+        $model["baseurl"] = Config::get("URL");
+        $this->View->renderHandlebars('admin/index', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function allUsers($action = "")
+    public function allUsers($tab = "recent")
     {
 
-        $q = null;
-        $mr = true;
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $subsql = "";
 
-        switch ($action) {
+        $model = array();
+        $users = array();
+        $model["tab"] = $tab;
+
+        switch ($tab) {
             case "search":
-                $q = Request::post("q", true);
-                $mr = false;
+                $search_email = str_replace('*','%', Request::post("search_email"));
+                $model["search_email"] = Request::post("search_email");
+                $users = Model::Read("users", "user_email LIKE :match", array(":match" => $search_email));
+                $subsql = "SELECT status, added, endDate, referenceId FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
+                break;
+            case "subscribed":
+                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE status = 'active') ORDER BY user_last_login_timestamp DESC, user_email");
+                $subsql = "SELECT status, added, endDate, referenceId FROM subscriptions WHERE user_id=:user AND status='active' ORDER BY endDate DESC, added DESC LIMIT 1";
+                break;
+            case "cancelled":
+                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE statusReason = 'cancelled') ORDER BY user_last_login_timestamp DESC, user_email");
+                $subsql = "SELECT status, added, endDate, referenceId FROM subscriptions WHERE user_id=:user AND statusReason = 'cancelled' ORDER BY endDate DESC, added DESC LIMIT 1";
+                break;
+            case "recent":
+                $users = Model::Read("users", "1=1 ORDER BY user_id DESC LIMIT 25", array(), array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
+                $subsql = "SELECT status, added, endDate, referenceId FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
+                $model["recent"] = $users;
+                break;
+            case "mostactive":
+                $users = Model::Read("users", "1=1 ORDER BY user_logon_count DESC LIMIT 50", array(), array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
+                $subsql = "SELECT status, added, endDate, referenceId FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
+                // $model["recent"] = $users;
                 break;
 
+            case "current":
+                $users = Model::Read("users", "user_remember_me_token IS NOT NULL ORDER BY user_last_login_timestamp DESC", array(), array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
+                $subsql = "SELECT status, added, endDate, referenceId FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
+                // $model["recent"] = $users;
+                break;
+        }
+        if (!empty($subsql)) {
+            $subquery = $database->prepare($subsql);
         }
 
-        $this->View->render('admin/allusers', array(
-            'users' => UserModel::getPublicProfilesOfAllUsers($q, $mr))
-        );
+        foreach ($users as &$user) {
+            $subquery->execute(array(":user" => $user->user_id));
+            if ($user->user_id != Session::CurrentUserId()) {
+                $user->impersonate = Text::base64_urlencode(Encryption::encrypt($user->user_id));
+            }
+            if ($subresult = $subquery->fetch()) {
+                $user->subscription_status = $subresult->status;
+                $user->subscription_starts = $subresult->added;
+                $user->subscription_ends = $subresult->endDate;
+                $user->order_id = $subresult->referenceId;
+            }
+        }
+
+        $model["records"] = $users;
+
+        $this->View->renderHandlebars('admin/allUsers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function showLog($filter = "", $value = "")
+    public function showLog($filter = "", $value = "", $limit = 100, $order_by = "id", $order_dir = "desc")
     {
 
+        $digest_users = LoggingModel::uniqueDigestUsers();
+        if (empty($value)) $value = $digest_users[0];
         $model = array(
-            "digest_users" => LoggingModel::uniqueDigestUsers(),
+            "fields" => array("id","method_name", "digest_user", "added", "message", "param0"),
+            "digest_users" => $digest_users,
             "filter_value" => $value,
-            "syslog" => LoggingModel::systemLog($filter, $value),
+            "order_by" => $order_by,
+            "order_dir" => $order_dir,
+            "limit" => $limit,
+            "syslog" => LoggingModel::systemLog($filter, $value, $limit, $order_by, $order_dir),
             "baseurl" => Config::get('URL'),
             "sheets" => array("flatpickr.min.css"),
             "scripts" => array("flatpickr.min.js"),
         );
-        $this->View->renderHandlebars('admin/syslog', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/showLog', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
     public function editSections($id = 0, $action = "")
@@ -110,53 +162,10 @@ class AdminController extends Controller
         if (isset($section)) {
             $model["data"] = $section;
         }
-        $this->View->renderHandlebars('admin/sections', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/editSections', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function editTiers($id = 0, $action = "")
-    {
-        $url = Config::get("URL");
-        $model = array(
-            "baseurl" => $url,
-            "tiers" => TierModel::getAllTiers(),
-            "sheets" => array($url . "js/simplemde/simplemde.min.css"),
-            "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
-        );
-        if (is_numeric($id) && intval($id) > 0) {
-            $tier = TierModel::getTierById($id, false);
-            $model["action"] = $action;
-        }
-        switch ($action) {
-            case 'save':
-                $tier = array(
-                    "tier_id" => $id,
-                    "tier_level" => Request::post("tier_level", false, FILTER_SANITIZE_NUMBER_INT),
-                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
-                    "description" => Request::post("description", false, FILTER_SANITIZE_STRING),
-                    "store_url" => Request::post("store_url", false, FILTER_SANITIZE_URL),
-                    "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
-                    "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_INT),
-                    "currency" => Request::post("currency", false, FILTER_SANITIZE_STRING),
-                    "period" => Request::post("period", false, FILTER_SANITIZE_STRING),
-                    "pack_id" => Request::post("pack_id", false, FILTER_SANITIZE_NUMBER_INT),
-                );
-                $id = TierModel::save("tiers", "tier_id", $tier);
-                Redirect::to("admin/editTiers");
-                break;
 
-            case 'new':
-                $id = 0;
-                $model["action"] = "new";
-                $tier = TierModel::make('tiers');
-                break;
-        }
-
-        $model["id"] = $id;
-        if (isset($tier)) {
-            $model["data"] = $tier;
-        }
-        $this->View->renderHandlebars('admin/tiers', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-    }
 
 
     public function editApps($id = 0, $action = "", $filename = "")
@@ -355,52 +364,9 @@ class AdminController extends Controller
             $model["AppTiers"] = AppTierModel::get_tiers($id);
         }
 
-        $this->View->renderHandlebars('admin/apps', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/editApps', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function actionAccountSettings()
-    {
-        AdminModel::setAccountSuspensionAndDeletionStatus(
-            Request::post('user_id'),
-            Request::post('suspension'),
-            Request::post('softDelete'),
-            Request::post('hardDelete'),
-            Request::post('manualActivation'),
-            Request::post('logonCap')
-        );
-
-        Redirect::to("admin/allUsers");
-    }
-
-    public function manualSubscribe()
-    {
-        $model = array(
-            "baseurl" => Config::get("URL"),
-            "users" => UserModel::getAllUsers(),
-            "tiers" => TierModel::getAllTiers(true),
-            "feedback" => Session::get("feedback_positive"),
-        );
-        Session::set("feedback_positive", null);
-        $this->View->renderHandlebars('admin/manualSubscribe', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-
-    }
-
-    public function actionManualSubscribe()
-    {
-        // addSubscription($userid, $tierid, $endDate, $referenceId, $status, $statusReason, $testMode);
-        $userid = (int) Request::post('user_id');
-        $tierid = (int) Request::post('tier_id');
-        $value = SubscriptionModel::addSubscription(
-            $userid,
-            $tierid,
-            null,
-            'manually created by admin',
-            'active',
-            '',
-            1);
-        Session::add('feedback_positive', "user $userid was manually subscribed to tier $tierid in test mode; result: $value");
-        Redirect::to("admin/manualSubscribe");
-    }
 
     public function staticPage($id = 0, $action = "")
     {
@@ -446,7 +412,7 @@ class AdminController extends Controller
             $model["data"] = $data;
         }
 
-        $this->View->renderHandlebars('admin/staticPages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+        $this->View->renderHandlebars('admin/staticPage', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
     public function messages($message_id = 0, $action = "", $user_id = 0)
@@ -494,19 +460,8 @@ class AdminController extends Controller
 
         }
 
-//        $this->View->renderJSON($model);
-
         $this->View->renderHandlebars('admin/messages', $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
-    }
-
-    public function testNotifies()
-    {
-        MessageModel::notify_user("You got a new notification from admin, and it's a good one", MESSAGE_LEVEL_HAPPY, 11);
-        MessageModel::notify_user("Your credit card has expired and you're now booted out :(", MESSAGE_LEVEL_SAD, 11);
-        MessageModel::notify_all("Hey, you are all a bunch of people.", MESSAGE_LEVEL_MEH, time() + 60);
-
-        $this->View->output("I have added a couple of notifications...");
     }
 
     public function manageHooks($action = "", $id = 0)
@@ -537,26 +492,11 @@ class AdminController extends Controller
         $url = Config::get("URL");
         switch ($action) {
             case "update":
-                KeyStore::find("freetrial")->put(Request::post("freetrial"));
-                KeyStore::find("howelse")->put(Request::post("howelse"));
-                KeyStore::find("freetriallabel")->put(Request::post("freetriallabel"));
-                KeyStore::find("tiersystem")->put(Request::post("tiersystem"));
-
                 KeyStore::find("footer_col1")->put(Request::post("footer_col1"));
                 KeyStore::find("footer_col2")->put(Request::post("footer_col2"));
                 KeyStore::find("footer_col3")->put(Request::post("footer_col3"));
-
-                KeyStore::find("purchasesystem")->put(Request::post("purchasesystem"));
-                KeyStore::find("nopurchases")->put(Request::post("nopurchases"));
-
-                KeyStore::find("contactform")->put(Request::post("contactform"));
-                KeyStore::find("freeTrialHeader")->put(Request::post("freeTrialHeader"));
-                KeyStore::find("freeTrialDescription")->put(Request::post("freeTrialDescription"));
-
                 KeyStore::find("freeTrialDays")->put(Request::post("freeTrialDays"));
-
                 Redirect::to("admin/storeSettings"); // to ensure it reloads
-
                 break;
         }
 
@@ -564,24 +504,12 @@ class AdminController extends Controller
         $footer_2 = KeyStore::find("footer_col2")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_2");
         $footer_3 = KeyStore::find("footer_col3")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_3");
 
-        // if (!empty($action)) exit(); // no flush
         $model = array(
             "baseurl" => Config::get("URL"),
-            "freetrial" => KeyStore::find("freetrial")->get(),
-            "freetriallabel" => KeyStore::find("freetriallabel")->get(),
-            "howelse" => KeyStore::find("howelse")->get(),
-            "tiersystem" => KeyStore::find("tiersystem")->get(),
             "footer" => array($footer_1, $footer_2, $footer_3),
-            "purchasesystem" => KeyStore::find("purchasesystem")->get(),
-            "nopurchases" => KeyStore::find("nopurchases")->get(),
-            "contactform" => KeyStore::find("contactform")->get(),
-            "freetrialheader" => KeyStore::find("freeTrialHeader")->get(),
-            "freetrialdescription" => KeyStore::find("freeTrialDescription")->get(),
             "freetrialdays" => KeyStore::find("freeTrialDays")->get(3),
-
             "sheets" => array($url . "js/simplemde/simplemde.min.css"),
             "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
-
         );
         $this->View->renderHandlebars("admin/storeSettings", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
@@ -603,54 +531,6 @@ class AdminController extends Controller
         );
 
         $this->View->renderHandlebars("admin/mailTemplates", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-
-    }
-
-    public function whiteLabelling($org_id = 0, $app_key = "", $action = "") {
-        $url = Config::get("URL");
-        $model = array(
-                "baseurl" => $url,
-                "orgs" => OrgModel::getAll(),
-                "apps" => AppModel::getAllAppKeys(),
-                "action" => $action,
-                "sheets" => array($url . "js/simplemde/simplemde.min.css"),
-                "scripts" => array($url . "js/simplemde/simplemde.min.js", $url . "js/inline-attachment/inline-attachment.js", $url. "js/inline-attachment/codemirror.inline-attachment.js"),
-        );
-        switch($action) {
-            case "edit":
-                $model["selected_app_key"] = $app_key;
-                $model["selected_org_id"] = $org_id;
-                $org_model = OrgModel::getRecord($org_id);
-                $tmp = json_decode($org_model->header);
-                if (array_key_exists($app_key, $tmp)) {
-                    $org_model->header = $tmp->$app_key;
-                } else {
-                    $org_model->header = "";
-                }
-                $tmp = json_decode($org_model->css);
-                if (array_key_exists($app_key, $tmp)) {
-                    $org_model->css = $tmp->$app_key;
-                } else {
-                    $org_model->css = "";
-                }
-                $model["selected_org"] = $org_model;
-                break;
-
-            case "save":
-                $model = OrgModel::getRecord($org_id);
-                $header = json_decode($model->header);
-                $header->$app_key = Request::post("header");
-                $model->header = json_encode($header, JSON_NUMERIC_CHECK);
-                $css = json_decode($model->css);
-                $css->$app_key = Request::post("css");
-                $model->css = json_encode($css, JSON_NUMERIC_CHECK);
-                OrgModel::Save($model);
-                Redirect::to('admin/whiteLabelling');
-
-                break;
-        }
-
-        $this->View->renderHandlebars("admin/whiteLabel", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 
     }
 
@@ -745,12 +625,6 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/editBundles", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
-    public function Subscribers() {
-        $model = AdminModel::CurrentSubscribersModel();
-        $model["baseUrl"] = Config::get("URL");
-        $this->View->renderHandlebars("admin/CurrentSubscribers", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
-    }
-
     public function encrypt() {
         $val = Request::post("value");
         $model = new stdClass();
@@ -768,6 +642,10 @@ class AdminController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $server_output = json_decode(curl_exec($ch));
         $this->View->renderJSON($server_output, true);
+    }
+    public function editProducts($id = 0, $action = "") {
+        $model = new stdClass();
+        $this->View->renderHandlebars("admin/products", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 
 }

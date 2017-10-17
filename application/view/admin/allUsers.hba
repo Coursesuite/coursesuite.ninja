@@ -1,0 +1,81 @@
+<article class="all-users admin-tools">
+    <section class='standard-width'>
+
+    <header class="admin-header">
+        {{> admin_toolbar}}
+    </header>
+
+    <div class="tabs">
+        <a href="/admin/allUsers/search/"{{#equals tab "search"}} class="active"{{/equals}}>Search</a>
+        <a href="/admin/allUsers/recent/"{{#equals tab "recent"}} class="active"{{/equals}}>Recent users</a>
+        <a href="/admin/allUsers/current/"{{#equals tab "current"}} class="active"{{/equals}}>Current logins</a>
+        <a href="/admin/allUsers/mostactive/"{{#equals tab "mostactive"}} class="active"{{/equals}}>Most active</a>
+        <a href="/admin/allUsers/subscribed"{{#equals tab "subscribed"}} class="active"{{/equals}}>Active subs</a>
+        <a href="/admin/allUsers/cancelled"{{#equals tab "cancelled"}} class="active"{{/equals}}>Cancelled subs</a>
+    </div>
+
+    {{#equals tab "mostactive"}}
+        <table><thead>
+            <tr><th>id</th><th>email</th><th>last login</th><th>logins</th><th>browser</th><th>status</th><th>starts</th><th>ends</th><th>order_id</th></tr>
+        </thead><tbody>
+        {{#each records}}
+        {{> user_record}}
+        {{/each}}
+        </tbody></table>
+
+    {{else}}{{#equals tab "recent"}}
+        <table><thead>
+            <tr><th>id</th><th>email</th><th>last login</th><th>logins</th><th>browser</th><th>status</th><th>starts</th><th>ends</th><th>order_id</th></tr>
+        </thead><tbody>
+        {{#each records}}
+        {{> user_record}}
+        {{/each}}
+        </tbody></table>
+
+    {{else}}{{#equals tab "search"}}
+        <form method="post" action="/admin/allUsers/search/">
+            <div class="field-row">
+                <label>Email:</label>
+                <input type="search" name="search_email" value="{{search_email}}" placeholder="Enter email (use * as wildcard)">
+                <button>Search</button>
+            </div>
+        </form>
+
+        <table><thead>
+            <tr><th>id</th><th>email</th><th>last login</th><th>logins</th><th>browser</th><th>status</th><th>starts</th><th>ends</th><th>order_id</th></tr>
+        </thead><tbody>
+        {{#each records}}
+        {{> user_record}}
+        {{/each}}
+        </tbody></table>
+
+    {{else}}{{#equals tab "subscribed"}}
+        <table><thead>
+            <tr><th>id</th><th>email</th><th>last login</th><th>logins</th><th>browser</th><th>status</th><th>starts</th><th>ends</th><th>order_id</th></tr>
+        </thead><tbody>
+        {{#each records}}
+        {{> user_record}}
+        {{/each}}
+        </tbody></table>
+
+    {{else}}{{#equals tab "cancelled"}}
+        <table><thead>
+            <tr><th>id</th><th>email</th><th>last login</th><th>logins</th><th>browser</th><th>status</th><th>starts</th><th>ends</th><th>order_id</th></tr>
+        </thead><tbody>
+        {{#each records}}
+        {{> user_record}}
+        {{/each}}
+        </tbody></table>
+
+    {{else}}{{#equals tab "current"}}
+        <table><thead>
+            <tr><th>id</th><th>email</th><th>last login</th><th>logins</th><th>browser</th><th>status</th><th>starts</th><th>ends</th><th>order_id</th></tr>
+        </thead><tbody>
+        {{#each records}}
+        {{> user_record}}
+        {{/each}}
+        </tbody></table>
+
+    {{/equals}}{{/equals}}{{/equals}}{{/equals}}{{/equals}}{{/equals}}
+
+ </article>
