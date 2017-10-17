@@ -96,12 +96,18 @@ class Request
     /**
      * gets/returns the value of a specific key of the COOKIE super-global
      * @param mixed $key key
+     * @param string $filter php filter type
      * @return mixed the key's value or nothing
      */
-    public static function cookie($key)
+    public static function cookie($key, $filter = null)
     {
         if (isset($_COOKIE[$key])) {
-            return $_COOKIE[$key];
+            if ($filter !== null) {
+                $value = filter_input(INPUT_COOKIE, $key, $filter);
+            } else {
+                $value = $_COOKIE[$key];
+            }
+            return $value;
         }
     }
 }
