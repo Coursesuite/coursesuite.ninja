@@ -68,4 +68,20 @@ class Curl
         LoggingModel::logInternal("cloudConvertHook", $action, $param, $server_output);
         return $server_output;
     }
+
+    public static function helpdesk_tickets($email) {
+        $data = array('email' => $email);
+        $helpdesk_apikey = Config::get("OST_APIKEY");
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => "https://help.coursesuite.ninja/api/tickets.json",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => ['Expect:', 'X-API-Key: ' . $helpdesk_apikey],
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_POSTFIELDS => json_encode($data)
+        ));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($result);
+    }
 }

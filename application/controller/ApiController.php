@@ -14,6 +14,41 @@ class ApiController extends Controller
 		parent::__construct(false); // passing false avoids initialising a session object
 	}
 
+	/* this method exists because EXZA can't get their shit together
+	* if this method doesn't exist, their their portal BREAKS and shows a white page. OMGROFLNÜBS
+	*/
+	public function generateApiKey() {
+		$username = parent::requiresAuth();
+		LoggingModel::logMethodCall(__METHOD__, $username, file_get_contents("php://input"), "Depreciated method call");
+		//if ($username === "apianmf") {
+		//	$hash = md5("api-anmf-special-order");
+		//	$token = ApiModel::generate_token_for_subscription($hash);
+		//} else
+
+		if ($username === "apikaplan") {
+			$hash = md5("api-kaplan-special-order");
+			$token = ApiModel::generate_token_for_subscription($hash);
+
+		} elseif ($username === "apimatrix") {
+			$hash = md5("api-matrix-special-order");
+			$token = ApiModel::generate_token_for_subscription($hash);
+
+		// } elseif ($username === "apiwvphn") {
+		// 	$hash = md5("api-wvphn-special-order");
+		// 	$token = ApiModel::generate_token_for_subscription($hash);
+
+		} else {
+			$data = array("error" => "This method is depreciated.");
+			$this->View->renderJSON($data);
+			return false;
+		}
+
+		$data = array("token" => Text::base64enc($token), "reminder" => "This method is depreciated and will be removed on December 1, 2017.");
+		$this->View->renderJSON($data);
+		return true;
+
+	}
+
 	/**
 	* @apiDefine digest
 	* 	This method requires DIGEST authentication. Your apikey is the username, and secret_key is your password.
@@ -29,7 +64,7 @@ class ApiController extends Controller
 	* @apiPrivate
 	* @apiName Validate
 	* @apiGroup Authenication
-	* @apiVersion 0.9.0
+	* @apiVersion 0.9.1
 	* @apiDescription Internal method for validating the has value sent to apps. Requires a specific digest authentication user
 	* @apiParam {String} app_key The keyname of the app being validated (e.g. docninja)
 	* @apiParam {String} hash The hash to be validated
@@ -59,7 +94,10 @@ class ApiController extends Controller
 	*		"email": "bob.smith@gmail.com"
 	*	},
 	*	"app": {
-	*		"addons": ["design-pack-1","quiz-player"]
+	*		"addons": ["design-pack-1","quiz-player"],
+	*		"socket": "wss://www.coursesuite.ninja/acbd18db4cc2f85cedef654fccc4a4d8",
+	*		"layer": "(encoded javascript)",
+	*		"guide": "https://guide.coursesuite.ninja/documentninja"
 	*	}
 	*     }
 	*/
@@ -67,7 +105,7 @@ class ApiController extends Controller
 
 		$authtoken = parent::requiresAuth();
 		$token = Text::base64dec($token_encoded);
-		LoggingModel::logMethodCall(__METHOD__, $authtoken, $app_key, $token);
+		LoggingModel::logMethodCall(__METHOD__, $authtoken, $app_key, $token, $token_encoded);
 
 		$result = new stdClass();
 		$result->valid = false;
@@ -77,7 +115,7 @@ class ApiController extends Controller
 		$result->code->minified = (!$result->code->debug);
 
 		$result->licence = new stdClass();
-		$result->licence->tier = 0;
+		$result->licence->tier = 99; // depreciated
 		$result->licence->seats = 0;
 		$result->licence->remaining = 0;
 
@@ -86,44 +124,43 @@ class ApiController extends Controller
 		$result->user->email = "";
 
 		$result->app = new stdClass();
-		$result->app->addons = array();
+		$result->app->addons = array(); // TODO: might be extra products we purchased, such as theme-packs.
 		$result->app->socket = "";
 		$result->app->layer = "";
+		$result->app->guide = "";
 
 		if ($model = ApiModel::find_model_for_token($token)) {
 
 			$result->valid = true;
-			$app_id = AppModel::app_id_for_key($app_key);
-			// todo: $result->app->addons might be extra products we purchased, such as theme-packs.
+
+			$app_id = Model::ReadColumn("apps","app_id","app_key=:key",array(":key"=>$app_key));
+			$result->app->guide = Model::ReadColumn("apps","guide","app_key=:key",array(":key"=>$app_key));
 
 			$user = new AccountModel($model->user);
 			$result->user->email = $user->get_property("user_email");
-			list($name,$_) = explode('@',$result->user->email);
-			$result->user->container = preg_replace('/[^a-zA_Z0-9]/', '', $name); // todo: make this into a database field so we can edit it
+			if (!empty($user->get_property("user_container"))) {
+				$result->user->container = $user->get_property("user_container");
+			} else {
+				list($name,$_) = explode('@',$result->user->email);
+				$result->user->container = preg_replace('/[^a-zA_Z0-9]/', '', $name);
+			}
 
 			$result->licence->seats = Licence::total_seats($model->hash); // total seats you are licensed for
 			$result->licence->remaining = Licence::seats_remaining($model->hash); // comes from from the concurrency database (redis)
+			$product = new ProductBundleModel("id", $model->product); // what they bought, which we know includes this app_key (otherwise the has wouldn't have validated)
 
-			$product = new ProductModel($model->product); // what they bought, which we know includes this app_key (otherwise the has wouldn't have validated)
 			if ($product->is_api() === true) {
-				$tier = AppTierModel::get_highest_tier_level($app_id); // highest tier available for app
-
 				$result->api = new stdClass();
 				$result->api->bearer = md5($model->hash . Encryption::decrypt(Text::base64dec($user->get_property("secret_key")))); // bearer = md5 of apikey + secret key
 				$result->api->publish = ApiModel::get_publish_url($model->hash, $token); // since token is a unique version of hash this is an easy match
-
-				$white_label = get_white_label($app_key, $model->subscription);
-
+				$white_label = ApiModel::get_white_label($app_key, $model->subscription);
 				$result->api->header = new stdClass();
 				$result->api->header->html = $white_label["html"];
 				$result->api->header->css = $white_label["css"];
-
-			} else {
-				// highest tier available in the subscriptions for this user
-				$tier = ProductModel::get_highest_subscribed_tier_for_app($app_id, $model->user);
 			}
-			$result->licence->tier = $tier;
-			$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . ":" . Config::get("WEBSOCKET_PORT") . "/" . $model->hash;
+
+			// removed . ":" . Config::get("WEBSOCKET_PORT") - you want it to connect on the ssl port THEN have a proxy redirect it to the local port
+			$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $model->hash;
 			$result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
 			// ws://coursesuite.ninja.dev/"
 		}
@@ -141,6 +178,8 @@ class ApiController extends Controller
 	* 		It validates your access using your api key and secret, and stores the publish-url (if set).
 	* 		When opening apps, this key will be validated for concurrency: you can only have as many
 	* 		apps running at the same time as you are licensed for.
+	*		NOTE: You don't have to generate this each time. The key generated is valid for as long as your
+	*		subscription is active. Use caching!
 	*
 	* @apiParam {String} [publish_url] Url to enable publish-to feature (in supported apps).
 	*					Apps will POST the generated zip package to this URL and attach
@@ -161,7 +200,7 @@ class ApiController extends Controller
 	*	"remaining": 4
 	*     }
 	*/
-	public function createToken()
+	public function createToken($context = null)
 	{
 
 // need to first get the token associated with the user that logged on using digest
@@ -170,8 +209,10 @@ class ApiController extends Controller
 // lets remember this
 		LoggingModel::logMethodCall(__METHOD__, $hash, file_get_contents("php://input"));
 
-// only api users can create a token, so the username will be the the md5 of the referenceId in the subscription table. if it's not a md5, do nothing
-		if (!preg_match('/^[a-f0-9]{32}$/', $hash)) return;
+		if (!preg_match('/^[a-f0-9]{32}$/', $hash)) {
+			$this->View->renderJSON(array("error" => Text::get("INVALID_URL")));
+			return false;
+		}
 
 // we want to return the number of seats this license is for
 		$seats = Licence::total_seats($hash);
@@ -189,7 +230,8 @@ class ApiController extends Controller
 		$token = ApiModel::generate_token_for_subscription($hash);
 
 // if the gave us a publish_url, grab and validate it ising the xss filter (I mean we trust them, right, but only so far)
-		if (!$publish_url = Request::post("publish_url", true)) {
+		$publish_url = Request::post("publish_url", true);
+		if (!empty($publish_url)) {
 			$this->View->renderJSON(array("error" => Text::get("INVALID_URL")));
 			return false;
 		}
@@ -199,19 +241,41 @@ class ApiController extends Controller
 
 // that's all we have to do
 		$this->View->renderJSON(array(
-			"token" => $token,
+			"token" => Text::base64enc($token),
 			"seats" => $seats,
 			"remaining" => $remaining
 		));
 	}
 
 	/**
+	* @api {get} /api/validate/app_key/hash/
+	* @apiPrivate
+	* @apiName HashInfo
+	* @apiGroup Authenication
+	* @apiVersion 0.9.1
+	* @apiDescription Internal method for determining the abstract hash of a subsription, when given an auth token
+	* @apiParam {String} token_encoded The hash to be validated
+	*/
+	public function hashinfo($token_encoded) {
+		$authtoken = parent::requiresAuth();
+		$token = Text::base64dec($token_encoded);
+		LoggingModel::logMethodCall(__METHOD__, $authtoken, $token, $token_encoded);
+		$result = new stdClass();
+		$result->token = "";
+		if ($model = ApiModel::find_model_for_token($token)) {
+			$result->token = $model->hash;
+		}
+		return $result;
+	}
+
+	/**
 	* @api {post} /api/info/ List available apps and their launch points
 	* @apiName Names
 	* @apiGroup App
-	* @apiVersion 0.9.0
+	* @apiVersion 0.9.2
 	* @apiPermission bearer
-	* @apiDescription List the app keys and their launch points that your subscription allows
+	* @apiDescription List the app keys and their launch points that your subscription allows.
+	*			NOTE: This value changes infrequently. Use appropriate caching.
 	*
 	* @apiHeader {String{32}} Bearer Your api-key
 	* @apiHeaderExample {json} Header-Example:
@@ -222,25 +286,45 @@ class ApiController extends Controller
 	* @apiSuccess {String} app.app_key Internal identifier of app
 	* @apiSuccess {String} app.name Name of app
 	* @apiSuccess {String} app.tagline Short descriptor for the app
+	* @apiSuccess {String} app.guide URL for documentation
 	* @apiSuccess {String} app.launch Launch url for app.
 					You need to replace {token} with the value returned by the /api/createToken/ method.
 	* @apiSuccess {String} app.icon Full url to icon used by CourseSuite for this app
+	* @apiSuccess {String} app.glyph SVG representation of app icon
+	* @apiSuccess {String} app.colour Base colour used by CourseSuite for this app
 	* @apiSuccessExample {json} Success-Response:
-	*     HTTP/1.1 200 OK
-	*     [
-	*       	{
+	*	HTTP/1.1 200 OK
+	*	[
+	*	{
 	*		"app_key": "docninja",
 	*		"launch": "https://www.coursesuite.ninja/launch/docninja/{token}/",
 	*		"icon": "https://www.coursesuite.ninja/img/apps/docninja/3114fbf5f4d83a87b7842d1aa561b34a.png",
+	*		"guide": "https://guide.coursesuite.ninja/documentninja",
 	*		"name": "Document Ninja",
 	*		"tagline": "Add a SCORM wrapper to your existing content by converting it to modern, industry standard device-ready HTML5"
+	*		"colour": "#7eaf5e",
+	*		"glyph": "<svg xmlns=\"http://www.w3.org/2000/svg\"/>"
 	*	}
-	*     }
+	*	]
 	*/
 
 	public function info()
 	{
-		$model = AppModel::public_info_model(); // AppModel::getAppKeys()
+		$subscription = parent::requiresBearer();
+		$miss = null;
+
+// todo: cache the product_key version that this info() relates to instead of the actual subscription
+	    $cache = CacheFactory::getFactory()->getCache();
+	    $cacheItem = $cache->getItem("api_info_{$subscription}");
+	    $model = $cacheItem->get();
+	    if (is_null($model)) {
+// log a cache miss so we can later refine the expiresAfter
+	    	$miss = "cache miss ";
+			$model = AppModel::public_info_model($subscription);
+			$cacheItem->set($model)->expiresAfter(3600); // 1 hour cache
+			$cache->save($cacheItem);
+		}
+		LoggingModel::logInternal(__METHOD__, $subscription,$miss);
 		$this->View->renderJSON($model);
 	}
 
@@ -248,7 +332,7 @@ class ApiController extends Controller
 	* @api {post} /api/white_label/ Set the header style for a single app
 	* @apiName White Label
 	* @apiGroup Customisation
-	* @apiVersion 0.9.0
+	* @apiVersion 0.9.2
 	* @apiPermission digest
 	* @apiDescription Set the header and css styles for a single app.
 	*  		      HTML is injected between the &lt;header&gt; ... &lt;/header&gt; tags in the app.
@@ -256,7 +340,16 @@ class ApiController extends Controller
 	*		      If both HTML and CSS are empty, the white label is deleted.
 	* @apiParam {String} app_key App Key to set.
 	* @apiParam {String} [html] HTML header code (e.g. image or hyperlink). Content will be filtered using HTMLPurifier
-	* @apiParam {String} [css] CSS styles
+	* @apiParamExample {string} HTML example
+	* 					<div class='cs-banner'>
+	*						<h1><img src='img/coursesuite.svg' width='40' height='40' title='another CourseSuite app'> Document <span>Scormification</span> Ninja</h1>
+	*					</div>
+	* @apiParam {String} [css] CSS style definitions
+	* @apiParamExample {string} CSS example
+	*					.cs-banner { background-color: #f4f4f4; padding: 0 20px; line-height: 62px; color: #777; }
+	*					.cs-banner h1 {font-size: 32px; line-height: 62px; margin: 0; }
+	* 					.cs-banner span { color: #000 }
+	*					.cs-banner img { vertical-align: middle; }
 	* @apiSuccessExample {json} Success-Response:
 	*    HTTP/1.1 200 OK
 	*    {
@@ -280,7 +373,8 @@ class ApiController extends Controller
 		if (empty($css)) $css = null;
 		$app_key = Request::post("app_key", true);
 
-		if (!AppModel::exists($app_key)) {
+		if (!Model::exists("apps", "app_key=:key", array(":key"=>$app_key))) {
+		// if (!AppModel::exists($app_key)) {
 			$this->View->renderJSON(array(
 				"status" => "error",
 				"message" => "app_key was not found"
@@ -295,6 +389,10 @@ class ApiController extends Controller
 	public function tasks()
 	{
 		SubscriptionModel::validateSubscriptions();
+	}
+
+	public function dl($hash,$app_key,$file) {
+
 	}
 
 	/* -------------------------------- FASTSPRING -----------------------------------
@@ -321,12 +419,18 @@ class ApiController extends Controller
 	{
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug());
-		extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
+		extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables; &security_foo=bob --> $security_foo=>"bob"
 		if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
 
 			// $tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
 
 			$fastspringProductId = Request::post("productName");
+			// fastspring product pages look like this: http://sites.fastspring.com/coursesuite/product/docninja-pro
+			// the productPath look like this: /docninja-pro or /subscriptions/pro/docninja-pro
+			// we just want the last element, which MUST match the product_id
+
+			// TODO read the id column instead of the whole model
+			$fastspringProductId = array_pop(explode("/", Request::post("productPath"))); //  /api-5-12 => api-5-12
 			$product = (new ProductModel)->load_by_productId($fastspringProductId);
 			$product_id = $product->get_id();
 			unset($product);

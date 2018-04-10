@@ -1,0 +1,57 @@
+<div class='uk-margin'>
+	<label class='uk-form-label' for='f{{@index}}'>{{englishify field}}</label>
+	<div class='uk-form-controls'>
+
+{{#equals kind "text"}}
+	<input type='text'{{#if size}} maxlength='{{size}}'{{/if}} class='uk-input' name='{{field}}' value='{{value}}'>
+
+{{/equals}}{{#equals kind "markdown"}}
+	<textarea class='uk-textarea' name='{{field}}' rows='10' cols='80' data-markdown='true'>{{{value}}}</textarea>
+
+{{/equals}}{{#equals kind "image"}}
+image
+{{/equals}}{{#equals kind "boolean"}}
+	<label><input type='radio' class='uk-radio' name='{{field}}' value='0'{{#equals false ../value}} checked{{/equals}}> No</label>
+	<label><input type='radio' class='uk-radio' name='{{field}}' value='1'{{#equals true ../value}} checked{{/equals}}> Yes</label>
+
+{{/equals}}{{#equals kind "slideshow"}}
+slideshow
+
+{{/equals}}{{#equals kind "csv"}}
+	<input type='text'{{#if size}} maxlength='{{size}}'{{/if}} class='uk-input' name='{{field}}' value='{{value}}' pattern='[a-zA-Z0-9- ,]+' title='Supports alphanumeric values, dashes, space and comma'>
+
+{{/equals}}{{#equals kind "slug"}}
+	<input type='text'{{#if size}} maxlength='{{size}}'{{/if}} class='uk-input' name='{{field}}' value='{{value}}' pattern='[a-z0-9-]' title='Should only contain lower case letters or dashes'>
+
+{{/equals}}{{#equals kind "timestamp"}}
+	<input type='datetime-local' class='uk-input' name='{{field}}' value='{{value}}'>
+
+{{/equals}}{{#equals kind "plaintext"}}
+	<textarea class='uk-textarea' name='{{field}}' rows='5' cols='80'>{{{value}}}</textarea>
+
+{{/equals}}{{#equals kind "svg"}}
+	<textarea class='uk-textarea' name='{{field}}' rows='5' cols='80'>{{{value}}}</textarea>
+
+{{/equals}}{{#equals kind "number"}}
+	<select class='uk-select' name='{{field}}'>
+		{{#each options}}
+		<option value="{{.}}"{{#equals . ../value}} selected{{else}}{{#equals . ../default}} selected{{/equals}}{{/equals}}>{{.}}</option>
+		{{/each}}
+	</select>
+
+{{/equals}}{{#equals kind "decimal"}}
+	<input type='number' min='0.00' max='99999.99' step='1.00' class='uk-input' name='{{field}}' value='{{value}}'>
+
+{{/equals}}{{#equals kind "select"}}
+	<select class='uk-select' name='{{field}}'{{#equals multiple true}} multiple{{/equals}}>
+		{{#with (dbLookup table label key filter)}}
+			{{#each .}}
+			<option value="{{dbProperty . ../../key}}">{{dbProperty . ../../label}}</option>
+			{{/each}}
+		{{/with}}
+	</select>
+
+{{/equals}}
+	</div>
+
+</div>

@@ -1,0 +1,57 @@
+{{#hasmorethan App.media 0}}
+<div class="uk-position-relative uk-visible-toggle" uk-slideshow="animation: {{random "slide,fade,pull,push"}}; autoplay: false; pause-on-hover: true; autoplay-interval:10000 ">
+    <ul class="uk-slideshow-items uk-box-shadow-large">
+{{#each App.media}}
+	<li>
+	{{#if video}}
+		<iframe src="{{video}}" frameborder="0" uk-cover></iframe>
+	{{else}}
+		<div class="uk-position-cover uk-animation-kenburns-lite uk-animation-reverse uk-transform-origin-{{random "top,center,bottom"}}-{{random "left,center,right"}}">
+			<img src="{{image}}" uk-cover>
+        </div>
+	{{/if}}
+	{{#if caption}}
+		<div class="uk-overlay uk-overlay-primary uk-light uk-position-top-right uk-text-center uk-transition-slide-right">
+			<p class="uk-margin-remove">{{caption}}</p>
+		</div>
+	{{/if}}
+    </li>
+{{/each}}
+	</ul>
+
+    <div class="uk-hidden@m uk-light">
+        <a class="uk-position-center-left uk-position-small" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+        <a class="uk-position-center-right uk-position-small" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+    </div>
+
+    <div class="uk-visible@m">
+        <a class="uk-position-center-left-out uk-position-small" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+        <a class="uk-position-center-right-out uk-position-small" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+    </div>
+
+    <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin">
+{{#each App.media}}
+        <li uk-slideshow-item="{{@index}}"><a href="#" title='{{caption}}'>{{@index}}</a></li>
+{{/each}}
+    </ul>
+
+</div>
+
+{{else}}
+<div class="uk-position-relative uk-visible-toggle">
+{{#each App.media}}
+	{{#if video}}
+		<iframe src="{{video}}" frameborder="0" uk-cover></iframe>
+	{{else}}
+		<div class="uk-position-cover">
+			<img src="{{image}}" uk-cover>
+        </div>
+	{{/if}}
+	{{#if caption}}
+		<div class="uk-overlay uk-overlay-primary uk-light uk-position-top-right uk-text-center uk-transition-slide-right">
+			<p class="uk-margin-remove">{{caption}}</p>
+		</div>
+	{{/if}}
+{{/each}}
+</div>
+{{/hasmorethan}}

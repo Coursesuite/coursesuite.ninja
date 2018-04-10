@@ -1,5 +1,5 @@
-<article class="system-log admin-tools">
-    <section class='standard-width'>
+<div class="uk-section">
+    <div class='uk-container'>
 
     <header class="admin-header">
         {{> admin_toolbar}}
@@ -34,4 +34,6 @@
 	<p><a href="{{baseurl}}admin/editSections/0/new" class="create button">Create a new section</a></p>
 	{{/if}}
 
-</article>
+	</div>
+
+</div>

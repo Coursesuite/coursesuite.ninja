@@ -19,6 +19,7 @@ class FreebiesController extends Controller
     public function index()
     {
         $model = StoreModel::get_store_index_model(); // same thing as store
+        $this->View->Requires("main.js");
         $this->View->renderHandlebars("freebies/index", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
 

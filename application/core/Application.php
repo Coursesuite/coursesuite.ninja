@@ -12,8 +12,12 @@ DEFINE('USER_TYPE_STANDARD', 1);
 DEFINE('USER_TYPE_TRIAL', 3);
 DEFINE('USER_TYPE_ADMIN', 7);
 
-DEFINE("APP_CSS", "css/compiled.201708011443.css");
-DEFINE("APP_JS", "js/main.201706271130.min.js");
+DEFINE("APP_CSS", "css/compiled.20180403171553.css");
+DEFINE("APP_JS", "js/main.20180403171553.js");
+DEFINE("ADMIN_CSS", "css/admin.20180403171553.css");
+DEFINE("ADMIN_JS", "js/admin.20180403171553.js");
+
+date_default_timezone_set('Australia/Sydney');
 
 /**
  * Class Application
@@ -41,7 +45,18 @@ class Application
      */
     public function __construct()
     {
-        $this->mem = memory_get_usage();
+         // $this->mem = memory_get_usage();
+
+        \phpFastCache\CacheManager::setDefaultConfig(array(
+            "storage" => "redis",
+            "redis" => array(
+                "host" => Config::get('REDIS_HOST'),
+                "port" => Config::get('REDIS_PORT'),
+                "password" => "",
+                "database" => "",
+                "timeout" => ""
+            )
+        ));
 
         // create array with URL parts in $url
         $this->splitUrl();
@@ -66,6 +81,7 @@ class Application
                     }
                     break;
 
+                case "ProductsController":
                 case "LaunchController": // launch/app/param1/param2 becomes launch/index (app, param1, param2)
                 case "BlogController":
                     $params = $this->parameters;
@@ -74,7 +90,6 @@ class Application
                     $this->parameters = $params;
 
             }
-
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
             require Config::get('PATH_CONTROLLER') . $this->controller_name . '.php';
@@ -101,6 +116,7 @@ class Application
             $this->controller = new ErrorController;
             $this->controller->error404();
         }
+
     }
     public function override_action($action)
     {
@@ -153,6 +169,6 @@ class Application
 
     function __destruct() {
          // $used = round((memory_get_usage() - $this->mem) / 1024 / 1024, 2);
-         // echo "Memory used: $used M";
+         //  echo "Memory used: $used M";
     }
 }

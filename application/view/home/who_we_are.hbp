@@ -1,0 +1,9 @@
+<div class='uk-container'>
+	<div class='cs-who-we-are'>
+		<h1 class='uk-heading-primary uk-text-center'>NinjaSuite</h1>
+		<p class='uk-text-lead uk-text-center'>eLearning software tools to build SCORM courses.</p>
+		<p class='uk-text-center cs-like-a-ninja'>Like a Ninja.</p>
+		<div class='uk-margin uk-padding-top-large uk-text-center'><a class='uk-button uk-button-primary' href='{{baseurl}}products/ninja'>Explore apps</a></div>
+		<p class='uk-text-center'><a href="#introduction"><span uk-icon="triangle-down"></span><span uk-icon="triangle-down"></span> find out more <span uk-icon="triangle-down"></span><span uk-icon="triangle-down"></span></a></p>
+	</div>
+</div>

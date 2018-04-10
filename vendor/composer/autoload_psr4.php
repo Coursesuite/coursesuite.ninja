@@ -6,8 +6,15 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phpFastCache\\' => array($vendorDir . '/phpfastcache/phpfastcache/src/phpFastCache'),
+    'Test\\SimpleHtmlToText\\' => array($vendorDir . '/robquistnl/simplehtmltotext/test'),
+    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+    'SimpleHtmlToText\\' => array($vendorDir . '/robquistnl/simplehtmltotext/src'),
     'ReCaptcha\\' => array($vendorDir . '/google/recaptcha/src/ReCaptcha'),
     'Rakshazi\\' => array($vendorDir . '/rakshazi/digestauth/Rakshazi'),
+    'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
+    'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
+    'Pagerange\\Markdown\\' => array($vendorDir . '/pagerange/metaparsedown/src'),
     'LightnCandy\\' => array($vendorDir . '/zordius/lightncandy/src'),
     'Cviebrock\\DiscoursePHP\\' => array($vendorDir . '/cviebrock/discourse-php/src'),
     'ColorThief\\' => array($vendorDir . '/ksubileau/color-thief-php/lib/ColorThief'),

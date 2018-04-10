@@ -1,0 +1,140 @@
+<div class='uk-section cs-me'>
+	<div class='uk-container'>
+		<div  class="uk-flex" uk-grid>
+
+		{{> menubar}}
+
+		<div class="uk-flex-1">
+			<h2 class="uk-heading-divider">API Keys {{#if @root.sub_heading}} &gt; {{@root.sub_heading}}{{/if}}</h2>
+
+			{{#equals command "features"}}
+
+			{{> apikeys_features}}
+
+			{{else}}{{#equals command "edit"}}
+
+			{{> apikeys_editSubAccount}}
+
+			{{else}}{{#equals command "add"}}
+
+			{{> apikeys_addSubAccount}}
+
+			{{else}}
+			<p>Gain access to all our apps and features, enable white-labelling (custom logo & branding),
+			custom templates and configure direct publishing via an API key. API access is a subscription
+			charged quarterly and support tickets are prioritised for API users. Apps are licensed by how many
+			users can use apps at the same time (browser windows open).</p>
+			<p>A Volume Licensing subscription enables multiple separately licenced sub-accounts each with
+			their own API key and licenced/overflow amounts. Volume Licencing is separately invoiced.</p>
+
+			<div class="uk-overflow-auto">
+			<table class='uk-table uk-table-small cs-tablesort ' width='100%'>
+			<thead><tr>
+				<th>Reference</th>
+				<th>Begun</th>
+				<th>Ends</th>
+				<th>Status</th>
+				<th>Price</th>
+				<th>Actions</th>
+			</tr></thead>
+			<tbody>
+
+			{{#each apikeys}}
+			<tr><td colspan='6'>
+
+			<div class="uk-card uk-card-small uk-card-default cs-order-item uk-margin-large-bottom">
+			    <div class="uk-card-header uk-background-muted">
+			        <div class="uk-grid-small uk-flex-middle" uk-grid>
+						<div class="uk-width-expand">
+							<div class="uk-card-title uk-margin-remove-bottom">
+								{{email}}
+								{{#if primary_account}}<small class='uk-display-block uk-text-success'>Primary Account</small>{{/if}}
+							</div>
+							{{#either added ended}}
+							<p class="uk-text-meta uk-margin-remove-top">
+								<time datetime="{{utc added}}" label="Begun:">{{date added}}</time>
+								{{#if ended}}<time datetime="{{utc endDate}}" label="Ended:">{{date endDate}}</time>{{/if}}
+							</p>
+							{{/either}}
+						</div>
+			            <div class="uk-width-auto">
+			            	{{#if apikey}}
+			            	<div class='uk-inline'>
+			            		{{#equals price "0.00"}}<span class='uk-text-bold'>{{#if ended}}Expired{{else}}Free{{/if}}</span>{{else}}
+			            		<sup>$</sup><span class='uk-text-bold'>{{price}}</span><sub>/quarter</sub>
+			            		{{/equals}}
+			            	</div>
+			            	{{/if}}
+			            	<div class="uk-inline">
+							    <button class="uk-button uk-buitton-link" type="button" uk-icon="more-vertical">{{{reason statusReason}}}</button>
+							    <div uk-dropdown="pos: bottom-right">
+						    	<ul class="uk-nav-default uk-text-nowrap" uk-nav>
+						    		{{#unless primary_account}}
+						    		<li><a href="/me/apikeys/edit/{{id}}/"><span uk-icon='pencil' class='uk-margin-small-right'></span>Edit user</a></li>
+						    		{{/unless}}
+							    	<li><a href="mailto:accounts@coursesuite.com.au?subject=Order%20Support%20{{referenceId}}"><span uk-icon='mail' class='uk-margin-small-right'></span>Order support</a></li>
+									{{#decodable subscriptionUrl}}
+										<li><a href="{{.}}"><span uk-icon='trash' class='uk-margin-small-right'></span>Cancel subscription</a></li>
+									{{/decodable}}
+								</ul>
+								</div>
+							</div>
+			            </div>
+			        </div>
+			    </div>
+			    <div class="uk-card-body">
+
+					{{#if apikey}}
+					<div class="details">
+						<p class="name">
+							<b>{{name}}</b>
+							<span class="concurrency">Licenced Concurrency: {{concurrency}}</span>
+						</p>
+						<p><b>Api Key:</b> {{apikey}}</p>
+						<p><b>Secret:</b> {{#decodable secret}}{{.}}{{/decodable}}
+					</div>
+					{{/if}}
+					{{#if ended}}
+					<form method="get" class="uk-form-stacked" id="f{{@index}}">
+						<div class="uk-margin">
+							<div class="uk-form-controls">
+								<label for="s{{@index}}">Choose a subscription option:</label>
+								<select id="s{{@index}}" onchange='document.getElementById("f{{@index}}").setAttribute("action", this.value);' class='uk-select'>
+									<option value="/me/apikeys">Choose ...</option>
+									{{#if primary_account}}{{#each @root/trial_dropdown}}
+										<option value="{{value}}{{../referrer}}">{{label}}</option>
+									{{/each}}{{/if}}
+									{{#each @root/dropdown}}
+										<option value="{{value}}{{../referrer}}">{{label}}</option>
+									{{/each}}
+								</select>
+					        </div>
+					    </div>
+	    				<div class="uk-margin">
+					        <div class="uk-form-controls">
+								<button class="uk-button uk-button-secondary"><span uk-icon="icon: credit-card"></span> Buy subscription</button>
+							</div>
+						</div>
+					</form>
+					{{/if}}
+
+			    </div>
+			    {{#if apikey}}
+			    <div class="uk-card-footer">
+			    	<p><a href="{{@root.baseurl}}me/apikeys/features/{{apikey}}/" class="uk-button uk-button-link">Manage connected apps</a></p>
+			    </div>
+			    {{/if}}
+			</div>
+
+			</td></tr>
+
+			{{/each}}
+			</tbody></table>
+
+			{{/equals}}{{/equals}}{{/equals}}
+
+		</div>
+
+	</div>
+</div>
+</div>

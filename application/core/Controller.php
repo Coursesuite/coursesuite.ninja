@@ -26,10 +26,40 @@ class Controller
             Session::init();
             $PAGE = PageFactory::getFactory(Request::cookie('login'));
         }
-        $this->Method = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? "AJAX" : $_SERVER['REQUEST_METHOD'];
-        $this->View = new View(get_class($this));
+        $this->Method = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? "AJAX" : strtoupper($_SERVER['REQUEST_METHOD']);
+        $this->View = new View(get_class($this), strtolower(substr(get_class($this), 0, -10)), $action_name);
         $this->ActionName = $action_name;
         $this->ControllerName = strtolower(substr(get_class($this), 0, -10)); // LoginController -> login
+
+        // scripts and styles required by all pages should go here
+        if ($this->ControllerName === "admin") {
+
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js");
+
+            // $this->View->Requires("bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget.js");
+            // $this->View->Requires("bower_components/blueimp-file-upload/js/jquery.iframe-transport.js");
+            // $this->View->Requires("bower_components/blueimp-file-upload/js/jquery.fileupload.js");
+            // $this->View->Requires("bower_components/cloudinary-jquery-file-upload/cloudinary-jquery-file-upload.js");
+
+            // $this->View->Requires("//widget.cloudinary.com/global/all.js");
+
+            $this->View->Requires("/js/simplemde/simplemde.min.css");
+            $this->View->Requires("simplemde/simplemde.min.js");
+            $this->View->Requires("inline-attachment/inline-attachment.js");
+            $this->View->Requires("inline-attachment/codemirror.inline-attachment.js");
+            $this->View->Requires("markdown.js");
+            $this->View->Requires("admin.js");
+
+            $this->View->Requires("admin/menubar");
+
+        } else {
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.css");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.js");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.js");
+        }
     }
 
     public function requiresAuth($key = null) {
@@ -44,4 +74,57 @@ class Controller
         return $digest->user;
     }
 
+    public function requiresBearer() {
+        if (!isset($_SERVER['HTTP_BEARER'])) return false;
+        $bearer = $_SERVER['HTTP_BEARER'];
+        if (!preg_match('/^[a-f0-9]{32}$/', $bearer)) return false;
+        $id = SubscriptionModel::get_subscription_id_for_hash($bearer);
+        if ($id === 0) die("Bearer Token was missing or invalid");
+        return $id;
+    }
+
+    public function allowCORS() {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-Requested-With");
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+                header("Access-Control-Allow-Methods: POST, OPTIONS");
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+                header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+            exit(0);
+        }
+    }
+
+    public function requiresAjax() {
+        // if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        if ($this->Method === "AJAX") {
+            return; // all good
+        }
+        header('HTTP/1.1 405 Method Not Allowed');
+        die("Method Not Allowed");
+    }
+
+    public function requiresPost() {
+        if ($this->Method === "POST") {
+            return true;
+        }
+        header('HTTP/1.1 405 Method Not Allowed');
+        die("Method Not Allowed");
+    }
+
+    public function requiresGet() {
+        if ($this->Method === "GET") {
+            return true;
+        }
+        header('HTTP/1.1 405 Method Not Allowed');
+        die("Method Not Allowed");
+    }
+
+    public function requiresDesktop() {
+        $md = new Mobile_Detect;
+        if ($md->isMobile() || $md->isTablet()) {
+            header("HTTP/1.1 418 I'm a teapot");
+            die("I'm a <i>desktop</i> teapot.");
+        }
+    }
 }

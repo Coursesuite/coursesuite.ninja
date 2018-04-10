@@ -3,5 +3,18 @@
   "version": "0.9.0",
   "description": "Authenticate and Launch CourseSuite Apps using programmatic access",
   "title": "CSAPI",
-  "url" : "https://www.coursesuite.ninja"
+  "url" : "https://www.coursesuite.ninja",
+  "header": {
+    "title": "Introduction",
+    "filename": "apidoc-header.md"
+  },
+  "footer": {
+    "title": "Example (PHP)",
+    "filename": "apidoc-footer.md"
+  },
+  "order": [
+  	"Names",
+  	"Generate",
+  	"Launch"
+  ]
 }

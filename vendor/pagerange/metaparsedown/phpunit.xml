@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<phpunit bootstrap="vendor/autoload.php">
+	<testsuites>
+		<testsuite name="metaparsedown">
+			<file>tests/MetaParsedownTest.php</file>
+			<file>tests/YamlParserTest.php</file>
+		</testsuite>
+	</testsuites>
+</phpunit>

@@ -107,7 +107,8 @@ class Encryption
         $iv = mb_substr($iv_cipher, 0, $iv_size, '8bit');
         $cipher = mb_substr($iv_cipher, $iv_size, null, '8bit');
 
-        return openssl_decrypt($cipher, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+        $result = openssl_decrypt($cipher, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+        return $result;
     }
 
     /**

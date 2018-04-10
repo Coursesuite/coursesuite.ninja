@@ -1,0 +1,15 @@
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-small">
+	            <div class="uk-card-media-top uk-cover-container">
+	                <img src="{{icon}}" alt="" uk-cover>
+	                <canvas width="307" height="195"></canvas>
+	            </div>
+	            <div class="uk-card-body">
+	                <h3 class="uk-card-title">{{name}}</h3>
+	                <p>{{tagline}}</p>
+	            </div>
+			    <div class="uk-card-footer">
+			        <a href="/products/{{#if route}}{{route}}{{else}}{{../route}}{{/if}}/{{app_key}}" class="uk-button uk-button-text"><span uk-icon="arrow-right"></span> More info</a>
+			    </div>
+	        </div>
+	    </div>

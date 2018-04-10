@@ -1,0 +1,40 @@
+{
+	"users": [
+		{"route":"admin/users/search","label":"Email", "search": true},
+		{"route":"admin/users/recent","label":"Recent"},
+		{"route":"admin/users/current","label":"Current"},
+		{"route":"admin/users/mostactive","label":"Most active"},
+		{"route":"admin/users/subaccounts","label":"Subaccounts"}
+	],
+	"subscriptions": [
+		{"route":"admin/subscriptions/","label":"Reference Id", "search": true},
+		{"route":"admin/subscriptions/","label":"Dashboard"},
+		{"route":"admin/users/current","label":"Current"},
+		{"route":"admin/users/cancelled","label":"Cancelled"},
+		{"route":"admin/users/inactive","label":"Inactive"},
+		{"route":"admin/subscriptions/api","label":"API's"}
+	],
+	"reports": [
+		{"route":"admin/reports/api_limits","label":"API Limits"},
+		{"route":"admin/reports/api_requests","label":"API Requests"},
+		{"route":"admin/reports/conversion_stats","label":"Conversion Stats"},
+		{"route":"admin/reports/applog","label":"System Log"},
+		{"route":"admin/reports/systasks","label":"System Tasks"},
+		{"route":"admin/reports/whitelabel", "label":"White Labels"}
+	],
+	"data_entry": [
+		{"route":"admin/apps","label":"Apps"},
+		{"route":"admin/crud/blacklist","label":"Blacklist"},
+		{"route":"admin/product_bundles","label":"Product Bundles"},
+		{"route":"admin/static_pages","label":"Static Pages"},
+		{"route":"admin/store_sections","label":"Store Sections"},
+		{"route":"admin/testimonials","label":"Testimonials"},
+		{"route":"admin/trustedby","label":"Trusted By Logos"}
+	],
+	"utilities": [
+		{"route":"admin/crud/keystore","label":"KeyStore"},
+		{"route":"admin/hooks","label":"Hooks"},
+		{"route":"admin/storeSettings","label":"General Settings"},
+		{"route":"admin/purge","label":"Purge All Caches"}
+	]
+}

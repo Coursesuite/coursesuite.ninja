@@ -1,0 +1,32 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Testimonials</h2>
+			<p>Testimonials are short user stories that appear on the homepage that (might) link to user external profiles on social platforms or internal static pages.</p>
+		</header>
+
+		<table>
+			<thead>
+				<tr><th colspan="2">Name</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr>
+			</thead>
+			<tbody>
+			{{#each index}}
+			<tr>
+				<td>{{#equals published "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
+				<td>{{name}} {{#if handle}}({{handle}}){{/if}}</td>
+				<td><a href="{{@root.baseurl}}admin/testimonials/edit/{{id}}">Edit</a></td>
+				<td><a href="{{@root.baseurl}}admin/testimonials/delete/{{id}}">Delete</a></td>
+			</tr>
+			{{/each}}
+		</tbody>
+		<tfoot>
+			<tr><td colspan="4"><i class='fa fa-plus-circle'></i><a href="{{@root.baseurl}}admin/testimonials/new/0">Add a new testimonial</a></td></tr>
+		</tfoot>
+		</table>
+
+	</article>
+</div>

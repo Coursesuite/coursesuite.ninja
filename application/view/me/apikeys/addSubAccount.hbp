@@ -1,0 +1,25 @@
+			<p>A sub-account lets you buy separate API Keys for your own clients or implementations. To add a sub-account, enter a valid email address for it below.</p>
+
+			<form method="post" class="uk-form-stacked" action="{{baseurl}}me/apikeys/save/-1/">
+				<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+				<div class="uk-margin">
+					<label class="uk-form-label" for="email">Email address:</label>
+					<div class="uk-form-controls">
+						<input class="uk-input" type="email" name="email" id="email" placeholder="a.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*" value="{{account.user_email}}">
+					</div>
+				</div>
+				{{#if command_feedback}}
+				<div class="uk-margin">
+					<div class="uk-form-controls">
+						<p class="uk-text-warning">{{command_feedback}}</p>
+					</div>
+				</div>
+				{{/if}}
+				<div class="uk-margin">
+					<div class="uk-form-controls">
+						<button type="submit" class="uk-button uk-button-primary uk-margin-right">Add sub-account</button>
+						<a href="{{baseurl}}me/apikeys" class="uk-button uk-button-link"> Cancel</a>
+					</div>
+				</div>
+			</form>
+

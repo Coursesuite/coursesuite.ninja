@@ -1,9 +1,9 @@
-<article class="system-index admin-tools">
-    <section class='standard-width'>
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
 
-    <header class="admin-header">
-        {{> admin_toolbar}}
-    </header>
-
-    </section>
-</article>
+	<article>
+		<p>please select something.</p>
+	</article>
+</div>

@@ -13,17 +13,22 @@ class Licence {
 
 			$database = DatabaseFactory::getFactory()->getConnection();
 			$query = $database->prepare("
-				select md5(s.referenceId) refId, t.concurrency from subscriptions s
-				inner join product p on p.id = s.product_id
-				inner join app_tiers t on (p.entity_id = t.id and p.entity = 'app_tiers' and p.active = 1)
-
-				union
-
-				select md5(s.referenceId) refId, t.concurrency from subscriptions s
-				inner join product p on p.id = s.product_id
-				left outer join bundle_apps b on (p.entity_id = b.bundle and p.entity = 'bundle' and p.active = 1)
-				inner join app_tiers t on t.id = b.`app_tier`
+			    SELECT md5(s.referenceId) refId, pb.concurrency from subscriptions s
+			    INNER JOIN product_bundle pb ON pb.id = s.product_id
+			    WHERE s.status = 'active'
 			");
+
+			// 	select md5(s.referenceId) refId, t.concurrency from subscriptions s
+			// 	inner join product p on p.id = s.product_id
+			// 	inner join app_tiers t on (p.entity_id = t.id and p.entity = 'app_tiers' and p.active = 1)
+
+			// 	union
+
+			// 	select md5(s.referenceId) refId, t.concurrency from subscriptions s
+			// 	inner join product p on p.id = s.product_id
+			// 	left outer join bundle_apps b on (p.entity_id = b.bundle and p.entity = 'bundle' and p.active = 1)
+			// 	inner join app_tiers t on t.id = b.`app_tier`
+			// ");
 			// the old way only calculated on api products
 			// select s.referenceId, t.concurrency
 			// from subscriptions s
@@ -51,26 +56,33 @@ class Licence {
 	// return the number of places in total for a subscription
 	public static function total_seats($hash) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		// this will either match on an app_tier or a bundle, but not both, one half of the union will always be empty
 		// the last union is a fallback so that the default total seats is 1, in case the subscription isn't found
 		$query = $database->prepare("
-			SELECT t.concurrency from subscriptions s
-			inner join product p on p.id = s.product_id
-			inner join app_tiers t on (p.entity_id = t.id and p.entity = 'app_tiers' and p.active = 1)
-			where md5(s.referenceId) = :hash
-
-			union
-
-			SELECT t.concurrency from subscriptions s
-			inner join product p on p.id = s.product_id
-			left outer join bundle_apps b on (p.entity_id = b.bundle and p.entity = 'bundle' and p.active = 1)
-			inner join app_tiers t on t.id = b.`app_tier`
-			where md5(s.referenceId) = :hash
-
-			union
-
+            SELECT pb.concurrency from subscriptions s
+		    INNER JOIN product_bundle pb ON pb.id = s.product_id
+			WHERE  md5(s.referenceId) = :hash
+			UNION
 			SELECT 1
-		");
+        ");
+		// this will either match on an app_tier or a bundle, but not both, one half of the union will always be empty
+		// $query = $database->prepare("
+		// 	SELECT t.concurrency from subscriptions s
+		// 	inner join product p on p.id = s.product_id
+		// 	inner join app_tiers t on (p.entity_id = t.id and p.entity = 'app_tiers' and p.active = 1)
+		// 	where md5(s.referenceId) = :hash
+
+		// 	union
+
+		// 	SELECT t.concurrency from subscriptions s
+		// 	inner join product p on p.id = s.product_id
+		// 	left outer join bundle_apps b on (p.entity_id = b.bundle and p.entity = 'bundle' and p.active = 1)
+		// 	inner join app_tiers t on t.id = b.`app_tier`
+		// 	where md5(s.referenceId) = :hash
+
+		// 	union
+
+		// 	SELECT 1
+		// ");
 		$query->execute(array(
 			":hash" => $hash
 		));

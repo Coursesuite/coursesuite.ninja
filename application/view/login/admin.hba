@@ -1,28 +1,28 @@
-<article class="admin-logon">
-
-	<header class="common-header">
-		<h1>This area requires a password</h1>
-	</header>
-
-	<section class="direct-login standard-width">
-		<div>
-			<form method="post" action="{{baseurl}}login/admin" name="authenticate">
-				<input type="hidden" name="csrf_token" value="{{csrf_token}}">
-				<div class="row">
-					<label for="password">Enter the password:</label>
-					<input type="password" name="password" id="password" required="required">
+<div class='uk-section'>
+	<div class='uk-container uk-container-small'>
+		<div class='uk-card uk-card-default uk-padding-large'>
+		<form method="post" action="{{baseurl}}login/admin" name="authenticate" class="uk-form-stacked">
+			<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+			<div class='uk-margin'>
+				<label class='uk-form-label' for='password'>Hello.</label>
+				<div class='uk-form-controls'>
+					<input type="password" name="password" id="password" required="required" class='uk-input'>
 				</div>
-				{{#if feedback}}
-				<div class="row">
-					<label></label>
-					<output>{{feedback}}</output>
+			</div>
+			{{#if feedback}}
+			<div class='uk-margin'>
+				<div class='uk-form-controls-text'>
+				{{{feedback}}}
 				</div>
-				{{/if}}
-				<div class="row">
-					<label></label>
-					<input type="submit" value="Log in" id="form-submit-button">
+			</div>
+			{{/if}}
+			<div class='uk-margin'>
+				<div class='uk-form-controls'>
+					<input type="submit" value="¯\_(ツ)_/¯" id="form-submit-button" class='uk-button uk-button-primary'>
 				</div>
-			</form>
-		</div>
-	</section>
-</article>
+			</div>
+			</div>
+		</form>
+	</div>
+	</div>
+</div>

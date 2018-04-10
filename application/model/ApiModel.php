@@ -8,6 +8,30 @@
 class ApiModel
 {
 
+	/*
+	 * API MODS
+	 * These are functions that the user can perform on the API that affect the way apps work
+	 * For instance, White Labelling, Custom scorm templates, etc
+	 */
+	public static function get_api_mods($data = null) {
+		$model = array(
+			"whitelabel" => array(
+				"label" => "White Label",
+				"enabled" => true
+			),
+			"customtemplate" => array(
+				"label" => "Custom template",
+				"enabled" => false
+			)
+		);
+		if (isset($data)) {
+			foreach ($data as $key => $value) {
+				$model[$key]["enabled"] = $value["enabled"];
+			}
+		}
+		return $model;
+	}
+
 	public static function publicApi($user_id) {
 		$api = [];
 		$subs = SubscriptionModel::get_current_subscribed_apps_model($user_id);
@@ -41,54 +65,81 @@ class ApiModel
 	public static function validate_app_is_in_subscription($subscription_hash, $app_key) {
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$query = $database->prepare("
-		        	SELECT count(1) from apps where app_key = :app and app_id in (
-
-			        	SELECT app_id
-			            FROM apps
-			            WHERE 0 < (
-			            	SELECT count(1) from subscriptions s inner join product p
-			            	ON p.id = s.product_id AND p.product_id LIKE 'api-%'
-					WHERE md5(s.referenceId) = :hash
-					AND s.status = 'active'
-			            )
-			            AND active = 1
-			            AND auth_type = :tokenauth
-
-			UNION
-
-			        	SELECT apt.app_id
-			            FROM app_tiers apt
-			            INNER JOIN product p ON p.entity_id = apt.id AND p.entity = 'app_tiers'
-			            INNER JOIN subscriptions s ON p.id = s.`product_id`
-			            WHERE
-			                 md5(s.`referenceId`) = :hash
-			                 AND s.`status` = 'active'
-
-		            UNION
-
-			            SELECT app_tiers.app_id
-			            FROM bundle_apps
-			            INNER JOIN app_tiers ON bundle_apps.`app_tier` = app_tiers.`id`
-			            WHERE bundle_apps.`bundle` IN (
-			                    SELECT product.`entity_id`
-			                    FROM product
-			                    WHERE product.`id` IN (
-			                        SELECT `product_id` FROM subscriptions
-			                            WHERE md5(referenceId) = :hash
-			                            AND `status` = 'active'
-			                    )
-			            )
-		        	)
+			SELECT count(1) FROM subscriptions
+			WHERE md5(referenceId) = :hash
+			AND status = 'active'
+			AND product_id IN (
+				SELECT pb.id FROM apps a JOIN product_bundle pb ON 1 = (find_in_set(cast(a.app_id AS nchar),pb.app_ids) > 0)
+				WHERE a.app_key = :app_key
+			)
 		");
-		$query->execute(array(":hash" => $subscription_hash, ":app" => $app_key, ":tokenauth" => AUTH_TYPE_TOKEN));
-		return ($query->fetch(PDO::FETCH_COLUMN, 0) > 0);
+		$query->execute(array(":hash" => $subscription_hash, ":app_key" => $app_key));
+		return ($query->fetchColumn(0) > 0);
 	}
+
+	// 	$database = DatabaseFactory::getFactory()->getConnection();
+	// 	$query = $database->prepare("
+ //        	SELECT count(1) from apps where app_key = :app and app_id in (
+
+	// 	        	SELECT app_id
+	// 	            FROM apps
+	// 	            WHERE 0 < (
+	// 	            	SELECT count(1) from subscriptions s inner join product p
+	// 	            	ON p.id = s.product_id AND p.product_id LIKE 'api-%'
+	// 					WHERE md5(s.referenceId) = :hash
+	// 					AND s.status = 'active'
+	// 	            )
+	// 	            AND active = 1
+	// 	            AND auth_type = :tokenauth
+
+	// 			UNION
+
+	// 	        	SELECT apt.app_id
+	// 	            FROM app_tiers apt
+	// 	            INNER JOIN product p ON p.entity_id = apt.id AND p.entity = 'app_tiers'
+	// 	            INNER JOIN subscriptions s ON p.id = s.`product_id`
+	// 	            WHERE
+	// 	                 md5(s.`referenceId`) = :hash
+	// 	                 AND s.`status` = 'active'
+
+	//             UNION
+
+	// 	            SELECT app_tiers.app_id
+	// 	            FROM bundle_apps
+	// 	            INNER JOIN app_tiers ON bundle_apps.`app_tier` = app_tiers.`id`
+	// 	            WHERE bundle_apps.`bundle` IN (
+	// 	                    SELECT product.`entity_id`
+	// 	                    FROM product
+	// 	                    WHERE product.`id` IN (
+	// 	                        SELECT `product_id` FROM subscriptions
+	// 	                            WHERE md5(referenceId) = :hash
+	// 	                            AND `status` = 'active'
+	// 	                    )
+	// 	            )
+ //        	)
+	// 	");
+	// 	$query->execute(array(":hash" => $subscription_hash, ":app" => $app_key, ":tokenauth" => AUTH_TYPE_TOKEN));
+	// 	return ($query->fetch(PDO::FETCH_COLUMN, 0) > 0);
+	// }
 
 
 	// the parner function for "find_model_for_token"
 	// this generates the token by starting with the md5 (which is a referenceId) and just hashing it... there nothing more to do
 	public static function generate_token_for_subscription($md5_referenceId) {
 		return password_hash($md5_referenceId, PASSWORD_BCRYPT, array("cost" => 10));
+	}
+
+	public static function find_hash_for_token($token) {
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->prepare("select md5(referenceId) ref from subscriptions order by subscription_id desc");
+		$query->execute();
+		foreach ($query->fetchAll() as $row) {
+			if (password_verify($row->ref, $token)) { // kinda slow since it's a bcrypt hash function
+				return $row->ref;
+				break;
+			}
+		}
+		return null;
 	}
 
 	// find the subscription and user info for an app token (used by /api/validate/)
@@ -98,7 +149,7 @@ class ApiModel
 		$query = $database->prepare("
 			select s.subscription_id, md5(s.referenceId) refId, u.user_id, s.product_id from subscriptions s
 			inner join users u on u.user_id = s.user_id
-			where s.endDate is null
+			where (s.endDate is null or s.endDate > now())
 			and s.status = 'active'
 			and u.user_deleted = 0
 			and u.user_active = 1
@@ -138,8 +189,8 @@ class ApiModel
 			return $result;
 		} else {
 			return array(
-			             "html" => "",
-			             "css" => ""
+			"html" => "",
+			"css" => ""
 			);
 		}
 	}

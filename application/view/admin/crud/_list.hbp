@@ -1,0 +1,30 @@
+				{{#equals @root.selected_action "list"}}
+
+				{{> crud_list}}
+
+				{{else}}
+
+				<form class='uk-form-stacked' method='post' action="{{@root.baseurl}}admin/crud/{{@root.selection}}/{{@root.selected_identity}}/save/">
+					<input type='hidden' name='csrf-token' value='{{@root.csrf-token}}'>
+
+					{{#each crud}}
+					{{> crud_field}}
+					{{/each}}
+
+					<div class='uk-margin'>
+						<div class='uk-form-controls'>
+							<button type='submit' class='uk-button uk-button-primary'>Save</button>
+							<a href='{{@root.baseurl}}admin/crud/{{@root.selection}}' class='uk-button uk-button-link'>Cancel</a>
+						</div>
+					</div>
+
+				</form>
+
+				{{/equals}}
+
+				{{{renderTable @root.table (lookup @root.selection "crud") (lookup @root.selection "key") "{{@root.baseurl}}admin/crud/{{@root.selection}}/%d/edit/"}}}
+
+				(lookup . "key")
+
+				{{{renderTable @root.table (lookup . "key") "{{@root.baseurl}}admin/crud/{{@root.selection}}/%d/edit/"}}}
+{{renderCrudTable @root}}

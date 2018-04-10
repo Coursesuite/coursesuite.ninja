@@ -9,7 +9,7 @@ class BlogModel extends Model
 
 	public function get_model()
 	{
-		return (array) $this->data_model;
+		return $this->data_model;
 	}
 
 	public function set_model($data)
@@ -17,11 +17,13 @@ class BlogModel extends Model
 		$this->data_model = $data;
 	}
 
-	public function __construct($entry_id = 0, $page_index = 0)
+	public function __construct($entry = null, $page_index = 0)
 	{
 		parent::__construct();
-		if ($entry_id > 0) {
+		if (is_numeric($entry) && (($entry_id = intval($entry,10)) > 0)) {
 			self::load($entry_id);
+		} else if (!empty($entry) && self::verify_slug($entry)) {
+			self::loadBySlug($entry);
 		} else {
 			self::load_summary($page_index);
 		}
@@ -40,7 +42,13 @@ class BlogModel extends Model
 
 	public function load($id)
 	{
-		$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id))[0]; // 0th of a fetchall
+		$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id),"*",true);
+		return $this;
+	}
+
+	public function loadBySlug($slug)
+	{
+		$this->data_model = parent::Read(self::TABLE_NAME, "slug=:slug", array(":slug" => $slug),"*",true);
 		return $this;
 	}
 
@@ -92,6 +100,21 @@ class BlogModel extends Model
 		$query = $database->prepare($sql);
 		$query->execute();
 		return (int) $query->fetchColumn(0);
+	}
+
+	public static function blog_entry_name($entry)
+	{
+
+		if (is_numeric($entry) && (($entry_id = intval($entry,10)) > 0)) {
+			return Model::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id"=>$key), "title", true)->title;
+		} else if (!empty($entry) && self::verify_slug($entry)) {
+			return Model::Read(self::TABLE_NAME, "slug=:slug", array(":slug"=>$entry), "title", true)->title;
+		}
+		return "?";
+	}
+
+	private static function verify_slug($slug) {
+		return parent::Exists(self::TABLE_NAME, "slug=:slug", [":slug" => $slug]);
 	}
 
 }

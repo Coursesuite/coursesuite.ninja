@@ -1,0 +1,34 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>{{englishify selection}}</h2>
+		</header>
+
+		<div id="jsGrid"></div>
+
+		<script>
+			var datasrc = {{{stringify datatable}}};
+			$(function() {
+				$("#jsGrid").jsGrid({
+			        width: "100%",
+			        pageSize: 25,
+
+			        inserting: true,
+			        editing: true,
+			        sorting: true,
+			        paging: true,
+
+			        data: datasrc,
+
+			        fields: {{{stringify fields}}}
+
+			    });
+			});
+		</script>
+
+	</article>
+</div>

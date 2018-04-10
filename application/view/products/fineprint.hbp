@@ -1,0 +1,16 @@
+				<div class='uk-panel uk-panel-default uk-background-muted uk-padding-small'>
+				<h5 class='uk-h5 cs-heading-line'><span uk-icon="more" class='uk-margin-small-right'></span>Fine print</h5>
+				<ul class='uk-text-small'>
+					<li>Fast, Secure purchasing via <a href="https://fastspring.com/">FastSpring</a></li>
+					{{#equals App.app_key "api"}}
+					<li>Your subscription will be charged quarterly until cancelled.</li>
+					<li>API documentation is available <a href="/apidoc/" target="_blank">here</a>.</li>
+					{{else}}
+					<li>First {{@root/FreeTrialDays}} days of your subscription are free.</li>
+					<li>Your subscription will be charged monthly until cancelled.</li>
+					<li>Apps are desktop browser-based and require Firefox, Safari, Chrome, Opera or Vivaldi.</li>
+					<li>Use of this service implies you have read and agree to our <a href="/content/terms">Terms & Conditions</a>.</li>
+					{{/equals}}
+					{{#if @root/editlink}}<li><a href="{{@root/editlink}}">Edit this app</a>.</li>{{/if}}
+				</ul>
+				</div>

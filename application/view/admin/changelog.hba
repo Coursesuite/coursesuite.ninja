@@ -1,0 +1,23 @@
+<h1>change log</h1>
+<p><form method="post" action="/admin/changeLog/">
+	<label>Select an app: <select name="app_id" onchange="$(this).closest('form').submit()"><option>Select an app</option>
+		{{#each apps}}<option value="{{app_id}}"{{#equals ../app_id app_id}} selected{{/equals}}>{{app_key}}</option>{{/each}}
+	</select></label>
+</form></p>
+
+{{#if app_id}}
+<h2>Add an entry</h2>
+<form method="post" action="/admin/changeLog/0/new">
+	<input type="hidden" name="app_id" value="{{app_id}}">
+	<div><textarea rows="10" cols="80" name="entry" placeholder="Add the changelog entry here, markdown supported" data-markdown="true"></textarea></div>
+	<div><input type="submit" value="Save"></div>
+</form>
+
+<h2>Existing entries</h2>
+
+{{#each entries}}
+<fieldset><legend>{{added}}</legend>
+{{{htmlify value}}}</fieldset>
+{{/each}}
+
+{{/if}}

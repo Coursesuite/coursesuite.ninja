@@ -1,0 +1,26 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Store Sections</h2>
+			<p>To be visible, apps must belong to one or more Store Sections, which appear under the Products menu.</p>
+		</header>
+		<table>
+			<thead><tr><th colspan="2">Key</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr></thead>
+			<tbody>
+			{{#each index}}
+			<tr>
+				<td>{{#equals visible "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
+				<td>{{label}}</td>
+				<td><a href="{{@root.baseurl}}admin/store_sections/edit/{{id}}">Edit</a></td>
+				<td><a href="{{@root.baseurl}}admin/store_sections/delete/{{id}}">Delete</a></td>
+			</tr>
+			{{/each}}
+		</tbody>
+		<tfoot><tr><td><i class='fa fa-plus-circle'></i></td><td colspan="5"><a href="{{@root.baseurl}}admin/store_sections/new/0">Add a new Store Section</a></td></tr></tfoot></table>
+
+	</article>
+</div>

@@ -1,0 +1,41 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Editing testimonial {{data.page_key}}</h3>
+		</header>
+		<form method="post" action="/admin/testimonials/save/{{id}}/">
+		{{#with formdata}}
+			<div class="row"><label for="avatar">avatar:</label>
+				<div><input type="text" id="avatar" name="avatar" value="{{avatar}}"></div>
+			</div>
+			<div class="row"><label for="name">Name: </label>
+				<div><input type="text" id="name" name="name" value="{{name}}"></div>
+			</div>
+			<div class="row"><label for="title">Title:</label>
+				<div><input type="text" id="title" name="title" value="{{title}}"></div>
+			</div>
+			<div class="row"><label for="Link">Link:</label>
+				<div><input type="text" id="link" name="link" value="{{link}}"></div>
+			</div>
+			<div class="row"><label for="handle">Handle:</label>
+				<div><input type="text" id="handle" name="handle" value="{{handle}}"></div>
+			</div>
+			<div class="row mde"><label for="entry">Entry:</label>
+				<div><textarea id="content" name="entry" rows="10" cols="80" data-markdown="true">{{entry}}</textarea>
+					<br><small>Suggetion: About 110 words maximum, for more create a <a href="/admin/static_pages">static_page</a> and hyperlink to it from the entry text.</small></div>
+			</div>
+            <div class="row"><label>Published</label>
+            	<div><label><input type="radio" name="published" value="0"{{#equals published "0"}} checked{{/equals}}>No</label>
+            		<label><input type="radio" name="published" value="1"{{#equals published "1"}} checked{{/equals}}>Yes</label> </div>
+            </div>
+			<div class="row"><label />
+				<div><button>Save</button> <a href="{{@root.baseurl}}admin/testimonials/" class='button'>Cancel</a></div>
+			</div>
+		{{/with}}
+		</form>
+	</article>
+</div>

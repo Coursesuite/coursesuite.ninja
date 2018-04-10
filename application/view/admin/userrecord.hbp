@@ -5,7 +5,9 @@
 	<td>{{user_logon_count}}</td>
 	<td>{{last_browser}}</th>
 	<td>{{subscription_status}}</td>
+{{#if subscription_reason}}	<td>{{subscription_reason}}</td>{{/if}}
 	<td>{{subscription_starts}}</td>
 	<td>{{subscription_ends}}</td>
 	<td>{{order_id}}</td>
+	<td>{{product}}</td>
 </tr>

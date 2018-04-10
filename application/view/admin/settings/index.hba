@@ -1,0 +1,43 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>general settings</h2>
+		</header>
+
+	<form method="post" action="{{baseurl}}admin/storeSettings/update">
+		<div class="row">
+			<label for="foobar">FastSpring Trial Days</label>
+			<input type="number" min="0" max="99" value="{{freetrialdays}}" step="1" id="foobar" name="freeTrialDays">
+		</div>
+
+		<div class="row mde"><label for="description">Footer left column</label>
+		<div><textarea id="footer_col1" name="footer_col1" rows="5" cols="80" data-markdown="true">{{footer.0}}</textarea></div></div>
+
+		<div class="row mde"><label for="description">Footer middle column</label>
+		<div><textarea id="footer_col1" name="footer_col2" rows="5" cols="80" data-markdown="true">{{footer.1}}</textarea></div></div>
+
+		<div class="row mde"><label for="description">Footer right column</label>
+		<div><textarea id="footer_col1" name="footer_col3" rows="5" cols="80" data-markdown="true">{{footer.2}}</textarea></div></div>
+
+		<p>Email templates can be made <a href="https://beefree.io/" target="_blank">here</a>. There are only a few variables you have to deal with:</p>
+		<ul>
+			<li>&#123;&#123;header&#125;&#125; - (required) Both the subject of the email, plus the Header of the email.</li>
+			<li>&#123;&#123;body&#125;&#125; - (required) Markdown version of your html to be sent.</li>
+			<li>&#123;&#123;link&#125;&#125; - (optional) Hyperlink to send, if any (e.g. for verification emails, etc)</li>
+		</ul>
+
+		<div class="row"><label for="emailTemplate">Template</label>
+		<div><textarea id="emailTemplate" name="emailTemplate" rows="10">{{{emailTemplate}}}</textarea></div></div>
+
+		<div class="row"><label>Custom Css</label>
+			<div><textarea name="customcss" rows="10">{{{customcss}}}</textarea></div>
+		</div>
+
+		<div class="row"><label /><div><input type="submit"></div></div>
+	</form>
+</article>
+</div>

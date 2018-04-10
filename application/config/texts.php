@@ -32,7 +32,7 @@ return array(
     "FEEDBACK_USERNAME_DOES_NOT_FIT_PATTERN" => "Username does not fit the name pattern: only a-Z and numbers are allowed, 2 to 64 characters.",
     "FEEDBACK_USERNAME_TOO_SHORT_OR_TOO_LONG" => "Username cannot be shorter than 2 or longer than 64 characters.",
 
-    "FEEDBACK_EMAIL_FIELD_EMPTY" => "Email field was empty.",
+    "FEEDBACK_EMAIL_FIELD_EMPTY" => "Email field was empty or was not a valid address.",
     "FEEDBACK_EMAIL_REPEAT_WRONG" => "Email and email repeat are not the same",
     "FEEDBACK_EMAIL_AND_PASSWORD_FIELDS_EMPTY" => "Email and password fields were empty.",
     "FEEDBACK_EMAIL_DOES_NOT_FIT_PATTERN" => "Sorry, your chosen email does not fit into the email naming pattern.",
@@ -103,7 +103,7 @@ return array(
     "EMAIL_VERIFICATION_CONTENT" => "Please click on this link to activate your account: ",
     "EMAIL_TRIAL_VERIFICATION_CONTENT" => "Thank you for registering for a trial account. Click the link to activate your 14 day trial: ",
 
-    "EMAIL_ONE_TIME_PASSWORD" => "Hi!\n\nSomeone (probably you) wants to <a href='{{link}}'>log on to CourseSuite</a> with this email address. Go back to your browser window and enter the following password:\n\n#{{password}}\n\nNote: this password can only be used once - don't save it! You will remain logged in until you press Logout. Logging on to our service indicates that you have read and accept our <a href='" . Config::get('URL') . "/content/terms'>Terms and Conditions</a>.",
+    "EMAIL_ONE_TIME_PASSWORD" => "Hi!\n\nSomeone (probably you) wants to <a href='{{link}}'>log on to CourseSuite</a> with this email address. Go back to your browser window and enter the following password:\n\n#{{password}}\n\nNote: this password can only be used once - don't save it! You will remain logged in until you go to My Account then press Logout. Logging on to our service indicates that you have read and accept our <a href='" . Config::get('URL') . "/content/terms'>Terms and Conditions</a>.\n\nYou can safely delete this email.",
 
     "TIER_MATRIX_HEADER" => "<h4>One subscription <i class='cs-loader cs-super'></i>.</h4>
 							 <h3>Multiple products.</h3>",
@@ -150,5 +150,10 @@ return array(
     "EMAIL_USER_PASSWORD_RESET_REQUEST" => "Hi\nSomeone (probably you) requested their CourseSuite password be reset. If this is good with you, click the link below to link below to generate a new password (which will be emailed to you). Note: changing your password will log out out of any active sessions. This link will exipire in 30 minutes.\n-----------------------------\n{{link}}\n-----------------------------\nCheers\nThe CourseSuite Team.",
 
     "INVALID_URL" => "Was not able to validate the url",
+
+    "TRIAL_API_LABEL" => "Trial Account (Expires after 7 days)",
+    "TRIAL_API_UNAVAILABLE" => "Trial Account is unavailable",
+    "TRIAL_API_ALREADY_SUBSCRIBED" => "You are already subscribed with an API KEY",
+    "TRIAL_API_TOO_MANY_TRIALS" => "Sorry you have already trialled the API more than once, please consider purchasing or contact us for more information.",
 
 );

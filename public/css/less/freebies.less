@@ -1,0 +1,28 @@
+body#freebies_index {
+	main {
+		position: relative;
+		> .bg-area {
+			position: absolute;
+		    width: 0;
+		    height: 0;
+		    border-style: solid;
+		    line-height: 0px;
+		    bottom: 0;
+		    &.left-bg {
+			    border-width: 400px 0 0 2600px;
+			    border-color: transparent transparent transparent rgba(204, 204, 204, 0.25);
+			    right: 8%;
+		    }
+		    &.right-bg {
+			    border-width: 0 0 590px 2500px;
+			    border-color: transparent transparent rgba(255, 255, 0, 0.2) transparent;
+			    right: 0;
+			    left: 15%;
+		    }
+		}
+	    article.store-index {
+	    	margin-bottom: 0;
+	    	position: relative;
+	    }
+	}
+}

@@ -41,7 +41,7 @@ class MessageModel extends Model
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 		//  case user_id when 0 then false else true end dismissable
-		$sql = "SELECT message_id, level, text, created
+		$sql = "SELECT message_id, level, `text`, created, user_id
 				FROM message
 				WHERE (user_id = :user_id OR user_id = 0)
 				AND (expires IS NULL OR expires >= CURRENT_TIMESTAMP)
@@ -85,33 +85,31 @@ class MessageModel extends Model
 		}
 
 		if ($single_instance === true) {
-			// check to see if we have already notified the user with this exact message/level and they haven't yet read it. If that's the case, exit
+
 			$database = DatabaseFactory::getFactory()->getConnection();
+			// look for messages with the same text/level/user
+			//	  then filter out messages for the same text/level/user that we have read
+			// if any records remain, then we have an unread copy, exit
 			$query = $database->prepare("
-				SELECT message_id FROM message
-				WHERE `text` = :txt
-				AND `level` = :lvl
-				AND `user_id` = :uid
+				SELECT count(1) FROM message
+				WHERE md5(`text`)=:txt
+				AND level=:lvl
+				AND user_id=:uid
+				AND message_id NOT IN (
+				    SELECT m.message_id FROM message m
+				    INNER JOIN messageread r ON (m.message_id = r.message_id AND m.user_id = r.user_id)
+					WHERE md5(m.`text`)=:txt
+					AND m.level=:lvl
+					AND m.user_id=:uid
+				)
 			");
 			$query->execute(array(
-				":txt" => $message,
-				":lvl" => $level,
-				":uid" => $user_id
+				":txt"=>md5($message),
+				":lvl"=>$level,
+				":uid"=>$user_id,
 			));
-			if ($msg_id = $query->fetchColumn()) { // 0 is falsey, so >0 === found
-				$query = $database->prepare("
-					SELECT count(1) FROM messageread
-					WHERE user_id = :uid
-					AND message_id = :mid
-				");
-				$query->execute(array(
-					":uid" => $user_id,
-					":mid" => $msg_id,
-				));
-				if ($query->fetchColumn() === 0) return; // exact notification has already been added and not yet read
-			}
+			if ((int) $query->fetchColumn() > 0) return;
 		}
-
 		$model = self::Make();
 		$model["user_id"] = $user_id;
 		unset($model["created"]); // allow database default to apply

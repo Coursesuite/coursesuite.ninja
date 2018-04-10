@@ -1,0 +1,56 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>{{method}} product bundle {{formdata.product_key}}</h2>
+		</header>
+
+		<form method="post" action="{{baseurl}}admin/product_bundles/save/{{formdata.id}}/">
+            <div class="row"><label>fastspring product key (a-z, 0-9, -)</label>
+            	<div><input type="text" name="product_key" value="{{formdata.product_key}}" pattern="[A-Za-z0-9-]+" placeholder="Letters, numbers or dashes; no other characters"></div>
+            </div>
+            <div class="row"><label>fastspring store url</label>
+            	<div><input type="text" name="store_url" value="{{formdata.store_url}}"></div>
+            </div>
+            <div class="row"><label>active</label>
+                  <div><label><input type="radio" name="active" value="0"{{#equals formdata.active "0"}} checked{{/equals}}>No</label>
+                        <label><input type="radio" name="active" value="1"{{#equals formdata.active "1"}} checked{{/equals}}>Yes</label> </div>
+            </div>
+            <div class="row"><label>user-facing sort order</label>
+            	<div><input type="number" min="1" max="999" step="1" name="sort" value="{{formdata.sort}}"></div>
+            </div>
+            <div class="row"><label>user-facing label</label>
+                  <div><input type="text" name="label" value="{{formdata.label}}"></div>
+            </div>
+            <div class="row mde"><label>user-facing description</label>
+                  <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{{formdata.description}}}</textarea></div>
+            </div>
+            <div class="row"><label>price (00.00)</label>
+                  <div><input type="number" min="00.00" max="999999.99" step="0.01" name="price" value="{{formdata.price}}"></div>
+            </div>
+            <div class="row"><label>concurrency</label>
+            	<div><select name="concurrency">
+                        <option value="1"{{#equals formdata.concurrency "1"}} selected{{/equals}}>1</option>
+                        <option value="2"{{#equals formdata.concurrency "2"}} selected{{/equals}}>2</option>
+                        <option value="5"{{#equals formdata.concurrency "5"}} selected{{/equals}}>5</option>
+                        <option value="10"{{#equals formdata.concurrency "10"}} selected{{/equals}}>10</option>
+                        <option value="15"{{#equals formdata.concurrency "15"}} selected{{/equals}}>15</option>
+                        <option value="20"{{#equals formdata.concurrency "20"}} selected{{/equals}}>20</option>
+                        <option value="100"{{#equals formdata.concurrency "100"}} selected{{/equals}}>100</option>
+                  </select></div>
+            </div>
+            <div class="row"><label>bundled apps (select/delete, or drag to change order)</label>
+            	<div><select id="connected-apps" name="app_ids[]" multiple>
+                        {{#each formdata.Apps}}<option value="{{app_id}}"{{#isin app_id @root.formdata.app_ids}} selected{{/isin}}>{{app_key}}</option>{{/each}}
+                  </select></div>
+            </div>
+            <div class="row"><label />
+            	<div><button>Save</button> <a href="{{baseurl}}admin/product_bundles/" class='button'>Cancel</a></div>
+           	</div>
+		</form>
+
+	</article>
+</div>

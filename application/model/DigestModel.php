@@ -13,7 +13,7 @@ class DigestModel {
 		$sql = "select md5(s.referenceId) apikey, u.secret_key from users u
 			inner join subscriptions s
 			on u.user_id = s.user_id
-			where s.product_id in (select id from product where product_id like 'api-%')
+			where s.product_id in (select id from product_bundle where product_key like 'api-%')
 			and s.active = 1";
 		$params = array();
 		if (!is_null($apikey)) {
@@ -24,7 +24,7 @@ class DigestModel {
 		$query = $database->prepare($sql);
 		$query->execute($params);
 		foreach ($query->fetchAll() as $row) {
-			$results[$row->apikey] = Encryption::decrypt($row->secret_key);
+			$results[$row->apikey] = Encryption::decrypt(Text::base64dec($row->secret_key));
 		}
 		return $results;
 	}

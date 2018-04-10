@@ -3,41 +3,87 @@
 class StaticPageModel extends Model
 {
 
-    const TABLE = "static_pages";
+    const TABLE_NAME = "static_pages";
+    const ID_ROW_NAME = "id";
+    protected $data_model;
 
-    public function __construct()
+    public function get_model()
+    {
+        return $this->data_model;
+    }
+
+    public static function get_all_models()
+    {
+        $results = [];
+        $idrowname = self::ID_ROW_NAME;
+        $rows = Model::Read(self::TABLE_NAME, "", [], self::ID_ROW_NAME, false);
+        foreach ($rows as $row) {
+            $results[] = (new StaticPageModel("id", $row->$idrowname))->get_model();
+        }
+        return $results;
+    }
+
+    public function set_model($data)
+    {
+        $this->data_model = $data;
+    }
+
+    public function __construct($column = "id", $match = 0)
     {
         parent::__construct();
-    }
+        $params = [":key"=>$match];
+        $where = "";
+        switch ($column) {
+            case "id":
+                if ($match === 0) { // create
+                    $this->data_model = parent::Create(self::TABLE_NAME);
+                } else {
+                    $where = self::ID_ROW_NAME . "=:key";
+                }
+                $fetchOne = true;
+                break;
 
-    public static function Make()
-    {
-        return parent::Create(self::TABLE);
-    }
+            case "page_key":
+                $where = "page_key=:key";
+                $fetchOne = true;
+                break;
 
-    public static function Save($idrow_name, $data_model)
-    {
-        return parent::Update(self::TABLE, $idrow_name, $data_model);
-    }
-
-    public static function getRecordByKey($page_key)
-    {
-        $val = parent::Read(self::TABLE, "page_key=:id", array(":id" => $page_key));
-        if (isset($val[0])) {
-            return $val[0];
         }
-        // since this was fetch-all'd
-        return false;
+        if (!empty($where)) {
+            $data = parent::Read(self::TABLE_NAME, $where, $params, '*', $fetchOne);
+            if (!empty($data)) {
+                $this->data_model = $data;
+            }
+        }
+        return $this;
     }
 
-    public static function getRecord($id)
+    public function delete($id = 0)
     {
-        return parent::Read(self::TABLE, "id=:id", array(":id" => $id))[0]; // since this was fetch-all'd
+        if ($id > 0) {
+            parent::Destroy(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id));
+        } else {
+            $idname = self::ID_ROW_NAME;
+            parent::Destroy(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $data_model->$idname));
+        }
     }
 
-    public static function getAll()
+    public function make()
     {
-        return parent::Read(self::TABLE);
+        $this->data_model = parent::Create(self::TABLE_NAME);
+        return $this;
+    }
+
+    public function save()
+    {
+        return parent::Update(self::TABLE_NAME, self::ID_ROW_NAME, $this->data_model);
+    }
+
+    public function get_id() {
+        if (isset($this->data_model)) {
+            $idrowname = self::ID_ROW_NAME;
+            return $this->data_model->$idrowname;
+        }
     }
 
 }

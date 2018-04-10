@@ -1,0 +1,29 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Apps</h2>
+			<p>Every tile is an app. Some apps are part of <a href="{{baseurl}}admin/product_bundles/">Product Bundles</a>. Assign apps to <a href="{{baseurl}}admin/store_sections/">Store Sections</a> to show them.</p>
+		</header>
+
+		<table>
+			<thead><tr><th colspan="2">App</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-share-alt'></i> Changelog</th><th><i class='fa fa-download'></i> Related files</th><th><i class='fa fa-trash'></i> Removal</th></tr></thead>
+			<tbody>
+			{{#each index}}
+			<tr>
+				<td>{{#equals active "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
+				<td>{{name}}</td>
+				<td><a href="{{@root.baseurl}}admin/apps/edit/{{app_id}}">Edit</a></td>
+				<td><a href="{{@root.baseurl}}admin/apps/changelog/{{app_id}}">Change log</a></td>
+				<td> Manage</td>
+				<td><a href="{{@root.baseurl}}admin/apps/delete/{{app_id}}">Delete</a></td>
+			</tr>
+			{{/each}}
+		</tbody>
+		<tfoot><tr><td><i class='fa fa-plus-circle'></i></td><td colspan="5"><a href="{{@root.baseurl}}admin/apps/new/0">Add a new App</a></td></tr></tfoot></table>
+
+	</article>
+</div>

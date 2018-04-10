@@ -1,43 +1,35 @@
-<article class="blog entry-{{#if show_editor}}edit{{else}}{{#if entry_id}}single{{else}}list{{/if}}{{/if}}">
-{{#if show_editor}}
-	<header class="common-header">
-		<h1>{{#gte entry_id 1}}Edit{{else}}Create a new{{/gte}} blog entry</h1>
-		<nav>
-			<a href="{{baseurl}}blog/{{entry_id}}">Cancel</a>
-		</nav>
-	</header>
-	<section>
-		<form method="post" action="{{baseurl}}blog/{{entry_id}}/0/save/">
-			<input type="hidden" name="csrf_token" value="{{csrf_token}}">
-			<div class="inline-field"><label for="title">Blog title</label> <input type="text" id="title" name="title" value="{{title}}" class="large-input-field"></div>
-			<div><label for="short_entry">Content (before link)</label> <div><textarea id="short_entry" name="short_entry" rows="10" cols="80" data-markdown="true">{{short_entry}}</textarea></div></div>
-			<div><label for="long_entry">Content (after link)</label> <div><textarea id="long_entry" name="long_entry" rows="10" cols="80" data-markdown="true">{{long_entry}}</textarea></div></div>
-			<div><span class="spacer"></span><input type="submit" value="Save blog entry" class="submit button button-green"></div>
-		</form>
-		<p>After saving, you may still need to publish the entry to make it visible to everyone.</p>
-	</section>
-{{else}}
+<div class="uk-section blog entry-{{#if show_editor}}edit{{else}}{{#if entry_id}}single{{else}}list{{/if}}{{/if}}">
+	<div class='uk-container'>
 
 {{#if entry_id}}
-	<header class="common-header">
-		<h1>{{title}}</h1>
-		<nav>
-			<div class="sharethis-inline-share-buttons"></div>
-		</nav>
-	</header>
 
-	<section>
-		<div class="entry-content">
+	<div class="uk-flex-middle cs-svg-colour" uk-grid style="z-index: 980;" uk-sticky="bottom: #offset; cls-active: cs-blog-sticky; animation: uk-animation-slide-top-small uk-animation-fast">
+		<h1 class='uk-heading-primary uk-flex-1{{#if IsMobile}} cs-mobile-heading{{/if}}'>{{title}}</h1>
+		{{#unless IsMobile}}
+		<div class="sharethis-inline-share-buttons"></div>
+		{{/unless}}
+	</div>
+
+	<p class="uk-text-meta">Posted on {{date entry_date}}</p>
+
+	<div>
 		{{{htmlify short_entry}}}
 		{{#if long_entry}}
 		{{{htmlify long_entry}}}
 		{{/if}}
-		</div>
-		<div class="published-date">Posted on {{date entry_date}}</div>
-	</section>
+	</div>
 
-	<section class="comments">
-	<div id="disqus_thread"></div>
+	<div class="uk-margin-large-top uk-margin-large-bottom">
+		<p><a href="{{@root.baseurl}}blog" rel="previous" class="uk-button uk-button-text"><span uk-icon="arrow-left"></span> Return to blog entries</a></p>
+	</div>
+
+{{#if IsMobile}}
+	<div class='cs-share-mobile'>
+		<div class='sharethis-inline-share-buttons'></div>
+	</div>
+{{/if}}
+
+	<div id="disqus_thread" class="uk-background-muted uk-padding"></div>
 	<script>
 	(function() {
 	var d = document, s = d.createElement('script');
@@ -46,69 +38,55 @@
 	(d.head || d.body).appendChild(s);
 	})();
 	</script>
-	</section>
-
-	<footer>
-		<div class="entry-returnlink"><a href="{{@root.baseurl}}blog" rel="previous"><i class="fa fa-arrow-circle-o-left"></i> Return</a></div>
-		{{#if editable}}{{#gte published 1}}{{else}}
-			<form method="post" action="{{@root.baseurl}}blog/{{entry_id}}/0/publish/">
-				<input type="hidden" name="csrf_token" value="{{@root.csrf_token}}">
-				<input type="submit" value="Publish now" class="button button-red">
-			</form>
-		{{/gte}}
-		<a href="{{@root.baseurl}}blog/{{entry_id}}/0/edit/" class="button button-yellow"><i class="fa fa-pencil"></i> Edit</a>{{/if}}
-	</footer>
 
 {{else}}
 
-	{{#if editable}}<header class="blog-create-entry">
-		<a href="{{baseurl}}blog/0/0/create/" class="button button-green"><i class="fa fa-pencil"></i> New blog entry</a>
-	</header>{{/if}}
-
 
 	{{#each Entries}}
-
-	<section class="blog-entry-list">
-		<header>
-			<h1><a href="{{@root.baseurl}}blog/{{entry_id}}">{{title}}</a></h1>
-			<div class="published-date">Posted on {{date entry_date}}
-				{{#equals published 0}}NOT PUBLISHED{{/equals}}
+	<article class="uk-comment uk-comment-primary uk-margin-bottom">
+		<header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+			<div class="uk-width-expand">
+            	<h1 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="{{@root.baseurl}}blog/{{slug}}">{{title}}</a></h1>
+            	<ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                	<li><a href="{{@root.baseurl}}blog/{{slug}}">Posted on {{date entry_date}}</a></li>
+                	<li><a href="{{@root.baseurl}}blog/{{slug}}#disqus_thread">0 Comments</a></li>
+            	</ul>
+        	</div>
+        	<div class="uk-width-auto">
+				<p><a href="{{@root.baseurl}}blog/{{slug}}" class="uk-icon-button uk-background-default" rel="bookmark" uk-icon="link" title="Permalink"></a></p>
 			</div>
-		</header>
-
-		<div class="entry-content">
-		{{{htmlify short_entry}}}
+        </header>
+		<div class="uk-comment-body">
+			{{{htmlify short_entry}}}
 		</div>
-
-		<footer>
-			<div class="entry-permalink">
-				<a href="{{baseurl}}blog/{{entry_id}}" rel="bookmark"><i class="fa fa-link"></i> {{#if long_entry}}Full article...{{else}}Permalink{{/if}}</a>
-				<a href="{{baseurl}}blog/{{entry_id}}#disqus_thread">0 Comments</a>
-				{{#if ../editable}}<a href="{{../baseurl}}blog/{{entry_id}}/0/edit/" class="button button-yellow"><i class="fa fa-pencil"></i> Edit</a>{{/if}}
-			</div>
+		{{#if long_entry}}
+		<footer class="uk-comment-meta uk-margin-small-top">
+			<hr class="uk-divider-icon">
+			<p class="uk-text-center"><a href="{{@root.baseurl}}blog/{{slug}}" rel="bookmark" class="uk-button uk-button-primary">Continue reading<span uk-icon="arrow-right" class="uk-margin-left-small"></span></a></p>
 		</footer>
-	</section>
+		{{/if}}
+	</article>
 
 	{{/each}}
 
 
 	{{#gte Pagination.total 11}}
-	<footer class="blog-entry-list">
-		<div class="pagination">
+	<footer class="uk-text-center">
+		<div class="uk-button-group">
 		{{#Text::Paginator Pagination type="first"}}
-			<a href="{{../baseurl}}blog" {{#if disabled}} class="disabled"{{/if}}>First</a>
+			<a class="uk-button {{#if disabled}}uk-disabled" disabled{{else}}uk-button-default" href="{{@root.baseurl}}blog"{{/if}}>First</a>
 		{{/Text::Paginator}}
 		{{#Text::Paginator Pagination type="previous"}}
-			<a href="{{../baseurl}}blog/0/{{n}}"{{#if disabled}} class="disabled"{{/if}}>Prev</a>
+			<a class="uk-button {{#if disabled}}uk-disabled" disabled{{else}}uk-button-default" href="{{@root.baseurl}}blog/0/{{n}}"{{/if}}>Prev</a>
 		{{/Text::Paginator}}
 		{{#Text::Paginator Pagination type="middle" limit="7"}}
-			<a href="{{../baseurl}}blog/0/{{minus n 1}}" {{#if active}} class="active"{{/if}}>{{n}}</a>
+			<a class="uk-button {{#if active}}uk-button-primary{{else}}uk-button-default{{/if}}" href="{{@root.baseurl}}blog/0/{{minus n 1}}">{{n}}</a>
 		{{/Text::Paginator}}
 		{{#Text::Paginator Pagination type="next"}}
-			<a href="{{../baseurl}}blog/0/{{n}}"{{#if disabled}} class="disabled"{{/if}}>Next</a>
+			<a class="uk-button {{#if disabled}}uk-disabled" disabled{{else}}uk-button-default" href="{{@root.baseurl}}blog/0/{{n}}"{{/if}}>Next</a>
 		{{/Text::Paginator}}
 		{{#Text::Paginator Pagination type="last"}}
-			<a href="{{../baseurl}}blog/0/{{n}}"{{#if disabled}} class="disabled"{{/if}}>Last</a>
+			<a class="uk-button {{#if disabled}}uk-disabled" disabled{{else}}uk-button-default" href="{{@root.baseurl}}blog/0/{{n}}"{{/if}}>Last</a>
 		{{/Text::Paginator}}
 		</div>
 	</footer>
@@ -117,5 +95,4 @@
 
 {{/if}}
 
-</article>
-{{/if}}
+</div></div>

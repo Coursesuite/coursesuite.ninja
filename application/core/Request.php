@@ -19,11 +19,11 @@ class Request
      * @param mixed null or http://php.net/manual/en/filter.filters.sanitize.php
      * @return mixed the key's value or nothing
      */
-    public static function post($key, $clean = false, $filter = null)
+    public static function post($key, $clean = false, $filter = null, $filteroption = null)
     {
         if (isset($_POST[$key])) {
             if ($filter !== null) {
-                $value = filter_input(INPUT_POST, $key, $filter);
+                $value = filter_input(INPUT_POST, $key, $filter, $filteroption);
             } else {
                 $value = $_POST[$key];
             }

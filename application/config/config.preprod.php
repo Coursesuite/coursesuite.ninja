@@ -12,12 +12,14 @@ return array(
     'PATH_AVATARS_PUBLIC' => 'avatars/',
     'PATH_APP_MEDIA' => realpath(dirname(__FILE__) . '/../../') . '/public/img/apps/',
     'PATH_IMG_MEDIA' => realpath(dirname(__FILE__) . '/../../') . '/public/img/',
-    'DEFAULT_CONTROLLER' => 'store',
+
+    'DEFAULT_CONTROLLER' => 'home',
     'DEFAULT_ACTION' => 'index',
-    'DEFAULT_META_TITLE' => 'CourseSuite',
+
+    'DEFAULT_META_TITLE' => 'CourseSuite (Tim Config)',
     'DEFAULT_META_KEYWORDS' => 'coursesuite, coursesuite ninja, lms, online learning, html5 scorm, scorm package, scorm author, interactive learning, document conversion, courseware, moodle',
     'DEFAULT_META_DESCRIPTION' => 'CourseSuite is a suite of online web apps allowing rapid creation of interactive and intuitive HTML5-based SCORM courses.',
-    'DEFAULT_META_COPYRIGHT' => '&copy; <a href="http://www.coursesuite.ninja">CourseSuite</a> 2016-3016',
+    'DEFAULT_META_COPYRIGHT' => '&copy; <a href="http://coursesuite.ninja">CourseSuite</a> 2016-3016',
     'PATH_VIEW_PRECOMPILED' => realpath(dirname(__FILE__) . '/../../') . '/precompiled/',
     'DB_TYPE' => 'mysql',
     'DB_HOST' => '127.0.0.1',
@@ -26,22 +28,38 @@ return array(
     'DB_PASS' => 'RTX2VQ0}Ny',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
+
+    /**
+    * Configuration for: Redis
+    */
+    'REDIS_HOST' => '127.0.0.1',
+    'REDIS_PORT' => '6379',
+    'REDIS_PASS' => null,
+    'REDIS_PREFIX' => 'NinjaSuiteDev:',
+
+    /**
+    * Licencing server WebSocket
+    */
+    'WEBSOCKET_SCHEMA' => "ws://",
+    'WEBSOCKET_HOST' => '127.0.0.1',
+    'WEBSOCKET_PORT' => '9000',
+    'WEBSOCKET_LAYER' => "window.onbeforeunload = function(){ Layer.onclose=function(){}; Layer.close(); }; Layer.onmessage = function(event) { var msg = JSON.parse(event.data); switch (msg.command) { case 'open':case 'close':location.href = App.Home; window.close(); break; default: console.log(msg); }}",
+    'WEBSOCKET_LAYER_MINIFIED' => "eval(function(p,a,c,k,e,d){while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+c.toString(a)+'\\b','g'),k[c])}}return p}('9.a=b(1){8 0=7.4(1.6);c(0.d){3\"j\":3\"2\":l.i=h.e;f.2();m;g:k.5(0)}}',23,23,'msg|event|close|case|parse|log|data|JSON|var|Layer|onmessage|function|switch|command|Home|window|default|App|href|open|console|location|break'.split('|')))",
+
+
     'CAPTCHA_WIDTH' => 359,
     'CAPTCHA_HEIGHT' => 100,
 
     'GOOGLE_CAPTCHA_SECRET' => '6LerkRcTAAAAAEUuS9ihNcY5m1cal1atUwl3iPTa',
     'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
+    'GOOGLE_ANALYTICS_ID' => null,
 
-    'GOOGLE_INVISIBLE_CAPTCHA_SITEKEY' => '6LewIiYUAAAAAJcV-bQRfk824cYcsYwkIZ99Bpsy',
-    'GOOGLE_INVISIBLE_CAPTCHA_SECRET' => '6LewIiYUAAAAAJUOJL7dg8ImX06LZ0iyMqqOPh2-',
-
-    'GOOGLE_ANALYTICS_ID' => 'UA-68767047-1',
-    'COOKIE_RUNTIME' => 1209600,
+    'COOKIE_RUNTIME' => 31536000, // 1 year
     'COOKIE_PATH' => '/',
     'COOKIE_DOMAIN' => "",
     'COOKIE_SECURE' => false,
     'COOKIE_HTTP' => true,
-    'SESSION_RUNTIME' => 604800,
+    'SESSION_RUNTIME' => 604800, // 1 week
     'USE_GRAVATAR' => true,
     'GRAVATAR_DEFAULT_IMAGESET' => 'wavatar',
     'GRAVATAR_RATING' => 'pg',
@@ -83,14 +101,11 @@ return array(
         'tokenuser' => 'GEv6mJ7wJgWR',
         'fastspring' => 'e93NcNdpntFq',
         'discourse' => '3kurpzSGRAq4',
-        'apimatrix' => 'f56jPFGo85fs6',
-        'apianmf' => 'xGincUfPNB93L',
-        'apikaplan' => 'VCIg3OgyUM658e'
     ),
     'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
     'CLOUDCONVERT_API_KEY' => '8pxT0DHRE5lpcVzildrPoEbztL9rc5Es89xG0incUfPNB93LLZueEr7zTK7PTuZmcV1hXkRMITbhjS-U1NnnzQ',
     'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
-    'FASTSPRING_PARAM_APPEND' => '',
+    'FASTSPRING_PARAM_APPEND' => '&mode=test',
     'FASTSPRING_STORE' => 'coursesuite',
     'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
     'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
@@ -101,8 +116,35 @@ return array(
     'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
     'MAILCHIMP_LIST_ID' => '08344979e7',
     'MAILCHIMP_INTEREST_ID' => 'd3a65e22a1',
-    'FORCE_HANDLEBARS_COMPILATION' => false, // set to true to force recompilation of handlebars templates on the fly
+
+    'FORCE_HANDLEBARS_COMPILATION' => true,
 
     'ADMIN_ACCOUNT_LEVEL' => 7,
     'ADMIN_ACCOUNT_EMAIL' => '%@coursesuite.com.au',
+
+    'ADMIN_TOOLS' => array(
+        "staticPage" => array("label" => "Edit static pages", "icon" => "cs-static-pages", "active" => true),
+        "allUsers" => array("label" => "List / Search users", "icon" => "cs-users", "active" => true),
+        "editSections" => array("label" => "Edit store sections", "icon" => "cs-store-sections", "active" => true),
+        "editApps" => array("label" => "Edit apps", "icon" => "cs-apps", "active" => true),
+        "assignApps" => array("label" => "Assign apps to store sections", "icon" => "cs-flag", "active" => false),
+        "editAllProducts" => array("label" => "Edit subscription products", "icon" => "cs-products", "active" => false),
+        "editTiers" => array("label" => "Edit tiers", "icon" => "cs-tiers", "active" => false),
+        "manualSubscribe" => array("label" => "Manually manage subscriptions", "icon" => "cs-switch", "active" => false),
+        "messages" => array("label" => "Notifications", "icon" => "cs-notifications", "active" => true),
+        "editAppTierMatrix" => array("label" => "Edit app-tier matrix", "icon" => "cs-config", "active" => false),
+        "manageHooks" => array("label" => "3rd party hooks / endpoints", "icon" => "cs-config", "active" => true),
+        "storeSettings" => array("label" => "Misc store settings", "icon" => "cs-cog", "active" => true),
+        "mailTemplates" => array("label" => "Edit mail templates", "icon" => "cs-mail", "active" => true),
+        "whiteLabelling" => array("label" => "White Labelling via API", "icon" => "cs-settings", "active" => false),
+        "editBundles" => array("label" => "Edit product bundles", "icon" => "cs-apps", "active" => false),
+        "subscribers" => array("label" => "Paid Subscribers", "icon" => "fa fa-credit-card icon-hilight", "active" => false),
+        "showLog" => array("label" => "System Log", "icon" => "fa fa-scroll", "active" => true),
+        "editProducts" => array("label" => "Edit Products", "icon" => "fa fa-truck", "active" => true),
+        "changeLog" => array("label" => "App Changelog", "icon" => "fa fa-list-alt", "active" => true),
+    ),
+
+    'API_TRIAL_PRODUCT_ID' => 'api-trial',
+    'OST_APIKEY' => '0F038102777B870F9523DADE9B34AEAC',
+    'OST_SECRET_SALT' => 'jZMglLS5w9ARCNzfdUIt7bWK=O0erJ1g',
 );

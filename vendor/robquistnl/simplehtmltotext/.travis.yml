@@ -1,0 +1,9 @@
+language: php
+before_script:
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install
+php:
+  - 7.0
+  - 5.6
+  - 5.5
+  - hhvm

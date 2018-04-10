@@ -1,0 +1,166 @@
+{
+	"api_limits": {
+		"key": "id",
+		"report": true
+	},
+	"api_requests": {
+		"key": "id",
+		"report": true
+	},
+	"app_section": {
+		"key": "id",
+		"query": "select l.id, l.sort, r.app_key from app_section l inner join apps r on l.app_id = r.app_id order by r.app_key, l.sort",
+		"crud": [
+			{"field":"app_id", "kind":"select", "multiple":false, "table":"apps", "label":"app_key", "key":"app_id", "filter": "active=1"},
+			{"field":"sort", "kind": "number", "options":[1,2,3,4,5,6,7,8,9,10,20,50,100,999], "default": 999},
+			{"field":"classname", "kind":"text", "size":100},
+			{"field":"content", "kind":"markdown"}
+		]
+	},
+	"applog": {
+		"key": "id",
+		"report": true
+	},
+	"apps": {
+		"key": "app_id",
+		"query": "select app_id, app_key from apps order by app_key",
+		"crud": false,
+		"fields": [
+			{"field":"app_key", "kind":"text", "size":20},
+			{"field":"name", "kind":"text", "size":100},
+			{"field":"tagline", "kind":"text", "size":120},
+			{"field":"whatisit", "kind":"text", "size":255},
+			{"field":"icon", "kind":"image", "size":255},
+			{"field":"launch", "kind":"text", "size":255},
+			{"field":"guide", "kind":"text", "size":255},
+			{"field":"auth_type", "kind":"radio", "options": [{"label":"Authenticated","value":1,"default":false},{"label":"None","value":0,"default":true}]},
+			{"field":"active", "kind":"boolean", "default":1},
+			{"field":"description", "kind":"markdown"},
+			{"field":"media","kind":"slideshow"},
+			{"field":"meta_keywords", "kind":"csv", "size":255},
+			{"field":"meta_description", "kind":"text", "size":255},
+			{"field":"meta_title", "kind":"text", "size":100},
+			{"field":"popular", "kind":"boolean", "default":0},
+			{"field":"glyph", "kind":"svg"}
+		],
+		"route": "admin/editApps"
+	},
+	"blacklist": {
+		"key": "id",
+		"query": "select id, domain, attempts from blacklist order by attempts desc",
+		"crud": [
+			{"field":"domain", "kind":"text", "size": 255},
+			{"field":"attempts", "kind":"number", "editable": false}
+		]
+	},
+	"blogentries": {
+		"key": "entry_id",
+		"query": "select entry_id, title from blogentries order by entry_date desc",
+		"crud": [
+			{"field":"title", "kind":"text", "size": 100},
+			{"field":"slug", "kind":"slug", "source":"title", "size":100},
+			{"field":"short_entry", "kind":"markdown"},
+			{"field":"long_entry", "kind":"markdown"},
+			{"field":"meta_description", "kind":"text", "size":255},
+			{"field":"published", "kind":"boolean", "default":0},
+			{"field":"entry_date", "kind":"timestamp"}
+		]
+	},
+	"changelog": {
+		"key": "id",
+		"query": "select l.id, r.app_key from changelog l inner join apps r on l.app_id = r.app_id order by r.app_key",
+		"crud": [
+			{"field":"app_id", "kind":"select", "multiple":false, "table":"apps", "label":"app_key", "key":"app_id", "filter": "active=1"},
+			{"field":"added", "kind":"timestamp"},
+			{"field":"value", "kind":"markdown"}
+		]
+	},
+	"conversion_stats": {
+		"key": "id",
+		"report": true
+	},
+	"keystore": {
+		"key": "key",
+		"query": "select key, key from keystore",
+		"crud": [
+			{"field":"value", "kind":"plaintext"}
+		]
+	},
+	"product_bundle": {
+		"key": "id",
+		"query": "select id, product_key from product_bundle",
+		"crud": [
+			{"field":"sort", "kind": "number", "options":[1,2,3,4,5,6,7,8,9,10,20,50,100,999], "default": 999},
+			{"field":"product_key", "kind":"text", "size": 50},
+			{"field":"app_ids", "kind":"select", "multiple":true, "table":"apps", "label":"app_key", "key":"app_id", "filter": "active=1"},
+			{"field":"store_url", "kind":"text", "size": 255},
+			{"field":"active", "kind":"boolean", "default": 0},
+			{"field":"label", "kind":"text", "size": 100},
+			{"field":"description", "kind":"markdown"},
+			{"field":"price", "kind":"decimal"},
+			{"field":"concurrency", "kind":"number", "options":[1,5,10,15,20,100], "default": 1}
+		]
+	},
+	"static_pages": {
+		"key": "id",
+		"query": "select id, page_key from static_pages",
+		"crud": [
+			{"field":"page_key", "kind":"text", "size": 50},
+			{"field":"body_classes", "kind":"text", "size": 50},
+			{"field":"content", "kind":"markdown"},
+			{"field":"meta_keywords", "kind":"csv", "size":255},
+			{"field":"meta_description", "kind":"text", "size":255},
+			{"field":"meta_title", "kind":"text", "size":100}
+		]
+	},
+	"store_section_apps": {
+		"key": "id",
+		"query": "select c.id, concat(s.label, '->', a.app_key) sectionApp,c.sort from store_section_apps c join apps a on c.app = a.app_id join store_sections s on s.id = c.section",
+		"crud": [
+			{"field":"app", "kind":"select", "multiple":true, "table":"apps", "label":"app_key", "key":"app_id", "filter": "active=1"},
+			{"field":"section", "kind":"select", "multiple":false, "table":"store_sections", "label":"label", "key":"id", "filter": "visible=1"},
+			{"field":"sort", "kind": "hidden-number", "options":[1,2,3,4,5,6,7,8,9,10,20,50,100,999], "default": 999}
+		]
+	},
+	"store_sections": {
+		"key": "id",
+		"query": "select id, label from store_sections order by sort",
+		"crud": [
+			{"field":"label", "kind":"text", "size": 100},
+			{"field":"epiphet", "kind":"text", "size": 150},
+			{"field":"cssclass", "kind":"text", "size": 100},
+			{"field":"visible", "kind":"boolean", "default": 1},
+			{"field":"sort", "kind": "number", "options":[1,2,3,4,5,6,7,8,9,10,20,50,100,999], "default": 999},
+			{"field":"html_pre", "kind":"markdown"},
+			{"field":"html_post", "kind":"markdown"},
+			{"field":"route", "kind":"text", "size": 20},
+			{"field":"routeLabel", "kind":"text", "size": 50}
+		]
+	},
+	"systasks": {
+		"key": "id",
+		"report": true
+	},
+	"testimonials": {
+		"key": "id",
+		"query": "select id, name from tetimonials order by published desc",
+		"crud": [
+			{"field":"avatar", "kind":"image"},
+			{"field":"name", "kind":"text", "size": 100},
+			{"field":"title", "kind":"text", "size": 100},
+			{"field":"entry", "kind":"markdown"},
+			{"field":"published", "kind":"boolean", "default": 0},
+			{"field":"link", "kind":"text", "size": 255},
+			{"field":"handle", "kind":"text", "size": 100}
+		]
+	},
+	"whitelabel": {
+		"key": "id",
+		"report": true
+	},
+	"users": {
+		"key": "user_id",
+		"crud": false,
+		"route": "admin/allUsers"
+	}
+}

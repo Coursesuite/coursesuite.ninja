@@ -1,0 +1,18 @@
+<div class='uk-section cs-products-index'>
+	{{#each Section}}
+	<div class='uk-container cs-products-{{$route}}'>
+		<h2 class='uk-h2'>{{label}}</h2>
+		{{#if epiphet}}<p class='uk-text-lead'>{{{epiphet}}}</p>{{/if}}
+		{{#if html_pre}}{{{html_pre}}}{{/if}}
+		<div class='uk-child-width-1-3@m uk-child-width-1-1@s uk-margin' uk-grid>
+		{{#each Apps}}
+		{{> tile}}
+		{{/each}}
+		</div>
+		{{#if html_post}}{{{html_post}}}{{/if}}
+		{{#unless @last}}
+		<hr class="uk-divider-icon">
+		{{/unless}}
+	</div>
+	{{/each}}
+</div>

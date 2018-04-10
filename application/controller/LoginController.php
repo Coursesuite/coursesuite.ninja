@@ -12,19 +12,20 @@ class LoginController extends Controller
 
 	public function index()
 	{
-		global $PAGE;
+		// global $PAGE;
 
 		if (Session::userIsLoggedIn()) {
 			Redirect::home();
 		} else {
-			$data = array(
-				'redirect' => Text::unescape(Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo")),
-				'baseurl' => Config::get('URL'),
-				'csrf_token' => Csrf::makeToken(),
-				'ShowPassword' => (!empty(Session::get("otp_email"))),
-				'ajax' => true
-			);
-			$this->View->renderHandlebars('login/index', $data, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+			// $data = array(
+			// 	'redirect' => Text::unescape(Request::get('redirect') ? Request::get('redirect') : Session::get("RedirectTo")),
+			// 	'baseurl' => Config::get('URL'),
+			// 	'csrf_token' => Csrf::makeToken(),
+			// 	'ShowPassword' => (!empty(Session::get("otp_email"))),
+			// 	'ajax' => true
+			// );
+			$this->View->Requires("login.js");
+			$this->View->renderHandlebars('login/index', [], "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 		}
 	}
 
@@ -44,9 +45,9 @@ class LoginController extends Controller
 		$this->View->renderHandlebars("login/timeout", $model, "_overlay", true);
 	}
 
-	public function logout()
+	public function logout($all = "false")
 	{
-		LoginModel::logout();
+		LoginModel::logout($all === "true");
 		Redirect::home();
 		exit();
 	}
@@ -77,102 +78,106 @@ class LoginController extends Controller
 	------------------------------------------------------------------------------------------------------------------------------------------------------------ */
 
 	// /login/authenticate called using ajax from store/info/app_key -> integrated.hbp
-	public function authenticate()
-	{
+	// public function authenticate()
+	// {
 
-		Response::cookie("login", null);
+	// 	Response::cookie("login", null);
 
-		$result = new stdClass();
-		$result->message = ""; // "¯\_(ツ)_/¯";
-		$result->className = "meh";
+	// 	$result = new stdClass();
+	// 	$result->message = ""; // "¯\_(ツ)_/¯";
+	// 	$result->className = "meh";
 
-		$redirect 	= trim(Request::post("redirect", true, FILTER_SANITIZE_STRING));
-		$email 		= trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
-		$app_key 	= trim(Request::post("app_key", false, FILTER_SANITIZE_STRING));
-		$password 	= trim(Request::post("password"));
+	// 	$redirect 	= trim(Request::post("redirect", true, FILTER_SANITIZE_STRING));
+	// 	$email 		= trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
+	// 	$app_key 	= trim(Request::post("app_key", false, FILTER_SANITIZE_STRING));
+	// 	$password 	= trim(Request::post("password"));
 
-		if ($password > "" and $email == "") {
-			$email = Session::get("otp_email", "");
-		}
+	// 	if ($password > "" and $email == "") {
+	// 		$email = Session::get("otp_email", "");
+	// 	}
 
-		if (!Csrf::validateToken(Request::post("csrf_token"))) {
-			$result->message = "Invalid CSRF token. Please refresh and try again. ";
+	// 	if (!Csrf::validateToken(Request::post("csrf_token"))) {
+	// 		$result->message = "Invalid CSRF token. Please refresh and try again. ";
 
-		} elseif (BlacklistModel::isBlacklisted($email)) {
-			$result->message = Text::get('REGISTRATION_DOMAIN_BLACKLISTED');
-			$result->className = "sad";
+	// 	} elseif (BlacklistModel::isBlacklisted($email)) {
+	// 		$result->message = Text::get('REGISTRATION_DOMAIN_BLACKLISTED');
+	// 		$result->className = "sad";
 
-		} elseif ($email == "" && $password == "") {
-			$result->message = "Please enter your email address.";
+	// 	} elseif ($email == "" && $password == "") {
+	// 		$result->message = "Please enter your email address.";
 
-		} elseif ($email > "" && $password == "") {
-			RegistrationModel::send_one_time_password($email, $app_key);
-			Session::set("otp_email", $email);
+	// 	} elseif (Auth::is_administrator_email($email)) {
+	// 		$result->message = "Please logon using the appropriate method for this account.";
 
-			$newmodel = new stdClass();
-			$newmodel->ajax = true;
-			$newmodel->baseurl = Config::get("URL");
-			$newmodel->csrf_token = Csrf::makeToken();
-			$newmodel->App = new stdClass();
-			$newmodel->App->app_key = $app_key;
-			$newmodel->ShowPassword = true;
-			if (!empty($app_key)) {
-				$newmodel->redirect = "/store/info/$app_key/";
-			} else {
-				$newmodel->redirect = "/login/";
-			}
-			$result->html = $this->View->renderHandlebars("login/ajaxlogon", $newmodel, null, true, true);
+	// 	} elseif ($email > "" && $password == "") {
+	// 		RegistrationModel::send_one_time_password($email, $app_key);
+	// 		Session::set("otp_email", $email);
 
-		} elseif ($email == "" && $password > "") {
-			$result->message = "Sorry your session has timed out.";
-			$result->className = "sad";
+	// 		$newmodel = new stdClass();
+	// 		$newmodel->ajax = true;
+	// 		$newmodel->baseurl = Config::get("URL");
+	// 		$newmodel->csrf_token = Csrf::makeToken();
+	// 		$newmodel->App = new stdClass();
+	// 		$newmodel->App->app_key = $app_key;
+	// 		$newmodel->ShowPassword = true;
+	// 		if (!empty($app_key)) {
+	// 			$newmodel->redirect = StoreProductsModel::find_store_route_for_app($app_key);
+	// 		} else {
+	// 			$newmodel->redirect = "/login/";
+	// 		}
+	// 		$result->html = $this->View->renderHandlebars("login/ajaxlogon", $newmodel, null, true, true);
 
-		} elseif ($email > "" && $password > "") {
-			$model = Model::Read("users", "user_email=:email", array(":email" => $email));
-			if (isset($model)) $model = $model{0};
-			if (!password_verify($password, $model->user_password_hash)) {
-				$result->message = "Your password did not match.";
-				$result->className = "sad";
-				$result->csrf_token = Csrf::makeToken();
-			} else {
-				Session::remove("otp_email");
-				$model->user_password_reset_hash = NULL;
-				$model->user_failed_logins = 0;
-				$model->user_last_login_timestamp = time();
-				$model->user_last_failed_login = NULL;
-				$model->user_suspension_timestamp = NULL;
-				$model->user_password_reset_timestamp = NULL;
-				$model->user_remember_me_token = md5(uniqid());
-				$model->user_logon_count = (int) $model->user_logon_count + 1;
-				if ((int) $model->user_account_type !== (int) Config::get('ADMIN_ACCOUNT_LEVEL')) {
-					$model->user_password_hash = password_hash(uniqid(), PASSWORD_DEFAULT); // scramble current password so the current one can't be used again
-				}
-				Model::Update("users","user_id",$model);
+	// 	} elseif ($email == "" && $password > "") {
+	// 		$result->message = "Sorry your session has timed out.";
+	// 		$result->className = "sad";
 
-				// the actual logon is just setting a hash value in a cookie
-				Auth::set_user_logon_cookie($model->user_id);
+	// 	} elseif ($email > "" && $password > "") {
+	// 		$model = Model::Read("users", "user_email=:email", array(":email" => $email));
+	// 		if (isset($model)) $model = $model{0};
+	// 		if (!password_verify($password, $model->user_password_hash)) {
+	// 			$result->message = "Your password did not match.";
+	// 			$result->className = "sad";
+	// 			$result->csrf_token = Csrf::makeToken();
+	// 		} else {
+	// 			Session::remove("otp_email");
+	// 			$model->user_password_reset_hash = NULL;
+	// 			$model->user_failed_logins = 0;
+	// 			$model->user_last_login_timestamp = time();
+	// 			$model->user_last_failed_login = NULL;
+	// 			$model->user_suspension_timestamp = NULL;
+	// 			$model->user_password_reset_timestamp = NULL;
+	// 			// $model->user_remember_me_token = md5(uniqid());
+	// 			$model->user_logon_count = (int) $model->user_logon_count + 1;
+	// 			if ((int) $model->user_account_type !== (int) Config::get('ADMIN_ACCOUNT_LEVEL')) {
+	// 				$model->user_password_hash = password_hash(uniqid(), PASSWORD_DEFAULT); // scramble current password so the current one can't be used again
+	// 			}
+	// 			Model::Update("users","user_id",$model);
 
-				$redirect = "/me/";
-				$result->redirect = $redirect;
-				$result->reload = true;
-			}
-		}
+	// 			// the actual logon is just setting a hash value in a cookie
+	// 			// then putting that into the db for auto-logon
+	// 			Auth::set_user_logon_cookie($model->user_id);
 
-		if ($this->Method === "AJAX") {
-			$this->View->renderJSON($result);
-		} else {
-			if ($result->className === "sad") {
-				Session::set("feedback_negative", $result->message);
-			} else if ($result->className === "happy") {
-				Session::set("feedback_positive", $result->message);
-			} else if ($result->className === "intermediate") {
-				Session::set("feedback_intermediate", $result->message);
-			} else {
-				Session::set("feedback_meh", $result->message);
-			}
-			Redirect::to($redirect);
-		}
-	}
+	// 			$redirect = "/me/";
+	// 			$result->redirect = $redirect;
+	// 			$result->reload = true;
+	// 		}
+	// 	}
+
+	// 	if ($this->Method === "AJAX") {
+	// 		$this->View->renderJSON($result);
+	// 	} else {
+	// 		if ($result->className === "sad") {
+	// 			Session::set("feedback_negative", $result->message);
+	// 		} else if ($result->className === "happy") {
+	// 			Session::set("feedback_positive", $result->message);
+	// 		} else if ($result->className === "intermediate") {
+	// 			Session::set("feedback_intermediate", $result->message);
+	// 		} else {
+	// 			Session::set("feedback_meh", $result->message);
+	// 		}
+	// 		Redirect::to($redirect);
+	// 	}
+	// }
 
 	public function admin() {
 		$data = new stdClass();

@@ -1,0 +1,63 @@
+<div class='uk-section cs-me'>
+	<div class='uk-container'>
+		<div  class='uk-flex' uk-grid>
+
+		{{> menubar}}
+
+		<div class='uk-flex-1'>
+			<h2 class='uk-heading-divider'>Order History</h2>
+			<p>This page lists all your current and past orders.</p>
+
+			<div class="uk-overflow-auto">
+			<table class='uk-table uk-table-small cs-tablesort ' width='100%'>
+			<thead><tr>
+				<th>Reference</th>
+				<th>Begun</th>
+				<th>Ends</th>
+				<th>Status</th>
+				<th>Price</th>
+				<th>Actions</th>
+			</tr></thead>
+			<tbody>
+			{{#each subscriptions}}
+			<tr class='cs-row-status {{statusReasonClass .}}'>
+				<td>{{order_number}}</td>
+				<td><time datetime='{{utc added}}' label='Begun:'>{{date added}}</time></td>
+				<td>{{#if ended}}<time datetime='{{utc endDate}}' label='Ended:'>{{date endDate}}</time>{{/if}}</td>
+				<td>{{#if statusReason}}{{{statusReasonText statusReason}}}{{else}}{{status}}{{/if}}</td>
+				<td>{{#if Product.price}}
+					{{#equals Product.price "0.00"}}Free{{else}}
+					<sup>$</sup><span class='uk-text-bold'>{{Product.price}}</span><sub>{{#contains Product.product_id "api"}}/quarter{{else}}/month{{/contains}}</sub>
+            		{{/equals}}
+	            	{{/if}}</td>
+	            <td>
+	            	{{#if order_url}}<a href='{{order_url}}' title='Order details' uk-icon='link' class='uk-margin-small-right'></a>{{/if}}
+					{{#if support_url}}<a href='{{support_url}}' title='Order support' uk-icon='mail' class='uk-margin-small-right'></a>{{/if}}
+					{{#decodable subscriptionUrl}}<a href='{{.}}' uk-icon='trash' class='uk-margin-small-right' title='Cancel subscription'></a>{{/decodable}}
+				</td>
+			</tr>
+			{{#contains Product.product_key 'api-'}}{{else}}
+			{{#each Product.Apps}}
+			<tr class='cs-applist'>
+				<td colspan='5'>
+					{{#if glyph}}<img src='data:image/svg+xml,{{escape glyph}}' uk-svg width='30' height='30'>{{/if}}
+					{{name}}
+				</td>
+				<td>
+					{{#equals ../status 'active'}}
+						<a href='{{@root.baseurl}}launch/{{app_key}}' target='{{app_key}}' class='uk-button uk-button-primary'>Launch</a>
+					{{/equals}}
+				</td>
+			</tr>
+			{{/each}}
+			{{/contains}}
+
+			{{/each}}
+			</tbody></table>
+			</div>
+
+		</div>
+
+		</div>
+	</div>
+</div>

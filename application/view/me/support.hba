@@ -1,0 +1,35 @@
+<div class='uk-section cs-me'>
+	<div class='uk-container'>
+		<div  class="uk-flex" uk-grid>
+
+		{{> menubar}}
+
+		<div class="uk-flex-1">
+			<h2 class="uk-heading-divider">Support</h2>
+
+			{{#each helpdesk.tickets}}{{counter_add "tickets"}}{{/each}}
+			{{#gte (counter_get "tickets") "1"}}
+			<h3>Your helpdesk tickets</h3>
+			<table class="uk-table uk-table-divider">
+				<thead><tr><th>Ticket</th><th>Subject</th><th>Status</th><th>Last Updated</th></tr></thead>
+				<tbody>
+				{{#each helpdesk.tickets}}
+					{{counter_add "tickets"}}
+					<tr>
+						<td><a href="https://help.coursesuite.ninja/view.php?auth={{helpdesk_auth_token .}}" target="_blank">{{number}}</td>
+						<td>{{cdata__subject}}</td>
+						<td>{{status__name}}</td>
+						<td>{{lastupdate}}</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
+			{{/gte}}
+
+			<p>For bugs, feedback and suggestions, please <a href="https://help.coursesuite.ninja/open.php">raise a ticket</a>.</p>
+			<p>For product support, please consult our <a href="https://guide.coursesuite.ninja/">guides</a>, or if you can't find what you need, <a href="https://help.coursesuite.ninja/open.php">raise a ticket</a>.</p>
+			<p>For purchase or account support, please use the <a href="{{baseurl}}me/orders">orders page</a> and click the <span uk-icon="more-vertical"></span> icon next to an order for more actions, or use our <a href="{{baseurl}}services">services page</a> to send a message.</p>
+		</div>
+		</div>
+	</div>
+</div>

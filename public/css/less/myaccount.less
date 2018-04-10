@@ -17,14 +17,32 @@ article.my-account, article.my-api {
         font-family: 'Caveat';
         color: #1b2a9c;
         font-weight: 400;
-        margin: 25px 0;
+        margin: 24px 0;
         text-shadow: 2px 2px 0 #fff, 3px 3px 1px rgba(0,0,0,.05);
     }
 
     .boxed-container {
         background-color: white;
-        box-shadow: 0 0 5px rgba(0,0,0,.1);
-        padding: 15px;
+        box-shadow: 0 0 4px rgba(0,0,0,.1);
+        padding: 16px;
+        &.with-top-margin {
+            margin-top: 16px;
+        }
+        table.concurrent-logons {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            thead {
+                background-color: #ddd;
+            }
+            th, td {
+                border:1px solid #ccc;
+                width: 50%;
+                padding: 8px;
+            }
+            tbody tr:nth-child(odd) {
+                background-color: #eee;
+            }
+        }
     }
 
     a {
@@ -60,50 +78,48 @@ article.my-account {
         }
     }
     div.outer-tile {
-        display: inline-block;
-        margin: 0 10px 10px 0;
-        background-color: #fff;
-        box-shadow: 0 0 3px rgba(0,0,0,.2);
-        padding: 10px;
-        width: 238px;
-        header {
-            font-weight: bold;
-            font-size: 16px;
-            text-align: center;
+        display: block;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+        &:after {
+            content: '';
+            display: table;
+            clear: both;
         }
         img {
-            width: 100%;
-            max-height: 128px;
+            float: left;
+            margin-right: 16px;
+        }
+        header {
+            font-size: 24px;
+            font-weight:bold;
+        }
+        a {
+            color: rgba(96,148,224,1);
+            font-size: 16px;
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid rgba(96,148,224,1);
+            transition: all .1s;
+            border-radius: 4px;
+            &:hover {
+                background-color: rgba(96,148,224,1);
+                color: white;
+                text-decoration: none;
+            }
         }
         footer {
+            font-size: 12px;
+            margin-top: 4px;
             a {
-                display: block;
-                text-decoration: none;
-                text-align: center;
-                &.unsub-button {
-                    padding: 5px;
-                    font-size: 0.8rem;
-                    color: #c36;
-                    border: 1px solid #c36;
-                    border-radius: 4px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                    &:hover {
-                        background-color: #c36;
-                        color: #fff;
-                    }
-                }
-                &.launch-button {
-                    padding: 5px;
-                    font-size: 1.25rem;
-                    color: rgba(96,148,224,1);
-                    border: 1px solid rgba(96,148,224,.5);
-                    border-radius: 4px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                    &:hover {
-                        background-color: rgba(96,148,224,.25);
-                    }
+                border: none;
+                padding: 4px 8px;
+                color: #c36;
+                opacity: 0.5;
+                &:hover {
+                    background-color: #c36;
+                    opacity: 1;
                 }
             }
         }

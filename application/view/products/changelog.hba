@@ -1,0 +1,12 @@
+<div class='uk-section cs-app-changelog'>
+	<div class='uk-container'>
+
+	<dl class="uk-description-list uk-description-list-divider">
+		{{#each changelog}}
+		<dt>{{date added}}</dt>
+		<dd>{{{htmlify value}}}</dd>
+		{{/each}}
+	</dl>
+
+	</div>
+</div>

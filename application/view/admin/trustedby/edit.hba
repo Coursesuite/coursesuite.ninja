@@ -1,0 +1,22 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Trusted By logos</h2>
+			<p>Drag to upload logos, have one logo per line. Displays up to 6 per line before wrapping. Resize them yourself!</p>
+		</header>
+		<form method="post" action="/admin/trustedby/save/">
+		{{#with formdata}}
+			<div class="row mde"><label for="entry">Logos - drag to upload:</label>
+				<div><textarea id="content" name="entry" rows="10" cols="80" data-markdown="true">{{entry}}</textarea></div>
+			</div>
+			<div class="row"><label />
+				<div><button>Save</button> <a href="{{@root.baseurl}}admin/trustedby/" class='button'>Cancel</a></div>
+			</div>
+		{{/with}}
+		</form>
+	</article>
+</div>

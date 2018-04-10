@@ -1,0 +1,32 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Static pages</h2>
+			<p>Static pages are pages that are served using the SLUG. They can be used for things like footer links, support information, testimonials or user stories, or special links from product pages.</p>
+		</header>
+
+		<table>
+			<thead>
+				<tr><th>Slug</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-download'></i> Related files</th><th><i class='fa fa-trash'></i> Removal</th></tr>
+			</thead>
+			<tbody>
+			{{#each index}}
+			<tr>
+				<td><a href="{{@root.baseurl}}content/{{page_key}}" target="_blank">content/{{page_key}}</a></td>
+				<td><a href="{{@root.baseurl}}admin/static_pages/edit/{{id}}">Edit</a></td>
+				<td> Manage</td>
+				<td><a href="{{@root.baseurl}}admin/static_pages/delete/{{id}}">Delete</a></td>
+			</tr>
+			{{/each}}
+		</tbody>
+		<tfoot>
+			<tr><td colspan="4"><i class='fa fa-plus-circle'></i><a href="{{@root.baseurl}}admin/static_pages/new/0">Add a new static page</a></td></tr>
+		</tfoot>
+		</table>
+
+	</article>
+</div>

@@ -1,0 +1,10 @@
+<div uk-lightbox='animation:{{random "slide,slide,slide,fade,fade,scale"}}' class="{{#hasmorethan App.media 1}}uk-child-width-1-3@m uk-child-width-1-1@s{{#hasmorethan App.media 4}} uk-child-width-1-4@xl{{/hasmorethan}}{{else}}uk-child-width-1-1{{/hasmorethan}}" uk-grid>
+{{#each App.media}}
+	<div>
+		<a class='uk-inline uk-box-shadow-small uk-box-shadow-hover-large' href='{{href}}' caption='{{caption}}'>
+			<img src='{{thumb}}' alt='{{caption}}'>
+		</a>
+	</div>
+{{/each}}
+</div>
+<style>body>div.uk-lightbox{background-color:{{App.colour}} !important;}</style>

@@ -1,0 +1,68 @@
+{{#if ShowPassword}}
+<p><span class='login-standout'>Check your email</span> for the password we just sent. (<a href="/login/retry">Retry</a>)</p>
+{{else}}
+<p>Enter your email; we'll send you a password to use.</p>
+{{/if}}
+<form method="{{#if ajax}}ajax{{else}}post{{/if}}" action="{{baseurl}}login/authenticate" name="authenticate">
+	<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+	<input type="hidden" name="app_key" value="{{App.app_key}}">
+	{{#if redirect}}<input type="hidden" name="redirect" value="{{redirect}}">{{/if}}
+	{{#if ShowPassword}}
+	<div class="uk-grid-small uk-margin-small-bottom" uk-grid>
+		<label class="uk-width-1-5" for="email">Password:</label>
+		<div class="uk-width-4-5 uk-flex">
+			<input class="uk-flex-1 uk-padding-small" type="password" name="password" id="password" placeholder="Sent via email" required="required" autocomplete="off">
+		</div>
+	</div>
+	{{else}}
+	<div class="uk-grid-small uk-margin-small-bottom uk-flex-middle" uk-grid>
+		<label class="uk-width-1-5" for="email">Email:</label>
+		<div class="uk-width-4-5 uk-flex">
+			<input class="uk-flex-1 uk-padding-small" type="email" name="email" id="email" placeholder="your.valid@email.address.com (required)" required="required" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*" value="{{PreloadedEmail}}" autocomplete="off">
+		</div>
+	</div>
+	{{/if}}
+	{{#if ShowSubscribe}}
+	<div>
+		<label class="uk-form-label">Join newsletter?</label>
+		<div class="uk-form-controls">
+			<label><input type="checkbox" name="subscribe" id="subscribe" value="yes" checked="checked"> Yes</label>
+		</div>
+	</div>
+	{{/if}}
+	{{#if feedback_negative}}
+	<div>
+		<label class="uk-form-label"></label>
+		<output name="negative" class="form-feedback-negative">{{{feedback_negative}}}</output>
+	</div>
+	{{/if}}
+	{{#if feedback_meh}}
+	<div>
+		<label class="uk-form-label"></label>
+		<output name="meh" class="form-feedback-meh">{{{feedback_meh}}}</output>
+	</div>
+	{{/if}}
+	{{#if feedback_intermediate}}
+	<div>
+		<label class="uk-form-label"></label>
+		<output name="intermediate" class="form-feedback-intermediate">{{{feedback_intermediate}}}</output>
+	</div>
+	{{/if}}
+	{{#if feedback_positive}}
+	<div>
+		<label></label>
+		<output name="positive" class="form-feedback-positive">{{{feedback_positive}}}</output>
+	</div>
+	{{/if}}
+	<div class="uk-grid-small" uk-grid>
+		<div class="uk-width-1-5"></div>
+		<div class="uk-width-4-5">
+			{{#if ShowPassword}}
+			<input type="submit" value="Log in" id="form-submit-button" class='uk-button uk-button-small uk-button-default'>
+			{{else}}
+			<input type="submit" value="Email my password" id="form-submit-button" class='uk-button uk-button-small uk-button-primary'>
+			<p><a href="/content/terms" class="uk-button uk-button-link">Terms & Conditions</a></p>
+			{{/if}}
+		</div>
+	</div>
+</form>

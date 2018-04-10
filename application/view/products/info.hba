@@ -1,0 +1,133 @@
+<div class='cs-app-{{App.app_key}}'>
+
+<div class='uk-section cs-app-header cs-bgcolour-{{App.app_key}} uk-light'>
+	<div class='uk-container'>
+		<div class="uk-flex-middle cs-svg-colour" uk-grid>
+			{{#if App.glyph}}<img src="data:image/svg+xml,{{escape App.glyph}}" uk-svg width="76">{{/if}}
+			<h1 class='uk-heading-primary uk-flex-1'>{{App.name}}</h1>
+			{{#unless IsMobile}}
+			<div class="sharethis-inline-share-buttons"></div>
+			{{/unless}}
+		</div>
+		<div uk-grid>
+			<p>{{App.whatisit}}</p>
+		</div>
+	</div>
+</div>
+{{#if App.media}}
+<div class='uk-section cs-app-slides'>
+	<div class='uk-container'>
+		{{> lightbox}}
+	</div>
+</div>
+{{/if}}
+{{#each App.Sections}}
+<div class='uk-section {{classname}}'{{#if colour}}{{#not colour "#ffffff"}} style='background-color:{{colour}}'{{/not}}{{/if}}>
+	<div class='uk-container'>
+	{{#if @first}}
+		<div class='uk-grid-divider uk-child-width-expand@s' uk-grid>
+			<div class='uk-width-3-5@m'>
+				{{{htmlify content}}}
+			</div>
+			<div class='uk-width-2-5@m'>
+
+				{{#if @root/Subscriptions}}
+
+				<div class='uk-panel uk-panel-default cs-background-launch uk-light uk-border-rounded uk-box-shadow-medium uk-padding-small uk-margin-bottom'>
+				<h3 class='uk-h3 uk-text-center'>You own this already</h3>
+				<p class='uk-text-center'>
+					<a href="{{@root/baseurl}}launch/{{@root/App.app_key}}" target="{{@root/App.app_key}}" class='uk-button uk-button-large uk-button-primary uk-border-rounded'><span uk-icon='bolt' class='uk-margin-small-right'></span>Launch App</a>
+				</p>
+				</div>
+
+				{{/if}}
+
+				{{#if @root/Bundles}}
+				<div class='uk-panel uk-panel-default cs-background-purchase uk-border-rounded uk-padding-small uk-margin-bottom'>
+				<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
+				<ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
+					{{#each @root/Bundles}}
+					<li><a href="#">{{label}}</a></li>
+					{{/each}}
+				</ul>
+				<ul class="uk-switcher uk-margin">
+					{{#each @root/Bundles}}
+					<li>
+						{{{htmlify description}}}
+
+						{{#hasmorethan Apps 1}}<ul>
+						{{#each Apps}}
+						<li><a href="{{url}}">{{name}}</a></li>
+						{{/each}}</ul>
+						{{/hasmorethan}}
+
+						<p class='uk-text-center'>
+							{{#if @root/IsLoggedIn}}
+							<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
+							{{else}}
+							<a class='uk-button uk-button-primary ul-button-large' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</a>
+							{{!-- <button  class='uk-button uk-button-primary uk-button-large' title='Login required to purchase'><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</button> --}}
+							{{/if}}
+						</p>
+					</li>
+					{{/each}}
+				</ul>
+				</div>
+
+				{{> fineprint}}
+
+				{{/if}}
+			</div>
+		</div>
+	{{else}}
+		{{{htmlify content}}}
+	{{/if}}
+	</div>
+</div>
+{{/each}}
+
+<div class='uk-section cs-app-links'>
+	<div class='uk-container'>
+		<div class="uk-grid-small uk-child-width-auto" uk-grid>
+			{{#if App.changelog}}
+			<div>
+				<a class="uk-button uk-button-default" href="#app-changelog" uk-toggle>Changelog</a>
+				<div id="app-changelog" uk-modal>
+				    <div class="uk-modal-dialog">
+				        <button class="uk-modal-close-default" type="button" uk-close></button>
+				        <div class="uk-modal-header">
+				            <h2 class="uk-modal-title">{{App.name}} Change Log</h2>
+				        </div>
+				        <div class="uk-modal-body" uk-overflow-auto>
+				        	<dl class="uk-description-list uk-description-list-divider">
+								{{#each App.changelog}}
+								<dt>{{date added}}</dt>
+								<dd>{{{htmlify value}}}</dd>
+								{{/each}}
+							</dl>
+						</div>
+				        <div class="uk-modal-footer uk-text-right">
+				            <button class="uk-button uk-button-primary uk-modal-close" type="button">Ok</button>
+				        </div>
+				    </div>
+				</div>
+			</div>
+			{{/if}}
+			{{#each App.files}}
+				<div>
+					<a class="uk-button uk-button-default" href="{{href}}">{{label}}</a>
+				</div>
+			{{/each}}
+        </div>
+	</div>
+</div>
+
+{{#if IsMobile}}
+<div class='uk-section cs-share-mobile'>
+	<div class='sharethis-inline-share-buttons'></div>
+</div>
+{{/if}}
+
+</div>
+
+<style>body>div.uk-lightbox{background-color:{{App.colour}} !important;}</style>

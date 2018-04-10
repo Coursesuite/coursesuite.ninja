@@ -1,0 +1,41 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>{{englishify selection}}</h2>
+		</header>
+
+		{{#with (lookup crud selection)}}
+
+			{{#equals @root.selected_action "list"}}
+
+			{{{renderCrudTable @root}}}
+
+			{{else}}
+
+			<form class='uk-form-stacked' method='post' action="{{@root.baseurl}}admin/crud/{{@root.selection}}/{{@root.selected_identity}}/save/">
+				<input type='hidden' name='csrf-token' value='{{@root.csrf-token}}'>
+
+				{{#each crud}}
+				{{> crud_field}}
+				{{/each}}
+
+				<div class='uk-margin'>
+					<div class='uk-form-controls'>
+						<button type='submit' class='uk-button uk-button-primary uk-margin-right'>Save</button>
+						<a href='{{@root.baseurl}}admin/crud/{{@root.selection}}' class='uk-button uk-button-link'>Cancel</a>
+					</div>
+				</div>
+
+			</form>
+
+			{{/equals}}
+
+
+
+		{{/with}}
+	</article>
+</div>

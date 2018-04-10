@@ -1,4 +1,5 @@
 .button {
+    display: inline-block;
     font-family: 'Open Sans', sans-serif;
     font-size: 12px;
     text-decoration: none;
@@ -16,6 +17,13 @@
     -webkit-box-shadow: 0px 1px 3px rgba(0,0,0,.15), inset 0px 0px 1px rgba(255,255,255,.3);
     box-shadow: 0px 1px 3px rgba(0,0,0,.15), inset 0px 0px 1px rgba(255,255,255,.3);
     text-shadow: 0px -1px 0px rgba(0,0,0,.3), 0px 1px 0px rgba(255,255,255,.3);
+    cursor: pointer;
+    &:hover {
+        text-decoration: none;
+    }
+    &.button-mini {
+        padding: 4px 8px;
+    }
     &.button-big {
         padding: 25px;
         width: 125px;
@@ -35,6 +43,15 @@
         &:hover {
             box-shadow: 0px 3px 5px rgba(0,0,0,.15), inset 1px 2px 1px rgba(255,255,255,.3), inset 0px -1px 1px rgba(0,0,0,.3);
             transform: scale(1.1);
+        }
+    }
+    &.button-like {
+        background: transparent;
+        color: #555;
+        box-shadow: none;
+        &:hover {
+            background: #eee;
+            color: #000;
         }
     }
     &.button-hover-blue {

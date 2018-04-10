@@ -1,0 +1,18 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>purge cache</h2>
+		</header>
+
+		<ul>
+			{{#each status}}
+			<li>{{.}}</li>
+			{{/each}}
+			<li>All caches have been purged.</li>
+		</ul>
+	</article>
+</div>

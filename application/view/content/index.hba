@@ -1,5 +1,5 @@
-<div class="static-page page-{{idify App.meta_title}}">
-{{#with staticPage}}
-	{{{htmlify content}}}
-{{/with}}
+<div class='uk-section cs-static-{{staticPage.page_key}}'>
+	<div class='uk-container {{staticPage.body_classes}}'>
+		{{{htmlify staticPage.content}}}
+	</div>
 </div>

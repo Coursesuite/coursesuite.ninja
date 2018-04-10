@@ -14,10 +14,11 @@ class PageFactory {
 
     function __construct($cookie_value = "") {
     	if (isset($cookie_value) && !empty($cookie_value) && preg_match('/^[a-fA-F0-9]{32}$/', $cookie_value)) {
-    		$model = Model::Read("users","user_remember_me_token=:hash", array(":hash" => $cookie_value))[0];
-    		foreach (get_object_vars($model) as $key => $value) {
-    			$this->$key = is_null($value) ? '' : is_numeric($value) ? (int) $value : (string) $value;
-    		}
+            if ($model = Model::Read("users","md5(user_id) IN (SELECT `user` FROM logons WHERE `cookie`=:hash)",array(":hash"=>$cookie_value),"*",true)) {
+                foreach (get_object_vars($model) as $key => $value) {
+                    $this->$key = is_null($value) ? '' : is_numeric($value) ? (int) $value : (string) $value;
+                }
+            }
     	}
     	return $this;
     }

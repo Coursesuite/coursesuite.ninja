@@ -78,8 +78,22 @@ class Text
 
 	public static function toHtml($string)
 	{
+
+		// https://github.com/Daniel-KM/parsedown-extra
+		// was downloaded to the core folder, since it's not yet in composer
+		// and modified to fix the attribute quote bug
+		// then
+		// https://github.com/pagerange/metaparsedown
+		// was required in composer
+		// but erusrv/parsedown was manually deleted
+		//  long term need to replace both with one fixed version that is in composer
+
 		$PDE = new ParsedownExtra();
 		return $PDE->text($string);
+	}
+
+	public static function toText($string) {
+		return strip_tags($string, '<br>');
 	}
 
 	public static function compileHtml($template, $json)
@@ -101,8 +115,8 @@ class Text
 
 	public static function StaticPageRenderer($route)
 	{
-		$page = StaticPageModel::getRecordByKey($route);
-		if (isset($page) && $page !== false) {
+		$page = new StaticPageModel("page_key", $route);
+		if (isset($page->content)) {
 			$PDE = new ParsedownExtra();
 			return $PDE->text($page->content);
 		}

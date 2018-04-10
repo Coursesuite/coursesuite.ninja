@@ -1,0 +1,36 @@
+{{#equals active "1"}}
+	<div>
+		<div class='uk-card uk-box-shadow-medium {{#contains product_key "api"}}uk-card-secondary uk-light{{else}}{{#hasmorethan Apps 1}}uk-card-primary{{else}}uk-card-default{{/hasmorethan}}{{/contains}}'>
+			<div class="uk-card-media-top uk-cover-container">
+				<canvas width="374" height="195"></canvas>
+				<img src="{{#if icon}}{{icon}}{{else}}{{Apps.0.icon}}{{/if}}" alt="{{product_key}}" uk-cover>
+				<div class="uk-card-badge cs-price">{{#contains product_key "api"}}{{{humanprice price "/q"}}}{{else}}{{{humanprice price "/m"}}}{{/contains}}</div>
+		    </div>
+		    {{#hasmorethan Apps 1}}
+				<div class="uk-card-header">
+					<h3 class="uk-card-title">{{label}}</h3>
+				</div>
+				<div class="uk-card-body">
+	                {{{htmlify description}}}
+	                <ul>
+	                {{#each Apps}}
+	                <li><a href="{{@root.baseurl}}home/{{app_key}}">{{name}}</a></li>
+	                {{/each}}
+		            </ul>
+			    </div>
+		    {{else}}
+				<div class="uk-card-header">
+					<h3 class="uk-card-title">{{Apps.0.name}}</h3>
+				</div>
+				<div class="uk-card-body">
+	                {{{htmlify Apps.0.tagline}}}
+		    </div>
+			{{/hasmorethan}}
+			{{#contains product_key "api"}}{{else}}
+			    <div class="uk-card-footer">
+			    	<p class="uk-text-center"><a href="{{@root.baseurl}}home/{{Apps.0.app_key}}" class="uk-button uk-button-primary">More Info</a></p>
+			    </div>
+		    {{/contains}}
+		</div>
+	</div>
+{{/equals}}

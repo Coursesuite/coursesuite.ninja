@@ -10,6 +10,11 @@ class Image
         return ColorThief::getColor($sourceImage);
     }
 
+    public static function getPalette($sourceImage, $count = 8)
+    {
+        return ColorThief::getPalette($sourceImage, $count);
+    }
+
     public static function getContentType($source_image)
     {
         $imageData = getimagesize($source_image);

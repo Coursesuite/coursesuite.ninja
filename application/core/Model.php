@@ -13,12 +13,12 @@ class Model
      * set default on fields that are nullable
      * relies on the db user having describe capability
      */
-    public static function Create($table)
+    public static function Create($table, $as_array = true)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->query("DESCRIBE $table");
         $rows = $query->fetchAll(); // PDO::FETCH_COLUMN));
-        $results = array();
+        $results = new stdClass();
         foreach ($rows as $row) {
             // if (!($row->Null == "NO" && $row->Default > "")) {
             $key = $row->Field;
@@ -33,13 +33,60 @@ class Model
             if (is_numeric($row->Default)) {
                 $value = intval($row->Default, 10);
             }
-            $results[$key] = $value;
+            $results->$key = $value;
             // }
         }
-        return $results;
+        return $as_array ? (array) $results : $results;
     }
 
-    public static function Read($table, $where = "", $params = array(), $fields = array("*"))
+    public static function Columns($table) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->query("DESCRIBE $table");
+        $cache = new CachedPDOStatement($query);
+        $cols = array();
+        foreach ($cache as $row) {
+            $type = "text";
+            $ins = null;
+            $size = null;
+            $editing = true;
+            $visible = true;
+            if ($row->Key === "PRI") {
+                $type = "number";
+                $editing = false;
+            } else if ($row->Type === "text" || $row->Type === "varchar(255)") {
+                $type = "textarea";
+            } else if ($row->Type === "tinyint(1)") {
+                $type = "checkbox";
+            } else {
+                if (stripos($row->Type,"int") !== false) {
+                    $type = "number";
+                } else {
+                    $type = "text";
+                    if( preg_match( '!\(([^\)]+)\)!', $row->Type, $match ) ) $size = $match[1];
+                }
+            }
+            if (!empty($row->Default)) {
+                if ($row->Default === "current_timestamp()") {
+                    $visible = false;
+                } else {
+                    $ins = $row->Default;
+                }
+            }
+
+            $col = array(
+                "name" => $row->Field,
+                "type" => $type
+            );
+            if (!is_null($ins)) $col["insertValue"] = $ins;
+            if (!is_null($size)) $col["size"] = $size;
+            if ($visible !== true) $col["visible"] = false;
+            if ($editing !== true) $col["editing"] = false;
+            $cols[] = $col;
+        }
+        return $cols;
+    }
+
+    public static function Read($table, $where = "", $params = array(), $fields = array("*"), $fetchOne = false, $orderby = "")
     {
         $database = DatabaseFactory::getFactory()->getConnection();
         /*if ($fields == array("*")) {
@@ -50,13 +97,19 @@ class Model
         $fields[] = $col['name'];
         }
         }*/
+        if (!is_array($fields)) $fields = array($fields);
         $sql = "SELECT " . implode(",", $fields) . " FROM $table ";
         if (!empty($where)) {
             $sql .= "WHERE $where";
         }
+        if ($orderby !== "") $sql .= " ORDER BY $orderby";
         $query = $database->prepare($sql);
+// echo $sql; var_dump($params);
         $query->execute($params);
         $count = $query->rowCount();
+        if ($fetchOne === true) {
+            return $query->fetch();
+        }
         return $query->fetchAll();
     }
 
@@ -79,28 +132,74 @@ class Model
         $params = array();
         $idvalue = 0;
         foreach ($data_model as $key => $value) {
+
             if ($key == $idrow_name) {
-                $idvalue = intval($value, 10);
-            } else if ($idvalue < 1) {
-                $keys[] = $key;
-                $values[] = $value;
-            } else {
-                $fields[] = "$key=:$key";
-                $params[":" . $key] = $value;
+                $idvalue = abs(intval($value, 10));
+                continue; // can't set a key value anyway
             }
+
+            // so you can set a property to the JSON object and not bother with encoding it
+            if (is_object($value) || is_array($value)) {
+                $value = json_encode($value, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_NUMERIC_CHECK);
+            }
+
+            $field = sprintf('`%s`',$key); // escaped sql field name
+            $param = sprintf(':%s',$key); // pdo named parameter
+
+            $fields[] = $field;
+            $params[] = $param;
+            $values[$param] = $value; // pdo key=>value pairs
+            $pairs[] = sprintf('%s = %s', $field, $param); // sql field=:name pairs
+
         }
+
+       //      if ($key == $idrow_name) {
+       //          $idvalue = intval($value, 10);
+
+       //      } else if ($idvalue < 1) {
+       //          $keys[] = $key;
+       //          $values[] = $value;
+
+       //      } else if (is_object($value) || is_array($value)) {
+       // //           // so you can set a property to the JSON object and not bother with encoding it
+
+    			// $fields[] = sprintf('`%s`',$key); // escaped sql field name
+    			// $params[] = sprintf(':%s',$key); // pdo named parameter
+    			// $values[$param] = json_encode($value, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_NUMERIC_CHECK); // pdo key=>value pairs
+    			// $keys[] = sprintf('%s = %s', $field, $param); // sql field=:name pairs
+
+       //      } else {
+
+       //          $fields[] = "$key=:$key";
+       //          $params[":" . $key] = $value;
+       //      }
+
+        // }
+        // if ($idvalue < 1) {
+        //     $sql = "INSERT INTO $table (" . implode(",", $keys) . ") VALUES (:" . implode(",:", $keys) . ")";
+        //     $query = $database->prepare($sql);
+        //     $params = array_combine($keys, $values);
+        //     $query->execute($params);
+        //     $idvalue = $database->lastInsertId();
+        // } else {
+        //     $sql = "UPDATE $table SET " . implode(",", $fields) . " WHERE $idrow_name=:ROWID LIMIT 1";
+        //     $query = $database->prepare($sql);
+        //     $params[":ROWID"] = $idvalue;
+        //     $query->execute($params); // PDO allows the params without colons in the paramarray
+        // }
+
         if ($idvalue < 1) {
-            $sql = "INSERT INTO $table (" . implode(",", $keys) . ") VALUES (:" . implode(",:", $keys) . ")";
+            $sql = "INSERT INTO $table (" . implode(', ', $fields) . ") VALUES (" . implode(', ',$params) . ")";
             $query = $database->prepare($sql);
-            $params = array_combine($keys, $values);
-            $query->execute($params);
+            $query->execute($values);
             $idvalue = $database->lastInsertId();
         } else {
-            $sql = "UPDATE $table SET " . implode(",", $fields) . " WHERE $idrow_name=:ROWID LIMIT 1";
+            $sql = "UPDATE $table SET " . implode(', ', $pairs) . " WHERE `$idrow_name` = :ROWID LIMIT 1";
             $query = $database->prepare($sql);
-            $params[":ROWID"] = $idvalue;
-            $query->execute($params); // PDO allows the params without colons in the paramarray
+            $values[":ROWID"] = $idvalue;
+            $query->execute($values); // PDO allows the params without colons in the paramarray
         }
+
         return $idvalue;
     }
 
@@ -110,6 +209,68 @@ class Model
         $sql = "DELETE FROM $table WHERE $where";
         $query = $database->prepare($sql);
         $query->execute($params);
+    }
+
+    /* utility methods */
+
+    final public static function ReadColumn($table, $column, $where = "", $params = array(), $fetchOne = true, $order = "") {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        if ($order > "") $order = "ORDER BY $order";
+        $query = $database->prepare("SELECT $column FROM $table WHERE $where $order");
+        $query->execute($params);
+        return ($fetchOne === true) ? $query->fetchColumn() : $query->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    final public static function Exists($table, $where, $params = array()) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT count(1) FROM $table WHERE $where");
+        $query->execute($params);
+        return ($query->fetch(PDO::FETCH_COLUMN, 0) > 0);
+    }
+
+    final public static function Raw($sql) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        // return $database->query($sql);
+
+        $query = $database->prepare($sql);
+        $query->execute();
+        return $query->fetchAll();
+    }
+
+    final public static function ReadBlob($table, $column, $where = "", $params = array()) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("
+            SELECT $column FROM $table
+            WHERE $where
+        ");
+        $query->execute($params);
+        $blob = null;
+        $query->bindColumn(1, $blob, PDO::PARAM_LOB, 0, PDO::SQLSRV_ENCODING_BINARY);
+        if ($query->fetch()) {
+            return $blob;
+        } else {
+            return false;
+        }
+    }
+
+    final public static function WriteBlob($table, $column, $filename, $where = "", $params = array()) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("
+            UPDATE $table
+            SET $column=:blob
+            WHERE $where
+        ");
+        foreach ($params as $key => $value) {
+            $query->bindParam($key, $value);
+        }
+        $file = new SplFileObject($filename,"r");
+        $blob = $file->fread($file->getSize());
+        $file = null;
+        // $handle = fopen($filename, "rb");
+        // $blob = fread($handle, filesize($filename));
+        // fclose($handle);
+        $query->bindParam(":blob", $blob, PDO::PARAM_LOB);
+        return $query->execute();
     }
 
 }

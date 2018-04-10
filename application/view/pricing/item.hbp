@@ -1,0 +1,32 @@
+{{#equals active "1"}}
+{{#hasmorethan Apps 1}}
+<tr>
+	<td>
+		<div class='cs-bgcolour-bundle cs-nav-icon'>
+			<img src='{{icon}}' width='32' height='32'>
+		</div>
+	</td>
+	<td>
+		<p>{{label}}</p>
+		<p class="uk-text-meta">{{textify description}}</p>
+		<ul class="uk-list">{{#each Apps}}
+			<li><a href="{{@root.baseurl}}home/{{app_key}}"><span uk-icon="arrow-right"></span> {{name}}</a></li>{{/each}}
+		</ul>
+	</td>
+{{else}}
+<tr>
+	<td>
+		<div class='cs-bgcolour-{{Apps.0.app_key}} cs-nav-icon'>
+			<img src='data:image/svg+xml,{{escape Apps.0.glyph}}' width='32' height='32' uk-svg>
+		</div>
+	</td>
+	<td>
+		<p><a href="{{@root.baseurl}}home/{{Apps.0.app_key}}">{{Apps.0.name}}</a></p>
+		<p class="uk-text-meta">{{{textify Apps.0.tagline}}}</p>
+	</td>
+{{/hasmorethan}}
+	<td>
+		<p>{{{calcprice .}}}</p>
+	</td>
+</tr>
+{{/equals}}

@@ -23,7 +23,7 @@ class DatabaseFactory
 {
     private static $factory;
     private $database;
-    private $mysqli;
+    // private $mysqli;
 
     public static function getFactory()
     {
@@ -33,14 +33,19 @@ class DatabaseFactory
         return self::$factory;
     }
 
-    // the zebra_session manager requires a mysqli connection because it pings the database. don't use this for anything else.
-    public function getMysqli()
-    {
-        if (!$this->mysqli) {
-            $this->mysqli = mysqli_connect(Config::get('DB_HOST'), Config::get('DB_USER'), Config::get('DB_PASS'), Config::get('DB_NAME')) or die('mysqli: Could not connect to database!');
-        }
-        return $this->mysqli;
+    public function __destruct() {
+        $this->database = null;
+        self::$factory = null;
     }
+
+    // the zebra_session manager requires a mysqli connection because it pings the database. don't use this for anything else.
+    // public function getMysqli()
+    // {
+    //     if (!$this->mysqli) {
+    //         $this->mysqli = mysqli_connect(Config::get('DB_HOST'), Config::get('DB_USER'), Config::get('DB_PASS'), Config::get('DB_NAME')) or die('mysqli: Could not connect to database!');
+    //     }
+    //     return $this->mysqli;
+    // }
 
     public function getConnection()
     {
@@ -93,12 +98,13 @@ class DatabaseFactory
     public static function interpolateQuery($query, $params)
     {
         $keys = array();
-        foreach ($params as $key => $value) {
+        foreach ($params as $key => &$value) {
             if (is_string($key)) {
-                $keys[] = '/:' . $key . '/';
+                $keys[] = '/' . $key . '/';
             } else {
                 $keys[] = '/[?]/';
             }
+            $value = "'{$value}'";
         }
         $query = preg_replace($keys, $params, $query, 1, $count);
         return $query;

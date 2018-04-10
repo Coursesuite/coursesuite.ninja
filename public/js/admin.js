@@ -1,40 +1,61 @@
 $(function () {
 
-	// turn text areas into markdown editors with integrated imgur upload
-	$("textarea[data-markdown]").each(function (index, el) {
-		el.simplemde = new SimpleMDE({
-			element: el,
-			spellChecker: false,
-			placeholder: "Markdown / HTML is allowed.\nDrag images onto this editor to upload & link them\nTo nest markdown inside html, add attribute markdown=\"1\" of tags containing markdown.",
-		});
-		inlineAttachment.editors.codemirror4.attach(el.simplemde.codemirror, {
-			// uploadUrl: "/admin/uploadMDE/"
-			uploadUrl: "https://api.imgur.com/3/image",
-			extraHeaders: {
-				Authorization: "Client-ID 662ce7a8f142394",
+	$("[sortable]").each(function(index, el) {
+		Sortable.create(el, {
+			animation: 150,
+			handle: ".my-handle",
+			onStart: function (evt) {
+				$(evt.item).find("[data-id]").trigger("click");
 			},
-			extraParams: {
-				name: "Your image title",
-				description: "Dragged onto editor using inline-attachment"
-			},
-			uploadFieldName: "image",
-			onFileUploadResponse: function(xhr) {
-				// "this" is now the inlineAttachment instance, not a XHR
-				var result = JSON.parse(xhr.responseText),
-					id = result.data.id,
-					ext = result.data.type.split("/")[1],
-					title = result.data.title || "Untitled",
-					href = "https://i.imgur.com/" + id + "." + ext,
-					src = "http://i.imgur.com/" + id + "m." + ext,
-					newValue = "[![" + title + "](" + src + ")](" + href + ")";
-				var text = this.editor.getValue().replace(this.lastValue, newValue);
-				this.editor.setValue(text);
+			onEnd: function (evt) {
+				// var itemEl = evt.item;  // dragged HTMLElement
+				// console.log(evt, itemEl);
 
-				// prevent internal upload
-				return false;
+				// set the sorting field to match the order of the tab list elements
+				Array.from(document.querySelectorAll("div.tab-bar > ul[sortable] > li")).map(function (li,order) {
+					document.querySelector("div.tab-bar div[id='tab_" + li.querySelector("[data-id]").dataset.id + "'] ").dataset.sort = order;
+				});
+				var nodes = Array.from(document.querySelectorAll("div.tab-bar div[id]")),
+					container = document.querySelector("div.tab-bar div.tabs");
+
+				// sort the array representing the dom nodes based on the sorting field
+				nodes.sort(function (a, b) {
+					var x = ~~a.dataset.sort,
+						y = ~~b.dataset.sort;
+					return (x<y) ? -1 : (x>y) ? 1 : 0;
+				});
+
+				// re-append the nodes to the dom (moves them)
+				for (var i=0;i<nodes.length;++i) {
+					container.appendChild(nodes[i]);
+				}
+
+				// now a form post of array values will be in sorted order
 			}
 		});
-	}),
+	});
+	$("div.tab-bar li > [data-id]").on("click", function (e) {
+		$(e.target).closest("li").addClass("active").siblings().removeClass("active");
+		var $tab = $("#tab_" + e.target.dataset.id);
+		$tab.addClass("active").siblings().removeClass("active");
+
+		// codemirror can't start blank, you have to refresh it
+		var cm = $tab.find("textarea[data-markdown]").get(0).simplemde;
+		cm.codemirror.refresh();
+
+	});
+
+	$('#upload_widget_opener').cloudinary_upload_widget({
+		cloud_name: 'coursesuite',
+		upload_preset: 'ietcpiwn',
+		cropping: 'server',
+		cropping_show_dimensions: true,
+		folder: 'coursesuite',
+		sources: ['local','url','camera'],
+	},
+    function(error, result) {
+    	console.log(error, result)
+    });
 
 	$("[data-sortable]").each(function (el, index) {
 		Sortable.create(el, {

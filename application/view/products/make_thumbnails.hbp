@@ -1,0 +1,5 @@
+<div class="slide-scroll">
+{{#each App.media}}
+	<a href="javascript:gotoSlide({{@index}})"><img src="{{thumb}}" width="114" height="85"></a>
+{{/each}}
+</div>

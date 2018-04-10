@@ -1,0 +1,28 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>App Changelog for {{formdata.name}}</h2>
+		</header>
+
+		<form method="post" action="{{baseurl}}admin/apps/addlog/{{formdata.app_id}}/" box>
+			<div><label>New Entry</label>
+				<div><textarea rows="10" cols="80" name="entry" placeholder="Add the changelog entry here, markdown supported" data-markdown="true"></textarea></div>
+			</div>
+			<div><label/>
+				<div><input type="submit" value="Save"></div>
+			</div>
+		</form>
+
+		{{#each changelog}}
+		<fieldset>
+			<legend>{{added}}</legend>
+			{{{htmlify value}}}
+		</fieldset>
+		{{/each}}
+
+	</article>
+</div>

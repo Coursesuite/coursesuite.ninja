@@ -1,0 +1,24 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>hooks</h2>
+		</header>
+
+		<h3>Cloud Convert</h3>
+		{{#if list}}
+		<p><a href="{{baseurl}}admin/hooks/unsubscribe/{{list.0.id}}">Unsubscribe</a>
+		{{else}}
+		<p><a href="{{baseurl}}admin/hooks/subscribe/">Subscribe</a>
+		{{/if}}
+
+		<p>Average conversion size: <b>{{stats.averagesize}}</b></p>
+		<p>Average conversion time: <b>{{stats.averagetime}}</b></p>
+		<p>Average minutes consumed: <b>{{stats.averageminutes}}</b></p>
+		<p>Extensions converted: {{#each stats.extensions}}<b>{{extension}}</b> - {{./count}}, {{/each}}
+
+</article>
+</div>

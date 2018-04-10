@@ -1,0 +1,8 @@
+<div class='uk-container uk-padding-large'>
+	<p class='uk-text-center'>CourseSuite is the trusted e-learning software choice for e-learning developers, LMS companies, academia and registered training organisations.</p>
+	<div class="uk-grid-small uk-child-width-1-6@m uk-child-width-1-3@s uk-flex-center uk-text-center" uk-grid>
+		{{#each Trust}}
+			{{{htmlify .}}}
+		{{/each}}
+	</div>
+</div>

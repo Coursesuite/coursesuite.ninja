@@ -1,0 +1,13 @@
+<ul class='uk-nav-default uk-nav-parent-icon' uk-nav>
+    {{#each menu}}
+    <li class='uk-nav-header'>{{englishify @key}}</li>
+    <li class='uk-nav-divider'></li>
+    {{#each .}}
+    {{#if search}}
+    <li><form method="post" action="{{@root.baseurl}}{{route}}"><input type="search" name="q" title="Search by {{label}}"><button><i class='fa fa-search'></i></button></form></li>
+    {{else}}
+    <li><a href='{{@root.baseurl}}{{route}}'>{{label}}</a></li>
+    {{/if}}
+    {{/each}}
+    {{/each}}
+</ul>

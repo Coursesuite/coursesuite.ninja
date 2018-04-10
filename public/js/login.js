@@ -1,0 +1,1 @@
+document.querySelector("a[href='#login-required']").click();

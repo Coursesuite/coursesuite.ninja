@@ -1,0 +1,28 @@
+<div class='uk-container'>
+
+	<h2 class='uk-h2'>Some of the popular apps we make</h2>
+
+	<div class="uk-child-width-1-3@m" uk-grid>
+		{{#each Popular}}
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-small">
+	            <div class="uk-card-media-top uk-cover-container">
+	                <img src="{{icon}}" alt="" uk-cover>
+	                <canvas width="307" height="195"></canvas>
+	            </div>
+	            <div class="uk-card-body">
+		            <div class="uk-card-badge uk-label"><a href="/products/{{route}}"><span uk-icon="arrow-right"></span>{{label}}</a></div>
+	                <h3 class="uk-card-title">{{name}}</h3>
+	                <p>{{tagline}}</p>
+	            </div>
+			    <div class="uk-card-footer">
+			        <a href="/products/{{route}}/{{app_key}}" class="uk-button uk-button-text"><span uk-icon="arrow-right"></span>Read more</a>
+			    </div>
+	        </div>
+	    </div>
+	    {{/each}}
+	</div>
+
+	<p class='uk-text-center uk-text-lead'><a href='/products/' class='uk-button uk-button-large uk-button-primary'>See all our apps <span uk-icon="arrow-right"></span></a></p>
+
+</div>

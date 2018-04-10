@@ -54,151 +54,24 @@ function copyToClipboard(element) {
     }
 }
 
+// https://stackoverflow.com/a/45086170/1238884
+// const disposerFn = () => { scope.removeEventListener(type, handler, capture); } disposerFn.type = type; return disposerFn;
+const ownAddEventListener = (scope, type, handler, capture) => {
+  scope.addEventListener(type, handler, capture);
+  return () => {
+    scope.removeEventListener(type, handler, capture);
+  }
+}
+// const disposer = ownAddEventListener(document.body, 'scroll', () => {
+  // do something
+// }, false);
 
-// a slideshow
-(function (window, $, undefined) {
+// disposer(); -> calls removeEventListener
 
-	if (typeof window.slides == 'undefined') return;
+function acknowledge(value) {
+	$.post("/me/acknowledge/", {id: value});
+}
 
-	var _currentSlide = 0,
-		_aATimeout,
-		_autoAdvance = true,
-		_mobile = (typeof window.orientation !== 'undefined'),
-		$Container = $("#slideshow"),
-		$Display = $("#current_slide"),
-		$Thumbs = $("#slide_controls"),
-		_slideWidth = 0,
-		_slideTime = 6789;
-
-	// mouse over
-	$Container.on("mouseenter mouseover", function () {
-	    _autoAdvance = false;
-	    if (_aATimeout) clearTimeout(_aATimeout);
-	});
-
-	// swipe
-	(new Hammer($Display.get(0))).on("swipeleft", function (e) {
-		    _autoAdvance = false;
-		slideshow("advance");
-	}).on("swiperight", function (e) {
-		    _autoAdvance = false;
-		slideshow("precede");
-	});
-
-	// navigation
-	function slideAdvance() {
-		if (!_autoAdvance) return;
-		if (_aATimeout) clearTimeout(_aATimeout);
-		slideshow("advance");
-		_aATimeout = setTimeout(function(){slideAdvance()},_slideTime);
-	}
-
-	// init
-	window.addEventListener("load", function () {
-		_slideWidth = $Container.outerWidth();
-
-		$("figure.slide img", $Display).each(function() {
-			$(this).css({
-				"width": _slideWidth + "px",
-				"max-height": "424px" // "344px"
-			});
-		});
-		if (_mobile) {
-			console.log("mobile width", _slideWidth);
-			$("#store_info article .store-item-specific section.info > div").css({
-				"width": _slideWidth + "px"
-			});
-		}
-
-		// glow the first slide
-		glow();
-
-		// start the slideshow
-		_aATimeout= setTimeout(function(){slideAdvance()},_slideTime);
-	});
-
-	// set the shadow colour to the most common colour of the thumbnail
-	function glow() {
-		if (window.slides[_currentSlide] && window.slides[_currentSlide].bgcolor) {
-			var bg = window.slides[_currentSlide].bgcolor;
-			var rgb = (bg.indexOf("rgba")!==-1) ? "rgb(" + bg.substring(bg.lastIndexOf("(")+1,bg.lastIndexOf(",")) + ")" : bg;
-
-			$("div.slide-wrapper", $Container).css("box-shadow","inset 0 0 250px " + bg);
-
-			if (bg.indexOf("rgba")!==-1) {
-				bg = "linear-gradient(to bottom, rgba(0,0,0,.5) 90%, rgba(" + bg.substring(bg.lastIndexOf("(")+1,bg.lastIndexOf(",")) + ", 0.9) 100%)";
-				$("div.slide-wrapper .slide.active>figcaption", $Container).css("background", bg);
-			}
-		}
-	}
-
-	// advance the slide
-	function slideshow(index) {
-		if (typeof index == "string") {
-			switch (index) {
-			case "precede":
-				index = Math.max(_currentSlide-1, 0);
-				break;
-			case "advance":
-				index = Math.min(_currentSlide+1, document.querySelectorAll("#slide_controls a").length-1);
-				if (_currentSlide == index) index = 0;
-				break;
-			}
-		}
-		var n = (index * _slideWidth),
-			m = Math.max((index * (120 + 9) - 60), 0); // half a thumb on the left, plus margin between thumbs, plus 2 times the border width, plus a full thumb visible, no matter the index
-		$Display.css({
-			"transform": "translateX(-" + n + "px)"
-		}).children(".slide").removeClass("active").filter(":eq(" + index + ")").addClass("active");
-
-		$Thumbs.css({
-			"transform": "translateX(-" + m + "px)"
-		}).find("a").removeClass("active");
-
-		$("a:eq(" + index + ")", $Thumbs).addClass("active");
-
-		_currentSlide = index;
-
-		glow();
-
-	}
-
-	function show(index) {
-		var slide = window.slides[index];
-		if ('ontouchstart' in window) {
-			window.open((slide.video) ? slide.video : slide.image);
-		} else {
-			var html = "<span />", style = "", $body = $("body");
-			$body.removeClass("no-scroll");
-			$("#preview").remove();
-			document.querySelector("body").scrollTop = 0;
-			if (slide.video) {
-				html = "<iframe src='" + slide.video + "' width='100%' height='100%' frameborder='0'></iframe>";
-			}
-			if (slide.image) {
-				style = " style='background-image:url(" + slide.image + ")'";
-			}
-			$("<div id='preview'><div class='content'" + style + ">" + html + "</div>").on("click", function (e) {
-				$("#preview").addClass("closing");
-				$body.removeClass("no-scroll");
-				setTimeout(function() { $("#preview").remove() }, 250);
-			}).appendTo($body.addClass("no-scroll"));
-			if (slide.bgcolor) {
-				$("#preview").css("background-color", slide.bgcolor);
-			}
-		}
-	}
-
-	function keepGoing() {
-		_autoAdvance = true;
-		slideAdvance();
-	}
-
-	window.gotoSlide = slideshow;
-	window.expandSlide = show;
-	window.keepGoing = keepGoing;
-
-})(window, jQuery);
 
 var ajaxSubmit = function (frm) {
 
@@ -304,6 +177,17 @@ function bindAjaxSubmits() {
 
 $(function () {
 
+	// UIkit.util.on(document, 'hide', '[uk-alert]', function (event) {
+	// 	$.post("/data/alert",{id: event.target.dataset.id});
+	// });
+
+	// $(".colorbox").colorbox({
+	// 	onOpen: function () {
+	// 		window.scrollTo(0,0);
+	// 	},
+	// 	fixed: true,
+	// });
+
 	bindAjaxSubmits();
 
 	$("#store_index").on("click", ".tile.app > figure", function (e) {
@@ -356,5 +240,42 @@ $(function () {
 	setTimeout(function() {
 		if ($("#bgndVideo").length) $("#bgndVideo").YTPlayer(); // .YTPApplyFilter('invert',100);
 	}, 150);
+
+	// turn text areas into markdown editors with integrated imgur upload
+	$("textarea[data-markdown]").each(function (index, el) {
+		el.simplemde = new SimpleMDE({
+			element: el,
+			spellChecker: false,
+			placeholder: "Markdown / HTML is allowed.\nDrag images onto this editor to upload & link them\nTo nest markdown inside html, add attribute markdown=\"1\" of tags containing markdown.",
+		});
+		inlineAttachment.editors.codemirror4.attach(el.simplemde.codemirror, {
+			uploadUrl: "https://api.imgur.com/3/image",
+			extraHeaders: {
+				Authorization: "Client-ID 662ce7a8f142394",
+			},
+			extraParams: {
+				name: "Your image title",
+				description: "Dragged onto editor using inline-attachment"
+			},
+			uploadFieldName: "image",
+			onFileUploadResponse: function(xhr) {
+				// "this" is now the inlineAttachment instance, not a XHR
+				var result = JSON.parse(xhr.responseText),
+					id = result.data.id,
+					ext = result.data.type.split("/")[1],
+					title = result.data.title || "Untitled",
+					href = "https://i.imgur.com/" + id + "." + ext,
+					src = "http://i.imgur.com/" + id + "m." + ext,
+					newValue = "[![" + title + "](" + src + ")](" + href + ")";
+				var text = this.editor.getValue().replace(this.lastValue, newValue);
+				this.editor.setValue(text);
+
+				// prevent internal upload
+				return false;
+			}
+		});
+	});
+
 });
+
 

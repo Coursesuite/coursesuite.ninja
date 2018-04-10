@@ -2,6 +2,18 @@ body#freebies_index {
 	.tile {
 		width: ~"calc(25% - 10px)";
 	}
+	@media @medium {
+		.tile {
+			width: ~"calc(50% - 10px - 10px)";
+		}
+	}
+	@media @small {
+		.tile {
+			// width minues the margins
+			width: ~"calc(100% - 10px - 10px)";
+		}
+	}
+
 }
 nav.app-section-names {
 	display: flex;

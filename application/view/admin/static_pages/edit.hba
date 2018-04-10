@@ -1,0 +1,36 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Editing static page {{data.page_key}}</h3>
+		</header>
+		<form method="post" action="/admin/static_pages/save/{{id}}/">
+		{{#with formdata}}
+			<div class="row"><label for="page_key">slug: /content/</label>
+				<div><input type="text" id="page_key" name="page_key" value="{{page_key}}" pattern="[A-Za-z0-9-]{5,}" placeholder="5-or-more letters, numbers or dashes; no other characters"></div>
+			</div>
+			<div class="row"><label for="body_classes">CSS Classes</label>
+				<div><input type="text" id="body_classes" name="body_classes" value="{{body_classes}}"></div>
+			</div>
+			<div class="row"><label for="meta_title">browser title:</label>
+				<div><input type="text" id="meta_title" name="meta_title" value="{{meta_title}}"></div>
+			</div>
+			<div class="row"><label for="meta_description">meta description:</label>
+				<div><input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
+			</div>
+			<div class="row"><label for="meta_keywords">meta keywords:</label>
+				<div><input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>
+			</div>
+			<div class="row mde"><label for="content">Content</label>
+				<div><textarea id="content" name="content" rows="10" cols="80" data-markdown="true">{{content}}</textarea></div>
+			</div>
+			<div class="row"><label />
+				<div><button>Save</button> <a href="{{@root.baseurl}}admin/static_pages/" class='button'>Cancel</a></div>
+			</div>
+		{{/with}}
+		</form>
+	</article>
+</div>
