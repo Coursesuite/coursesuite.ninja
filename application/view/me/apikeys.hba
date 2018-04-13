@@ -24,12 +24,55 @@
 			custom templates and configure direct publishing via an API key. API access is a subscription
 			charged quarterly and support tickets are prioritised for API users. Apps are licensed by how many
 			users can use apps at the same time (browser windows open).</p>
-			<p>A Volume Licensing subscription enables multiple separately licenced sub-accounts each with
-			their own API key and licenced/overflow amounts. Volume Licencing is separately invoiced.</p>
+
+
+			<div uk-grid class="uk-margin uk-margin-remove-horizontal uk-grid-medium {{#if showtrial}}uk-child-width-1-3@m{{else}}uk-child-width-1-2@m{{/if}} uk-child-width-1-1@s uk-grid-match">
+				{{#if showtrial}}
+				<div>
+					<div class="uk-card uk-card-default uk-card-body">
+						<h3 class="uk-card-title">7-Day Trial</h3>
+						<p>You can try out our API for 7 days with 2-user concurrency by clicking the button below. After 7 days the API key will stop working, unless you've arranged an extension with us.</p>
+						<p class="uk-text-center"><a href="{{@root.urls.trial}}" class="uk-button uk-button-default"><span uk-icon="icon: bolt"></span> Trial</a></p>
+					</div>
+				</div>
+				{{/if}}
+				<div>
+					<div class="uk-card uk-card-default uk-card-body">
+						<h3 class="uk-card-title">Subscribe</h3>
+						<p>Buy regular access to our API.</p>
+
+						<div class="uk-margin uk-text-center">
+						<form method="get" id="fregular">
+							<p><select onchange='document.getElementById("fregular").setAttribute("action", this.value);' class='uk-select'>
+								<option value="/me/apikeys">Choose ...</option>
+								{{#each @root/dropdown}}
+									<option value="{{value}}{{../referrer}}">{{label}}</option>
+								{{/each}}
+							</select></p>
+							<p><button class="uk-button uk-button-primary"><span uk-icon="icon: credit-card"></span> Buy subscription</button></p>
+						</form>
+						</div>
+
+					</div>
+				</div>
+				<div>
+					<div class="uk-card uk-card-default uk-card-body">
+						<h3 class="uk-card-title">Volume Licencing</h3>
+						<p>A Volume Licensing subscription enables multiple separately licenced sub-accounts each with
+							their own API key and licenced/overflow amounts. <a href="/content/subaccounts">Click here</a> for more
+							information on managing sub-accounts, invoicing, etc.</p>
+						<p class="uk-text-center"><a href="{{@root.urls.volumelicence}}" class="uk-button uk-button-default"><span uk-icon="icon: credit-card"></span> Buy subscription</a></p>
+					</div>
+				</div>
+			</div>
+
+			<h3>Order History</h3>
+			<p>This table summarises your order history for API subscriptions</p>
 
 			<div class="uk-overflow-auto">
 			<table class='uk-table uk-table-small cs-tablesort ' width='100%'>
 			<thead><tr>
+				<th>Account</th>
 				<th>Reference</th>
 				<th>Begun</th>
 				<th>Ends</th>
@@ -40,8 +83,40 @@
 			<tbody>
 
 			{{#each apikeys}}
-			<tr><td colspan='6'>
+			<tr class='cs-row-status {{statusReasonClass .}}'>
+				<td>{{#if primary_account}}<span class='uk-text-success' title='Primary account'>{{email}}</span>{{else}}{{email}}{{/if}}</td>
+				<td class='uk-text-truncate	' title='{{referenceId}}'>{{referenceId}}</td>
+				<td>{{#if added}}<time datetime="{{utc added}}" label="Begun:">{{date added}}</time>{{else}}-{{/if}}</td>
+				<td>{{#if ended}}<time datetime="{{utc endDate}}" label="Ended:">{{date endDate}}</time>{{else}}-{{/if}}</td>
+				<td>{{#if incomplete}}invalid{{else}}{{#if statusReason}}{{{statusReasonText statusReason}}}{{else}}{{status}}{{/if}}{{/if}}</td>
+				<td>{{#if price}}
+					{{#equals price "0.00"}}{{#if ended}}Expired{{else}}Free{{/if}}{{else}}
+					<sup>$</sup><span class='uk-text-bold'>{{price}}</span><sub>{{#contains product_id "api"}}/quarter{{else}}/month{{/contains}}</sub>
+            		{{/equals}}
+	            	{{/if}}</td>
+	            <td>
+		    		{{#unless primary_account}}<a href="/me/apikeys/edit/{{id}}/" title='Edit sub-account' uk-icon='pencil' class='uk-margin-small-right'></a>{{/unless}}
+	            	{{#if order_url}}<a href='{{order_url}}' title='Order details' uk-icon='link' class='uk-margin-small-right'></a>{{/if}}
+					{{#if support_url}}<a href='{{support_url}}' title='Order support' uk-icon='mail' class='uk-margin-small-right'></a>{{/if}}
+					{{#decodable subscriptionUrl}}<a href='{{.}}' uk-icon='trash' class='uk-margin-small-right' title='Cancel subscription'></a>{{/decodable}}
+				    {{#if apikey}}<a href="{{@root.baseurl}}me/apikeys/features/{{apikey}}/" uk-icon='database' class='uk-margin-small-right' title='Manage connected apps'></a>{{/if}}
+					{{#if incomplete}}<a href="{{@root.baseurl}}me/apikeys/remove/{{id}}/" uk-icon='trash' class='uk-margin-small-right' title='Remove account'></a>{{/if}}
+				</td>
+			</tr>
+			{{#if apikey}}
+			<tr class='cs-applist'>
+				<td colspan='7'>
+					<p class="name">
+						<b>{{name}}</b>
+						<span class="concurrency"><b>Licenced Concurrency:</b> {{concurrency}}</span>
+					</p>
+					<p><b>Api Key:</b> {{apikey}}</p>
+					<p><b>Secret:</b> {{#decodable secret}}{{.}}{{/decodable}}</p>
+				</td>
+			</tr>
+			{{/if}}
 
+{{!--			<tr><td colspan='6'>
 			<div class="uk-card uk-card-small uk-card-default cs-order-item uk-margin-large-bottom">
 			    <div class="uk-card-header uk-background-muted">
 			        <div class="uk-grid-small uk-flex-middle" uk-grid>
@@ -94,29 +169,6 @@
 						<p><b>Secret:</b> {{#decodable secret}}{{.}}{{/decodable}}
 					</div>
 					{{/if}}
-					{{#if ended}}
-					<form method="get" class="uk-form-stacked" id="f{{@index}}">
-						<div class="uk-margin">
-							<div class="uk-form-controls">
-								<label for="s{{@index}}">Choose a subscription option:</label>
-								<select id="s{{@index}}" onchange='document.getElementById("f{{@index}}").setAttribute("action", this.value);' class='uk-select'>
-									<option value="/me/apikeys">Choose ...</option>
-									{{#if primary_account}}{{#each @root/trial_dropdown}}
-										<option value="{{value}}{{../referrer}}">{{label}}</option>
-									{{/each}}{{/if}}
-									{{#each @root/dropdown}}
-										<option value="{{value}}{{../referrer}}">{{label}}</option>
-									{{/each}}
-								</select>
-					        </div>
-					    </div>
-	    				<div class="uk-margin">
-					        <div class="uk-form-controls">
-								<button class="uk-button uk-button-secondary"><span uk-icon="icon: credit-card"></span> Buy subscription</button>
-							</div>
-						</div>
-					</form>
-					{{/if}}
 
 			    </div>
 			    {{#if apikey}}
@@ -127,7 +179,7 @@
 			</div>
 
 			</td></tr>
-
+--}}
 			{{/each}}
 			</tbody></table>
 

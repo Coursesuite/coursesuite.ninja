@@ -95,6 +95,13 @@ class MeController extends Controller
 		$model["param_array"] = $params;
 		$model["command_feedback"] = "";
 
+		// TODO: if the user hasn't already had a trial
+		$model["showtrial"] = (!SubscriptionModel::user_has_subscription(Session::CurrentUserId()));
+		$model["urls"] = array(
+			"trial" => Config::get("URL") . "me/apikeys/trial/",
+			"volumelicence" => Keystore::find("volumelicence")->get("")
+		);
+
 		$this->View->Requires("me/apikeys/features");
 		$this->View->Requires("me/apikeys/addSubAccount");
 		$this->View->Requires("me/apikeys/editSubAccount");
@@ -211,10 +218,10 @@ class MeController extends Controller
 					$model["account"] = $account->get_model();
 					$model["apikeys"] = $account->get_apikeys();
 					$model["dropdown"] = ProductBundleModel::get_store_dropdown_model();
-					$model["trial_dropdown"] = array(array(
-						"label" => Text::get("TRIAL_API_LABEL"),
-						"value" => Config::get("URL") . "me/apikeys/trial/"
-					));
+					// $model["trial_dropdown"] = array(array(
+					// 	"label" => Text::get("TRIAL_API_LABEL"),
+					// 	"value" => Config::get("URL") . "me/apikeys/trial/"
+					// ));
 					// $this->View->Requires("account.apikeys.js");
 					break;
 			}
@@ -391,7 +398,7 @@ class MeController extends Controller
 		$user_id = Session::CurrentUserId();
 		$retain_cookie = Request::cookie('login');
 		Auth::logout_user_all($user_id, $retain_cookie);
-		Redirect::to("me/");
+		Redirect::to("me/account");
 	}
 
 	public function dl($hash, ...$params) {

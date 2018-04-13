@@ -74,6 +74,9 @@ body > header {
 	}
 	tr.cs-applist > td:first-of-type {
 		.uk-padding-small();
+		p.name span.concurrency {
+			float: right;
+		}
 	}
 
 	tr.cs-row-status + tr.cs-applist {
@@ -132,6 +135,20 @@ body > header {
 		background-repeat: no-repeat;
 		background-position: bottom left;
 	}
+}
+
+@media (max-width: @breakpoint-small) {
+    .uk-flex-first\@S { order: -1; }
+}
+
+.cs-colour-barleycorn {
+	background-color: #9b9952;
+}
+.cs-colour-aquasqueeze {
+	background-color: #e5f2f7
+}
+.cs-colour-romancoffee {
+	background-color: #76584f;
 }
 
 .cs-colour-stone {

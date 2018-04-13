@@ -56,22 +56,17 @@ function copyToClipboard(element) {
 
 // https://stackoverflow.com/a/45086170/1238884
 // const disposerFn = () => { scope.removeEventListener(type, handler, capture); } disposerFn.type = type; return disposerFn;
-const ownAddEventListener = (scope, type, handler, capture) => {
-  scope.addEventListener(type, handler, capture);
-  return () => {
-    scope.removeEventListener(type, handler, capture);
-  }
-}
+// const ownAddEventListener = (scope, type, handler, capture) => {
+//   scope.addEventListener(type, handler, capture);
+//   return () => {
+//     scope.removeEventListener(type, handler, capture);
+//   }
+// }
 // const disposer = ownAddEventListener(document.body, 'scroll', () => {
   // do something
 // }, false);
 
 // disposer(); -> calls removeEventListener
-
-function acknowledge(value) {
-	$.post("/me/acknowledge/", {id: value});
-}
-
 
 var ajaxSubmit = function (frm) {
 
@@ -141,7 +136,6 @@ function bindAjaxSubmits() {
 	$("form[method='ajax']").on("submit", function(e) {
 		var $this = $(this), $feedback = $("div.output", $this), $container = $this.parent(), $submit = $("[type='submit']", $this);
 		$feedback.empty();
-		console.log("submit",$submit);
 		$submit.addClass("submitting");
 		$.post($this.attr("action"), $this.serialize(), function (result) {
 

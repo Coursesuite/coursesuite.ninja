@@ -343,8 +343,12 @@ class View
             "statusReasonClass" => function ($subscription_row) {
                 $prefix = "";
                 $result = "";
+                if (isset($subscription_row["email"]) && !isset($subscription_row["apikey"])) return "";
                 if ($subscription_row["status"] === "active") {
                     $result = "success";
+                }
+                if (isset($subscription_row["ended"]) && $subscription_row["ended"] === true) {
+                    $result = "warning";
                 }
                 switch ($subscription_row["statusReason"]) {
                     case "canceled":

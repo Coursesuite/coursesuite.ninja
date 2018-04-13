@@ -9,10 +9,7 @@ class ServicesController extends Controller
     }
 
     public function index() {
-	$model = StoreModel::get_store_index_model();
-	$model->csrf_token = Csrf::makeToken();
-
-	$this->View->renderHandlebars("services/index", $model, "_templates", Config::get("FORCE_HANDLEBARS_COMPILATION"));
+	$this->View->renderHandlebars("services/index", [], "_templates", Config::get("FORCE_HANDLEBARS_COMPILATION"));
     }
 
     public function email() {

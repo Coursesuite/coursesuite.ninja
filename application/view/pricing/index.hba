@@ -1,14 +1,14 @@
 <div class='uk-section cs-pricing-index'>
 	<div class='uk-container'>
 
-		<div class="uk-background-muted uk-text-center uk-padding">
+		<div class="cs-colour-aquasqueeze uk-text-center uk-padding uk-margin-small-bottom">
 		<h1>Access to our apps requires a subscription.</h1>
 		<p class='uk-text-lead'>(But the first 7-days after purchase are free on our Direct Access apps. )</p>
 		<p>Your ongoing payments help us continuously refine our apps, and develop new ones.</p>
 		</div>
 
 		<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
-			<div class="uk-background-primary uk-light uk-padding">
+			<div class="cs-colour-barleycorn uk-light uk-padding">
 				<h2 class="uk-heading-line uk-text-center"><span>Direct Access</span></h2>
 				<ul class="uk-list uk-list-divider">
 					<li>Buy the apps you need separately, or in a bundle to receive a discount</li>
@@ -24,13 +24,13 @@
 				{{/contains}}{{/each}}</tbody></table>
 			</div>
 
-			<div class='uk-background-secondary uk-light uk-padding'>
+			<div class='cs-colour-romancoffee uk-light uk-padding'>
 				<h2 class="uk-heading-line uk-text-center"><span>API Access</span></h2>
 				<ul class="uk-list uk-list-divider">
 					<li>Create authentication tokens for accessing and launching apps</li>
 					<li>Access all apps and features, including future releases</li>
 					<li>Multiple concurrent user licencing</li>
-					<li>Manage multiple api keys for sub-accounts / your own tenants</li>
+					<li>Volume Licensing option (multiple accounts)</li>
 					<li>Add custom templates, white-label apps</li>
 					<li>Custom billing options - contact us for information</li>
 				</ul>

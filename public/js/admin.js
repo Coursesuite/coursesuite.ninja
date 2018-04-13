@@ -45,17 +45,17 @@ $(function () {
 
 	});
 
-	$('#upload_widget_opener').cloudinary_upload_widget({
-		cloud_name: 'coursesuite',
-		upload_preset: 'ietcpiwn',
-		cropping: 'server',
-		cropping_show_dimensions: true,
-		folder: 'coursesuite',
-		sources: ['local','url','camera'],
-	},
-    function(error, result) {
-    	console.log(error, result)
-    });
+	// $('#upload_widget_opener').cloudinary_upload_widget({
+	// 	cloud_name: 'coursesuite',
+	// 	upload_preset: 'ietcpiwn',
+	// 	cropping: 'server',
+	// 	cropping_show_dimensions: true,
+	// 	folder: 'coursesuite',
+	// 	sources: ['local','url','camera'],
+	// },
+ //    function(error, result) {
+ //    	console.log(error, result)
+ //    });
 
 	$("[data-sortable]").each(function (el, index) {
 		Sortable.create(el, {

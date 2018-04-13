@@ -116,21 +116,24 @@ class AccountModel extends Model
             $result["email"] = $acc->user_email;
             $result["secret"] = $acc->secret_key;
             // $result["secret"] = empty($acc->secret_key) ? "" : Encryption::decrypt(Text::base64dec($acc->secret_key));
-                // $result["order_url"] = empty($record->subscriptionUrl) ? "" : Encryption::decrypt(Text::base64dec($record->subscriptionUrl));
-                // $result["support_url"] = "mailto:accounts@coursesuite.com.au?subject=Order%20Support%20" . $record->referenceId;
             if ($record = $query->fetch()) {
+                 $result["order_url"] = empty($record->subscriptionUrl) ? "" : Encryption::decrypt(Text::base64dec($record->subscriptionUrl));
+                 $result["support_url"] = "mailto:accounts@coursesuite.com.au?subject=Order%20Support%20" . $record->referenceId;
                 $result["subscriptionUrl"] = $record->subscriptionUrl;
                 $result["apikey"] = $record->apikey;
                 $result["added"] = $record->added;
                 $result["ended"] = intval($record->ended,10) === 1;
                 $result["endDate"] = $record->endDate;
                 $result["status"] = $record->status;
-                $result["reason"] = $record->statusReason;
+                $result["statusReason"] = $record->statusReason;
                 $result["name"] = $record->label;
                 $result["referenceId"] = $record->referenceId;
                 $result["price"] = $record->price;
                 $result["concurrency"] = $record->concurrency;
                 $result["product_key"] = $record->product_key;
+                $result["incomplete"] = false;
+            } else {
+                $result["incomplete"] = true;
             }
             $result["referrer"] = "?referrer=" . Text::base64enc(Encryption::encrypt($id)) . Config::get('FASTSPRING_PARAM_APPEND');
             $results[] = $result;

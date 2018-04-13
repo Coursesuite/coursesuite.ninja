@@ -452,6 +452,11 @@ class SubscriptionModel extends Model
 		return $results;
 	}
 
+	// user has a record for a subscription that links to a particular product key (past or present)
+	public static function user_has_subscription($user_id, $product_key = "api-trial") {
+		return Model::Exists("subscriptions", "user_id=:uid and product_id in (select id from product_bundle where product_key=:pkey)", [":uid"=>$user_id,":pkey"=>$product_key]);
+	}
+
 	public static function create_trial_subscription($user_id) {
 
 		// does this user already have a subscription for an API product?
