@@ -43,13 +43,13 @@
                   </select></div>
             </div>
             <div class="row"><label>SEO Title</label>
-                  <div><input type="text" name="sort" value="{{formdata.meta_title}}"></div>
+                  <div><input type="text" name="meta_title" value="{{formdata.meta_title}}"></div>
             </div>
             <div class="row"><label>SEO Keywords</label>
-                  <div><input type="text" name="sort" value="{{formdata.meta_keywords}}"></div>
+                  <div><input type="text" name="meta_keywords" value="{{formdata.meta_keywords}}"></div>
             </div>
             <div class="row"><label>SEO Description</label>
-                  <div><input type="text" name="sort" value="{{formdata.meta_description}}"></div>
+                  <div><input type="text" name="meta_description" value="{{formdata.meta_description}}"></div>
             </div>
             <div class="row"><label />
             	<div><button>Save</button> <a href="{{baseurl}}admin/store_sections/" class='button'>Cancel</a></div>

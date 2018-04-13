@@ -21,6 +21,13 @@
             <div class="row"><label>Sub Heading</label>
             	<div><input type="text" name="whatisit" value="{{formdata.whatisit}}"></div>
             </div>
+            <div class="row"><label>CSS Section Classes (leave blank to apply default)</label>
+                  <div class="uk-grid-large uk-child-width-expand@s" uk-grid>
+                        <div><b>Header classes:</b><br><input size="50" type="text" name="appHeader" value="{{formdata.cssproperties.appHeader}}">&nbsp;</div>
+                        <div><b>Slides classes:</b><br><input size="50" type="text" name="appSlides" value="{{formdata.cssproperties.appSlides}}">&nbsp;</div>
+                        <div><b>Links classes:</b><br><input size="50" type="text" name="appLinks" value="{{formdata.cssproperties.appLinks}}"></div>
+                  </div>
+            </div>
             <div class="row"><label>tile icon</label>
             	<div><input type="text" name="icon" value="{{formdata.icon}}"></div>
             </div>

@@ -38,28 +38,26 @@ if (empty($body_id)) $body_id = "default";
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <?php } ?>
 
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:site" content="">
-        <meta name="twitter:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
-        <meta property="og:locale" content="en_AU">
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="CourseSuite">
-        <meta property="og:description" content="<?php echo $meta_description; ?>">
-        <meta property="og:url" content="https://www.coursesuite.ninja/">
-        <meta property="og:site_name" content="<?php echo $meta_title; ?>">
-        <meta property="og:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
-        <link rel="shortcut icon" href="/img/coursesuite_logo_discourse_square.png">
-        <link rel="apple-touch-icon-precomposed" href="/img/coursesuite_logo_discourse_square.png">
-        <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTUPjIg1_i6t8kCHKm459WxZYgzz_PZwjimrqw.woff2" as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTURjIg1_i6t8kCHKm45_aZA3gnD_vx3rCs.woff2" as="font" type="font/woff2" crossorigin>
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:site" content="">
+    <meta name="twitter:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
+    <meta property="og:locale" content="en_AU">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CourseSuite">
+    <meta property="og:description" content="<?php echo $meta_description; ?>">
+    <meta property="og:url" content="https://www.coursesuite.ninja/">
+    <meta property="og:site_name" content="<?php echo $meta_title; ?>">
+    <meta property="og:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
+    <link rel="shortcut icon" href="/img/coursesuite_logo_discourse_square.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/coursesuite_logo_discourse_square.png">
+    <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTUPjIg1_i6t8kCHKm459WxZYgzz_PZwjimrqw.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTURjIg1_i6t8kCHKm45_aZA3gnD_vx3rCs.woff2" as="font" type="font/woff2" crossorigin>
 
-        <link rel="dns-prefetch" href="https://document.scormification.ninja/">
-        <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
+    <link rel="dns-prefetch" href="https://document.scormification.ninja/">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-
-
 <?php
 
     $headerVideo = "/img/header_dark.mp4";
