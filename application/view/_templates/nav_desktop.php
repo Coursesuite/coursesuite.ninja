@@ -45,7 +45,7 @@
                 </li>
                 <li<?php CurrentMenu($this->page(),"pricing"); ?>><a href="<?php echo $baseurl; ?>pricing/">Pricing</a></li>
                 <li<?php CurrentMenu($this->page(),"support"); ?>>
-                    <a href="#">Support</a>
+                    <a href='<?php echo (Session::userIsLoggedIn()) ? "/me/support/" : "#"; ?>'>Support</a>
                     <div class="uk-navbar-dropdown" uk-dropdown="offset: -20; delay-show: 200; mode: click, hover; animation: uk-animation-slide-top-small; duration: 200">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             <li><a href="https://help.coursesuite.ninja/">Helpdesk</a></li>

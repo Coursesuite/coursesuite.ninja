@@ -35,9 +35,14 @@ if (isset($this->SystemMessages)) {
 
 	<div class='uk-section cs-footer'>
 		<div class='uk-container'>
-			<div class="uk-grid-small uk-child-width-expand@s uk-child-width-1-2@s" uk-grid>
+			<div class="uk-grid-small uk-child-width-expand@m uk-child-width-1-2@s" uk-grid>
 			    <div><?php echo Text::toHtml(KeyStore::find('footer_col1')->get()); ?></div>
 			    <div><?php echo Text::toHtml(KeyStore::find('footer_col2')->get()); ?></div>
+			    <?php if (Session::userIsLoggedIn()) { ?>
+			    	<div class='uk-flex-first@S'><h3>My Account</h3>
+			    		<p>Logged in as <?php echo Session::CurrentUsername(); ?></p>
+			    		<p><a href='/me/'>Manage Account</a> | <a href='/login/logout/'>Log out</a></p>
+			    	</div><?php } ?>
 			    <div><?php echo Text::toHtml(KeyStore::find('footer_col3')->get()); ?></div>
 		    </div>
 	    </div>
