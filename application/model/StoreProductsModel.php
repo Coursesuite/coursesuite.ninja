@@ -71,6 +71,7 @@ class StoreProductsModel
 		}
 
 		$app = (new AppModel("app_key", $app_key))->get_model(true); // ::getAppByKey($app_key);
+		$app->cssproperties = json_decode($app->cssproperties); // TODO: automate
 
 		// do entries in the changelog exist for this app?
         // $app->changelog = ChangeLogModel::has_changelog($app->app_id);

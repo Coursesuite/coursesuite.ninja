@@ -105,6 +105,11 @@ class Session
 		return (isset($PAGE->user_id));
 	}
 
+	public static function CurrentUsername() {
+		global $PAGE;
+		return (isset($PAGE->user_id)) ? $PAGE->user_email : "";
+	}
+
 	public static function CurrentUserId()
 	{
 		global $PAGE;

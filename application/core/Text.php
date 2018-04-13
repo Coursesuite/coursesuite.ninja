@@ -241,4 +241,14 @@ class Text
 		return base64_decode(strtr($input, '-_~', '+/='));
 	}
 
+	public static function iif($value, $default) {
+
+		// hmm
+		// function get_default($value, FILTER_VALIDATE_INT, 0) {
+		// 	return filter_var($value, FILTER_VALIDATE_INT, array('options' => array('default' => $default)));
+		// }
+
+		return (empty(trim($value))) ? $default : $value;
+	}
+
 }

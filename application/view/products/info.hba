@@ -1,6 +1,6 @@
 <div class='cs-app-{{App.app_key}}'>
 
-<div class='uk-section cs-app-header cs-bgcolour-{{App.app_key}} uk-light'>
+<div class='{{App.cssproperties.appHeader}}'>
 	<div class='uk-container'>
 		<div class="uk-flex-middle cs-svg-colour" uk-grid>
 			{{#if App.glyph}}<img src="data:image/svg+xml,{{escape App.glyph}}" uk-svg width="76">{{/if}}
@@ -15,7 +15,7 @@
 	</div>
 </div>
 {{#if App.media}}
-<div class='uk-section cs-app-slides'>
+<div class='{{App.cssproperties.appSlides}}'>
 	<div class='uk-container'>
 		{{> lightbox}}
 	</div>
@@ -86,7 +86,7 @@
 </div>
 {{/each}}
 
-<div class='uk-section cs-app-links'>
+<div class='{{App.cssproperties.appLinks}}'>
 	<div class='uk-container'>
 		<div class="uk-grid-small uk-child-width-auto" uk-grid>
 			{{#if App.changelog}}

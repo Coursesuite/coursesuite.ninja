@@ -310,6 +310,7 @@ class AdminController extends Controller
             case "edit":
                 // $model->examples = NavModel::admin_examples();
                 $model->formdata = (new AppModel("app_id", $id))->get_model(true);
+                $model->formdata->cssproperties = json_decode($model->formdata->cssproperties); // TODO make this automatic
                 $model->formdata->ApiMods = ApiModel::get_api_mods(json_decode($model->formdata->mods, true));
                 break;
 
@@ -355,6 +356,11 @@ class AdminController extends Controller
                     "colour" => Request::post("colour"),
                     "glyph" => Request::post("glyph"),
                     "media" => Request::post("media"),
+                    "cssproperties" => array(
+                        "appHeader" => Text::iif(Request::post("appHeader"), "uk-section cs-app-header cs-bgcolour-" . Request::post("app_key") ." uk-light"),
+                        "appSlides" => Text::iif(Request::post("appSlides"), "uk-section cs-app-slides"),
+                        "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links")
+                    )
                 );
                 // persist enabled mods
                 $basemods = ApiModel::get_api_mods();
@@ -776,6 +782,7 @@ class AdminController extends Controller
                 KeyStore::find("freeTrialDays")->put(Request::post("freeTrialDays"));
                 KeyStore::find("emailTemplate")->put(Request::post("emailTemplate"));
                 KeyStore::find("customcss")->put(Request::post("customcss"));
+                KeyStore::find("volumelicence")->put(Request::post("volumelicence"));
                 Redirect::to("admin/storeSettings"); // to ensure it reloads
                 break;
         }
@@ -789,6 +796,7 @@ class AdminController extends Controller
         $model->emailTemplate = KeyStore::find("emailTemplate")->get();
         $model->freetrialdays = KeyStore::find("freeTrialDays")->get(3);
         $model->customcss = KeyStore::find("customcss")->get();
+        $model->volumelicence = KeyStore::find("volumelicence")->get("");
 
         $cache = CacheFactory::getFactory()->getCache();
         $cacheItem = $cache->deleteItem("custom_css");
