@@ -29,17 +29,31 @@ class Auth
         return ((int)$query->fetchColumn() > 0);
     }
 
-    public static function set_user_logon_cookie($user_id) {
+    public static function set_user_logon_cookie($user_id, $source = null) {
         $database = DatabaseFactory::getFactory()->getConnection();
-        $query = $database->prepare("INSERT INTO logons (`user`,`cookie`,`ip`) VALUES (:user,:cookie,:ip)"); // " users set user_remember_me_token=:hash where user_id=:id limit 1");
-        $hash = md5(uniqid());
         $ip = Environment::remoteIp();
-        Response::cookie("login", $hash);
-        return $query->execute(array(
+        $browser = Environment::useragent();
+        $hash = md5(uniqid());
+
+        Response::cookie("login",$hash);
+
+        // update user record
+        $query = $database->prepare("UPDATE users SET user_logon_count = user_logon_count + 1, last_browser=:browser, last_ip=:ip, user_last_login_timestamp=:now WHERE user_id=:user");
+        $query->execute([
+            ":user"=>$user_id,
+            ":ip"=>$ip,
+            ":browser"=>$browser,
+            ":now"=>time()
+        ]);
+
+        // record login
+        $query = $database->prepare("INSERT INTO logons (`user`,`cookie`,`ip`,`source`) VALUES (:user,:cookie,:ip,:source)"); // " users set user_remember_me_token=:hash where user_id=:id limit 1");
+        return $query->execute([
             ":user"=>md5($user_id),
             ":cookie"=>$hash,
-            ":ip"=>$ip
-        ));
+            ":ip"=>$ip,
+            ":source"=>md5($source . Config::get('HMAC_SALT'))
+        ]);
     }
 
     // log out THIS browser

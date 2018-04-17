@@ -58,11 +58,12 @@ class LoginController extends Controller
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------ */
 	public function impersonate($enc = '') {
+		$current_user = Session::CurrentUserId();
 		$dec = Text::base64_urldecode($enc);
 		$uid = Encryption::decrypt($dec);
 		if ($uid > 0) {
 			Session::reset();
-			Auth::set_user_logon_cookie($uid);
+			Auth::set_user_logon_cookie($uid,$current_user);
 			Redirect::to('me/');
 			exit;
 		}
