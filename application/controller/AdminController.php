@@ -49,6 +49,14 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/crud/index", $model, "_admin", true);
     }
 
+    public function account($user_id) {
+
+        $model = $this->model;
+        $model->account = (new AccountModel($user_id))->get_model(true);
+        $this->View->renderHandlebars('admin/users/account', $model, "_admin", true);
+
+    }
+
     public function users($tab = "recent")
     {
 
@@ -58,11 +66,11 @@ class AdminController extends Controller
 
         $model = $this->model;
         $model->search = Request::post("q", false, FILTER_SANITIZE_STRING);
+        if (strpos($model->search, '*') === false) $model->search .= "%";
         $model->tableheaders = ["id","Email","Last login","Login Count","Browser","Status","Starts","Ends","Reference","Product"];
-
         switch ($tab) {
             case "search":
-                $users = Model::Read("users", "user_email LIKE :match", array(":match" => $model->search));
+                $users = Model::Read("users", "user_email LIKE :match", array(":match" => str_replace('*','%', $model->search)));
                 $subsql = "SELECT status, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
                 break;
 
@@ -72,23 +80,23 @@ class AdminController extends Controller
                 break;
 
             case "cancelled":
-                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE statusReason like 'canceled%') ORDER BY user_last_login_timestamp DESC, user_email");
+                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE statusReason like 'canceled%') AND user_parent_id=0 ORDER BY user_last_login_timestamp DESC, user_email");
                 $subsql = "SELECT status, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user AND statusReason like 'canceled%' ORDER BY endDate DESC, added DESC LIMIT 1";
                 break;
 
             case "inactive":
-                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE status <> 'active') ORDER BY user_last_login_timestamp DESC, user_email");
+                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE status <> 'active') AND user_parent_id=0 ORDER BY user_last_login_timestamp DESC, user_email");
                 $subsql = "SELECT status, statusReason, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user AND status <> 'active' ORDER BY endDate DESC, added DESC LIMIT 1";
                 $model->tableheaders = ["id","Email","Last login","Login Count","Browser","Status","Reason","Starts","Ends","Reference","Product"];
                 break;
 
             case "recent":
-                $users = Model::Read("users", "1=1 ORDER BY user_id DESC LIMIT 25", [], array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
+                $users = Model::Read("users", "1=1 AND user_parent_id=0 ORDER BY user_id DESC LIMIT 25", [], array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
                 $subsql = "SELECT status, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
                 break;
 
             case "mostactive":
-                $users = Model::Read("users", "1=1 ORDER BY user_logon_count DESC LIMIT 50", [], array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
+                $users = Model::Read("users", "1=1 AND user_parent_id=0 ORDER BY user_logon_count DESC LIMIT 50", [], array("user_id", "user_last_login_timestamp","user_email","user_logon_count","last_browser"));
                 $subsql = "SELECT status, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
                 break;
 

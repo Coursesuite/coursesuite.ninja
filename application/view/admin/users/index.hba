@@ -14,7 +14,10 @@
             {{#each datatable}}
 
             <tr>
-                <td>{{#if impersonate}}<a href="/login/impersonate/{{impersonate}}" title="Click to log on as this user">{{user_id}}</a>{{else}}{{user_id}}{{/if}}</td>
+                <td>
+                    {{#if impersonate}}<a href="/login/impersonate/{{impersonate}}" title="Click to log on as this user"><i class='fa fa-fw fa-lock'></i></a>{{/if}}
+                    <a href="/admin/account/{{user_id}}"><i class='fa fa-fw fa-pencil'></i></a>
+                </td>
                 <td>{{user_email}}</td>
                 <td>{{tsdatetime user_last_login_timestamp}}</td>
                 <td>{{user_logon_count}}</td>
