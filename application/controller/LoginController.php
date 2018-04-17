@@ -48,7 +48,7 @@ class LoginController extends Controller
 	public function logout($all = "false")
 	{
 		LoginModel::logout($all === "true");
-		Redirect::home();
+		Redirect::home("refresh");
 		exit();
 	}
 
@@ -58,12 +58,13 @@ class LoginController extends Controller
 
 	------------------------------------------------------------------------------------------------------------------------------------------------------------ */
 	public function impersonate($enc = '') {
-		$current_user = Session::CurrentUserId();
 		$dec = Text::base64_urldecode($enc);
-		$uid = Encryption::decrypt($dec);
+		$uids = Encryption::decrypt($dec);
+		// quietly ignore missing params
+		@list($uid,$source) = array_map('intval',explode(',',$uids));
 		if ($uid > 0) {
 			Session::reset();
-			Auth::set_user_logon_cookie($uid,$current_user);
+			Auth::set_user_logon_cookie($uid,$source);
 			Redirect::to('me/');
 			exit;
 		}

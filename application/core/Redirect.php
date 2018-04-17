@@ -19,9 +19,21 @@ class Redirect
 	}
 
 	// to the home page
-	public static function home()
+	public static function home($kind = "location")
 	{
-		header("location: " . Config::get('URL'));
+		$home = Config::get('URL');
+		switch ($kind) {
+			case "meta":
+				die("<meta http-equiv=\"refresh\" content=\"0;URL='{$home}'\" />");
+				break;
+
+			case "refresh":
+				header("Refresh: 0;url='{$home}'");
+				break;
+
+			default:
+				header("Location: {$home}");
+		}
 		die();
 	}
 
