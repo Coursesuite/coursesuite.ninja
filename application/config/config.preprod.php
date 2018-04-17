@@ -56,7 +56,7 @@ return array(
 
     'COOKIE_RUNTIME' => 31536000, // 1 year
     'COOKIE_PATH' => '/',
-    'COOKIE_DOMAIN' => "",
+    'COOKIE_DOMAIN' => $_SERVER['HTTP_HOST'],
     'COOKIE_SECURE' => false,
     'COOKIE_HTTP' => true,
     'SESSION_RUNTIME' => 604800, // 1 week
