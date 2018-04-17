@@ -128,6 +128,9 @@ class View
                     return $options['inverse']();
                 }
             },
+            "replace" => function ($replace_this, $with_that, $in_this) {
+                return str_replace($replace_this, $with_that, $in_this);
+            },
             "vardump" => function ($arg1) {
                 var_dump($arg1);
                 return "";
