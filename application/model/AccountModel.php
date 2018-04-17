@@ -236,7 +236,7 @@ class AccountModel extends Model
     }
 
     public static function get_admin_users() {
-        $ids = DatabaseFactory::raw("select group_concat(md5(concat(user_id,:salt))) from users where user_account_type=:level", [":salt"=>Config::get('HMAC_SALT'),":level"=>Config::get('ADMIN_ACCOUNT_LEVEL')]);
+        return DatabaseFactory::raw("select group_concat(md5(concat(user_id,:salt))) from users where user_account_type=:level", [":salt"=>Config::get('HMAC_SALT'),":level"=>Config::get('ADMIN_ACCOUNT_LEVEL')]);
     }
 
 }
