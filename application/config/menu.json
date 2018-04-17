@@ -3,8 +3,7 @@
 		{"route":"admin/users/search","label":"Email", "search": true},
 		{"route":"admin/users/recent","label":"Recent"},
 		{"route":"admin/users/current","label":"Current"},
-		{"route":"admin/users/mostactive","label":"Most active"},
-		{"route":"admin/users/subaccounts","label":"Subaccounts"}
+		{"route":"admin/users/mostactive","label":"Most active"}
 	],
 	"subscriptions": [
 		{"route":"admin/subscriptions/","label":"Reference Id", "search": true},
