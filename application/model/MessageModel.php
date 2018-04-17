@@ -108,7 +108,10 @@ class MessageModel extends Model
 				":lvl"=>$level,
 				":uid"=>$user_id,
 			));
-			if ((int) $query->fetchColumn() > 0) return;
+			if ((int) $query->fetchColumn() > 0) {
+				// var_dump("nope, found it already");
+				return;
+			}
 		}
 		$model = self::Make();
 		$model["user_id"] = $user_id;

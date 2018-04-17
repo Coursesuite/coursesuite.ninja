@@ -111,8 +111,9 @@ class AdminController extends Controller
 
         foreach ($users as &$user) {
             $subquery->execute(array(":user" => $user->user_id));
-            if ($user->user_id != Session::CurrentUserId()) {
-                $user->impersonate = Text::base64_urlencode(Encryption::encrypt($user->user_id));
+            $my_user_id = Session::CurrentUserId();
+            if ($user->user_id != $my_user_id) {
+                $user->impersonate = Text::base64_urlencode(Encryption::encrypt("{$user->user_id},{$my_user_id}"));
             }
             if ($subresult = $subquery->fetch()) {
                 $user->subscription_status = $subresult->status;

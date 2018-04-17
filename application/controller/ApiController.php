@@ -104,8 +104,9 @@ class ApiController extends Controller
 	public function validate($app_key, $token_encoded) {
 
 		$authtoken = parent::requiresAuth();
-		$token = Text::base64dec($token_encoded);
-		LoggingModel::logMethodCall(__METHOD__, $authtoken, $app_key, $token, $token_encoded);
+		$token_raw = Text::base64dec($token_encoded);
+
+		LoggingModel::logMethodCall(__METHOD__, $authtoken, $app_key, $token_raw, $token_encoded);
 
 		$result = new stdClass();
 		$result->valid = false;
@@ -129,6 +130,32 @@ class ApiController extends Controller
 		$result->app->layer = "";
 		$result->app->guide = "";
 
+		$tokens = str_split($token_raw,60); // every 60 characters represents a new token
+		$token = $tokens[0]; // first token is the most relevant hash
+		unset($tokens[0]); // now we can check the remaining hashes
+		$admins = AccountModel::get_admin_users(); // list of site admin salted md5's
+
+		// when there are multiple tokens you check the 2nd, 3rd, etc to see if it trumps the first, or if the first has run out of seats
+		$bypass_licencing = false;
+		$seats = null;
+		foreach ($tokens as $parent_token) {
+
+			// hash might be the salted md5 of a user_id who is an admin - e.g. impersonation
+			foreach ($admins as $admin_hash) {
+				if (password_verify($admin_hash, $parent_token)) {
+					$bypass_licencing = true;
+					$seats = [5,5]; // enough
+					break 2; // inner foreach
+				}
+			}
+
+			// token might be a parent hash; model will be set if the token is valid and active
+			if (($model = ApiModel::find_model_for_token($parent_token)) !== false) {
+				$seats = [Licence::total_seats($model->hash), Licence::seats_remaining($model->hash)];
+				break 1; // outer foreach
+			}
+		}
+
 		if ($model = ApiModel::find_model_for_token($token)) {
 
 			$result->valid = true;
@@ -147,6 +174,13 @@ class ApiController extends Controller
 
 			$result->licence->seats = Licence::total_seats($model->hash); // total seats you are licensed for
 			$result->licence->remaining = Licence::seats_remaining($model->hash); // comes from from the concurrency database (redis)
+
+			// in the case you are out of licences and there is a parent a
+			if ($bypass_licencing || ($result->licence->remaining === 0 && $seats !== null)) {
+				$result->licence->seats = $seats[0];
+				$result->licence->remaining = $seats[1];
+			}
+
 			$product = new ProductBundleModel("id", $model->product); // what they bought, which we know includes this app_key (otherwise the has wouldn't have validated)
 
 			if ($product->is_api() === true) {
@@ -160,8 +194,12 @@ class ApiController extends Controller
 			}
 
 			// removed . ":" . Config::get("WEBSOCKET_PORT") - you want it to connect on the ssl port THEN have a proxy redirect it to the local port
-			$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $model->hash;
-			$result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
+				$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $model->hash;
+			if ($bypass_licencing) {
+				$result->app->layer = "";
+			} else {
+				$result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
+			}
 			// ws://coursesuite.ninja.dev/"
 		}
 
@@ -229,7 +267,10 @@ class ApiController extends Controller
 // the token itself can be generated now too. This will be different every time, so no point logging it
 		$token = ApiModel::generate_token_for_subscription($hash);
 
-// if the gave us a publish_url, grab and validate it ising the xss filter (I mean we trust them, right, but only so far)
+// well, lets finally look up the user and see if it is a sub-account of a sub that has volume licensing .. whew!
+
+
+// if they gave us a publish_url, grab and validate it ising the xss filter (I mean we trust them, right, but only so far)
 		$publish_url = Request::post("publish_url", true);
 		if (!empty($publish_url)) {
 			$this->View->renderJSON(array("error" => Text::get("INVALID_URL")));

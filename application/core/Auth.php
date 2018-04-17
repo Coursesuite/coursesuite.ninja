@@ -80,4 +80,17 @@ class Auth
         ));
     }
 
+    // if the current user is impersonated, return the source hash, otherwise false
+    public static function is_impersonated() {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("SELECT source FROM logons WHERE cookie=:cookie AND source IS NOT NULL LIMIT 1");
+        $query->execute([
+            ":cookie" => Request::cookie('login', FILTER_SANITIZE_STRING)
+        ]);
+        if (($value = $query->fetchColumn()) !== false) {
+            return $value;
+        }
+        return false;
+    }
+
 }

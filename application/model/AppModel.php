@@ -274,6 +274,12 @@ class AppModel extends Model
 						if (is_null($token)) {
 							$token = password_hash($subscription, PASSWORD_BCRYPT, array("cost" => 10));
 						}
+
+						// if I am being impersonated, we need to toss that hash onto the token too (before it's encoded) - for an admin logon
+						if (($source = Auth::is_impersonated()) !== false) {
+							$token .= password_hash($source, PASSWORD_BCRYPT, array("cost" => 10));
+						}
+
 						$url = sprintf($row->launch, Text::base64enc($token));
 					}
 					break;
