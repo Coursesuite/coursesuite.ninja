@@ -109,4 +109,10 @@ class DatabaseFactory
         $query = preg_replace($keys, $params, $query, 1, $count);
         return $query;
     }
+
+    public static function raw($sql,$params = []) {
+        $results = $this->getFactory()->getConnection->prepare($sql);
+        $results->execute($params);
+        return $results->fetchAll();
+    }
 }
