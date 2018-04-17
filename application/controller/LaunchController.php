@@ -51,23 +51,27 @@ class LaunchController extends Controller
         if (!empty($args)) { // args is always an array, but might be empty if not specified
             if ($args[0]==="apikey") array_shift($args); // depreciated method access, allowable
             if (substr($args[0],0,1)==='$') { // might be an older-style token
-                $token = implode('/',$args); // hash value might contain / so concat the arguments to form a string
-                if (password_get_info($token)['algo']!==0) { // seems like bcrypt to me
+                $token = substr(implode('/',$args), 0, 60); // hash value might contain / so concat the arguments to form a string, and trim to the first significant hash
+                if (password_get_info($token)['algo'] === PASSWORD_BCRYPT) { // seems like bcrypt to me
                     $hash = ApiModel::find_hash_for_token($token);
                 }
+
             } elseif (substr($args[0],0,2)==='JD') { // might be a new base64 encoded token
-                $token = Text::base64dec(implode('/',$args)); // hash value might contain / so concat the arguments to form a string
-                if (password_get_info($token)['algo']!==0) { // seems like bcrypt to me
+                $token = substr(Text::base64dec(implode('/',$args)), 0, 60); // hash value might contain / so concat the arguments to form a string, and trim to the first significant hash
+                if (password_get_info($token)['algo'] === PASSWORD_BCRYPT) { // seems like bcrypt to me
                     $hash = ApiModel::find_hash_for_token($token);
                 }
+
             } elseif (preg_match('/^[a-f0-9]{32}$/i', $args[0])) { // it's a 128-bit hash - not ideal, but allowable
                 $hash = $args[0];
+
             }
         }
 
     	// if the app requires some kind of auth
         if (AppModel::app_requires_authentication($app_key)) {
-            // need the licencing database to be accurate
+
+            // need the licencing database to be accurate (later, after this launch)
             Licence::refresh_licencing_info();
 
             // you might be logged onto CS as yourself but launch an app via an API; you want that app to launch as the API
@@ -94,6 +98,10 @@ class LaunchController extends Controller
             //     }
             }
         }
+
+
+        // if the current login has a flag which identifies it as being impersonated, then somehow modify the token to reflect that flag
+
 
         // build the url
         $url = AppModel::getLaunchUrl($app_key, $hash, $token);
