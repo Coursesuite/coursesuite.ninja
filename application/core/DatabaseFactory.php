@@ -111,7 +111,7 @@ class DatabaseFactory
     }
 
     public static function raw($sql,$params = []) {
-        $results = $this->getFactory()->getConnection->prepare($sql);
+        $results = self::$factory->database->prepare($sql);
         $results->execute($params);
         return $results->fetchAll();
     }
