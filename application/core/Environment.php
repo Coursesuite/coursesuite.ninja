@@ -41,4 +41,8 @@ class Environment
         return (getenv('DOMAIN_SUFFIX') ? getenv('DOMAIN_SUFFIX') : "");
     }
 
+    public static function useragent() {
+        return $_SERVER['HTTP_USER_AGENT'];
+    }
+
 }
