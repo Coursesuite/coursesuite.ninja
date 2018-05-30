@@ -39,37 +39,43 @@ class View
     // $this->View->requires(anything)
     public function requires($name, $param = null)
     {
-        if (strpos($name, ".css") !== false && strpos($name, "://") === false) { // e.g. third-party/jstree/style.css
-            if (strpos($name,"/") === 0) {
+        if (strpos($name, ".css") !== false) { // e.g third-party/tool/file.css, https://cdnjs.com/something/foo.css
+
+            if ($name[0] === "/" || strpos($name, "://") !== false) {
                 $this->css[] = $name;
             } else {
                 $this->css[] = "/css/$name";
             }
-        } else if (strpos($name, ".css") !== false && strpos($name, "://") !== false) { // e.g. third-party/jstree/style.css
-            $this->css[] = "$name";
-        } else if (strpos($name, ".js") !== false&& strpos($name, "://") === false) { // e.g. third-party/jstree/treeview.js
-            if (strpos($name,"/") === 0) {
+
+        } else if (strpos($name, ".js") !== false) { // e.g. third-party/jstree/treeview.js, https://cdnjs.com/something/foo.js
+
+            if ($name === "main.js" && Config::get("debug") !== true) $name = "main." . APP_JS . ".js";
+            if ($name === "admin.js" && Config::get("debug") !== true) $name = "admin." . APP_JS . ".js";
+            if ($name[0] === "/" || strpos($name, "://") !== false) {
                 $this->js[] = $name;
             } else {
                 $this->js[] = "/js/$name";
             }
-        } else if (strpos($name, ".js") !== false&& strpos($name, "://") !== false) { // e.g. third-party/jstree/treeview.js
-            if ($name === "main.js" && Config::get("debug") !== true) $name = "main." . APP_JS . ".js";
-            if ($name === "admin.js" && Config::get("debug") !== true) $name = "admin." . APP_JS . ".js";
-            $this->js[] = "$name";
+
         } else if (strpos($name, "::") !== false) { // e.g. Text::Paginator
+
             $this->helpers[] = $name;
+
         } else if (strpos($name, ".hbt") !== false) { // e.g. index/container.hbt
+
             $this->tmpl[] = $name;
+
         } else if ($name === "init") {
+
             $this->initjs[] = $param;
+
         } else if (file_exists(Config::get('PATH_VIEW') . $name . '.hbp')) { // e.g. login/forgot
-            // $tok = strtok($name,'/'); // "forgot" => (contents of login/forgot.hbp)
+
             $spl = explode('/', $name, 2);
             $tok = $spl[0];
             $part = str_replace('/','_',$spl[1]);
-            // $this->partials[strtok('/')] = file_get_contents(Config::get('PATH_VIEW') . $name . '.hbp');
             $this->partials[$part] = file_get_contents(Config::get('PATH_VIEW') . $name . '.hbp');
+
         }
     }
 
@@ -172,6 +178,7 @@ class View
             //     }
             // },
             "hasmorethan" => function ($arg1, $arg2, $options) {
+                // var_dump(gettype($arg1), gettype($arg2));
                 if (count($arg1) > $arg2) {
                     return $options['fn']();
                 } elseif (isset($options['inverse'])) {
@@ -448,6 +455,9 @@ class View
                 $authtoken = sprintf('%s%dx%s', 'o', 1, Base32::encode(pack('VV',$ticket["user_id"], $ticket["ticket_id"])));
                 $authtoken .= substr(base64_encode(md5($ticket["user_id"].$ticket["created"].$ticket["ticket_id"].Config::get("OST_SECRET_SALT"), true)), 8);
                 return urlencode($authtoken);
+            },
+            "strlen" => function ($string) {
+                return strlen($string);
             }
         );
 

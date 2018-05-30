@@ -1,4 +1,28 @@
+function clippy(i) {
+	var el = document.getElementById('fc' + i);
+	el.value=el.dataset.full;
+	el.select();
+	document.execCommand("copy");
+	el.value=el.dataset.short;
+}
+
 $(function () {
+
+	// admin file-upload controls (when inside iframe)
+	window.fd={logging:false};
+	var pfd = document.querySelector('#filedrop');
+	if (pfd !== null) {
+		var zone = new FileDrop(pfd, {input:false,dragOverClass:'fd-over'});
+		zone.event('send', function(files) {
+			files.each(function(file) {
+				file.event('done', function (xhr) {
+					location.reload();
+					console.dir(xhr);
+				});
+				file.sendTo(pfd.dataset.url);
+			});
+		});
+	}
 
 	$("[sortable]").each(function(index, el) {
 		Sortable.create(el, {

@@ -6,13 +6,19 @@
 <?php
 if (isset($this->scripts)) {
     foreach ($this->scripts as $script) {
-	    if (strpos($script, "//") === false) {
-		    echo "    <script src='" . Config::get('URL') . "js/$script'></script>" . PHP_EOL;
-		} else {
-		    echo "    <script src='$script' type='text/javascript'></script>" . PHP_EOL;
-		}
+        echo "<script type='text/javascript' src='$script'></script>" . PHP_EOL;
     }
-} ?>
+}
+//if (isset($this->scripts)) {
+//    foreach ($this->scripts as $script) {
+//	    if (strpos($script, "//") === false) {
+//		    echo "    <script src='" . Config::get('URL') . "js/$script'></script>" . PHP_EOL;
+//		} else {
+//		    echo "    <script src='$script' type='text/javascript'></script>" . PHP_EOL;
+//		}
+//   }
+//}
+?>
     <script src="<?php echo Config::get('URL'); ?>js/main.js"></script>
 	<?php
         $end = microtime(true);

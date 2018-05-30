@@ -22,8 +22,7 @@ function CurrentMenu($page, $routes, $classnames = '') {
         foreach ($this->sheets as $sheet) {
             echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
         }
-    }
-    if (Config::get("debug") === false) {
+    }    if (Config::get("debug") === false) {
         echo "<link rel='stylesheet' href='" . $baseurl . ADMIN_CSS . "'>" . PHP_EOL;
     } else {
         echo "<link rel='stylesheet/less' type='text/css' href='/css/admin.less' />" . PHP_EOL;

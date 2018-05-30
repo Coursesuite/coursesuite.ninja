@@ -1,0 +1,20 @@
+<section id="filedrop" data-url="/admin/files/{{area}}/{{key}}/upload">
+{{#unless file}}<p>No files. Drop some!</p>{{/unless}}
+{{#each file}}
+	<table>
+		<tr><th rowspan='3'>
+		{{#contains mime "application"}}<i class='fa fa-file-pdf-o fa-4x'></i>{{/contains}}
+		{{#contains mime "image"}}<img src='{{thumb}}'>{{/contains}}
+		{{#contains mime "zip"}}<i class='fa fa-file-archive-o fa-4x'></i>{{/contains}}
+		<br><a href="/admin/files/{{@root.area}}/{{@root.key}}/delete/{{name}}/"><i class="fa fa-trash-o"></i> Delete</a>
+		</th><td><input size='{{add (strlen name) 1}}' type='text' value='{{name}}' data-short='{{name}}' data-full='/files/{{@root.area}}/{{@root.key}}/{{name}}' id='fc{{@index}}'><a href='javascript:clippy({{@index}})' title='Copy path'><i class='fa fa-clipboard'></i></a></td>
+	</tr>
+	<tr>
+		<td>{{size}}{{#if info}} ({{info}}){{/if}}</td>
+	</tr>
+	<tr>
+		<td>{{modified}}</td>
+	</tr>
+	</table>
+{{/each}}
+</section>

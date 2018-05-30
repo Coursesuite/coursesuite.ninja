@@ -26,6 +26,63 @@ class AdminController extends Controller
         $this->model->menu = Config::Menu();
     }
 
+    public function files($area,$key,$action = "view",$fname="") {
+
+        function byteConvert($bytes)
+        {
+            if ($bytes == 0)
+                return "0.00 B";
+
+            $s = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+            $e = floor(log($bytes, 1024));
+
+            return round($bytes/pow(1024, $e), 2).$s[$e];
+        }
+
+        $model = new stdClass();
+        $rootpath = Config::get("PATH_ATTACHMENTS");
+        $fpath =  "{$rootpath}{$area}/{$key}/";
+        $model->area = $area;
+        $model->key = $key;
+
+        switch ($action) {
+            case "upload":
+                $fname = $_SERVER['HTTP_X_FILE_NAME'];
+                if (!file_exists($fpath)) {
+                    mkdir($fpath,0775,true);
+                    chmod($fpath,0775);
+                }
+                if (file_exists($fpath . $fname)) unlink($fpath . $fname);
+                file_put_contents($fpath . $fname, fopen('php://input', 'r'));
+                $this->View->renderJSON(["result"=>"ok","filename"=>$fname]);
+                die();
+                break;
+
+            case "delete":
+                if (file_exists($fpath . $fname)) unlink($fpath . $fname);
+                break;
+        }
+        $model->file = [];
+        $files = array_diff(scandir($fpath),['..','.']);
+        foreach ($files as $entry) {
+            $file = [
+                "name" => $entry,
+                "mime" => mime_content_type($fpath.$entry),
+                "size" => byteConvert(filesize($fpath.$entry)),
+                "modified" => date ("M d Y H:i:s.",filemtime($fpath.$entry))
+            ];
+            if (strpos($file["mime"],"image/")!==false) {
+                $file["thumb"] = "/content/image/" . Text::base64_urlencode("/files/{$area}/{$key}/{$entry}"). "/100";
+                $gis =getimagesize($fpath.$entry);
+                $file["info"] = $gis[0] . 'x' . $gis[1];
+            }
+            $model->file[] = $file;
+        }
+        $this->View->Requires("filedrop.js");
+        $this->View->Requires("filedrop.css");
+        $this->View->renderHandlebars("admin/files/index", $model, "_overlay", true);
+    }
+
     public function index()
     {
         $this->View->renderHandlebars("admin/index", $this->model, "_admin", true);

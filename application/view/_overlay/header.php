@@ -31,15 +31,11 @@ if (isset($this->App->meta_title) && !empty($this->App->meta_title)) { $meta_tit
 <?php } ?>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon"><?php
-if (isset($this->sheets)) {
-    foreach ($this->sheets as $sheet) {
-      if (strpos($sheet, "//") === false) {
-        echo "    <link rel='stylesheet' type='text/css' href='" . $baseurl . "css/$sheet' />" . PHP_EOL;
-      } else {
-        echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
+    if (isset($this->sheets)) {
+        foreach ($this->sheets as $sheet) {
+            echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
+        }
     }
-    }
-}
 $google_analytics_id = Config::get('GOOGLE_ANALYTICS_ID');
 if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
     echo "<script>

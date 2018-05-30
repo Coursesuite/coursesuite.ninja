@@ -1,0 +1,25 @@
+#filedrop {
+	width: 100vw;
+	min-height: 100vh;
+	display: flex;
+	flex-wrap: wrap;
+}
+table {
+	margin:  1em;
+	box-shadow: 0 0 5px rgba(0,0,0,.25);
+}
+input[type='text'] {
+	border: none;
+	background-color: transparent;
+	font-size: inherit;
+}
+input[type='text']+a {
+	margin-left: 1em;
+}
+.fd-over {
+	background-color: #ffffcc;
+}
+a {
+	text-decoration: none;
+	color: blue;
+}
