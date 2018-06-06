@@ -39,7 +39,7 @@ class MeController extends Controller
 	}
 
 	/* --------------------------- MENUBAR ITEMS -------------------------------- */
-	public function orders () {
+	public function orders ($action = "view", $order = "") {
 		$account = new AccountModel(Session::CurrentUserId());
 
 		$model = array();
@@ -47,10 +47,11 @@ class MeController extends Controller
 		$model["csrf_token"] = Csrf::makeToken();
 		$model["selection"] = "orders";
 		$model["subscriptions"] = SubscriptionModel::get_user_subscription_history(Session::CurrentUserId());
+		if ($order > "") $model["orderhistory"] = FastspringModel::get_order_history($order);
 
 		$this->View->Requires("me/menubar");
 		$this->View->Requires("account.menu.js");
-		$this->View->renderHandlebars("me/orders", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+		$this->View->renderHandlebars("me/orders/{$action}", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 	}
 
 	public function account () {
@@ -234,7 +235,17 @@ class MeController extends Controller
 		global $PAGE;
 		$model["selection"] = "support";
 		$model["helpdesk"] = Curl::helpdesk_tickets($PAGE->user_email);
+		$model["AppsBySection"] = StoreProductsModel::get_store_section_products_model("index");
 		$this->View->Requires("me/menubar");
+
+		$this->View->Requires("me/support_account");
+		$this->View->Requires("me/support_helpdesk");
+		$this->View->Requires("me/support_guides");
+		// $this->View->Requires("me/support_faq");
+
+		$dn = new AppModel("app_key","docninja");
+		// $model["youtube"] = YouTubeModel::get_app_videos($dn);
+
 		$this->View->renderHandlebars("me/support", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 	}
 

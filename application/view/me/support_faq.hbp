@@ -1,0 +1,35 @@
+	<h3>Tutorials</h3>
+	<p>We have a YouTube channel full of guides, tutorials and quick tips for getting the most out of our apps. Here are some of the recent additions. You can <a href="https://www.youtube.com/channel/UCxjmLClwzsyhaBshrZ1FYyA?sub_confirmation=1">subscribe</a> to our channel so you never miss an update!</p>
+
+	<div class="uk-child-width-1-1@s uk-child-width-1-3@m uk-text-center" uk-grid>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+	    <div>
+	        <div class="uk-card uk-card-default uk-card-body">Item</div>
+	    </div>
+
+	</div>

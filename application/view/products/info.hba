@@ -115,7 +115,7 @@
 			{{/if}}
 			{{#each App.files}}
 				<div>
-					<a class="uk-button uk-button-default" href="{{href}}">{{label}}</a>
+					<a class="uk-button uk-button-default" href="{{path}}{{name}}" download title="{{size}}">{{label}}</a>
 				</div>
 			{{/each}}
         </div>

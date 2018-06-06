@@ -1,0 +1,23 @@
+			<h3>Helpdesk</h3>
+			<p>If you need to report a bug or have suggestions for improviing our apps, we have a support ticket system available. Each request is assigned ticket number which you can use to track the progress and responses online. A valid email address is all that is required to submit a ticket.</p>
+			{{#each helpdesk.tickets}}{{counter_add "tickets"}}{{/each}}
+			{{#gte (counter_get "tickets") "1"}}
+			<h4>Your tickets</h4>
+			<table class="uk-table uk-table-divider">
+				<thead><tr><th></th><th>Ticket</th><th>Subject</th><th>Status</th><th>Last Updated</th></tr></thead>
+				<tbody>
+				{{#each helpdesk.tickets}}
+					{{counter_add "tickets"}}
+					<tr>
+						<td><span uk-icon="{{#equals status__name 'Open'}}minus{{else}}check{{/equals}}"></span></td>
+						<td><a href="https://help.coursesuite.ninja/view.php?auth={{helpdesk_auth_token .}}" target="_blank">{{number}}</a></td>
+						<td>{{cdata__subject}}</td>
+						<td>{{status__name}}</td>
+						<td>{{lastupdate}}</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
+			{{else}}
+			<p>You have no help tickets. If you need to raise one, click <a href="https://help.coursesuite.ninja/open.php">here</a>.</p>
+			{{/gte}}
