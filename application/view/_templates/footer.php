@@ -1,4 +1,5 @@
 <?php
+
 if (isset($this->Registration) && !empty($this->Registration)) {
 	if ($this->MobileDetect->isMobile() && !$this->MobileDetect->isTablet()) {
 		include "login_mobile.php";
