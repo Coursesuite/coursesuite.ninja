@@ -13,6 +13,7 @@ echo -n "CSS: compiled.$TS.css ... "
 lessc -ru coursesuite.less compiled.$TS.css
 echo ""
 lessc -ru admin.less admin.$TS.css
+
 echo ""
 
 cd ../js
@@ -21,11 +22,11 @@ rm admin.201*.js
 rm main.201*.js
 
 echo -n "JS: admin.$TS.js ... "
-minify --output admin.$TS.js admin.js
+uglifyjs --keep-fnames admin.js --output admin.$TS.js
 echo ""
 
 echo -n "JS: main.$TS.js ... "
-minify --output main.$TS.js main.js
+uglifyjs --keep-fnames main.js --output main.$TS.js
 echo ""
 
 cd ../../application/core
