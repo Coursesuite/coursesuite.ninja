@@ -22,9 +22,8 @@ function CurrentMenu($page, $routes, $classnames = '') {
         foreach ($this->sheets as $sheet) {
             echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
         }
-    }    if (Config::get("debug") === false) {
-        echo "<link rel='stylesheet' href='" . $baseurl . ADMIN_CSS . "'>" . PHP_EOL;
-    } else {
+    }
+    if (Config::get("debug") !== false) {
         echo "<link rel='stylesheet/less' type='text/css' href='/css/admin.less' />" . PHP_EOL;
         echo "<script>less = { env: 'development', dumpLineNumbers: 'comments', poll: 10000 }</script>" . PHP_EOL;
         echo "<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.3/less.min.js'></script>" . PHP_EOL;
