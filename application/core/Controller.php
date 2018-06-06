@@ -13,6 +13,7 @@ class Controller
     public $ControllerName;
     public $ActionName;
     public $Method;
+    public $Ajax = false;
 
     /**
      * Construct the (base) controller. This happens when a real controller is constructed, like in
@@ -26,7 +27,9 @@ class Controller
             Session::init();
             $PAGE = PageFactory::getFactory(Request::cookie('login'));
         }
-        $this->Method = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') ? "AJAX" : strtoupper($_SERVER['REQUEST_METHOD']);
+
+        $this->Ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+        $this->Method = strtoupper($_SERVER['REQUEST_METHOD']);
         $this->View = new View(get_class($this), strtolower(substr(get_class($this), 0, -10)), $action_name);
         $this->ActionName = $action_name;
         $this->ControllerName = strtolower(substr(get_class($this), 0, -10)); // LoginController -> login
@@ -47,11 +50,16 @@ class Controller
             // $this->View->Requires("//widget.cloudinary.com/global/all.js");
 
             $this->View->Requires("/js/simplemde/simplemde.min.css");
-            $this->View->Requires("simplemde/simplemde.min.js");
-            $this->View->Requires("inline-attachment/inline-attachment.js");
-            $this->View->Requires("inline-attachment/codemirror.inline-attachment.js");
+            $this->View->Requires("/js/simplemde/simplemde.min.js");
+            $this->View->Requires("/js/inline-attachment/inline-attachment.js");
+            $this->View->Requires("/js/inline-attachment/codemirror.inline-attachment.js");
             $this->View->Requires("markdown.js");
             $this->View->Requires("admin.js");
+            if (Config::get("debug") === false) {
+                $this->View->Requires(ADMIN_CSS);
+            }
+
+            $this->View->Requires("filedrop.js");
 
             $this->View->Requires("admin/menubar");
 
@@ -97,7 +105,7 @@ class Controller
 
     public function requiresAjax() {
         // if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-        if ($this->Method === "AJAX") {
+        if ($this->Ajax === true) {
             return; // all good
         }
         header('HTTP/1.1 405 Method Not Allowed');

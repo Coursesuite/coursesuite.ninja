@@ -126,7 +126,9 @@ class ApiModel
 	// the parner function for "find_model_for_token"
 	// this generates the token by starting with the md5 (which is a referenceId) and just hashing it... there nothing more to do
 	public static function generate_token_for_subscription($md5_referenceId) {
-		return password_hash($md5_referenceId, PASSWORD_BCRYPT, array("cost" => 10));
+		$hash = password_hash($md5_referenceId, PASSWORD_BCRYPT, array("cost" => 10));
+
+		return $hash;
 	}
 
 	public static function find_hash_for_token($token) {

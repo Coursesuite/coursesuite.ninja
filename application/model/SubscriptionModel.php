@@ -402,6 +402,7 @@ class SubscriptionModel extends Model
 			$result = (new SubscriptionModel($row->$idname))->get_model(true,false, true);
 			$rowClass = "cs-active";
 			$orderNumber = $result["referenceId"]; // TODO revise security of exposing this
+			$result["order_history"] = "/me/orders/history/{$orderNumber}";
 			$result["order_number"] = $orderNumber;
 			$result["support_url"] = "mailto:accounts@coursesuite.com.au?subject=Order Support:- " . $orderNumber;
 			if (!empty($result["endDate"])) {

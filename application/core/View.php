@@ -49,8 +49,8 @@ class View
 
         } else if (strpos($name, ".js") !== false) { // e.g. third-party/jstree/treeview.js, https://cdnjs.com/something/foo.js
 
-            if ($name === "main.js" && Config::get("debug") !== true) $name = "main." . APP_JS . ".js";
-            if ($name === "admin.js" && Config::get("debug") !== true) $name = "admin." . APP_JS . ".js";
+            if ($name === "main.js" && Config::get("debug") !== true) $name = APP_JS;
+            if ($name === "admin.js" && Config::get("debug") !== true) $name = ADMIN_JS;
             if ($name[0] === "/" || strpos($name, "://") !== false) {
                 $this->js[] = $name;
             } else {

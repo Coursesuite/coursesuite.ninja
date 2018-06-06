@@ -50,8 +50,10 @@ class Model
             $size = null;
             $editing = true;
             $visible = true;
+            $primary = false;
             if ($row->Key === "PRI") {
-                $type = "number";
+                $type = substr($row->Type,0,3)==="int"?"number":"text";
+                $primary = true;
                 $editing = false;
             } else if ($row->Type === "text" || $row->Type === "varchar(255)") {
                 $type = "textarea";
@@ -75,7 +77,8 @@ class Model
 
             $col = array(
                 "name" => $row->Field,
-                "type" => $type
+                "type" => $type,
+                "primary" => $primary
             );
             if (!is_null($ins)) $col["insertValue"] = $ins;
             if (!is_null($size)) $col["size"] = $size;
@@ -122,7 +125,7 @@ class Model
      * @param data_model array - associative array of the columns you are updating (must include id column)
      * @return id value
      */
-    public static function Update($table, $idrow_name, $data_model)
+    public static function Update($table, $idrow_name, $data_model, $raw = false)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
@@ -134,7 +137,7 @@ class Model
         foreach ($data_model as $key => $value) {
 
             if ($key == $idrow_name) {
-                $idvalue = abs(intval($value, 10));
+                $idvalue = $raw === false ? abs(intval($value, 10)) : $value;
                 continue; // can't set a key value anyway
             }
 
@@ -188,7 +191,7 @@ class Model
         //     $query->execute($params); // PDO allows the params without colons in the paramarray
         // }
 
-        if ($idvalue < 1) {
+        if ($idvalue < 1 && $raw === false) {
             $sql = "INSERT INTO $table (" . implode(', ', $fields) . ") VALUES (" . implode(', ',$params) . ")";
             $query = $database->prepare($sql);
             $query->execute($values);
@@ -201,6 +204,32 @@ class Model
         }
 
         return $idvalue;
+    }
+
+    // assumes you know what you are doing with your primary key values already
+    public static function Insert($table, $data_model)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $values = array();
+        $fields = array();
+        $keys = array();
+        $params = array();
+        foreach ($data_model as $key => $value) {
+            if (is_object($value) || is_array($value)) {
+                $value = json_encode($value, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_NUMERIC_CHECK);
+            }
+            $field = sprintf('`%s`',$key); // escaped sql field name
+            $param = sprintf(':%s',$key); // pdo named parameter
+            $fields[] = $field;
+            $params[] = $param;
+            $values[$param] = $value; // pdo key=>value pairs
+            $pairs[] = sprintf('%s = %s', $field, $param); // sql field=:name pairs
+        }
+        $sql = "INSERT INTO $table (" . implode(', ', $fields) . ") VALUES (" . implode(', ',$params) . ")";
+        $query = $database->prepare($sql);
+        $query->execute($values);
+        return $database->lastInsertId();
     }
 
     public static function Destroy($table, $where, $params) // $where_clause, $fields)

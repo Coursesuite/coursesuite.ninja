@@ -81,7 +81,8 @@ class StoreProductsModel
 
 		// expose media as an object to the app
 		$app->media = json_decode($app->media);
-		$app->files = json_decode($app->files);
+		$app->files = (new FilesModel("app",$app->app_key))->get_model();
+		//$app->files = json_decode($app->files);
 
 		$model->App = $app;
 		$model->Bundles = (new ProductBundleModel("app_id", $app->app_id))->get_model(true);;

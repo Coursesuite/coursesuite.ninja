@@ -130,6 +130,17 @@ class Text
 		return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 	}
 
+    public static function byteConvert($bytes)
+    {
+        if ($bytes == 0)
+            return "0.00 B";
+
+        $s = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        $e = floor(log($bytes, 1024));
+
+        return round($bytes/pow(1024, $e), 2).$s[$e];
+    }
+
 	public static function formatTime($seconds)
 	{
 		return gmdate("H:i:s", $seconds);

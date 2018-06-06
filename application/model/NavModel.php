@@ -22,11 +22,22 @@ class NavModel {
 		return $model;
 	}
 
+	public static function products_dropdown_get() {
+		$cache = CacheFactory::getFactory()->getCache();
+	    $cacheItem = $cache->getItem("products_dropdown");
+	    return $cacheItem->get();
+	}
+
+	public static function products_dropdown_set($html) {
+		$cache = CacheFactory::getFactory()->getCache();
+	    $cacheItem = $cache->getItem("products_dropdown");
+		$cacheItem->set($html)->expiresAfter(86400); // 1 day
+		$cache->save($cacheItem);
+	}
+
 	public static function admin_examples() {
 		$results = [];
 		$folder = realpath(dirname(__FILE__) . '/../../') . '/application/config/examples';
-// $directory = '/path/to/my/directory';
-// $scanned_directory = array_diff(scandir($directory), array('..', '.'));
 		foreach(glob("$folder/*.md") as $filename) {
 			$result = new stdClass();
 			$result->name = $filename;

@@ -161,7 +161,7 @@ class AppModel extends Model
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 		if ($all_fields) {
-			$sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular
+			$sql = "SELECT app_id, app_key, name, icon, guide, url, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular
 					FROM apps
 					ORDER BY name";
 		} else {
