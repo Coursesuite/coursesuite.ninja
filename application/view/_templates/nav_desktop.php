@@ -16,6 +16,13 @@
                 <li<?php CurrentMenu($this->page(),"home", "uk-visible@s"); ?>><a href="<?php echo $baseurl; ?>">Home</a></li>
                 <li<?php CurrentMenu($this->page(),"products"); ?>>
                     <a href="<?php echo $baseurl; ?>products/">Products</a>
+<?php
+// do some caching of the rendered html to avoid these db lookups, which are also cached
+if (!is_null($cached_html = NavModel::products_dropdown_get())) {
+    echo $cached_html;
+} else {
+    ob_start();
+?>
                     <div class="uk-width-xlarge" uk-dropdown="offset: -20; delay-show: 200; mode: hover; animation: uk-animation-slide-top-small; duration: 200">
                         <?php $sections = SectionsModel::getAllStoreSections(false,true); ?>
                         <div class="uk-dropdown-grid uk-child-width-1-<?php echo count($sections); ?>@m" uk-grid>
@@ -42,6 +49,12 @@
                             <?php } ?>
                         </div>
                     </div>
+<?php
+    $cached_html = ob_get_clean();
+    NavModel::products_dropdown_set($cached_html);
+    echo $cached_html;
+}
+?>
                 </li>
                 <li<?php CurrentMenu($this->page(),"pricing"); ?>><a href="<?php echo $baseurl; ?>pricing/">Pricing</a></li>
                 <li<?php CurrentMenu($this->page(),"support"); ?>>
