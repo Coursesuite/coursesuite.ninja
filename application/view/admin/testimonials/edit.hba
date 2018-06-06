@@ -10,7 +10,7 @@
 		<form method="post" action="/admin/testimonials/save/{{id}}/">
 		{{#with formdata}}
 			<div class="row"><label for="avatar">avatar:</label>
-				<div><input type="text" id="avatar" name="avatar" value="{{avatar}}"></div>
+				<div><input type="text" id="avatar" name="avatar" value="{{avatar}}" data-dnd="image"></div>
 			</div>
 			<div class="row"><label for="name">Name: </label>
 				<div><input type="text" id="name" name="name" value="{{name}}"></div>

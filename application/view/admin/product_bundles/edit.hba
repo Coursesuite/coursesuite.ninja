@@ -42,6 +42,9 @@
                         <option value="100"{{#equals formdata.concurrency "100"}} selected{{/equals}}>100</option>
                   </select></div>
             </div>
+            <div class="row"><label>tile icon (e.g. pricing page)</label>
+                  <div><input type="text" name="icon" value="{{formdata.icon}}" data-dnd="url"></div>
+            </div>
             <div class="row"><label>bundled apps (select/delete, or drag to change order)</label>
             	<div><select id="connected-apps" name="app_ids[]" multiple>
                         {{#each formdata.Apps}}<option value="{{app_id}}"{{#isin app_id @root.formdata.app_ids}} selected{{/isin}}>{{app_key}}</option>{{/each}}

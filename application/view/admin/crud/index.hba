@@ -23,9 +23,33 @@
 			        paging: true,
 
 			        data: datasrc,
+			        deleteConfirm: 'Are you sure you want to delete this record?',
 
-			        fields: {{{stringify fields}}}
+			        fields: {{{stringify fields}}},
 
+			        controller: {
+			        	updateItem: function (item) {
+			        		return $.ajax({
+			        			type: "POST",
+			        			url: "/admin/crud/{{selection}}",
+			        			data: item
+			        		})
+			        	},
+			        	deleteItem: function (item) {
+			        		return $.ajax({
+			        			type: "DELETE",
+			        			url: "/admin/crud/{{selection}}",
+			        			data: item
+			        		})
+			        	},
+			        	insertItem: function (item) {
+			        		return $.ajax({
+			        			type: "PUT",
+			        			url: "/admin/crud/{{selection}}",
+			        			data: item
+			        		});
+			        	},
+			        }
 			    });
 			});
 		</script>
