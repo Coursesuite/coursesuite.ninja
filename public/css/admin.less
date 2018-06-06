@@ -213,7 +213,20 @@ article form {
 		select:not([name*='[]']) {
 			min-width: 25%;
 		}
-		button,
+		textarea,
+		input[type='number'],
+		input[type='text'],
+		input[data-dnd] {
+			border: 1px solid rgb(221,221,221);
+		}
+		input.fd-over {
+			background-color: #ffffee;
+		}
+		[data-dnd] {
+			background-image: url(/css/image_upload.png);
+			background-repeat: no-repeat;
+			background-position: center right;
+		}		button,
 		input[type='submit'],
 		a.button {
 			display: inline-block;
