@@ -24,6 +24,20 @@ $(function () {
 		});
 	}
 
+	var dropzones = [];
+	[].forEach.call(document.querySelectorAll("[data-dnd]"), function (el,i) {
+		dropzones[i] = new FileDrop(el,{input:false,dragOverClass:'fd-over',logging:false});
+		dropzones[i].event('send', function(files) {
+			files.each(function(file) {
+				file.event('done', function(xhr) {
+					var json = JSON.parse(xhr.responseText);
+					el.value = json.filename;
+				});
+				file.sendTo("/admin/uploadFDImage/");
+			});
+		});
+	});
+
 	$("[sortable]").each(function(index, el) {
 		Sortable.create(el, {
 			animation: 150,

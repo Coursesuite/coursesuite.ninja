@@ -29,7 +29,7 @@
                   </div>
             </div>
             <div class="row"><label>tile icon</label>
-            	<div><input type="text" name="icon" value="{{formdata.icon}}"></div>
+            	<div><input type="text" name="icon" value="{{formdata.icon}}" data-dnd="url"></div>
             </div>
             <div class="row"><label>launch url. token gets put into the variable <code>%s</code>.</label>
             	<div><input type="text" name="launch" value="{{formdata.launch}}"></div>

@@ -28,17 +28,6 @@ class AdminController extends Controller
 
     public function files($area,$key,$action = "view",$fname="") {
 
-        function byteConvert($bytes)
-        {
-            if ($bytes == 0)
-                return "0.00 B";
-
-            $s = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-            $e = floor(log($bytes, 1024));
-
-            return round($bytes/pow(1024, $e), 2).$s[$e];
-        }
-
         $model = new stdClass();
         $rootpath = Config::get("PATH_ATTACHMENTS");
         $fpath =  "{$rootpath}{$area}/{$key}/";
@@ -63,22 +52,24 @@ class AdminController extends Controller
                 break;
         }
         $model->file = [];
-        $files = array_diff(scandir($fpath),['..','.']);
-        foreach ($files as $entry) {
-            $file = [
-                "name" => $entry,
-                "mime" => mime_content_type($fpath.$entry),
-                "size" => byteConvert(filesize($fpath.$entry)),
-                "modified" => date ("M d Y H:i:s.",filemtime($fpath.$entry))
-            ];
-            if (strpos($file["mime"],"image/")!==false) {
-                $file["thumb"] = "/content/image/" . Text::base64_urlencode("/files/{$area}/{$key}/{$entry}"). "/100";
-                $gis =getimagesize($fpath.$entry);
-                $file["info"] = $gis[0] . 'x' . $gis[1];
+        if (file_exists($fpath)) {
+            $files = array_diff(scandir($fpath),['..','.']);
+            foreach ($files as $entry) {
+                $file = [
+                    "name" => $entry,
+                    "mime" => mime_content_type($fpath.$entry),
+                    "size" => Text::byteConvert(filesize($fpath.$entry)),
+                    "modified" => date ("M d Y H:i:s.",filemtime($fpath.$entry))
+                ];
+                if (strpos($file["mime"],"image/")!==false) {
+                    $file["thumb"] = "/content/image/" . Text::base64_urlencode("/files/{$area}/{$key}/{$entry}"). "/100";
+                    $gis =getimagesize($fpath.$entry);
+                    $file["info"] = $gis[0] . 'x' . $gis[1];
+                }
+                $model->file[] = $file;
             }
-            $model->file[] = $file;
         }
-        $this->View->Requires("filedrop.js");
+        // $this->View->Requires("filedrop.js");
         $this->View->Requires("filedrop.css");
         $this->View->renderHandlebars("admin/files/index", $model, "_overlay", true);
     }
@@ -96,10 +87,32 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/report", $model, "_admin", true);
     }
 
-    public function crud($table) {
+    public function crud($table, $action="view") {
         $model = $this->model;
         $model->datatable = Model::Read($table);
         $fields = Model::Columns($table);
+        $idname = "";
+        foreach ($fields as $field) {
+            if ($field["primary"]===true) $idname = $field["name"];
+        }
+        switch ($this->Method) {
+            case "PUT": // insert
+                parse_str(file_get_contents("php://input"),$post_vars);
+                $record = Model::Insert($table, $post_vars);
+                die(json_encode(array("fields"=>$post_vars)));
+
+            case "POST"; // update
+                $post_vars = (array) $_POST;
+                Model::Update($table, $idname, $post_vars, true);
+                die();
+
+            case "DELETE": // delete
+                parse_str(file_get_contents("php://input"),$post_vars);
+                $sql = "DELETE FROM {$table} WHERE `{$idname}`=:value";
+                DatabaseFactory::raw($sql, array(":value"=>$post_vars[$idname]));
+                die();
+
+        }
         $fields[] = ["type" => "control"];
         $model->fields = $fields;
         $model->selection = $table;
@@ -279,6 +292,7 @@ class AdminController extends Controller
                     "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
                     "concurrency" => Request::post("concurrency", false, FILTER_SANITIZE_NUMBER_INT),
                     "app_ids" => implode(',', Request::post("app_ids")),
+                    "icon" => Request::post("icon", false, FILTER_SANITIZE_STRING),
                 );
                 $model->id = Model::Update("product_bundle", "id", $bundle);
                 $model->method = "index";
@@ -899,6 +913,21 @@ class AdminController extends Controller
         $this->View->renderJSON($model);
     }
 
+    public function uploadFDImage() {
+        $rootpath = Config::get("PATH_IMG_MEDIA");
+        $fold = uniqid();
+        $fpath = $rootpath . $fold . '/';
+        $fname = $_SERVER['HTTP_X_FILE_NAME'];
+        $serverurl = $fpath . $fname;
+        if (!file_exists($fpath)) {
+            mkdir($fpath,0775,true);
+            chmod($fpath,0775);
+        }
+        if (file_exists($serverurl)) unlink($serverurl);
+        file_put_contents($serverurl, fopen('php://input', 'r'));
+        $this->View->renderJSON(["result"=>"ok","filename"=>"/img/{$fold}/{$fname}","url"=>$serverurl]);
+    }
+
     // public function editBundles($id = 0, $action= "") {
     //     $url = Config::get("URL");
     //     $model = array(
@@ -1032,8 +1061,9 @@ class AdminController extends Controller
         $cache->deleteItem("custom_css");
         $cache->deleteItem("app_colours_css");
         $cache->deleteItem("home_model");
-        $cache->deleteItem("products_nav_ninja");
-        $cache->deleteItem("products_nav_freebies");
+        $cache->deleteItem("products_nav_*");
+        // $cache->deleteItem("products_nav_freebies");
+        $cache->deleteItem("products_dropdown");
         $status .= "done";
         $model->status[] = $status;
 
