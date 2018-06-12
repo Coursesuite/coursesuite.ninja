@@ -9,6 +9,21 @@
 class RegistrationModel
 {
 
+	private static function graph($msg) {
+		$alt = "cs-label-muted";
+		$css = $alt;
+		if ($msg > 0) $css = "uk-label-success";
+		if ($msg < 0) $css = "uk-label-warning";
+		$html[] = "<p>";
+		$html[] = "<span class='uk-label " . (abs($msg)===1 ? $css : $alt) . "' uk-tooltip='First, enter your email address to register or log in'><span uk-icon='pencil'></span> Enter email</span>";
+		$html[] = " <span uk-icon='arrow-right'></span> ";
+		$html[] = "<span class='uk-label " . (abs($msg)===2 ? $css : $alt) . "' uk-tooltip='Next, check your email for the password'><span uk-icon='mail'></span> Get password</span>";
+		$html[] = " <span uk-icon='arrow-right'></span> ";
+		$html[] = "<span class='uk-label cs-label-muted' uk-tooltip='Finally, you are good to go!'><span uk-icon='sign-in'></span> logged in!</span>";
+		$html[] = "</p>";
+		return implode('',$html);
+	}
+
 	/**
 	 * registering requires a model to be present on every View page
 	 * which you don't get if you are already logged on
@@ -23,6 +38,7 @@ class RegistrationModel
 		$result->csrf_token = Csrf::makeToken();
 		$result->className = "";
 		$result->message = "";
+		$result->graph = "";
 		$result->reset = false;
 
 		$email 		= trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
@@ -38,37 +54,43 @@ class RegistrationModel
 		}
 
 		if ($result->show && !Csrf::validateToken(Request::post("csrf_token"))) {
+			$result->className = "uk-text-danger";
 			$result->message = "Invalid CSRF token. Please refresh and try again. ";
 
 		} elseif (BlacklistModel::isBlacklisted($email)) {
 			$result->message = Text::get('REGISTRATION_DOMAIN_BLACKLISTED');
-			$result->className = "uk-label uk-label-danger";
+			$result->className = "uk-text-danger";
 
 		} elseif ($email == "" && $password == "") {
-			$result->message = "Register or log on by entering your email below; we'll send you a one-time password to use.";
+			$result->graph = self::graph(1);
+			$result->message = "";
 
 		} elseif (Auth::is_administrator_email($email)) {
+			$result->graph = self::graph(0);
 			$result->message = "Please logon using the appropriate method for this account.";
 
 		} elseif ($email > "" && $password == "") { // don't resend if you hit refresh whilst the modal is loaded
 			if (self::send_one_time_password($email, $route)) {
 				Session::set("otp_email", $email);
 				$result->sent = true;
-				$result->className = "uk-label uk-label-success";
-				$result->message = "Check your email for the password and enter it below.";
+				$result->className = "uk-text-success";
+				$result->graph = self::graph(2);
+				$result->message = "Check your email for the password.";
 			}
 		} elseif ($email == "" && $password > "") {
+			$result->graph = self::graph(-1);
 			$result->message = "Sorry your session has timed out - refresh your browser.";
-			$result->className = "uk-label uk-label-warning";
+			$result->className = "uk-text-warning";
 
 		} elseif ($email > "" && $password > "") {
 			$model = Model::Read("users", "user_email=:email", array(":email" => $email));
 			if (isset($model)) $model = $model{0};
 			if (!password_verify($password, $model->user_password_hash)) {
-				$result->message = "Your password did not match. Try again, or refresh your browser to start over.";
+				$result->graph = self::graph(-2);
+				$result->message = "Password mismatch. Try again, or refresh your browser to start over.</p>";
 				$result->reset = true;
 				$result->sent = true;
-				$result->className = "uk-label uk-label-warning";
+				$result->className = "uk-text-warning";
 				$model->user_failed_logins += 1;
 				$model->user_last_failed_login = time();
 				Model::Update("users","user_id",$model);
@@ -83,9 +105,9 @@ class RegistrationModel
 				$model->user_password_reset_timestamp = NULL;
 				// $model->user_remember_me_token = md5(uniqid());
 				$model->user_logon_count = (int) $model->user_logon_count + 1;
-				if ((int) $model->user_account_type !== (int) Config::get('ADMIN_ACCOUNT_LEVEL')) {
-					$model->user_password_hash = password_hash(uniqid(), PASSWORD_DEFAULT); // scramble current password so the current one can't be used again
-				}
+				// if ((int) $model->user_account_type !== (int) Config::get('ADMIN_ACCOUNT_LEVEL')) {
+				// 	$model->user_password_hash = password_hash(uniqid(), PASSWORD_DEFAULT); // scramble current password so the current one can't be used again
+				// }
 				Model::Update("users","user_id",$model);
 
 				// the actual logon is just setting a hash value in a cookie
@@ -117,7 +139,7 @@ class RegistrationModel
 			$model = $model{0};
 		}
 
-		$password = (new Sayable(6))->generate();
+		$password = (new Sayable(9))->generate();
 		if (Config::get("debug")) {
 			Session::set("otp", $password);
 		}

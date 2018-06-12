@@ -25,7 +25,7 @@ if (!is_null($cached_html = NavModel::products_dropdown_get())) {
 ?>
                     <div class="uk-width-xlarge" uk-dropdown="offset: -20; delay-show: 200; mode: hover; animation: uk-animation-slide-top-small; duration: 200">
                         <?php $sections = SectionsModel::getAllStoreSections(false,true); ?>
-                        <div class="uk-dropdown-grid uk-child-width-1-<?php echo count($sections); ?>@m" uk-grid>
+                        <div class="uk-dropdown-grid uk-child-width-1-2 cs-count-<?php echo count($sections); ?>@m" uk-grid>
                             <?php foreach ($sections as $section) { ?>
                             <div>
                                 <ul class="uk-nav uk-dropdown-nav">
@@ -73,7 +73,7 @@ if (!is_null($cached_html = NavModel::products_dropdown_get())) {
                     <div class="uk-navbar-dropdown" uk-dropdown="offset: -20; delay-show: 200; mode: click, hover; animation: uk-animation-slide-top-small; duration: 200">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             <li><a href="<?php echo $baseurl; ?>content/about">About CourseSuite</a></li>
-                            <li><a href="<?php echo $baseurl; ?>services">Contact Us</a></li>
+                            <li><a href="<?php echo $baseurl; ?>content/contact">Contact Us</a></li>
                             <li><a href="https://www.avide.com.au">Avide eLearning</a></li>
                         </ul>
                     </div>
