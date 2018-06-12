@@ -16,7 +16,7 @@ class NavModel {
 			");
 			$query->execute(array(":route" => $route));
 			$model = $query->fetchAll();
-			$cacheItem->set($model)->expiresAfter(86400); // 1 day
+			$cacheItem->set($model)->expiresAfter(86400)->addTags(["coursesuite","model"]); // 1 day
 			$cache->save($cacheItem);
 		}
 		return $model;
@@ -31,7 +31,7 @@ class NavModel {
 	public static function products_dropdown_set($html) {
 		$cache = CacheFactory::getFactory()->getCache();
 	    $cacheItem = $cache->getItem("products_dropdown");
-		$cacheItem->set($html)->expiresAfter(86400); // 1 day
+		$cacheItem->set($html)->expiresAfter(86400)->addTags(["coursesuite","html"]); // 1 day
 		$cache->save($cacheItem);
 	}
 

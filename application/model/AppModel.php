@@ -308,20 +308,57 @@ class AppModel extends Model
 	}
 
 	// grab (+cache) the css for active app colours
-	public static function apps_colours_css() {
+	public static function apps_colours_css($force = false) {
 		$cache = CacheFactory::getFactory()->getCache();
 	    $cacheItem = $cache->getItem("app_colours_css");
 	    $css = $cacheItem->get();
-	    if (is_null($css)) {
+	    if ($force || is_null($css)) {
 			$database = DatabaseFactory::getFactory()->getConnection();
 			$query = $database->prepare("
-			    SELECT group_concat(concat('.cs-colour-', app_key, '{color:', case when colour is null then 'grey' else colour end, '}.cs-bgcolour-', app_key, '{background-color:', case when colour is null then 'grey' else colour end, '}'))
-			    FROM apps
-			    WHERE active = 1
-			");
+					SELECT CONCAT(':root{',GROUP_CONCAT(CONCAT(
+						'--', lower(app_key), ':',
+						case when colour is null
+						then 'grey'
+						else colour
+						end,';'
+						) SEPARATOR ' '),'}',
+						GROUP_CONCAT(CONCAT('.cs-colour-',app_key,'{color:var(--', lower(app_key), ')}.cs-bgcolour-',app_key,'{background-color:var(--', lower(app_key), ')}') SEPARATOR '')
+					),
+					GROUP_CONCAT(CONCAT('@',lower(app_key),':',
+						case when colour is null
+			    			then 'grey'
+			    			else colour
+			    		end,';') SEPARATOR '')
+			    FROM apps			");
+			// $query = $database->prepare("
+			//     SELECT GROUP_CONCAT(
+			//     	CONCAT(
+			//     		'.cs-colour-',
+			//     		app_key,
+			//     		'{color:',
+			//     		case when colour is null
+			//     			then 'grey'
+			//     			else colour
+			//     		end,
+			//     		'}.cs-bgcolour-',
+			//     		app_key,
+			//     		'{background-color:',
+			//     		case when colour is null
+			//     			then 'grey'
+			//     			else colour
+			//     		end,
+			//     		'}'
+			//     	)
+			//     	SEPARATOR ''
+			//     )
+			//     FROM apps
+			// ");
 			$query->execute();
-			$css = $query->fetchColumn(0);
-			$cacheItem->set($css)->expiresAfter(86400); // 1 day
+			$data = $query->fetch(PDO::FETCH_NUM);
+			$css = $data[0];//$query->fetchColumn(0);
+			$less = $data[1];//$query->fetchColumn(1);
+	        file_put_contents(Config::get("PATH_CSS_ROOT") . 'colours.less',$less);
+			$cacheItem->set($css)->expiresAfter(86400)->addTags(["coursesuite","css"]); // 1 day
 			$cache->save($cacheItem);
 		}
 		return $css;

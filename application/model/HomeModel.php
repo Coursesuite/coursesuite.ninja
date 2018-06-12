@@ -22,7 +22,7 @@ class HomeModel
 			$model->Popular = $popular;
 			$model->Testimonials = Model::Read("testimonials", "published=1");
 			$model->Trust = preg_split('/\R/', KeyStore::find("trustedby")->get()); // explodes \n or \r or \r\n or whatever - in php, that's /\R/, see http://www.pcre.org/pcre.txt
-			$cacheItem->set($model)->expiresAfter(86400); // 1 day
+			$cacheItem->set($model)->expiresAfter(86400)->addTags(["coursesuite","model"]); // 1 day
 			$cache->save($cacheItem);
 		}
 		return $model;

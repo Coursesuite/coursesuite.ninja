@@ -6,13 +6,13 @@
 	<article>
 		<header>
 			<h2>purge cache</h2>
+			<p>You can specify a cache tag by opening <b>/admin/purge/tag</b>; <em>tag</em> can be 'coursesuite' (everything), 'css' (colours, etc), 'html' (dropdowns, pages, etc), 'model' (database calls, api, etc).</p>
 		</header>
 
 		<ul>
 			{{#each status}}
 			<li>{{.}}</li>
 			{{/each}}
-			<li>All caches have been purged.</li>
 		</ul>
 	</article>
 </div>

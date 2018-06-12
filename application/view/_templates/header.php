@@ -61,14 +61,14 @@ if (empty($body_id)) $body_id = "default";
 <?php
 
     $headerVideo = "/img/header_dark.mp4";
-    echo "<style>", AppModel::apps_colours_css(), Config::CustomCss(), "</style>", PHP_EOL;
+    echo "<style>", AppModel::apps_colours_css(), Config::CustomCss(), "</style>", PHP_EOL; // AppModel::apps_colours_css() also now in less
     if (isset($this->sheets)) {
         foreach ($this->sheets as $sheet) {
             echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
         }
     }
     if (Config::get("debug") === false) {
-        echo "<link rel='stylesheet' href='" . $baseurl . APP_CSS . "'>" . PHP_EOL;
+        echo "<link rel='stylesheet' href='" . APP_CSS . "'>" . PHP_EOL;
         // $headerVideo = KeyStore::find("headerVideo")->get("");
     } else {
         // $headerVideo = "";

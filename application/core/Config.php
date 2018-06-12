@@ -10,6 +10,7 @@ class Config
     {
 
         if ($key === "debug") {
+            //return false;
             return (Environment::get() === "tim");
         }
 
@@ -55,7 +56,7 @@ class Config
         $css = $cacheItem->get();
         if (is_null($css)) {
             $css = KeyStore::find("customcss")->get();
-            $cacheItem->set($css)->expiresAfter(86400); // 1 day
+            $cacheItem->set($css)->expiresAfter(86400)->addTags(["coursesuite","css"]); // 1 day
             $cache->save($cacheItem);
         }
         return $css;

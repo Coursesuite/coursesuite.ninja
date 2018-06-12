@@ -362,7 +362,7 @@ class ApiController extends Controller
 // log a cache miss so we can later refine the expiresAfter
 	    	$miss = "cache miss ";
 			$model = AppModel::public_info_model($subscription);
-			$cacheItem->set($model)->expiresAfter(3600); // 1 hour cache
+			$cacheItem->set($model)->expiresAfter(3600)->addTags(["coursesuite","api"]); // 1 hour cache
 			$cache->save($cacheItem);
 		}
 		LoggingModel::logInternal(__METHOD__, $subscription,$miss);
