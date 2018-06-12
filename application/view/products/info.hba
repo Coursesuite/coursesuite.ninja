@@ -20,6 +20,7 @@
 	</div>
 </div>
 {{/if}}
+
 {{#each App.Sections}}
 <div class='uk-section {{classname}}'{{#if colour}}{{#not colour "#ffffff"}} style='background-color:{{colour}}'{{/not}}{{/if}}>
 	<div class='uk-container'>
@@ -48,7 +49,9 @@
 				</div>
 				{{/equals}}{{/if}}
 
-				{{#if @root/Bundles}}
+				{{#gte @root.App.active 2}}
+
+				{{#if @root/Bundles}} {{!-- and at least one of them is active --}}
 				<div class='uk-panel uk-panel-default cs-background-purchase uk-border-rounded uk-padding-small uk-margin-bottom'>
 				<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
 				<ul  class="cs-price-tab uk-margin-remove-bottom" uk-tab anim="animation: uk-animation-fade">
@@ -72,7 +75,12 @@
 
 						<p class='uk-text-right'>
 							{{#if @root/IsLoggedIn}}
-							<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
+							{{#equals @root.App.active 3}}
+								<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
+							{{else}}
+								{{counter_add "comingsoon"}}
+								<a class='uk-button uk-button-primary ul-button-large' href='#signup-form' uk-toggle><span uk-icon='info' class='uk-margin-small-right'></span> Coming Soon!</a>
+							{{/equals}}
 							{{else}}
 							<a class='uk-button uk-button-primary ul-button-large' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</a>
 							{{!-- <button  class='uk-button uk-button-primary uk-button-large' title='Login required to purchase'><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</button> --}}
@@ -87,6 +95,7 @@
 				{{> fineprint}}
 
 				{{/if}}
+				{{/gte}}
 			</div>
 		</div>
 	{{else}}
@@ -142,4 +151,17 @@
 
 </div>
 
+{{#if App.signup_form}}
+	{{counter_add "comingsoon"}}
+{{/if}}
+
+{{#counter_gte "comingsoon" 1}}
+<div id="signup-form" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <h2 class="uk-modal-title">Get Notified</h2>
+		{{{App.signup_form}}}
+    </div>
+</div>
+{{/counter_gte}}
 <style>body>div.uk-lightbox{background-color:{{App.colour}} !important;}</style>

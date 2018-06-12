@@ -433,6 +433,7 @@ class View
             },
 
             // I hate to muck about in globals, but this function gets copied to the output file so you can't reference class variables, and counters need to exist across function calls
+            // you're in the scope of the template anyway, not the app, so it's destroyed after the page renders anyway.
             "counter_add" => function ($name) {
                 if (!isset($GLOBALS["counters"])) $GLOBALS["counters"] = array();
                 if (!isset($GLOBALS["counters"][$name])) {
@@ -449,6 +450,16 @@ class View
             "counter_reset" => function ($name) {
                 if (!isset($GLOBALS["counters"])) $GLOBALS["counters"] = array();
                 unset($GLOBALS['counters'][$name]);
+            },
+            "counter_gte" => function ($name, $value, $options) {
+                if (!isset($GLOBALS["counters"])) return false;
+                if (!isset($GLOBALS["counters"][$name])) return false;
+                $bool = (intval($GLOBALS["counters"][$name],10) >= (int) $value);
+                if ($bool) {
+                    return $options['fn']();
+                } elseif (isset($options['inverse'])) {
+                    return $options['inverse']();
+                }
             },
             "helpdesk_auth_token" => function ($ticket) {
                 // matches osticket -> class.client.php line 84

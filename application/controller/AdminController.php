@@ -377,7 +377,8 @@ class AdminController extends Controller
                         "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links")
                     ),
                     "documents" => Request::post("documents"), // markdown of urls, downloads, bookmarks
-                    "tutorials" => Request::post("tutorials") //  youtube links
+                    "tutorials" => Request::post("tutorials"), //  youtube links
+                    "signup_form" => Request::post("signup_form"), // mailchimp list signup form
                 );
                 // persist enabled mods
                 $basemods = ApiModel::get_api_mods();
