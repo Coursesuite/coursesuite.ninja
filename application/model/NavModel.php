@@ -11,7 +11,7 @@ class NavModel {
             	select a.app_key, a.name, a.tagline, a.glyph from store_sections ss
             	inner join apps a on find_in_set(cast(a.app_id as char), ss.app_ids)
 				where ss.route = :route
-				and a.`active` = 1
+				and a.`active` > 1
 				order by find_in_set(cast(a.app_id as char), ss.app_ids)
 			");
 			$query->execute(array(":route" => $route));

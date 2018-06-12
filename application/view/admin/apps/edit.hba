@@ -133,6 +133,10 @@
                   <div><textarea name="tutorials" rows="5" cols="80">{{formdata.tutorials}}</textarea></div>
             </div>
 
+            <div class="row"><label>MailChimp Signup Form: (modal; e.g. coming soon)</label>
+                  <div><textarea name="signup_form" rows="5" cols="80">{{formdata.signup_form}}</textarea></div>
+            </div>
+
             <div class="row"><label />
             	<div><button>Save</button> <a href="{{baseurl}}admin/apps/" class='button'>Cancel</a></div>
            	</div>
