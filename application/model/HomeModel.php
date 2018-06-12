@@ -12,7 +12,7 @@ class HomeModel
 	    if (is_null($model)) {
 			$model = new stdClass();
 			$popular = array();
-			$apps = Model::Read("apps", "popular=1 AND active=1", [], "app_id, app_key, name, tagline, icon", false);
+			$apps = Model::Read("apps", "popular=1 AND active>1", [], "app_id, app_key, name, tagline, icon", false);
 			foreach ($apps as $row) {
 				$sm = (new SectionsModel("app_id", $row->app_id))->get_model();
 				$row->route = $sm->route;
