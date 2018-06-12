@@ -44,8 +44,8 @@
             <div class="row"><label>active</label>
             	<div><label><input type="radio" name="active" value="0"{{#equals formdata.active "0"}} checked{{/equals}}>Invisible</label>
                         <label><input type="radio" name="active" value="2"{{#equals formdata.active "2"}} checked{{/equals}}>Coming Soon</label>
-            		<label><input type="radio" name="active" value="3"{{#equals formdata.active "1"}} checked{{/equals}}>Visible</label>
-                        <label><input type="radio" name="active" value="1"{{#equals formdata.active "3"}} checked{{/equals}}>Depricated</label> </div>
+            		<label><input type="radio" name="active" value="3"{{#equals formdata.active "3"}} checked{{/equals}}>Visible</label>
+                        <label><input type="radio" name="active" value="1"{{#equals formdata.active "1"}} checked{{/equals}}>Depricated</label> </div>
             </div>
             <div class="row"><label>popular (tile appears on home page)</label>
             	<div><label><input type="radio" name="popular" value="0"{{#equals formdata.popular "0"}} checked{{/equals}}>No</label>
