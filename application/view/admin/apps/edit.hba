@@ -123,6 +123,14 @@
                   <iframe src="/admin/files/app/{{formdata.app_key}}/" style="width:100%;height:150px;"></iframe>
             </div>
 
+            <div class="row mde"><label>Documents: (e.g. quick start guides, urls, pdf's etc)</label>
+                  <div><textarea name="documents" rows="4" cols="80" data-markdown="true">{{formdata.documents}}</textarea></div>
+            </div>
+
+            <div class="row"><label>Tutorials: (e.g. youtube links, one per line)</label>
+                  <div><textarea name="documents" rows="8" cols="80">{{formdata.tutorials}}</textarea></div>
+            </div>
+
             <div class="row"><label />
             	<div><button>Save</button> <a href="{{baseurl}}admin/apps/" class='button'>Cancel</a></div>
            	</div>

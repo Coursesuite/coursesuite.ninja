@@ -447,8 +447,8 @@ class AdminController extends Controller
                         "appSlides" => Text::iif(Request::post("appSlides"), "uk-section cs-app-slides"),
                         "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links")
                     ),
-                    "documents" => Request::post("documents"),
-                    "tutorials" => Request::post("tutorials")
+                    "documents" => Request::post("documents"), // markdown of urls, downloads, bookmarks
+                    "tutorials" => Request::post("tutorials") //  youtube links
                 );
                 // persist enabled mods
                 $basemods = ApiModel::get_api_mods();
