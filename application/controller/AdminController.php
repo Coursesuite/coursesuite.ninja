@@ -377,9 +377,10 @@ class AdminController extends Controller
                         "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links")
                     ),
                     "documents" => Request::post("documents"), // markdown of urls, downloads, bookmarks
-                    "tutorials" => Request::post("tutorials"), //  youtube links
+                    // "tutorials" => Request::post("tutorials"), //  youtube links
                     "signup_form" => Request::post("signup_form"), // mailchimp list signup form
                 );
+
                 // persist enabled mods
                 $basemods = ApiModel::get_api_mods();
                 $mods = Request::post("mods");
@@ -397,6 +398,12 @@ class AdminController extends Controller
 
                 // rebuild css cache and dump out less colour file for development
                 AppModel::apps_colours_css(true);
+
+                // rebuild the tutorials info cache
+                // if (!empty($app["tutorials"])) {
+                //     $tutes = explode("\n", $app["tutorials"]);
+                //     YouTubeModel::precache($app["app_key"], $tutes);
+                // }
 
                 $sections = Request::post("section_id");
                 $classnames = Request::post("section_classname");
@@ -430,6 +437,7 @@ class AdminController extends Controller
                     // var_dump([$action, $classname, $content, $id]);
                 }
                 break;
+
         }
         if ($model->method === "index") {
             $model->index = AppModel::getAllApps(false);

@@ -129,10 +129,6 @@
                   <div><textarea name="documents" rows="4" cols="80" data-markdown="true">{{formdata.documents}}</textarea></div>
             </div>
 
-            <div class="row"><label>Tutorials: (e.g. youtube links, one per line)</label>
-                  <div><textarea name="tutorials" rows="5" cols="80">{{formdata.tutorials}}</textarea></div>
-            </div>
-
             <div class="row"><label>MailChimp Signup Form: (modal; e.g. coming soon)</label>
                   <div><textarea name="signup_form" rows="5" cols="80">{{formdata.signup_form}}</textarea></div>
             </div>

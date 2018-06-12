@@ -32,14 +32,12 @@
 			<div class='uk-width-2-5@m'>
 
 				{{#if @root/Subscriptions}}
-
 				<div class='uk-panel uk-panel-default cs-background-launch uk-light uk-border-rounded uk-box-shadow-medium uk-padding-small uk-margin-bottom'>
 				<h3 class='uk-h3 uk-text-center'>You own this already</h3>
 				<p class='uk-text-center'>
 					<a href="{{@root/baseurl}}launch/{{@root/App.app_key}}" target="{{@root/App.app_key}}" class='uk-button uk-button-large uk-button-primary uk-border-rounded'><span uk-icon='bolt' class='uk-margin-small-right'></span>Launch App</a>
 				</p>
 				</div>
-
 				{{else}}{{#equals @root.App.auth_type 1}}
 				<div class='uk-panel uk-panel-default cs-background-launch uk-light uk-border-rounded uk-box-shadow-medium uk-padding-small uk-margin-bottom'>
 				<h3 class='uk-h3 uk-text-center'>Free</h3>
@@ -51,7 +49,7 @@
 
 				{{#gte @root.App.active 2}}
 
-				{{#if @root/Bundles}} {{!-- and at least one of them is active --}}
+				{{#if @root/Bundles}}
 				<div class='uk-panel uk-panel-default cs-background-purchase uk-border-rounded uk-padding-small uk-margin-bottom'>
 				<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
 				<ul  class="cs-price-tab uk-margin-remove-bottom" uk-tab anim="animation: uk-animation-fade">
@@ -96,6 +94,14 @@
 
 				{{/if}}
 				{{/gte}}
+
+				{{#if @root.App.documents}}
+				<div class='uk-panel uk-panel-default uk-background-muted cs-background-appdocuments uk-border-rounded uk-padding-small uk-margin-bottom'>
+				<h4 class='uk-h4 cs-heading-line'><span uk-icon="info" class='uk-margin-small-right'></span>Documentation & Tutorials</h4>
+				{{{htmlify @root.App.documents}}}
+				</div>
+				{{/if}}
+
 			</div>
 		</div>
 	{{else}}

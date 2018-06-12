@@ -1,5 +1,5 @@
-				<div class='uk-panel uk-panel-default uk-background-muted uk-padding-small'>
-				<h5 class='uk-h5 cs-heading-line'><span uk-icon="more" class='uk-margin-small-right'></span>Fine print</h5>
+				<div class='uk-panel uk-panel-default uk-background-muted uk-padding-small uk-margin-bottom'>
+				<h4 class='uk-h4 cs-heading-line'><span uk-icon="more" class='uk-margin-small-right'></span>Fine print</h4>
 				<ul class='uk-text-small'>
 					<li>Fast, Secure purchasing via <a href="https://fastspring.com/">FastSpring</a></li>
 					{{#equals App.app_key "api"}}
