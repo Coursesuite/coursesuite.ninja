@@ -16,7 +16,7 @@ class TestimonialsModel extends Model
     {
         $results = [];
         $idrowname = self::ID_ROW_NAME;
-        $rows = Model::Read(self::TABLE_NAME, "", [], self::ID_ROW_NAME, false);
+        $rows = Model::Read(self::TABLE_NAME, "", [], self::ID_ROW_NAME, false, "sort");
         foreach ($rows as $row) {
             $results[] = (new TestimonialsModel("id", $row->$idrowname))->get_model();
         }
