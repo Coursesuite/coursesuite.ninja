@@ -466,6 +466,7 @@ class View
         }
 
         $this->helpers[] = "Text::StaticPageRenderer";
+        $this->helpers[] = "Text::base64enc";
 
     }
 

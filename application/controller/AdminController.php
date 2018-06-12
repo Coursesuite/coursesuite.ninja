@@ -48,7 +48,7 @@ class AdminController extends Controller
                 break;
 
             case "delete":
-                if (file_exists($fpath . $fname)) unlink($fpath . $fname);
+                if (file_exists($fpath . Text::base64dec($fname))) unlink($fpath . Text::base64dec($fname));
                 break;
         }
         $model->file = [];
@@ -93,7 +93,7 @@ class AdminController extends Controller
         $fields = Model::Columns($table);
         $idname = "";
         foreach ($fields as $field) {
-            if ($field["primary"]===true) $idname = $field["name"];
+            if (array_key_exists("primary",$field) && $field["primary"]===true) $idname = $field["name"];
         }
         switch ($this->Method) {
             case "PUT": // insert
@@ -281,6 +281,8 @@ class AdminController extends Controller
                 break;
 
             case "save":
+                $cache = CacheFactory::getFactory()->getCache();
+                $cache->deleteItemsByTag("model");
                 $bundle = array(
                     "id" => $id,
                     "sort" => Request::post("sort", false, FILTER_SANITIZE_NUMBER_INT),
@@ -332,6 +334,8 @@ class AdminController extends Controller
             break;
 
             case "save":
+                $cache = CacheFactory::getFactory()->getCache();
+                $cache->deleteItemsByTag("model");
                 $section = array(
                     "id" => $id,
                     "label" => Request::post("label", false, FILTER_SANITIZE_STRING),
@@ -417,6 +421,8 @@ class AdminController extends Controller
                 break;
 
             case "save":
+                $cache = CacheFactory::getFactory()->getCache();
+                $cache->deleteItemsByTag("model");
                 $app = array(
                     "app_id" => $id,
                     "app_key" => Request::post("app_key", false, FILTER_SANITIZE_STRING),
@@ -440,7 +446,9 @@ class AdminController extends Controller
                         "appHeader" => Text::iif(Request::post("appHeader"), "uk-section cs-app-header cs-bgcolour-" . Request::post("app_key") ." uk-light"),
                         "appSlides" => Text::iif(Request::post("appSlides"), "uk-section cs-app-slides"),
                         "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links")
-                    )
+                    ),
+                    "documents" => Request::post("documents"),
+                    "tutorials" => Request::post("tutorials")
                 );
                 // persist enabled mods
                 $basemods = ApiModel::get_api_mods();
@@ -456,6 +464,9 @@ class AdminController extends Controller
                 $app["mods"] = $basemods;
                 $model->id = Model::Update("apps", "app_id", $app);
                 $model->method = "index";
+
+                // rebuild css cache and dump out less colour file for development
+                AppModel::apps_colours_css(true);
 
                 $sections = Request::post("section_id");
                 $classnames = Request::post("section_classname");
@@ -755,15 +766,17 @@ class AdminController extends Controller
                 break;
 
             case "save":
+                $cache = CacheFactory::getFactory()->getCache();
+                $cache->deleteItemsByTag("model");
                 $testimonial = array(
                     "id" => $id,
                     "avatar" => Request::post("avatar", false, FILTER_SANITIZE_URL),
-                    "name" => Request::post("body_classes", false, FILTER_SANITIZE_STRING),
+                    "name" => Request::post("name", false, FILTER_SANITIZE_STRING),
                     "title" => Request::post("title", false, FILTER_SANITIZE_STRING),
-                    "entry" => Request::post("entry"),
-                    "published" => Request::post("published", false, FILTER_SANITIZE_NUMBER_INT),
                     "link" => Request::post("link", false, FILTER_SANITIZE_URL),
                     "handle" => Request::post("handle", false, FILTER_SANITIZE_STRING),
+                    "entry" => Request::post("entry"),
+                    "published" => Request::post("published", false, FILTER_SANITIZE_NUMBER_INT),
                 );
                 $model->id = Model::Update("testimonials", "id", $testimonial);
                 $model->method = "index";
@@ -1050,31 +1063,58 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/changelog", $model, "_admin", true);
     }
 
-    public function purge() {
+    public function purge($tag = "coursesuite") {
 
         $model = $this->model;
         $model->status = [];
 
         $cache = CacheFactory::getFactory()->getCache();
 
-        $status = "Purging object caches ... ";
-        $cache->deleteItem("custom_css");
-        $cache->deleteItem("app_colours_css");
-        $cache->deleteItem("home_model");
-        $cache->deleteItem("products_nav_*");
-        // $cache->deleteItem("products_nav_freebies");
-        $cache->deleteItem("products_dropdown");
-        $status .= "done";
-        $model->status[] = $status;
+        if ($tag !== "disk") {
+            $status = "Purging object caches for tag `{$tag}` ... ";
+            $cache->deleteItemsByTag($tag);
+            $status .= "done";
+            $model->status[] = $status;
+        }
 
         // handlebars templates
-        $status = "Purging disk caches ... ";
-        array_map('unlink', glob(Config::get("PATH_VIEW_PRECOMPILED") . "*.php"));
-        $status .= "done";
-        $model->status[] = $status;
+        if ($tag === "disk" || $tag === "coursesuite") {
+            $status = "Purging precompiled disk caches ... ";
+            array_map('unlink', glob(Config::get("PATH_VIEW_PRECOMPILED") . "*.php"));
+            $status .= "done";
+            $model->status[] = $status;
+        }
 
         $this->View->renderHandlebars("admin/purge/index", $model, "_admin", true);
 
+    }
+
+    // hidden helper methods
+
+    // cacher lets you explore what is cached (by searching for tags - so tag your caches!)
+    public function cacher($tag = "coursesuite", $action = "view") {
+        $cache = CacheFactory::getFactory()->getCache();
+        switch ($action) {
+            case "delete":
+                $cache->deleteItemsByTag($tag);
+                break;
+        }
+        $model = $cache->getItemsByTag($tag);
+        var_dump(array_keys($model), $model);
+        exit;
+    }
+
+    // dumpr dumps a ctyped row from the database; without a key it shows you a ctyped empty row
+    public function dumpr($table, $key=null, $action = "view") {
+        $m = new dbRow($table,$key);
+        switch ($action) {
+            case "delete":
+                $m->delete();
+                break;
+        }
+        foreach ($m->properties() as $property) {
+            echo $property;var_dump($m->$property);
+        }
     }
 
 }
