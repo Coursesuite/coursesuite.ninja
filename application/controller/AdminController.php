@@ -198,77 +198,6 @@ class AdminController extends Controller
         $this->View->renderHandlebars('admin/users/index', $model, "_admin", true);
     }
 
-    // public function showLog($filter = "", $value = "", $limit = 100, $order_by = "id", $order_dir = "desc")
-    // {
-
-    //     $digest_users = LoggingModel::uniqueDigestUsers();
-    //     if (empty($value)) $value = $digest_users[0];
-    //     $model = array(
-    //         "fields" => array("id","method_name", "digest_user", "added", "message", "param0"),
-    //         "digest_users" => $digest_users,
-    //         "filter_value" => $value,
-    //         "order_by" => $order_by,
-    //         "order_dir" => $order_dir,
-    //         "limit" => $limit,
-    //         "syslog" => LoggingModel::systemLog($filter, $value, $limit, $order_by, $order_dir),
-    //     );
-    //     $this->View->Requires("flatpickr.min.css");
-    //     $this->View->Requires("flatpickr.min.js");
-    //     $this->View->renderHandlebars('admin/showLog', $model, "_admin", true);
-    // }
-
-    // public function editSections($id = 0, $action = "")
-    // {
-    //     $url = Config::get("URL");
-    //     $model = array(
-    //         "sections" => SectionsModel::getAllStoreSections(true),
-    //     );
-    //     if (is_numeric($id) && intval($id) > 0) {
-    //         $section = SectionsModel::getStoreSection($id);
-    //         $model["action"] = $action;
-    //     }
-    //     switch ($action) {
-    //         case "save":
-    //             $section = array(
-    //                 "id" => $id,
-    //                 "label" => Request::post("label", false, FILTER_SANITIZE_STRING),
-    //                 "epiphet" => Request::post("epiphet", false, FILTER_SANITIZE_STRING),
-    //                 "cssclass" => Request::post("cssclass", false, FILTER_SANITIZE_STRING),
-    //                 "visible" => Request::post("visible", false, FILTER_SANITIZE_NUMBER_INT),
-    //                 "sort" => Request::post("sort", false, FILTER_SANITIZE_NUMBER_INT),
-    //                 "html_pre" => Request::post("html_pre"),
-    //                 "html_post" => Request::post("html_post"),
-    //             );
-    //             $id = SectionsModel::Save("store_sections", "id", $section);
-    //             // $model["action"] = "edit";
-    //             // could do this to change the url, but whatever
-    //             Redirect::to("admin/editSections");
-    //             break;
-
-    //         case "new":
-    //             $id = 0;
-    //             $model["action"] = "new";
-    //             $section = SectionsModel::Make();
-    //             break;
-
-    //         case "order":
-    //             $table = Request::post("table");
-    //             $field = Request::post("field");
-    //             $keys = explode(',', Request::post("order")); // the order of ids, top to bottom
-    //             $assoc = array_combine($keys, range(0, count($keys) - 1)); // a[1] => 0, a[3] => 1, a[2] => 2, etc
-    //             SectionsModel::setOrder($assoc);
-    //             exit;
-    //             break;
-
-    //     }
-    //     $model["id"] = $id;
-    //     if (isset($section)) {
-    //         $model["data"] = $section;
-    //     }
-    //     $this->View->Requires("Sortable.min.js");
-    //     $this->View->renderHandlebars('admin/editSections', $model, "_admin", true);
-    // }
-
     public function product_bundles($method = "index", $id = 0) {
         $model = $this->model;
         $model->method = $method;
@@ -513,206 +442,6 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/apps/" . $model->method, $model, "_admin", true);
     }
 
-
-    // public function editApps($id = 0, $action = "", $filename = "")
-    // {
-    //     $url = Config::get("URL");
-    //     $model = $this->model;
-    //     $model->apps = AppModel::getAllApps(false);
-
-    //     if (is_numeric($id) && intval($id) > 0) {
-
-    //         $app = AppModel::getAppById($id);
-    //         $upload_dir = Config::get('PATH_APP_MEDIA') . $app->app_key . '/';
-    //         $model["action"] = $action;
-    //         $files = array();
-    //         foreach (glob($upload_dir . '*.{jpg,gif,png}', GLOB_BRACE) as $file) {
-    //             $files[] = basename($file);
-    //         }
-    //         $model["files"] = $files;
-
-    //     }
-    //     switch ($action) {
-
-    //         case "upload":
-    //             $uplname = basename($_FILES["imageUpload"]["name"]); // name of file only
-    //             $image_ext = pathinfo($uplname, PATHINFO_EXTENSION); // extension
-    //             $tmpname = $_FILES["imageUpload"]["tmp_name"]; // php temporary file
-
-    //             $display_url = Request::post("url", true, FILTER_SANITIZE_URL);
-    //             $display_caption = Request::post("caption", true, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    //             $make_thumbs = ((null !== Request::post("autothumb")) && (Request::post("autothumb") === "yes"));
-    //             $add_slide = ((null !== Request::post("addslide")) && (Request::post("addslide") === "yes"));
-    //             $media = json_decode($app->media);
-
-    //             if (isset($tmpname) && !empty($tmpname) && (getimagesize($tmpname) !== false) && ($image_ext == "jpg" || $image_ext == "png" || $image_ext == "jpeg" || $image_ext == "gif")) {
-
-    //                 // a file of acceptable type was uploaded
-    //                 $diskname = md5($uplname) . "." . $image_ext;
-    //                 $diskpath = $upload_dir . $diskname;
-    //                 $displaypath = '/img/apps/' . $app->app_key . '/' . $diskname;
-
-    //                 // thumbnail cache cleanup
-    //                 if (file_exists($diskpath)) {
-    //                     unlink($diskpath);
-    //                 }
-
-    //                 if ($make_thumbs) {
-    //                     // delete existing versions including thumbnails
-    //                     if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg')) {
-    //                         unlink($diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg');
-    //                     }
-
-    //                     if (file_exists($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg')) {
-    //                         unlink($diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg');
-    //                     }
-    //                 }
-
-    //                 // move the file upload into position, creating the position if required
-    //                 if (!file_exists($upload_dir)) {
-    //                     mkdir($upload_dir, 0777, true); //TODO: 0774?
-    //                 }
-
-    //                 move_uploaded_file($tmpname, $diskpath);
-
-    //                 // get base colour
-    //                 $colour = Image::getBaseColour($diskpath);
-
-    //                 $media[] = array(
-    //                     "preview" => $displaypath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH') . '.jpg',
-    //                     "image" => $displaypath,
-    //                     "thumb" => $displaypath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH') . '.jpg',
-    //                     "caption" => $display_caption,
-    //                     "bgcolor" => "rgba(" . implode(",", $colour) . ",.5)",
-    //                 );
-
-    //                 if ($make_thumbs) {
-    //                     // generate standard sized thumbnails
-    //                     Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_WIDTH'), Config::get('SLIDE_PREVIEW_HEIGHT'), $colour, false);
-    //                     Image::makeThumbnail($diskpath, $diskpath . '_thumb' . Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_WIDTH'), Config::get('SLIDE_THUMB_HEIGHT'), $colour);
-    //                 }
-
-    //                 // save media model
-    //                 if ($add_slide) {
-    //                     AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
-    //                 }
-
-    //             } else if (isset($display_url)) {
-    //                 $thumb = "/img/hqdefault.jpg";
-    //                 if (strpos($display_url, "youtu") !== false) {
-    //                     $json = json_decode(file_get_contents("http://www.youtube.com/oembed?url=" . $display_url . "&format=json"));
-    //                     // preg_match('/[\\?\\&]v=([^\\?\\&]+)/', $display_url, $matches); // http://sourcey.com/youtube-html5-embed-from-url-with-php/
-    //                     preg_match('/.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/', $display_url, $matches);
-
-    //                     $display_url = "https://www.youtube.com/embed/" . $matches[1] . "?rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1"; // https://developers.google.com/youtube/player_parameters
-
-    //                     $image = $json->thumbnail_url; // 480px; we want >= 400, so this is ok
-    //                     $thumb = str_replace("hqdefault.jpg", "default.jpg", $json->thumbnail_url); // 120px - see http://stackoverflow.com/a/2068371/1238884
-
-    //                 } else if (strpos($display_url, "vimeo") !== false) {
-    //                     $json = json_decode(file_get_contents("https://vimeo.com/api/oembed.json?url=" . $display_url));
-    //                     $display_url = "https://player.vimeo.com" . $json->uri;
-    //                     $image = "https://i.vimeocdn.com/video/" . $json->video_id . "_" . Config::get('SLIDE_PREVIEW_WIDTH') . ".jpg";
-    //                     $thumb = "https://i.vimeocdn.com/video/" . $json->video_id . "_" . Config::get('SLIDE_THUMB_WIDTH') . ".jpg";
-    //                     /* split thumbnail_url after last _ and replace with size.format, e.g.
-    //                     https://i.vimeocdn.com//video//563138102_120.jpg
-    //                     https://i.vimeocdn.com//video//563138102_1280.webp
-    //                     https://i.vimeocdn.com//video//563138102_400.png
-    //                      */
-    //                 }
-    //                 // get base colour
-    //                 // if ($thumb !== "/img/hqdefault.jpg") {
-    //                     $colour = Image::getBaseColour($thumb);
-    //                 // } else {
-    //                 //    $colour = [127, 127, 127];
-    //                 // }
-
-    //                 $media[] = array(
-    //                     "preview" => $image,
-    //                     "video" => $display_url,
-    //                     "thumb" => $thumb,
-    //                     "caption" => $display_caption,
-    //                     "bgcolor" => "rgba(" . implode(",", $colour) . ",.5)",
-    //                 );
-
-    //                 if ($add_slide) {
-    //                     AppModel::Save("apps", "app_id", array("app_id" => $id, "media" => json_encode($media)));
-    //                 }
-    //             }
-    //             Redirect::to("admin/editApps/$id/edit");
-    //             break;
-
-    //         case "delete":
-    //             unlink($upload_dir . $filename);
-    //             Redirect::to("admin/editApps/$id/edit");
-    //             break;
-
-    //         case "save":
-    //             $app = array(
-    //                 "app_id" => $id,
-    //                 "app_key" => Request::post("app_key", false, FILTER_SANITIZE_STRING),
-    //                 "name" => Request::post("name"),
-    //                 "tagline" => Request::post("tagline"),
-    //                 "whatisit" => Request::post("whatisit"),
-    //                 "icon" => Request::post("icon", false, FILTER_SANITIZE_URL),
-    //                 "url" => Request::post("url", false, FILTER_SANITIZE_URL),
-    //                 "launch" => Request::post("launch", false, FILTER_SANITIZE_URL),
-    //                 "guide" => Request::post("guide", false, FILTER_SANITIZE_URL),
-    //                 "auth_type" => Request::post("auth_type", false, FILTER_SANITIZE_NUMBER_INT),
-    //                 "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
-    //                 "popular" => Request::post("popular", false, FILTER_SANITIZE_NUMBER_INT),
-    //                 "description" => Request::post("description"),
-    //                 "media" => Request::post("media"),
-    //                 "meta_description" => Request::post("meta_description"),
-    //                 "meta_title" => Request::post("meta_title"),
-    //                 "meta_keywords" => Request::post("meta_keywords"),
-    //                 "colour" => Request::post("colour"),
-    //                 "glyph" => Request::post("glyph"),
-    //             );
-    //             $id = AppModel::Save("apps", "app_id", $app);
-    //             $model["action"] = "edit";
-
-    //             $appTiers = Request::post("AppTiers");
-    //             foreach ($appTiers as $apt) {
-    //                 $apptier = new AppTierModel();
-    //                 if (trim($apt["name"]) == "" && $apt["id"] > 0) {
-    //                         $apptier->delete($apt["id"]);
-    //                 } else if (trim($apt["name"]) > "") {
-    //                     if ($apt["id"] == -1) {
-    //                         $apptier->make();
-    //                     } else {
-    //                         $apptier->load($apt["id"]);
-    //                     }
-    //                     $at_model = $apptier->get_model(false);
-    //                     $at_model["app_id"] = $id;
-    //                     $at_model["tier_level"] = $apt["level"];
-    //                     $at_model["name"] = $apt["name"];
-    //                     $at_model["description"] = $apt["desc"];
-    //                     $apptier->set_model($at_model);
-    //                     $apptier->save();
-    //                 }
-    //             }
-
-    //             // could do this to change the url, but whatever
-    //             // Redirect::to("admin/editApps/$id/edit");
-    //             break;
-
-    //         case "new":
-    //             $id = 0;
-    //             $model["action"] = "new";
-    //             $app = AppModel::Make();
-    //             break;
-    //     }
-
-    //     $model["id"] = $id;
-    //     if (isset($app)) {
-    //         $model["data"] = $app;
-    //         $model["AppTiers"] = AppTierModel::get_tiers($id);
-    //     }
-    //     $this->View->renderHandlebars('admin/editApps', $model, "_admin", true);
-    // }
-
-
     public function static_pages($method = "index", $id = 0)
     {
         $model = $this->model;
@@ -777,6 +506,7 @@ class AdminController extends Controller
                     "handle" => Request::post("handle", false, FILTER_SANITIZE_STRING),
                     "entry" => Request::post("entry"),
                     "published" => Request::post("published", false, FILTER_SANITIZE_NUMBER_INT),
+                    "sort" => Request::post("sort", false, FILTER_SANITIZE_NUMBER_INT),
                 );
                 $model->id = Model::Update("testimonials", "id", $testimonial);
                 $model->method = "index";
@@ -797,54 +527,6 @@ class AdminController extends Controller
         }
         $this->View->renderHandlebars('admin/testimonials/' . $model->method, $model, "_admin", true);
     }
-
-
-    // public function messages($message_id = 0, $action = "", $user_id = 0)
-    // {
-
-    //     $baseurl = Config::get("URL");
-    //     $model = array(
-    //         "action" => $action,
-    //         "message_id" => $message_id,
-    //         "user_id" => $user_id,
-    //     );
-
-    //     switch ($action) {
-    //         case "send":
-    //             $text = Request::post("text", true);
-    //             $level = intval(Request::post("level"));
-    //             $expires = Request::post("expires");
-    //             if (!empty($expires)) {
-    //                 $expires = strtotime($expires);
-    //             }
-
-    //             $message_id = MessageModel::notify_user($text, $level, $user_id, $expires);
-    //             Redirect::to("admin/messages/$message_id/edit");
-    //             break;
-
-    //         case "search":
-    //             $q = Request::post("q", true);
-    //             $model["q"] = $q;
-    //             $model["results"] = UserModel::getUserDataByUserNameOrEmail($q, false, true);
-    //             break;
-
-    //         case "select":
-    //             $u = UserModel::getPublicProfileOfUser($user_id);
-    //             if (empty($u)) {
-    //                 $u = new stdClass();
-    //                 $u->user_id = 0;
-    //                 $u->user_name = "All users";
-    //             }
-    //             $model["q"] = $u->user_email;
-    //             $model["user"] = $u;
-    //             break;
-
-    //     }
-    //     $this->View->Requires("flatpickr.min.css");
-    //     $this->View->Requires("flatpickr.min.js");
-    //     $this->View->renderHandlebars('admin/messages', $model, "_admin", true);
-
-    // }
 
     public function hooks($action = "", $id = 0)
     {
@@ -941,97 +623,12 @@ class AdminController extends Controller
         $this->View->renderJSON(["result"=>"ok","filename"=>"/img/{$fold}/{$fname}","url"=>$serverurl]);
     }
 
-    // public function editBundles($id = 0, $action= "") {
-    //     $url = Config::get("URL");
-    //     $model = array(
-    //         "action" => $action,
-    //         "bundles" => BundleModel::getBundles(),
-    //         );
-    //     switch ($action) {
-    //         case 'edit':
-    //             $model["bundle"] = BundleModel::getBundleById($id);
-    //             break;
-
-    //         case 'save':
-    //             StoreProductModel::save('app_bundles', 'product_id', array(
-    //                 "product_id" => $id,
-    //                 "display_name" => Request::post('display_name'),
-    //                 "description" => Request::post('description'),
-    //                 ));
-    //             Redirect::to('admin/editBundles');
-    //             break;
-
-    //         case 'new':
-    //             $model['bundle'] = array('a'=>1);
-    //             $model['apps'] = AppModel::getAllApps(false);
-    //             break;
-
-    //         case 'create':
-    //             $postData = array(
-    //                 'apps' => Request::post('apps'),
-    //                 'store_name' => Request::post('store_name'),
-    //                 'display_name' => Request::post('display_name'),
-    //                 'description' => Request::post('description'),
-    //                 'active' => Request::post('active'),
-    //                 'tier' => Request::post('tier'),
-    //             );
-    //             if (empty($postData['apps'])) {
-    //                 Redirect::to('admin/editBundles');
-    //                 break;
-    //             } else {
-    //                 $active = (empty($postData['active']) ? false : true);
-    //                 StoreProductModel::createStoreProduct($postData['store_name'], $active, 2, $postData['tier']);
-    //                 $product_id = StoreProductModel::getStoreProductByName($postData['store_name'])->product_id;
-    //                 foreach ($postData['apps'] as $app) {
-    //                     StoreProductModel::createProductAppLink($app, $product_id);
-    //                 }
-    //                 BundleModel::createBundle($product_id, $postData['display_name'], $postData['description']);
-    //                 Redirect::to('admin/editBundles');
-    //                 break;
-    //             }
-    //             break;
-
-    //         case 'delete':
-    //             $model["action"] = "delete";
-    //             BundleModel::deleteBundle($id);
-    //             Redirect::to('admin/editBundles');
-    //             break;
-    //     }
-    //     $this->View->renderHandlebars("admin/editBundles", $model, "_admin", true);
-    // }
-
-    // public function encrypt() {
-    //     $val = Request::post("value");
-    //     $model = new stdClass();
-    //     $model->value = $val;
-    //     if (!empty($val)) {
-    //         $model->output = Text::base64enc(Encryption::encrypt($val));
-    //     }
-    //     $this->View->renderHandlebars("admin/encrypt", $model, "_admin", true);
-    // }
-
-    // public function checkSSL() {
-    //     $ch = curl_init("https://www.howsmyssl.com/a/check");
-    //     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //     $server_output = json_decode(curl_exec($ch));
-    //     $this->View->renderJSON($server_output, true);
-    // }
-
-    // public function editProducts($id = 0, $action = "") {
-    //     $model = new stdClass();
-    //     $this->View->renderHandlebars("admin/products", $model, "_admin", true);
-    // }
-
     public function trustedby($method = "index") {
-
         switch ($method) {
             case "save":
                 KeyStore::find("trustedby")->put(Request::post("entry"));
                 break;
         }
-
         $model = $this->model;
         $model->formdata = array(
             "entry" => KeyStore::find("trustedby")->get()
@@ -1064,19 +661,15 @@ class AdminController extends Controller
     }
 
     public function purge($tag = "coursesuite") {
-
         $model = $this->model;
         $model->status = [];
-
         $cache = CacheFactory::getFactory()->getCache();
-
         if ($tag !== "disk") {
             $status = "Purging object caches for tag `{$tag}` ... ";
             $cache->deleteItemsByTag($tag);
             $status .= "done";
             $model->status[] = $status;
         }
-
         // handlebars templates
         if ($tag === "disk" || $tag === "coursesuite") {
             $status = "Purging precompiled disk caches ... ";
@@ -1084,9 +677,7 @@ class AdminController extends Controller
             $status .= "done";
             $model->status[] = $status;
         }
-
         $this->View->renderHandlebars("admin/purge/index", $model, "_admin", true);
-
     }
 
     // hidden helper methods

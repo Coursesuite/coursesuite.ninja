@@ -32,6 +32,9 @@
             	<div><label><input type="radio" name="published" value="0"{{#equals published "0"}} checked{{/equals}}>No</label>
             		<label><input type="radio" name="published" value="1"{{#equals published "1"}} checked{{/equals}}>Yes</label> </div>
             </div>
+            <div class="row"><label>user-facing sort order</label>
+            	<div><input type="number" min="1" max="255" step="1" name="sort" value="{{sort}}"></div>
+            </div>
 			<div class="row"><label />
 				<div><button>Save</button> <a href="{{@root.baseurl}}admin/testimonials/" class='button'>Cancel</a></div>
 			</div>
