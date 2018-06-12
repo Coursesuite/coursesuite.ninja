@@ -19,6 +19,7 @@ class HomeModel
 				$row->label = $sm->label;
 				$popular[] = $row;
 			}
+		    $model->Intro = KeyStore::find("homepage_intro")->get();
 			$model->Popular = $popular;
 			$model->Testimonials = Model::Read("testimonials", "published=1");
 			$model->Trust = preg_split('/\R/', KeyStore::find("trustedby")->get()); // explodes \n or \r or \r\n or whatever - in php, that's /\R/, see http://www.pcre.org/pcre.txt

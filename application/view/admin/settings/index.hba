@@ -9,6 +9,10 @@
 		</header>
 
 	<form method="post" action="{{baseurl}}admin/storeSettings/update">
+        <div class="row mde"><label>homepage intro</label>
+        	<div><textarea id="homepage_intro" name="homepage_intro" rows="10" cols="80" data-markdown="true">{{{homepage_intro}}}</textarea></div>
+        </div>
+
 		<div class="row">
 			<label for="foobar">FastSpring Trial Days</label>
 			<input type="number" min="0" max="99" value="{{freetrialdays}}" step="1" id="foobar" name="freeTrialDays">
