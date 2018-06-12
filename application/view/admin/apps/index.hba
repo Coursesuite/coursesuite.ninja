@@ -14,7 +14,11 @@
 			<tbody>
 			{{#each index}}
 			<tr>
-				<td>{{#equals active "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
+				<td>{{#equals active "3"}}<i class='fa fa-eye'></i>{{else}}
+					{{#equals active "2"}}<i class='fa fa-building-o'></i>{{else}}
+					{{#equals active "1"}}<i class='fa fa-archive'></i>{{else}}
+										  <i class='fa fa-eye-slash fa-muted'></i>
+					{{/equals}}{{/equals}}{{/equals}}</td>
 				<td>{{name}}</td>
 				<td><a href="{{@root.baseurl}}admin/apps/edit/{{app_id}}">Edit</a></td>
 				<td><a href="{{@root.baseurl}}admin/apps/changelog/{{app_id}}">Change log</a></td>
