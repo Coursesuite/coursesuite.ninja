@@ -1,10 +1,10 @@
-	    <div>
-	        <div class="uk-card uk-card-default uk-card-small">
+	    <div class="uk-margin-bottom">
+	        <div class="uk-card uk-card-default uk-card-small uk-flex-column uk-flex">
 	            <div class="uk-card-media-top uk-cover-container">
 	                <img src="{{icon}}" alt="" uk-cover>
 	                <canvas width="307" height="195"></canvas>
 	            </div>
-	            <div class="uk-card-body">
+	            <div class="uk-card-body uk-flex-1">
 	                <h3 class="uk-card-title">{{name}}</h3>
 	                <p>{{tagline}}</p>
 	            </div>

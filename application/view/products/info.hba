@@ -1,5 +1,4 @@
 <div class='cs-app-{{App.app_key}}'>
-
 <div class='{{App.cssproperties.appHeader}}'>
 	<div class='uk-container'>
 		<div class="uk-flex-middle cs-svg-colour" uk-grid>
@@ -40,19 +39,28 @@
 				</p>
 				</div>
 
-				{{/if}}
+				{{else}}{{#equals @root.App.auth_type 1}}
+				<div class='uk-panel uk-panel-default cs-background-launch uk-light uk-border-rounded uk-box-shadow-medium uk-padding-small uk-margin-bottom'>
+				<h3 class='uk-h3 uk-text-center'>Free</h3>
+				<p class='uk-text-center'>
+					<a href="{{@root/baseurl}}launch/{{@root/App.app_key}}" target="{{@root/App.app_key}}" class='uk-button uk-button-large uk-button-primary uk-border-rounded'><span uk-icon='bolt' class='uk-margin-small-right'></span>Launch App</a>
+				</p>
+				</div>
+				{{/equals}}{{/if}}
 
 				{{#if @root/Bundles}}
 				<div class='uk-panel uk-panel-default cs-background-purchase uk-border-rounded uk-padding-small uk-margin-bottom'>
 				<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
-				<ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
+				<ul  class="cs-price-tab uk-margin-remove-bottom" uk-tab anim="animation: uk-animation-fade">
 					{{#each @root/Bundles}}
 					<li><a href="#">{{label}}</a></li>
+					{{#unless @last}}<li class="uk-disabled uk-text-center"><a>OR</a></li>{{/unless}}
 					{{/each}}
 				</ul>
-				<ul class="uk-switcher uk-margin">
+				<ul class="uk-switcher uk-margin-remove">
 					{{#each @root/Bundles}}
 					<li>
+						<div class="cs-bundle-description">
 						{{{htmlify description}}}
 
 						{{#hasmorethan Apps 1}}<ul>
@@ -60,8 +68,9 @@
 						<li><a href="{{url}}">{{name}}</a></li>
 						{{/each}}</ul>
 						{{/hasmorethan}}
+						</div>
 
-						<p class='uk-text-center'>
+						<p class='uk-text-right'>
 							{{#if @root/IsLoggedIn}}
 							<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
 							{{else}}
@@ -70,6 +79,7 @@
 							{{/if}}
 						</p>
 					</li>
+					{{#unless @last}}<li></li>{{/unless}}
 					{{/each}}
 				</ul>
 				</div>
@@ -86,6 +96,7 @@
 </div>
 {{/each}}
 
+{{#either App.changelog App.files}}
 <div class='{{App.cssproperties.appLinks}}'>
 	<div class='uk-container'>
 		<div class="uk-grid-small uk-child-width-auto" uk-grid>
@@ -114,13 +125,14 @@
 			</div>
 			{{/if}}
 			{{#each App.files}}
-				<div>
-					<a class="uk-button uk-button-default" href="{{path}}{{name}}" download title="{{size}}">{{label}}</a>
-				</div>
+			<div>
+				<a class="uk-button uk-button-default" href="{{path}}{{name}}" download title="{{size}}">{{label}}</a>
+			</div>
 			{{/each}}
         </div>
 	</div>
 </div>
+{{/either}}
 
 {{#if IsMobile}}
 <div class='uk-section cs-share-mobile'>
