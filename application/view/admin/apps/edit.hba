@@ -42,10 +42,12 @@
             		<label><input type="radio" name="auth_type" value="1"{{#equals formdata.auth_type "1"}} checked{{/equals}}>Not required</label> </div>
             </div>
             <div class="row"><label>active</label>
-            	<div><label><input type="radio" name="active" value="0"{{#equals formdata.active "0"}} checked{{/equals}}>No</label>
-            		<label><input type="radio" name="active" value="1"{{#equals formdata.active "1"}} checked{{/equals}}>Yes</label> </div>
+            	<div><label><input type="radio" name="active" value="0"{{#equals formdata.active "0"}} checked{{/equals}}>Invisible</label>
+                        <label><input type="radio" name="active" value="2"{{#equals formdata.active "2"}} checked{{/equals}}>Coming Soon</label>
+            		<label><input type="radio" name="active" value="3"{{#equals formdata.active "1"}} checked{{/equals}}>Visible</label>
+                        <label><input type="radio" name="active" value="1"{{#equals formdata.active "3"}} checked{{/equals}}>Depricated</label> </div>
             </div>
-            <div class="row"><label>popular</label>
+            <div class="row"><label>popular (tile appears on home page)</label>
             	<div><label><input type="radio" name="popular" value="0"{{#equals formdata.popular "0"}} checked{{/equals}}>No</label>
             		<label><input type="radio" name="popular" value="1"{{#equals formdata.popular "1"}} checked{{/equals}}>Yes</label> </div>
             </div>
@@ -128,7 +130,7 @@
             </div>
 
             <div class="row"><label>Tutorials: (e.g. youtube links, one per line)</label>
-                  <div><textarea name="documents" rows="8" cols="80">{{formdata.tutorials}}</textarea></div>
+                  <div><textarea name="tutorials" rows="5" cols="80">{{formdata.tutorials}}</textarea></div>
             </div>
 
             <div class="row"><label />

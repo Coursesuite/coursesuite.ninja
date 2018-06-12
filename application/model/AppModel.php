@@ -139,7 +139,7 @@ class AppModel extends Model
 			FROM apps a
 				INNER JOIN product_bundle pb ON find_in_set(cast(a.app_id AS CHAR), pb.app_ids)
 				INNER JOIN subscriptions s on pb.id = s.product_id and md5(s.referenceId) = :hash
-			WHERE a.active = 1
+			WHERE a.active = 3
 		");
 		//	UNION
 		//	SELECT app_key, name, tagline, guide, url AS launch, concat(left(:url,length(:url)-1), icon) icon, colour, glyph
@@ -177,7 +177,9 @@ class AppModel extends Model
 	// Get all active apps
 	public static function getActiveApps() {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT app_key, name FROM apps WHERE active = 1";
+		$sql = "SELECT app_key, name FROM apps
+			WHERE active > 1
+		"; // 0 = hidden, 1 = depricated, 2 = coming soon, 3 = active
 		$query = $database->prepare($sql);
 		$query->execute();
 		return $query->fetchAll();
