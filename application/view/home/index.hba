@@ -6,15 +6,7 @@
 
 <div class="uk-section cs-store-intro">
 	<div class="uk-container uk-padding-remove-horizontal" id="introduction">
-
-		<h2>Introducing the Ninja Suite</h2>
-
-		<p>With decades of e-learning industry experience behind us, we know all the common frustrations course developers face.
-		You need online learning software that’s fast, uncomplicated and powerful. Unable to find e-learning software that could complete these tasks, we built our own.</p>
-
-		<p>These simple and powerful apps provide you the ability to concentrate on developing your own specific content in the tools you know best. Choose the best app to suit the purpose, load your content up, then we convert it into HTML5 ready eLearning courses ready to upload to your eLearning portal.</p>
-
-		<p><i>Just like a ninja</i> you will be creating first class HTML-5 based SCORM courses with confidence, control and speed. Saving you time and money.</p>
+		{{{htmlify Intro}}}
 	</div>
 
 </div>

@@ -560,6 +560,7 @@ class AdminController extends Controller
     {
         switch ($action) {
             case "update":
+                KeyStore::find("homepage_intro")->put(Request::post("homepage_intro"));
                 KeyStore::find("footer_col1")->put(Request::post("footer_col1"));
                 KeyStore::find("footer_col2")->put(Request::post("footer_col2"));
                 KeyStore::find("footer_col3")->put(Request::post("footer_col3"));
@@ -577,6 +578,7 @@ class AdminController extends Controller
 
         $model = $this->model;
         $model->footer = [$footer_1, $footer_2, $footer_3];
+        $model->homepage_intro = KeyStore::find("homepage_intro")->get();
         $model->emailTemplate = KeyStore::find("emailTemplate")->get();
         $model->freetrialdays = KeyStore::find("freeTrialDays")->get(3);
         $model->customcss = KeyStore::find("customcss")->get();
@@ -584,6 +586,7 @@ class AdminController extends Controller
 
         $cache = CacheFactory::getFactory()->getCache();
         $cacheItem = $cache->deleteItem("custom_css");
+        $cacheItem = $cache->deleteItem("home_model");
 
         $this->View->renderHandlebars("admin/settings/index", $model, "_admin", true);
     }
