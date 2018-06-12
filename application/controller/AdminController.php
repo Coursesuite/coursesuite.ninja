@@ -422,7 +422,7 @@ class AdminController extends Controller
                         $app_section->save();
                     } else if ($as_id > 0) {
                         // "delete" because content is empty but id > 0;
-                        $app_section->delete();
+                        $app_section->delete($as_id);
                     } else {
                         // content was empty, id = 0, nothing to do
                     }
