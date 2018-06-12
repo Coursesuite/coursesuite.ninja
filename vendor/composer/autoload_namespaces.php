@@ -9,5 +9,7 @@ return array(
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'Mailchimp' => array($vendorDir . '/mailchimp/mailchimp/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
+    'Google_Service_' => array($vendorDir . '/google/apiclient-services/src'),
+    'Google_' => array($vendorDir . '/google/apiclient/src'),
     'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
 );

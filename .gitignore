@@ -1,6 +1,14 @@
 # this is just a demo .gitignore file, put all the files and folders you want to be ignored by git inside
 # if you work with NetBeans: ignore NetBeans project files
 /nbproject/private/
+public/img/thumb/*
+public/js/admin.*.js
+public/js/main.*.js
+public/css/admin*.css
+public/css/compiled*.*
+vendor/*.*
+vendor/*
+
 
 /public/img/apps/
 /precompiled/

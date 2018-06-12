@@ -25,6 +25,7 @@
         "cloudinary/cloudinary_php": "^1.8",
         "mobiledetect/mobiledetectlib": "^2.8",
         "pagerange/metaparsedown": "^1.0",
-        "robquistnl/simplehtmltotext": "^1.1"
+        "robquistnl/simplehtmltotext": "^1.1",
+        "google/apiclient": "~2.0"
     }
 }
