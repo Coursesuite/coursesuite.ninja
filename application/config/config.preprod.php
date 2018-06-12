@@ -12,6 +12,8 @@ return array(
     'PATH_AVATARS_PUBLIC' => 'avatars/',
     'PATH_APP_MEDIA' => realpath(dirname(__FILE__) . '/../../') . '/public/img/apps/',
     'PATH_IMG_MEDIA' => realpath(dirname(__FILE__) . '/../../') . '/public/img/',
+    'PATH_ATTACHMENTS' => realpath(dirname(__FILE__) . '/../../') . '/public/files/',
+    'PATH_CSS_ROOT' => realpath(dirname(__FILE__) . '/../../') . '/public/css/',
 
     'DEFAULT_CONTROLLER' => 'home',
     'DEFAULT_ACTION' => 'index',
@@ -24,7 +26,7 @@ return array(
     'DB_TYPE' => 'mysql',
     'DB_HOST' => '127.0.0.1',
     'DB_NAME' => 'cs_preprod',
-    'DB_USER' => 'preprod',
+    'DB_USER' => 'cs_preprod',
     'DB_PASS' => 'RTX2VQ0}Ny',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
@@ -54,10 +56,12 @@ return array(
     'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
     'GOOGLE_ANALYTICS_ID' => null,
 
-    'COOKIE_RUNTIME' => 31536000, // 1 year
+    /**
+     */
+    'COOKIE_RUNTIME' => 1209600, // 2 weeks
     'COOKIE_PATH' => '/',
     'COOKIE_DOMAIN' => $_SERVER['HTTP_HOST'],
-    'COOKIE_SECURE' => false,
+    'COOKIE_SECURE' => isset($_SERVER['HTTPS']) ? 1 : 0,
     'COOKIE_HTTP' => true,
     'SESSION_RUNTIME' => 604800, // 1 week
     'USE_GRAVATAR' => true,
@@ -74,12 +78,12 @@ return array(
     'HMAC_SALT' => 'SP27uVe^zujNW9apqg#kaqA(BAx',
 
     'EMAIL_USED_MAILER' => 'phpmailer',
-    'EMAIL_USE_SMTP' => false,
+    'EMAIL_USE_SMTP' => false, // because I can't make true work because of some wierd cerificate error
     'EMAIL_SMTP_HOST' => 'mail.coursesuite.com.au',
     'EMAIL_SMTP_AUTH' => true,
-    'EMAIL_SMTP_USERNAME' => 'no.user', // 'no.user',
+    'EMAIL_SMTP_USERNAME' => 'no.user',
     'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
-    'EMAIL_SMTP_PORT' => 465, // 587, // 465
+    'EMAIL_SMTP_PORT' => 465, // false=25, tls=587, // ssl=465
     'EMAIL_SMTP_ENCRYPTION' => false, // 'tls', // 'ssl',
 
     'EMAIL_PASSWORD_RESET_URL' => 'login/verifypasswordreset',
@@ -114,7 +118,7 @@ return array(
     'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/privacy">Privacy</a> <a href="http://forum.coursesuite.ninja/categories/">Forum</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
     'GLOBAL_FOOTER_COLUMN_3' => '<h3>all rights reserved</h3><p>&copy; CourseSuite 2016-3016<br/><a href="mailto:&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;">&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;</a></p>',
     'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
-    'MAILCHIMP_LIST_ID' => '08344979e7',
+    'MAILCHIMP_LIST_ID' => '08344979e7', // '2f5671f29b',
     'MAILCHIMP_INTEREST_ID' => 'd3a65e22a1',
 
     'FORCE_HANDLEBARS_COMPILATION' => true,
@@ -145,6 +149,6 @@ return array(
     ),
 
     'API_TRIAL_PRODUCT_ID' => 'api-trial',
-    'OST_APIKEY' => '0F038102777B870F9523DADE9B34AEAC',
+    'OST_APIKEY' => '9CF13EA2746880BA7825C7B19182FC8F',
     'OST_SECRET_SALT' => 'jZMglLS5w9ARCNzfdUIt7bWK=O0erJ1g',
 );

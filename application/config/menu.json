@@ -31,9 +31,13 @@
 		{"route":"admin/trustedby","label":"Trusted By Logos"}
 	],
 	"utilities": [
-		{"route":"admin/crud/keystore","label":"KeyStore"},
-		{"route":"admin/hooks","label":"Hooks"},
 		{"route":"admin/storeSettings","label":"General Settings"},
-		{"route":"admin/purge","label":"Purge All Caches"}
+		{"route":"admin/crud/keystore","label":"KeyStore Editor"},
+		{"route":"admin/hooks","label":"Hooks"},
+		{"route":"admin/purge/css","label":"Purge CSS Caches"},
+		{"route":"admin/purge/model","label":"Purge DB Caches"},
+		{"route":"admin/purge/disk","label":"Purge Disk Caches"},
+		{"route":"admin/purge/html","label":"Purge Page Caches"},
+		{"route":"admin/purge/coursesuite","label":"Purge All Caches"}
 	]
 }
