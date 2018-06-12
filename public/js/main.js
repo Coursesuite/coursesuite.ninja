@@ -171,6 +171,11 @@ function bindAjaxSubmits() {
 
 $(function () {
 
+	$("#login-form-field-password").on("input", function(event) {
+		var str = $(this).val().length ? "Log in" : "Send Password";
+		$("#logon-form-submit").val(str);
+	});
+
 	// UIkit.util.on(document, 'hide', '[uk-alert]', function (event) {
 	// 	$.post("/data/alert",{id: event.target.dataset.id});
 	// });
