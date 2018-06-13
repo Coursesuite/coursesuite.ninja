@@ -612,3 +612,37 @@ body.mobile .cs-who-we-are {
 // .cs-alerts {
 // 	width: 50%;
 // }
+
+#eyes,#eyes>*{box-sizing: border-box;}
+#eyes {
+	> div {
+		display:inline-block;
+		margin-right:1em;
+		> div {
+			display:block;
+			white-space:nowrap;
+			> div {
+				display:inline-block;
+				width:25px;height:25px;
+				margin: 0 2px 2px 0;
+				> div.eyeball {
+					width:100%;height:100%;
+					box-shadow:0 2px 5px rgba(0,0,0,.2);
+					border:1px solid black;
+					background:white;
+					border-radius:100px;
+					position:relative;
+					> div {
+						background-color: black;
+						border-radius:100px;
+						position:absolute;
+						width:19px;height:19px;top:3px;left:3px;
+						&.glassy {
+							background-color: silver;
+						}
+					}
+				}
+			}
+		}
+	}
+}

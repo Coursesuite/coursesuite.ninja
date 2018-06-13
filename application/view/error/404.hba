@@ -1,8 +1,7 @@
 <div class='uk-section'>
 	<div class='uk-container'>
-		<figure class='uk-text-center'>
-			<img src='/img/5ac847715f4ca6b504912e93c5201ad0.jpg' alt='404 Page Not Found'>
-			<figcaption class='uk-margin-top uk-text-danger'>BTW, the page you were looking for was not found :(</figcaption>
-		</figure>
+		<h3 class='uk-h3'>Uh Oh!</h3>
+		<div id="eyes"></div>
+		<p>The page you were looking for was not found.</p>
 	</div>
 </div>
