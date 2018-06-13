@@ -394,7 +394,6 @@ class AdminController extends Controller
                 // $app["mods"] = json_encode($basemods, JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_NUMERIC_CHECK);
                 $app["mods"] = $basemods;
                 $model->id = Model::Update("apps", "app_id", $app);
-                $model->method = "index";
 
                 // rebuild css cache and dump out less colour file for development
                 AppModel::apps_colours_css(true);
@@ -436,6 +435,7 @@ class AdminController extends Controller
                     }
                     // var_dump([$action, $classname, $content, $id]);
                 }
+                Redirect::to("admin/apps/edit/" . $model->id);
                 break;
 
         }
