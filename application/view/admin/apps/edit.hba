@@ -6,6 +6,7 @@
 	<article>
 		<header>
 			<h2>{{method}} app {{formdata.name}}</h2>
+                  <p><a href="{{baseurl}}admin/apps/" class="uk-button">Close</a></p>
 		</header>
 
 		<form method="post" action="{{baseurl}}admin/apps/save/{{formdata.app_id}}/">
@@ -134,7 +135,7 @@
             </div>
 
             <div class="row"><label />
-            	<div><button>Save</button> <a href="{{baseurl}}admin/apps/" class='button'>Cancel</a></div>
+            	<div><button>Save</button> <a href="{{baseurl}}admin/apps/" class='button'>Close</a></div>
            	</div>
 		</form>
 
