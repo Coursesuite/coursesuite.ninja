@@ -24,6 +24,7 @@ class ErrorController extends Controller
     {
         header('HTTP/1.0 404 Not Found', true, 404);
         $model = new stdClass();
+        $this->View->Requires("404.js");
         $this->View->renderHandlebars("error/404", $model);
     }
 }
