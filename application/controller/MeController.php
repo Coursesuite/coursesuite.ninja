@@ -234,7 +234,7 @@ class MeController extends Controller
 	public function support () {
 		global $PAGE;
 		$model["selection"] = "support";
-		$model["helpdesk"] = Curl::helpdesk_tickets($PAGE->user_email);
+		$model["helpdesk"] = HelpdeskModel::get_my_tickets($PAGE->user_email);
 		$model["AppsBySection"] = StoreProductsModel::get_store_section_products_model("index");
 		$this->View->Requires("me/menubar");
 

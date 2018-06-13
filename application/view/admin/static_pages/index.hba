@@ -11,14 +11,13 @@
 
 		<table>
 			<thead>
-				<tr><th>Slug</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-download'></i> Related files</th><th><i class='fa fa-trash'></i> Removal</th></tr>
+				<tr><th>Slug</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr>
 			</thead>
 			<tbody>
 			{{#each index}}
 			<tr>
 				<td><a href="{{@root.baseurl}}content/{{page_key}}" target="_blank">content/{{page_key}}</a></td>
 				<td><a href="{{@root.baseurl}}admin/static_pages/edit/{{id}}">Edit</a></td>
-				<td> Manage</td>
 				<td><a href="{{@root.baseurl}}admin/static_pages/delete/{{id}}">Delete</a></td>
 			</tr>
 			{{/each}}

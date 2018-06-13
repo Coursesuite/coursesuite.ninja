@@ -5,7 +5,7 @@
 
 	<article>
 		<header>
-			<h2>Editing static page {{data.page_key}}</h3>
+			<h2>Editing static page `{{formdata.page_key}}`</h3>
 		</header>
 		<form method="post" action="/admin/static_pages/save/{{id}}/">
 		{{#with formdata}}
@@ -24,9 +24,13 @@
 			<div class="row"><label for="meta_keywords">meta keywords:</label>
 				<div><input type="text" id="meta_keywords" name="meta_keywords" value="{{meta_keywords}}"></div>
 			</div>
-			<div class="row mde"><label for="content">Content</label>
+			<div class="row mde"><label for="content">Content (possible fields: <code>\{{csrf}}</code> and <code>\{{feedback}}</code>)</label>
 				<div><textarea id="content" name="content" rows="10" cols="80" data-markdown="true">{{content}}</textarea></div>
 			</div>
+            <div class="row">
+                  <label>Associated Files - Drop files below to upload them - then reference them in the content</label>
+                  <iframe src="/admin/files/staticpages/{{page_key}}/" style="width:100%;height:150px;"></iframe>
+            </div>
 			<div class="row"><label />
 				<div><button>Save</button> <a href="{{@root.baseurl}}admin/static_pages/" class='button'>Cancel</a></div>
 			</div>
