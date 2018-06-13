@@ -10,7 +10,7 @@ class DigestModel {
 		$results = Config::get('DIGEST_USERS'); // built-in users (e.g. internal validators, fastspring, etc)
 
 		// if $apikey is set, look up users with subscription to an api product
-		$sql = "select md5(s.referenceId) apikey, u.secret_key from users u
+		$sql = "SELECT md5(s.referenceId) apikey, u.secret_key from users u
 			inner join subscriptions s
 			on u.user_id = s.user_id
 			where s.product_id in (select id from product_bundle where product_key like 'api-%')
