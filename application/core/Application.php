@@ -12,10 +12,10 @@ DEFINE('USER_TYPE_STANDARD', 1);
 DEFINE('USER_TYPE_TRIAL', 3);
 DEFINE('USER_TYPE_ADMIN', 7);
 
-DEFINE("APP_CSS", "css/compiled.20180411131325.css");
-DEFINE("APP_JS", "js/main.20180411131325.js");
-DEFINE("ADMIN_CSS", "css/admin.20180411131325.css");
-DEFINE("ADMIN_JS", "js/admin.20180411131325.js");
+DEFINE("APP_CSS", "/css/compiled.20180613141443.css");
+DEFINE("APP_JS", "/js/main.20180613141443.js");
+DEFINE("ADMIN_CSS", "/css/admin.20180613141443.css");
+DEFINE("ADMIN_JS", "/js/admin.20180613141443.js");
 
 date_default_timezone_set('Australia/Sydney');
 

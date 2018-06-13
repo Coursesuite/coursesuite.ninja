@@ -26,7 +26,7 @@ class LaunchController extends Controller
         if ($length === 1) {
         	if (AppModel::app_requires_authentication($args[1][0])) {
 	            Auth::checkAuthentication();
-        	}
+            }
         }
 
     }

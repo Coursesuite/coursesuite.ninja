@@ -7,8 +7,6 @@
 		<div class="uk-flex-1">
 			<h2 class="uk-heading-divider">Support</h2>
 
-{{dump  .}}
-
 			{{> support_helpdesk}}
 
 			{{> support_account}}
