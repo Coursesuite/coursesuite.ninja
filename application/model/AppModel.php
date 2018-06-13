@@ -161,7 +161,7 @@ class AppModel extends Model
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
 		if ($all_fields) {
-			$sql = "SELECT app_id, app_key, name, icon, guide, url, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular
+			$sql = "SELECT app_id, app_key, name, icon, guide, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular
 					FROM apps
 					ORDER BY name";
 		} else {
@@ -200,7 +200,7 @@ class AppModel extends Model
 	public static function getAppByKey($app_key)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular, glyph, colour, guide
+		$sql = "SELECT app_id, app_key, name, icon, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular, glyph, colour, guide
 				FROM apps
 				WHERE app_key = :app_key
 				LIMIT 1";
@@ -212,7 +212,7 @@ class AppModel extends Model
 	public static function getAppById($app_id)
 	{
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$sql = "SELECT app_id, app_key, name, icon, url, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular, glyph, colour, guide
+		$sql = "SELECT app_id, app_key, name, icon, launch, auth_type, added, active, status, tagline, whatisit, description, media, meta_keywords, meta_description, meta_title, popular, glyph, colour, guide
 				FROM apps
 				WHERE app_id = :app_id
 				LIMIT 1";
@@ -259,7 +259,7 @@ class AppModel extends Model
 		// does this app_key exist
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$query = $database->prepare('
-			SELECT url, launch, auth_type
+			SELECT launch, auth_type
 			FROM apps
 			WHERE app_key = :app
 			LIMIT 1
@@ -287,7 +287,7 @@ class AppModel extends Model
 					break;
 
 				case AUTH_TYPE_NONE:
-					$url = $row->url;
+					$url = $row->launch;
 					break;
 			}
 		}
