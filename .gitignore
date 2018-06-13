@@ -8,6 +8,10 @@ public/css/admin*.css
 public/css/compiled*.*
 vendor/*.*
 vendor/*
+public/files/*
+curl.php
+debug.php
+untitled.php
 
 
 /public/img/apps/
