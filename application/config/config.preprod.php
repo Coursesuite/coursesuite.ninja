@@ -149,6 +149,6 @@ return array(
     ),
 
     'API_TRIAL_PRODUCT_ID' => 'api-trial',
-    'OST_APIKEY' => '9CF13EA2746880BA7825C7B19182FC8F',
+    'OST_APIKEY' => '5FC2364AEFA6F6BC8B34463E71B1F4F1', // dev.coursesuite.ninja key
     'OST_SECRET_SALT' => 'jZMglLS5w9ARCNzfdUIt7bWK=O0erJ1g',
 );
