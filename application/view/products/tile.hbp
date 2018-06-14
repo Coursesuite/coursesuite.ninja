@@ -1,7 +1,7 @@
 	    <div class="uk-margin-bottom">
 	        <div class="uk-card uk-card-default uk-card-small uk-flex-column uk-flex">
 	            <div class="uk-card-media-top uk-cover-container">
-	                <img src="{{icon}}" alt="" uk-cover>
+	                <img src="{{icon}}" alt="" uk-cover onclick="location.href='/products/{{#if route}}{{route}}{{else}}{{../route}}{{/if}}/{{app_key}}'" class="cs-pointer">
 	                <canvas width="307" height="195"></canvas>
 	            </div>
 	            <div class="uk-card-body uk-flex-1">
