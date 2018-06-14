@@ -1,0 +1,18 @@
+<section id="filedrop" data-url="/admin/images/{{path}}/upload">
+{{#unless file}}<p>No images. Drop some!</p>{{/unless}}
+{{#each file}}
+	<table>
+		<tr><th rowspan='3'>
+		<img src='{{thumb}}'>
+		<br><a href="/admin/files/{{@root.area}}/{{@root.key}}/delete/{{Text::base64enc name}}/"><i class="fa fa-trash-o"></i> Delete</a>
+		</th><td><input size='{{add (strlen name) 1}}' type='text' value='{{name}}' data-short='{{name}}' data-full='/img/{{@root.path}}{{name}}' id='fc{{@index}}'><a href='javascript:clippy({{@index}})' title='Copy path'><i class='fa fa-clipboard'></i></a></td>
+	</tr>
+	<tr>
+		<td>{{size}} ({{info}})</td>
+	</tr>
+	<tr>
+		<td>{{modified}}</td>
+	</tr>
+	</table>
+{{/each}}
+</section>

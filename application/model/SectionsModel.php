@@ -103,7 +103,7 @@ class SectionsModel extends Model
         $app_ids = Model::ReadColumn(self::TABLE_NAME, 'app_ids', self::ID_ROW_NAME . "=:id", array(":id" => $section_id), true);
         foreach (explode(',',$app_ids) as $app_id) {
             $app = (new AppModel("app_id", $app_id))->get_model(false,false);
-            if ($active === true && (int) $app->active > 1) {
+            if ($active === true && intval($app->active,10) > 1) {
                 $results[] = $app;
             } else if ($active === false) {
                 $results[] = $app;

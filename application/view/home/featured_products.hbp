@@ -7,7 +7,7 @@
 	    <div>
 	        <div class="uk-card uk-card-default uk-card-small uk-flex uk-flex-column">
 	            <div class="uk-card-media-top uk-cover-container">
-	                <img src="{{icon}}" alt="" uk-cover>
+	                <img src="{{icon}}" alt="" uk-cover onclick="location.href='/products/{{route}}/{{app_key}}'" class="cs-pointer"></a>
 	                <canvas width="307" height="195"></canvas>
 	            </div>
 	            <div class="uk-card-body uk-flex-1">

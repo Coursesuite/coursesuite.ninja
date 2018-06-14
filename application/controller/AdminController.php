@@ -26,6 +26,59 @@ class AdminController extends Controller
         $this->model->menu = Config::Menu();
     }
 
+    // public function images($path = "", $action = "view", $fname = "") {
+    //     $model = new stdClass();
+    //     $rootpath = Config::get("PATH_IMG_MEDIA");
+    //     if (!empty($path)) $path = Text::base64dec($path);
+    //     $fpath = "{$rootpath}{$path}";
+    //     switch ($action) {
+    //         case "folder":
+    //             if (!file_exists($fpath)) {
+    //                 mkdir($fpath,0775,true);
+    //                 chmod($fpath,0775);
+    //             }
+    //             break;
+
+    //         case "upload":
+    //             $fname = $_SERVER['HTTP_X_FILE_NAME'];
+    //             if (!file_exists($fpath)) {
+    //                 mkdir($fpath,0775,true);
+    //                 chmod($fpath,0775);
+    //             }
+    //             if (file_exists($fpath . $fname)) unlink($fpath . $fname);
+    //             file_put_contents($fpath . $fname, fopen('php://input', 'r'));
+    //             $this->View->renderJSON(["result"=>"ok","filename"=>$fname]);
+    //             die();
+    //             break;
+
+    //         case "delete":
+    //             if (file_exists($fpath . Text::base64dec($fname))) unlink($fpath . Text::base64dec($fname));
+    //             break;
+    //     }
+    //     $model->file = [];
+    //     if (file_exists($fpath)) {
+    //         $files = array_diff(scandir($fpath),['..','.']);
+    //         foreach ($files as $entry) {
+    //             if (strpos(mime_content_type($fpath.$entry),"image/")!==false) {
+    //                 $file = [
+    //                     "name" => $entry,
+    //                     "size" => Text::byteConvert(filesize($fpath.$entry)),
+    //                     "modified" => date ("M d Y H:i:s.",filemtime($fpath.$entry)),
+    //                     "thumb" => "/content/image/" . Text::base64_urlencode("/img/{$path}/{$entry}"). "/100",
+    //                 ];
+    //                 $gis =getimagesize($fpath.$entry);
+    //                 $file["info"] = $gis[0] . 'x' . $gis[1];
+    //                 $model->file[] = $file;
+    //             }
+    //         }
+    //     }
+
+    //     // $this->View->Requires("filedrop.js");
+    //     $this->View->Requires("filedrop.css");
+    //     $this->View->renderHandlebars("admin/files/image", $model, "_overlay", true);
+
+    // }
+
     public function files($area,$key,$action = "view",$fname="") {
 
         $model = new stdClass();
@@ -473,7 +526,7 @@ class AdminController extends Controller
                     "meta_keywords" => Request::post("meta_keywords"),
                 );
                 $model->id = Model::Update("static_pages", "id", $page);
-                $model->method = "index";
+                Redirect::to("admin/static_pages/edit/" . $model->id);
                 break;
 
             case "new":
