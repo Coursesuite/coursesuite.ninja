@@ -15,8 +15,12 @@
 </div>
 {{#if App.media}}
 <div class='{{App.cssproperties.appSlides}}'>
-	<div class='uk-container'>
-		{{> lightbox}}
+	<div class='uk-container uk-padding-remove-vertical'>
+		<div class="uk-flex uk-flex-center">
+			<div class="uk-width-2-3">
+	    	{{> youtube}}
+	    </div>
+		</div>
 	</div>
 </div>
 {{/if}}
@@ -51,46 +55,44 @@
 
 				{{#if @root/Bundles}}
 				<div class='uk-panel uk-panel-default cs-background-purchase uk-border-rounded uk-padding-small uk-margin-bottom'>
-				<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
-				<ul  class="cs-price-tab uk-margin-remove-bottom" uk-tab anim="animation: uk-animation-fade">
-					{{#each @root/Bundles}}
-					<li><a href="#">{{label}}</a></li>
-					{{#unless @last}}<li class="uk-disabled uk-text-center"><a>OR</a></li>{{/unless}}
-					{{/each}}
-				</ul>
-				<ul class="uk-switcher uk-margin-remove">
-					{{#each @root/Bundles}}
-					<li>
-						<div class="cs-bundle-description">
-						{{{htmlify description}}}
+					<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
+					<ul  class="cs-price-tab uk-margin-remove-bottom uk-flex-nowrap" uk-flex uk-tab anim="animation: uk-animation-fade">
+						{{#each @root/Bundles}}
+						<li><a href="#">{{label}}</a></li>
+						{{#unless @last}}<li class="uk-disabled uk-text-center uk-flex-1 uk-visible@l"><a>OR</a></li>{{/unless}}
+						{{/each}}
+					</ul>
+					<ul class="uk-switcher uk-margin-remove">
+						{{#each @root/Bundles}}
+						<li>
+							<div class="cs-bundle-description">
+							{{{htmlify description}}}
 
-						{{#hasmorethan Apps 1}}<ul>
-						{{#each Apps}}
-						<li><a href="{{url}}">{{name}}</a></li>
-						{{/each}}</ul>
-						{{/hasmorethan}}
-						</div>
+							{{#hasmorethan Apps 1}}<ul>
+							{{#each Apps}}
+							<li><a href="{{url}}">{{name}}</a></li>
+							{{/each}}</ul>
+							{{/hasmorethan}}
+							</div>
 
-						<p class='uk-text-right'>
-							{{#if @root/IsLoggedIn}}
-							{{#equals @root.App.active 3}}
-								<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
-							{{else}}
-								{{counter_add "comingsoon"}}
-								<a class='uk-button uk-button-primary ul-button-large' href='#signup-form' uk-toggle><span uk-icon='info' class='uk-margin-small-right'></span> Coming Soon!</a>
-							{{/equals}}
-							{{else}}
-							<a class='uk-button uk-button-primary ul-button-large' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</a>
-							{{!-- <button  class='uk-button uk-button-primary uk-button-large' title='Login required to purchase'><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</button> --}}
-							{{/if}}
-						</p>
-					</li>
-					{{#unless @last}}<li></li>{{/unless}}
-					{{/each}}
-				</ul>
+							<p class='uk-text-right'>
+								{{#equals @root.App.active 3}}
+									{{#if @root/IsLoggedIn}}
+									<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
+									{{else}}
+									<a class='uk-button uk-button-primary ul-button-large' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-small-right'></span>${{price}}</a>
+									{{/if}}
+								{{else}}
+									{{counter_add "comingsoon"}}
+									<a class='uk-button uk-button-primary ul-button-large' href='#signup-form' uk-toggle><span uk-icon='info' class='uk-margin-small-right'></span> Coming Soon!</a>
+								{{/equals}}
+							</p>
+						</li>
+						{{#unless @last}}<li></li>{{/unless}}
+						{{/each}}
+					</ul>
+					{{> fineprint}}
 				</div>
-
-				{{> fineprint}}
 
 				{{/if}}
 				{{/gte}}
@@ -99,6 +101,12 @@
 				<div class='uk-panel uk-panel-default uk-background-muted cs-background-appdocuments uk-border-rounded uk-padding-small uk-margin-bottom'>
 				<h4 class='uk-h4 cs-heading-line'><span uk-icon="info" class='uk-margin-small-right'></span>Documentation & Tutorials</h4>
 				{{{htmlify @root.App.documents}}}
+				</div>
+				{{/if}}
+
+				{{#if @root.App.box}}
+				<div class='{{App.cssproperties.appBox}}'>
+					{{{@root.App.box}}}
 				</div>
 				{{/if}}
 

@@ -73,6 +73,7 @@ class ProductsController extends Controller
         // $this->View->Requires("login/logon_partial");
         //$this->View->Requires("products/make_slides");
         $this->View->Requires("products/lightbox");
+        $this->View->Requires("products/youtube");
         $this->View->Requires("products/fineprint");
         $this->View->Requires("main.js");
 

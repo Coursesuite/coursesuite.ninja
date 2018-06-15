@@ -426,11 +426,12 @@ class AdminController extends Controller
                     "media" => Request::post("media"),
                     "cssproperties" => array(
                         "appHeader" => Text::iif(Request::post("appHeader"), "uk-section cs-app-header cs-bgcolour-" . Request::post("app_key") ." uk-light"),
-                        "appSlides" => Text::iif(Request::post("appSlides"), "uk-section cs-app-slides"),
-                        "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links")
+                        "appSlides" => Text::iif(Request::post("appSlides"), "uk-section cs-app-slides cs-bgcolour-" . Request::post("app_key")),
+                        "appLinks" => Text::iif(Request::post("appLinks"), "uk-section cs-app-links"),
+                        "appBox" => trim(Request::post("appBox"))
                     ),
                     "documents" => Request::post("documents"), // markdown of urls, downloads, bookmarks
-                    // "tutorials" => Request::post("tutorials"), //  youtube links
+                    "box" => Request::post("box"), //  ALTER TABLE `apps` CHANGE `tutorials` `box` TEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL;
                     "signup_form" => Request::post("signup_form"), // mailchimp list signup form
                 );
 

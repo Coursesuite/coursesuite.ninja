@@ -560,6 +560,7 @@ class View
         if (is_null($data)) $data = new stdClass();
 
         $data->baseurl = Config::get("URL");
+        $data->userIsLoggedIn = Session::userIsLoggedIn();
         $data->sheets = $this->css;
         $data->scripts = $this->js;
         $data->page = $this->page;
