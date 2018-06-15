@@ -80,7 +80,7 @@ class StoreProductsModel
         $app->changelog = ChangeLogModel::get_app_changelog($app->app_id);
 
 		// expose media as an object to the app
-		$app->media = json_decode($app->media);
+		// $app->media = json_decode($app->media);
 		$app->files = (new FilesModel("app",$app->app_key))->get_model();
 		//$app->files = json_decode($app->files);
 

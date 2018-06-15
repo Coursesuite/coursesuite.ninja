@@ -27,6 +27,7 @@
                         <div><b>Header classes:</b><br><input size="50" type="text" name="appHeader" value="{{formdata.cssproperties.appHeader}}">&nbsp;</div>
                         <div><b>Slides classes:</b><br><input size="50" type="text" name="appSlides" value="{{formdata.cssproperties.appSlides}}">&nbsp;</div>
                         <div><b>Links classes:</b><br><input size="50" type="text" name="appLinks" value="{{formdata.cssproperties.appLinks}}"></div>
+                        <div><b>Marketing Box classes:</b><br><input size="50" type="text" name="appBox" value="{{formdata.cssproperties.appBox}}"></div>
                   </div>
             </div>
             <div class="row"><label>tile icon</label>
@@ -67,8 +68,8 @@
             <div class="row"><label>svg icon (no fill or outline)</label>
             	<div><textarea name="glyph" rows="8" cols="80">{{formdata.glyph}}</textarea></div>
             </div>
-            <div class="row"><label>media (appears before first section, if set). JSON format <code>[{href:url,thumb:url,caption:string},]</code></label>
-                  <div><textarea name="media" rows="8" cols="80">{{formdata.media}}</textarea></div>
+            <div class="row"><label>YouTube Intro Video Id (e.g. tCMy7MsYmbI ... appears before first section, if set).</code></label>
+                  <div><input type="text" name="media" value="{{formdata.media}}"></div>
             </div>
 
             <div class="row mde">
@@ -128,6 +129,10 @@
 
             <div class="row mde"><label>Documents: (e.g. quick start guides, urls, pdf's etc)</label>
                   <div><textarea name="documents" rows="4" cols="80" data-markdown="true">{{formdata.documents}}</textarea></div>
+            </div>
+
+            <div class="row"><label>Marketing Box: (appears under documents, unstyled)</label>
+                  <div><textarea name="documents" rows="4" cols="80">{{formdata.box}}</textarea></div>
             </div>
 
             <div class="row"><label>MailChimp Signup Form: (modal; e.g. coming soon)</label>

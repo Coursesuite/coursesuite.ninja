@@ -3,7 +3,7 @@
 	<div uk-slider="autoplay: true; autoplay-interval: 7000; pause-on-hover: true">
 	    <div class="uk-position-relative">
 	        <div class="uk-slider-container">
-	            <ul class="uk-slider-items uk-child-width-1-1@s uk-child-width-1-2@m uk-grid-match">
+	            <ul class="uk-slider-items uk-child-width-1-1@s uk-child-width-1-2@m uk-grid-match uk-grid">
 	                {{#each Testimonials}}
 	                <li>
 						<article class="uk-comment">

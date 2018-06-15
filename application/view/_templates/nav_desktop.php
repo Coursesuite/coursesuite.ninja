@@ -91,7 +91,7 @@ if (!is_null($cached_html = NavModel::products_dropdown_get())) {
     <div class='uk-float-right'>
 <?php
 if (Session::userIsLoggedIn()) {
-    if ($this->page() === "products" && isset($this->App) && $this->App->auth_type === '1' ) {
+    if ($this->page() === "products" && isset($this->App) && intval($this->App->auth_type,10) === 1 ) {
         echo "<a class='uk-button uk-button-primary uk-button-small' href='{$this->App->launch}'>launch app</a> ";
     } else if ($this->page() === "products" && !empty($this->Subscriptions)) {
         echo "<a class='uk-button uk-button-primary uk-button-small' href='{$baseurl}launch/{$this->App->app_key}' target='{$this->App->app_key}'>launch app</a> ";
@@ -99,21 +99,20 @@ if (Session::userIsLoggedIn()) {
     echo "<a class='uk-button uk-button-default uk-button-small' href='{$baseurl}me'>my account</a>";
 } else {
     echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle>register / login</a>";
-    // echo "<a class='uk-button uk-button-primary uk-button-small' href='{$baseurl}login'>register / login</a>";
 }
 ?>
     </div>
     <div class='uk-float-left'>
     <ul class='uk-breadcrumb'>
-        <?php foreach ($this->breadcrumb() as $item) {
-            echo "<li>";
-            if ($item['route']===false) {
-                echo "<span>{$item['label']}</span>";
-            } else {
-                echo "<a href='{$baseurl}{$item['route']}'>{$item['label']}</a>";
-            }
-            echo "</li>" . PHP_EOL;
-        } ?>
+<?php foreach ($this->breadcrumb() as $item) {
+    echo "<li>";
+    if ($item['route']===false) {
+        echo "<span>{$item['label']}</span>";
+    } else {
+        echo "<a href='{$baseurl}{$item['route']}'>{$item['label']}</a>";
+    }
+    echo "</li>" . PHP_EOL;
+} ?>
     </ul>
 </div></div></div></nav>
 <?php } ?>

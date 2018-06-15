@@ -57,6 +57,21 @@ body > header {
 	background-color: #030643;
 }
 
+.video-aspect-ratio {
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-bottom: 56.25%;
+}
+
+.video-aspect-ratio iframe {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+}
+
 .cs-close > svg {
 	width: 50px;
 	height: 50px;
@@ -358,10 +373,12 @@ body > header {
 	fill: white;
 }
 
-.cs-price-tab > li {
-	white-space:nowrap;
+.cs-price-tab a {
 }
 
+#toggle-fineprint {
+	padding-bottom: 125px;
+}
 
 
 /* now let the predefined properties propogate / cascade to the purchase frame */
@@ -408,6 +425,10 @@ body > header {
 			padding: @global-gutter;
 		}
 	}
+}
+
+.cs-fineprint {
+	width: 238px;
 }
 
 .cs-footer {
@@ -581,4 +602,9 @@ body.mobile .cs-who-we-are {
 			}
 		}
 	}
+}
+
+.cs-negative-margin-home{
+    margin-top: -56px;
+    margin-bottom: 40px;
 }
