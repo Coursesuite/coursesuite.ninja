@@ -4,7 +4,7 @@
 	    {{#if userIsLoggedIn}}
 	        <a class='uk-button uk-button-default uk-button-small' href='{{$baseurl}}me'>my account</a>
 	    {{else}}
-	        <a class='uk-button uk-button-default uk-button-small uk-visible@s' href='#login-required' uk-toggle>register / login</a>
+	        <a class='uk-button uk-button-default uk-button-small uk-visible@s' href='#login-required' uk-toggle>{{login_label}}</a>
 	    {{/if}}
 	    </div>
 	</div></div>
