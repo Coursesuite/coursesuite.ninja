@@ -1,9 +1,11 @@
 <header class="uk-position-relative">
-    <div class="uk-cover-container cs-nav-height">
-        <video autoplay loop muted playsinline uk-cover>
+    <div class="uk-cover-container cs-nav-height cs-nav-bg">
+        <?php if (0) { ?><video autoplay loop muted playsinline uk-cover>
             <source src="<?php echo $headerVideo; ?>" type="video/mp4">
             <img src="/img/header-preview.jpg">
-        </video>
+        </video><?php } ?>
+        <?php if (0) { ?><img src="/img/header-preview.jpg" uk-cover><?php } ?>
+        <canvas id="zodiac" width="100%" height="118"></canvas>
     </div>
     <nav class="uk-navbar-container uk-navbar-transparent cs-navbar-container uk-position-top uk-light" uk-navbar>
         <div class="uk-navbar-left uk-visible@m">
@@ -13,9 +15,9 @@
         </div>
         <div class="uk-navbar-right">
             <ul class="uk-navbar-nav">
-                <li<?php CurrentMenu($this->page(),"home", "uk-visible@s"); ?>><a href="<?php echo $baseurl; ?>">Home</a></li>
+                <li<?php CurrentMenu($this->page(),"home", "uk-visible@s"); ?>><a href="<?php echo $baseurl; ?>" uk-icon="home"></a></li>
                 <li<?php CurrentMenu($this->page(),"products"); ?>>
-                    <a href="<?php echo $baseurl; ?>products/">Products</a>
+                    <a href="<?php echo $baseurl; ?>products/"><span uk-icon="thumbnails" class='uk-margin-xsmall-right'></span>Products</a>
 <?php
 // do some caching of the rendered html to avoid these db lookups, which are also cached
 if (!is_null($cached_html = NavModel::products_dropdown_get())) {
@@ -29,7 +31,7 @@ if (!is_null($cached_html = NavModel::products_dropdown_get())) {
                             <?php foreach ($sections as $section) { ?>
                             <div>
                                 <ul class="uk-nav uk-dropdown-nav">
-                                    <li class="uk-nav-header"><a href="<?php echo $baseurl; ?>products/<?php echo $section->route; ?>" class="uk-link-reset"><?php echo $section->label; ?></a></li>
+                                    <li class="uk-nav-header"><a href="<?php echo $baseurl; ?>products/<?php echo $section->route; ?>" class="uk-link-reset"><span uk-icon="album" class="uk-margin-small-right"></span><?php echo $section->label; ?></a></li>
                                     <li class="uk-nav-divider"></li>
                                     <?php
                                     foreach (NavModel::products_nav($section->route) as $item) {
@@ -56,25 +58,26 @@ if (!is_null($cached_html = NavModel::products_dropdown_get())) {
 }
 ?>
                 </li>
-                <li<?php CurrentMenu($this->page(),"pricing"); ?>><a href="<?php echo $baseurl; ?>pricing/">Pricing</a></li>
+                <li<?php CurrentMenu($this->page(),"pricing"); ?>><a href="<?php echo $baseurl; ?>pricing/"><span uk-icon="cart" class='uk-margin-xsmall-right'></span>Pricing</a></li>
                 <li<?php CurrentMenu($this->page(),"support"); ?>>
-                    <a href='<?php echo (Session::userIsLoggedIn()) ? "/me/support/" : "#"; ?>'>Support</a>
+                    <a href='<?php echo (Session::userIsLoggedIn()) ? "/me/support/" : "#"; ?>'><span uk-icon="lifesaver" class='uk-margin-xsmall-right'></span>Support</a>
                     <div class="uk-navbar-dropdown" uk-dropdown="offset: -20; delay-show: 200; mode: click, hover; animation: uk-animation-slide-top-small; duration: 200">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
-                            <li><a href="https://help.coursesuite.ninja/">Helpdesk</a></li>
-                            <li><a href="https://guide.coursesuite.ninja/">User Guides</a></li>
-                            <li><a href="https://www.youtube.com/channel/UCxjmLClwzsyhaBshrZ1FYyA">YouTube channel</a></li>
+                            <li><a href="https://help.coursesuite.ninja/" target="_blank">Helpdesk</a></li>
+                            <li><a href="https://guide.coursesuite.ninja/" target="_blank">User Guides</a></li>
+                            <li><a href="https://www.youtube.com/channel/UCxjmLClwzsyhaBshrZ1FYyA" target="_blank">YouTube channel</a></li>
+                            <?php if (Config::get("API_VISIBLE")) { ?><li><a href="/apidoc" target="_blank">API Documentation</a></li><?php } ?>
                         </ul>
                     </div>
                 </li>
-                <li<?php CurrentMenu($this->page(),"blog"); ?>><a href="<?php echo $baseurl; ?>blog">Blog<?php echo $blog_badge; ?></a></li>
+                <li<?php CurrentMenu($this->page(),"blog"); ?>><a href="<?php echo $baseurl; ?>blog"><span uk-icon="comments" class='uk-margin-xsmall-right'></span>Blog<?php echo $blog_badge; ?></a></li>
                 <li<?php CurrentMenu($this->page(),"about,testimonials,services"); ?>>
-                    <a href="#">Company</a>
+                    <a href="#"><span uk-icon="world" class='uk-margin-xsmall-right'></span>Company</a>
                     <div class="uk-navbar-dropdown" uk-dropdown="offset: -20; delay-show: 200; mode: click, hover; animation: uk-animation-slide-top-small; duration: 200">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             <li><a href="<?php echo $baseurl; ?>content/about">About CourseSuite</a></li>
                             <li><a href="<?php echo $baseurl; ?>content/contact">Contact Us</a></li>
-                            <li><a href="https://www.avide.com.au">Avide eLearning</a></li>
+                            <li><a href="https://www.avide.com.au" target="_blank">Avide eLearning</a></li>
                         </ul>
                     </div>
                 </li>
@@ -94,11 +97,13 @@ if (Session::userIsLoggedIn()) {
     if ($this->page() === "products" && isset($this->App) && intval($this->App->auth_type,10) === 1 ) {
         echo "<a class='uk-button uk-button-primary uk-button-small' href='{$this->App->launch}'>launch app</a> ";
     } else if ($this->page() === "products" && !empty($this->Subscriptions)) {
-        echo "<a class='uk-button uk-button-primary uk-button-small' href='{$baseurl}launch/{$this->App->app_key}' target='{$this->App->app_key}'>launch app</a> ";
+        echo "<a class='uk-button uk-button-primary uk-button-small' href='{$baseurl}launch/{$this->App->app_key}' target='{$this->App->app_key}'><span uk-icon='bolt' class='uk-margin-xsmall-right'></span>launch app</a> ";
     }
-    echo "<a class='uk-button uk-button-default uk-button-small' href='{$baseurl}me'>my account</a>";
+    echo "<a class='uk-button uk-button-default uk-button-small' href='{$baseurl}me'><span uk-icon='user' class='uk-margin-xsmall-right'></span>my account</a>";
+} else if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) {
+    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>login here</a>";
 } else {
-    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle>register / login</a>";
+    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>register / login</a>";
 }
 ?>
     </div>

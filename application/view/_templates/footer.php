@@ -58,7 +58,7 @@ if ($this->MobileDetect->isMobile() && !$this->MobileDetect->isTablet()) {
 }
 
 if (isset($this->scripts)) {
-	foreach ($this->scripts as $script) {
+	foreach (array_unique($this->scripts) as $script) {
 		echo "<script type='text/javascript' src='$script'></script>" . PHP_EOL;
 	}
 }

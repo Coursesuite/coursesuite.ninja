@@ -50,11 +50,13 @@ if (empty($body_id)) $body_id = "default";
     <meta property="og:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
     <link rel="shortcut icon" href="/img/coursesuite_logo_discourse_square.png">
     <link rel="apple-touch-icon-precomposed" href="/img/coursesuite_logo_discourse_square.png">
+<?php if (0) { ?>
     <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTUPjIg1_i6t8kCHKm459WxZYgzz_PZwjimrqw.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTURjIg1_i6t8kCHKm45_aZA3gnD_vx3rCs.woff2" as="font" type="font/woff2" crossorigin>
-
+<?php } ?>
     <link rel="dns-prefetch" href="https://document.scormification.ninja/">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
+    <link rel="dns-prefetch" href="https://d1f8f9xcsvx3ha.cloudfront.net">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -93,8 +95,9 @@ if (empty($body_id)) $body_id = "default";
     $blog_badge = "";
     $blog_recent = BlogModel::recent_entry_count();
     if ($blog_recent > 0) {
-        $blog_badge = "<span class='badge'>$blog_recent</span>";
+        $blog_badge = "<span class='cs-blog-badge'>$blog_recent</span>";
     }
+    if (false) {
 ?>
     <!-- Piwik -->
     <script type="text/javascript">
@@ -111,7 +114,22 @@ if (empty($body_id)) $body_id = "default";
       })();
     </script>
     <!-- End Piwik Code -->
+
+<?php
+    }
+    if (Session::userIsLoggedIn()) { ?>
+    <script type="text/javascript">var fscSession = {'paymentContact': {'email': '<?php echo Session::CurrentUsername(); ?>', 'firstName':'Your', 'lastName':'Name'}}</script>
+<?php } ?>
     <script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=58ba5cc8535b950011d4059a&product=inline-share-buttons' async='async'></script>
+    <script
+        id="fsc-api"
+        src="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/0.7.5/fastspring-builder.min.js"
+        type="text/javascript"
+        data-storefront="coursesuite.test.onfastspring.com/popup-coursesuite"
+        data-debug="false"
+        data-popup-closed="fsPopupClosed">
+    </script>
+
     </head>
 <body id="<?php echo $body_id; ?>" class="<?php echo ($is_mobile_browser) ? 'mobile' : 'desktop'; ?>">
 

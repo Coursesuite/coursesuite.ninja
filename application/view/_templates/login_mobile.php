@@ -8,7 +8,11 @@
 	        <img src="<?php echo $baseurl; ?>img/coursesuite-black.svg" class="uk-margin-small-top uk-margin-small-left">
 	        <div class="uk-flex uk-flex-middle" uk-height-viewport>
 	            <div class="uk-padding-small">
+<?php if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) { ?>
+	                <h1>Login here.</h1>
+<?php } else {  ?>
 	                <h1>Register or Login here.</h1>
+<?php } ?>
 					<form method="post" class="uk-form-stacked">
 						<input type="hidden" name="csrf_token" value="<?php echo $this->Registration->csrf_token; ?>">
 						<div class="uk-margin">

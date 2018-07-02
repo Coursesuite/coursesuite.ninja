@@ -29,6 +29,8 @@ class HomeController extends Controller
 
         $model = HomeModel::get_model();
 
+        $model->login_label = Config::get("FASTSPRING_CONTEXTUAL_STORE") ? "login here" : "register / login";
+
         $this->View->page_title = "Elearning software tools to build interactive SCORM courses | CourseSuite";
         $this->View->page_keywords = "elearning software, online learning software, online e-learning software, scorm html5, scorm wrapper, CourseSuite, Course Suite";
         $this->View->page_description = "Ninja Suite by CourseSuite are a simple and powerful set of web-bases authoring apps that allow you to rapidly create interactive HTML5-based SCORM courses. Try free for 7 days.";
@@ -40,7 +42,7 @@ class HomeController extends Controller
         $this->View->Requires("home/subscribe_link");
 
         $this->View->Requires("main.js");
-        $this->View->Requires("https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css");
+        $this->View->Requires(KeyStore::find("mailchimp_stylesheet")->get());
 
         $this->View->renderHandlebars("home/index", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
