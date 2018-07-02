@@ -175,7 +175,7 @@ class AdminController extends Controller
     public function account($user_id) {
 
         $model = $this->model;
-        $model->account = (new AccountModel($user_id))->get_model(true);
+        $model->account = (new AccountModel("id",$user_id))->get_model(true);
         $this->View->renderHandlebars('admin/users/account', $model, "_admin", true);
 
     }
@@ -279,6 +279,19 @@ class AdminController extends Controller
                     "icon" => Request::post("icon", false, FILTER_SANITIZE_STRING),
                 );
                 $model->id = Model::Update("product_bundle", "id", $bundle);
+                $model->method = "index";
+                break;
+
+            case "update-pricing":
+                $models = ProductBundleModel::get_all_models(false);
+                foreach ($models as $pb) {
+                    $key = $pb->product_key;
+                    $payload = FastSpringModel::get("/products/{$key}");
+                    $json = reset($payload->products); // json.products.0.
+                    if ($json->result === "success") {
+                        ProductBundleModel::set_price($pb->id,$json->pricing->price->USD);
+                    }
+                }
                 $model->method = "index";
                 break;
 
@@ -591,21 +604,44 @@ class AdminController extends Controller
         $this->View->renderHandlebars('admin/testimonials/' . $model->method, $model, "_admin", true);
     }
 
-    public function hooks($action = "", $id = 0)
+    public function hooks($action = "list", $id = 0)
     {
         $model = $this->model;
         switch ($action) {
             case "subscribe":
-                $data = Curl::cloudConvertHook("subscribe", Config::get("URL") . "hooks/cloudconvert");
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $headers[] = "Authorization: Bearer " . Config::get("CLOUDCONVERT_API_KEY");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hook");
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, [
+                    "url" => $param,
+                    "event" => "finished",
+                ]);
+                curl_exec($ch);
+                curl_close($ch);
                 break;
 
             case "unsubscribe":
-                $data = Curl::cloudConvertHook("unsubscribe", $id);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $headers[] = "Authorization: Bearer " . Config::get("CLOUDCONVERT_API_KEY");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hook/" . $id);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                $data = curl_exec($ch);
+                curl_close($ch);
                 break;
 
         }
-        $list = Curl::cloudConvertHook("list");
-        $model->list = json_decode($list, true);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $headers[] = "Authorization: Bearer " . Config::get("CLOUDCONVERT_API_KEY");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_URL, "https://api.cloudconvert.com/hooks");
+        $model->list = json_decode(curl_exec($ch),true);
+        curl_close($ch);
         $model->stats = HooksModel::stats();
         $this->View->renderHandlebars('admin/hooks/index', $model, "_admin", true);
     }
@@ -615,6 +651,10 @@ class AdminController extends Controller
         switch ($action) {
             case "update":
                 KeyStore::find("homepage_intro")->put(Request::post("homepage_intro"));
+
+                KeyStore::find("mailchimp_subscribe")->put(Request::post("mailchimp_subscribe"));
+                KeyStore::find("mailchimp_stylesheet")->put(Request::post("mailchimp_stylesheet"));
+
                 KeyStore::find("footer_col1")->put(Request::post("footer_col1"));
                 KeyStore::find("footer_col2")->put(Request::post("footer_col2"));
                 KeyStore::find("footer_col3")->put(Request::post("footer_col3"));
@@ -622,6 +662,7 @@ class AdminController extends Controller
                 KeyStore::find("emailTemplate")->put(Request::post("emailTemplate"));
                 KeyStore::find("customcss")->put(Request::post("customcss"));
                 KeyStore::find("volumelicence")->put(Request::post("volumelicence"));
+                KeyStore::find("apikey_text")->put(Request::post_html("apikey_text"));
                 Redirect::to("admin/storeSettings"); // to ensure it reloads
                 break;
         }
@@ -637,6 +678,10 @@ class AdminController extends Controller
         $model->freetrialdays = KeyStore::find("freeTrialDays")->get(3);
         $model->customcss = KeyStore::find("customcss")->get();
         $model->volumelicence = KeyStore::find("volumelicence")->get("");
+        $model->apikey_text = KeyStore::find("apikey_text")->get();
+
+        $model->mailchimp_subscribe =KeyStore::find("mailchimp_subscribe")->get();
+        $model->mailchimp_stylesheet = KeyStore::find("mailchimp_stylesheet")->get();
 
         $cache = CacheFactory::getFactory()->getCache();
         $cacheItem = $cache->deleteItem("custom_css");
@@ -772,6 +817,69 @@ class AdminController extends Controller
         foreach ($m->properties() as $property) {
             echo $property;var_dump($m->$property);
         }
+    }
+
+    public function blog($method = "index", $entry = 0) {
+        $model = $this->model;
+        $model->method = $method;
+        $model->id = $entry;
+        switch ($method) {
+            case "delete":
+                Model::Destroy("blogentries", "entry_id=:id", [":id"=>$entry]);
+                $model->method = "index";
+                break;
+
+            case "save":
+                $db = new dbRow("blogentries", ["entry_id=:id", [":id"=>$entry]]);
+                $db->title = Request::post("title");
+                $db->slug = Request::post("slug");
+                $db->short_entry = Request::post("short_entry");
+                $db->long_entry = Request::post("long_entry");
+                $db->meta_description = Request::post("meta_description");
+                $db->entry_date = Request::post("entry_date");
+                $db->published = Request::post("published");
+                $db->save();
+
+                $model->formdata = (new BlogModel($entry))->get_model();
+                $model->method = "index";
+                break;
+
+            case "new":
+                $model->formdata = (new BlogModel())->get_model();
+                $model->formdata->entry_date = date_create("now")->format('Y-m-d 00:00:00');
+                $model->method = "edit";
+                break;
+
+            case "edit":
+                $model->formdata = (new BlogModel($entry))->get_model();
+                $model->formdata->entry_date = date_create($model->formdata->entry_date)->format('Y-m-d 00:00:00');
+                break;
+
+        }
+
+        if ($model->method === "index") {
+            $model->index = BlogModel::get_all_models();
+        }
+        $this->View->renderHandlebars('admin/blog/' . $model->method, $model, "_admin", true);
+    }
+
+    public function encoder($type = "view") {
+        $value = Request::post("value");
+        $model = $this->model;
+        $model->enc = "";
+        $model->dec = "";
+        switch ($type) {
+            case "decode":
+                $model->enc = $value;
+                $model->dec = Encryption::decrypt(Text::base64dec($value));
+                break;
+            case "encode":
+                $model->enc = Text::base64enc(Encryption::encrypt($value));
+                $model->dec = $value;
+                break;
+        }
+        $model->method = $type;
+        $this->View->renderHandlebars("admin/encoder", $model, "_admin", true);
     }
 
 }

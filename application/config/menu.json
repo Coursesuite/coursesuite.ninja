@@ -23,6 +23,7 @@
 	],
 	"data_entry": [
 		{"route":"admin/apps","label":"Apps"},
+		{"route":"admin/blog","label":"Blog Entries"},
 		{"route":"admin/crud/blacklist","label":"Blacklist"},
 		{"route":"admin/product_bundles","label":"Product Bundles"},
 		{"route":"admin/static_pages","label":"Static Pages"},
@@ -38,6 +39,7 @@
 		{"route":"admin/purge/model","label":"Purge DB Caches"},
 		{"route":"admin/purge/disk","label":"Purge Disk Caches"},
 		{"route":"admin/purge/html","label":"Purge Page Caches"},
-		{"route":"admin/purge/coursesuite","label":"Purge All Caches"}
+		{"route":"admin/purge/coursesuite","label":"Purge All Caches"},
+		{"route":"admin/encoder","label":"Encoder Utility"}
 	]
 }

@@ -2,6 +2,8 @@
 /*
  * a generic class for inserting and updating database rows and accessing fields
  *
+ * $model = new dbRow(table, [whereClause, *paramArray, *orderBy]);
+ *
  * $model = new dbRow(table, 6);
  * $title = $model->title; // getter
  * $model->version = 6.1; // setter
@@ -11,12 +13,19 @@
  *
  * $model->save(); // if primary key hasn't been set, performs an insert
  * echo $model->PRIMARY_KEY; // 6
+
+ * $model = new dbRow(table, ["x=:x or y=:y", [":x"=>6,":y"=>5"]);
+
+ * $model = new dbRow(table);
+ * $model->title = "foo"; // setter
+
  */
 class dbRow {
     private $_conn;
     private $_model;
     private $_table;
     private $_id_row_name;
+    private $_loaded = false;
 
     // test to see if a string can convert to json
     private static function isJson($str) {
@@ -33,6 +42,7 @@ class dbRow {
         $this->_table = $table;
         $this->_conn = DatabaseFactory::getFactory()->getConnection();
 
+        // should push this to a function you can run across all tables, once
         $query = $this->_conn->query("DESCRIBE $table");
         $cache = new CachedPDOStatement($query);
         foreach ($cache as $row) {
@@ -64,20 +74,35 @@ class dbRow {
         $query->closeCursor();
 
         if (!is_null($keyValue)) {
-            $query = $this->_conn->prepare("SELECT * FROM $table WHERE `{$this->_id_row_name}` = :ROWID LIMIT 1");
-            $query->execute([":ROWID" => $keyValue]);
+            if (is_array($keyValue)) {
+                list($where, $params, $order) = array_merge($keyValue, [null,null,null]);
+                $query = $this->_conn->prepare("SELECT * FROM $table WHERE {$where} {$order} LIMIT 1");
+                $query->execute($params);
+            } else {
+                $query = $this->_conn->prepare("SELECT * FROM $table WHERE `{$this->_id_row_name}` = :ROWID LIMIT 1");
+                $query->execute([":ROWID" => $keyValue]);
+            }
             $record = $query->fetch(PDO::FETCH_ASSOC);
-            foreach ($record as $key => $value) {
-                $this->_model[$key]["value"] = $value;
-                if (in_array($this->_model[$key]["type"],["string","text"])) {
-                    if (self::isJson($value)) {
-                        $this->_model[$key]["format"] = "json";
-                    } else if (self::isSerial($value)) {
-                        $this->_model[$key]["format"] = "serial";
+            if (!empty($record)) {
+                $this->_loaded = true;
+                foreach ($record as $key => $value) {
+                    $this->_model[$key]["value"] = $value;
+                    if (in_array($this->_model[$key]["type"],["string","text"])) {
+                        if (self::isJson($value)) {
+                            $this->_model[$key]["format"] = "json";
+                        } else if (self::isSerial($value)) {
+                            $this->_model[$key]["format"] = "serial";
+                        }
                     }
                 }
             }
         }
+        return $this;
+    }
+
+    // was this model loaded from the database?
+    public function loaded() {
+        return $this->_loaded;
     }
 
     // magic method
@@ -108,7 +133,7 @@ class dbRow {
         }
 
         // convert booleans to a number if they are stored in a tinyint, which we internally call a boolint
-        if (is_bool($value) && $this->_data[$property]["type"] === "boolint") {
+        if (is_bool($value) && $this->_model[$property]["type"] === "boolint") {
             $value = ($value===true) ? 1 : 0;
         }
 
@@ -191,9 +216,36 @@ class dbRow {
             $param = sprintf(':%s', $key);
             $fields[] = $field;
             $params[] = $param;
-            $values[$param] = $properties["value"];
+            $value = $properties["value"];
+
+            // update unset values with their default where appropriate
+            if (is_null($value) && !$properties["nullable"] && $key!==$this->_id_row_name) {
+                switch ($properties["type"]) {
+                    case "float":
+                        $value = floatval($properties["default"]);
+                        break;
+                    case "int":
+                        $value = intval($properties["default"],10);
+                        break;
+                    case "boolint":
+                        $value = (intval($properties["default"],10)===1) ? 1 : 0;
+                        break;
+                    case "timestamp":
+                        if (is_null($properties["default"]) || empty($properties["default"])) $value = time();
+                        break;
+                    case "datetime":
+                    case "date":
+                        $value = new DateTime($properties["default"]); // return date("r", strtotime($result, mktime(0, 0, 0)));
+                        break;
+                    default:
+                        $value = $properties["default"];
+                }
+                // echo "\nHad to set default of $value on $key of type " . $properties["type"];
+            }
+            $values[$param] = $value;
             $pairs[] = sprintf('%s = %s', $field, $param);
         }
+
         // if the keyValue is zero or empty, treat this as an insert, otherwise an update
         if (($this->_model[$this->_id_row_name]["type"] === "int" && $keyValue < 1) || ($this->_model[$this->_id_row_name]["type"] !== "int" && empty($keyValue))) {
             $sql = "INSERT INTO {$this->_table} (" . implode(', ', $fields) . ") VALUES (" . implode(', ',$params) . ")";
@@ -212,6 +264,14 @@ class dbRow {
 
         // return the primary key value
         return $keyValue;
+    }
+
+    // get the view model (key => typed-value)
+    public function view() {
+        foreach (array_keys($this->_model) as $key) {
+            $results[$key] = $this->$key;
+        }
+        return $results;
     }
 
 }

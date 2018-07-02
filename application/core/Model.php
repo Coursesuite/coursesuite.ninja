@@ -125,7 +125,7 @@ class Model
      * @param data_model array - associative array of the columns you are updating (must include id column)
      * @return id value
      */
-    public static function Update($table, $idrow_name, $data_model, $raw = false)
+    public static function Update($table, $idrow_name, &$data_model, $raw = false)
     {
         $database = DatabaseFactory::getFactory()->getConnection();
 
@@ -196,6 +196,13 @@ class Model
             $query = $database->prepare($sql);
             $query->execute($values);
             $idvalue = $database->lastInsertId();
+
+            // so subsequent uses of the model are up to date; model is passed byref, but it might be a stdClass or an array because of bad coding
+            //  if (is_array($data_model)) {
+            //     $data_model[$idrow_name] = ($raw === false) ? abs(intval($idvalue, 10)) : $idvalue;
+            // } else {
+            $data_model->$idrow_name = ($raw === false) ? abs(intval($idvalue, 10)) : $idvalue ;
+            // }
         } else {
             $sql = "UPDATE $table SET " . implode(', ', $pairs) . " WHERE `$idrow_name` = :ROWID LIMIT 1";
             $query = $database->prepare($sql);
@@ -245,7 +252,8 @@ class Model
     final public static function ReadColumn($table, $column, $where = "", $params = array(), $fetchOne = true, $order = "") {
         $database = DatabaseFactory::getFactory()->getConnection();
         if ($order > "") $order = "ORDER BY $order";
-        $query = $database->prepare("SELECT $column FROM $table WHERE $where $order");
+        if (!empty($where)) $where = "WHERE {$where}";
+        $query = $database->prepare("SELECT {$column} FROM {$table} {$where} {$order}");
         $query->execute($params);
         return ($fetchOne === true) ? $query->fetchColumn() : $query->fetchAll(PDO::FETCH_COLUMN);
     }

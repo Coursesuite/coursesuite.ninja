@@ -22,63 +22,12 @@ class BlogController extends Controller
 		} else {
 				$this->View->page_title = $model->title . " : CourseSuite Blog";
 		}
-		// admins can edit blog posts
-		// if (Session::userIsAdmin()) {
-		// 	switch ($action) {
-		// 		case "create":
-		// 			$blog->make();
-		// 			$model = $blog->get_model();
-		// 			$model["show_editor"] = true;
-		// 			break;
-
-		// 		case "edit":
-		// 			$model["show_editor"] = true;
-		// 			break;
-
-		// 		case "save":
-		// 			if (Csrf::isTokenValid()) {
-		// 				if ($entry === 0) {
-		// 					$blog->make();
-		// 					$model = $blog->get_model();
-		// 					unset($model["entry_date"]);
-		// 				}
-		// 				$model["title"] = Request::post("title");
-		// 				$model["short_entry"] = Request::post("short_entry");
-		// 				$model["long_entry"] = Request::post("long_entry");
-		// 				$blog->set_model($model);
-		// 				$entry = $blog->save();
-		// 			}
-		// 			Redirect::to("blog/$entry");
-		// 			break;
-
-		// 		case "publish":
-		// 			if (Csrf::isTokenValid()) {
-		// 				$model["published"] = 1;
-		// 				$blog->set_model($model);
-		// 				$blog->save();
-		// 			}
-		// 			Redirect::to("blog/$entry");
-		// 			break;
-		// 	}
-
-		// 	// only extend the model after changes!
-		// 	$model["csrf_token"] = Csrf::makeToken();
-		// 	$model["editable"] = true;
-
-		// 	$this->View->Requires("simplemde/simplemde.min.css");
-		// 	$this->View->Requires("simplemde/simplemde.min.js");
-		// 	$this->View->Requires("Sortable.min.js");
-		// 	$this->View->Requires("inline-attachment/inline-attachment.js");
-		// 	$this->View->Requires("inline-attachment/codemirror.inline-attachment.js");
-
-		// }
 
 		$model->Pagination = array(
 			"page" => $page_id,
 			"total" => BlogModel::entry_count(),
 			"size" => 10
 		);
-
 
 		$this->View->Requires("Text::Paginator");
 		$this->View->Requires("https://coursesuite-ninja.disqus.com/count.js");

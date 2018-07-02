@@ -117,4 +117,13 @@ class BlogModel extends Model
 		return parent::Exists(self::TABLE_NAME, "slug=:slug", [":slug" => $slug]);
 	}
 
+    public static function get_all_models() {
+    	$rows = Model::ReadColumn(self::TABLE_NAME, self::ID_ROW_NAME, "", [], false);
+        $results = [];
+    	foreach ($rows as $id) {
+			$results[] = (new dbRow(self::TABLE_NAME, $id))->view();
+    	}
+        return $results;
+    }
+
 }
