@@ -2,42 +2,33 @@
 nbproject/private/
 
 public/img/thumb/*
-public/js/admin.*.js
-public/js/main.*.js
-public/css/admin*.css
-public/css/compiled*.*
-vendor/*.*
-vendor/*
+vendor/**
 public/files/*
 curl.php
 debug.php
 untitled.php
 
-./public/img/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].*
+public/img/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].*
+*_thumb[0-9][0-9][0-9].*
 
-/public/css/admin.*.css
-/public/css/compiled.*.css
-/public/js/admin.*.js
-/public/js/main.*.js
+public/css/admin.*.css
+public/css/compiled.*.css
+public/js/admin.*.js
+public/js/main.*.js
 
 precompiled/
 public/avatars/
-public/css/mycoursesuite.zip
-public/error_log
-public/idx-render.php
-publix/info.php
+public/*.zip
 
 # don't commit all the dependencies fetched via Composer
 # /vendor/
 
 application/_installation/
 application/_installation/
-application/config/config.development.php
-application/config/config.production.php
-public/img/7fe7eece18a84e5049d95e97fce57026.jpg
-public/img/9d96976d94cd98b2086dce1cec57a7a1.jpg
+
 public/apidoc/api_data.js
 public/apidoc/api_data.json
 public/apidoc/api_project.js
 public/apidoc/api_project.json
+
 testignore.sh
