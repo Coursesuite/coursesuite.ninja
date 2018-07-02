@@ -34,11 +34,16 @@ class MailChimp
 
     protected function call($route, $method = 'GET', $json = null)
     {
-        if (is_null($json)) {
-            return Curl::mailChimpCurl($this->baseUrl . $route, $this->apiKey, $method, true);
-        } else {
-            return Curl::mailChimpCurl($this->baseUrl . $route, $this->apiKey, $method, true, $json);
-        }
+        $ch = curl_init($this->baseUrl . $route);
+        curl_setopt($ch, CURLOPT_USERPWD, 'user:' . $this->apiKey);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if (!is_null($json)) {curl_setopt($ch, CURLOPT_POSTFIELDS, $json);}
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
     }
 
     public function subscribe()
