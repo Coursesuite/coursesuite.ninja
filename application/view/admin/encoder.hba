@@ -1,0 +1,31 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+
+		<h2>Encoder and Decoder for CS Encryption Methods</h2>
+
+	<h3>Decoder</h3>
+	<form method="post" action= "/admin/encoder/decode">
+		<div class="row"><label for="value">Value to decode:</label>
+			<div><textarea id="value" name="value" rows="10" cols="80">{{enc}}</textarea></div>
+		</div>
+		<div class="row"><label />
+			<div><button>Decode</button></div>
+		</div>
+	</form>
+
+	<h3>Encoder</h3>
+	<form method="post" action= "/admin/encoder/encode">
+		<div class="row"><label for="value">Value to encode:</label>
+			<div><textarea id="value" name="value" rows="10" cols="80">{{dec}}</textarea></div>
+		</div>
+		<div class="row"><label />
+			<div><button>Encode</button></div>
+		</div>
+	</form>
+
+	</article>
+</div>

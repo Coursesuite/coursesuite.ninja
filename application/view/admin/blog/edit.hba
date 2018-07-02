@@ -1,0 +1,43 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Editing blog entry `{{formdata.slug}}`</h3>
+		</header>
+		<form method="post" action="/admin/blog/save/{{id}}/">
+		{{#with formdata}}
+			<div class="row"><label for="slug">slug:</label>
+				<div><input type="text" id="slug" name="slug" value="{{slug}}" pattern="[a-z0-9-]*"></div>
+			</div>
+			<div class="row"><label for="title">Title:</label>
+				<div><input type="text" id="title" name="title" value="{{title}}"></div>
+			</div>
+			<div class="row"><label for="entry_date">Date published: (YYYY-MM-DD HH:MM:SS, 24-hour, leading zeros)</label>
+				<div><input type="text" id="entry_date" name="entry_date" value="{{entry_date}}"></div>
+			</div>
+			<div class="row mde"><label for="short_entry">Short Entry:</label>
+				<div><textarea id="short_entry" name="short_entry" rows="10" cols="80" data-markdown="true">{{short_entry}}</textarea>
+					<br><small>for 'before the link' content.</small></div>
+			</div>
+			<div class="row mde"><label for="long_entry">Long Entry:</label>
+				<div><textarea id="long_entry" name="long_entry" rows="10" cols="80" data-markdown="true">{{long_entry}}</textarea>
+					</div>
+			</div>
+            <div class="row"><label>Published</label>
+            	<div><label><input type="radio" name="published" value="0"{{#equals published "0"}} checked{{else}}{{#mt published}} checked{{/mt}}{{/equals}}>No</label>
+            		<label><input type="radio" name="published" value="1"{{#equals published "1"}} checked{{/equals}}>Yes</label> </div>
+            </div>
+            <div class="row"><label for="meta_description">Meta Description</label>
+				<div><input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
+
+            </div>
+			<div class="row"><label />
+				<div><button>Save</button> <a href="{{@root.baseurl}}admin/blog/" class='button'>Cancel</a></div>
+			</div>
+		{{/with}}
+		</form>
+	</article>
+</div>

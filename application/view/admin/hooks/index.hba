@@ -2,23 +2,41 @@
 	<aside>
 		{{> menubar}}
 	</aside>
-
 	<article>
 		<header>
 			<h2>hooks</h2>
+			<p>Hooks are calls TO coursesuite from external services. They are coded manually.
 		</header>
 
-		<h3>Cloud Convert</h3>
+		<fieldset><legend><h3>Cloud Convert</h3></legend>
+			<p>You can turn the listener for CloudConvert statistics on or off by subscribing or unsubscribing. The stats are cached in this database.</p>
 		{{#if list}}
-		<p><a href="{{baseurl}}admin/hooks/unsubscribe/{{list.0.id}}">Unsubscribe</a>
+			<p><a href="{{baseurl}}admin/hooks/unsubscribe/{{list.0.id}}">Unsubscribe</a></p>
 		{{else}}
-		<p><a href="{{baseurl}}admin/hooks/subscribe/">Subscribe</a>
+			<p><a href="{{baseurl}}admin/hooks/subscribe/">Subscribe</a></p>
 		{{/if}}
+		<ul>
+			<li>Average conversion size: <b>{{stats.averagesize}}</b></li>
+			<li>Average conversion time: <b>{{stats.averagetime}}</b></li>
+			<li>Average minutes consumed: <b>{{stats.averageminutes}}</b></li>
+			<li>Extensions converted: {{#each stats.extensions}}<b>{{extension}}</b> - {{./count}}, {{/each}}</li>
+		</ul>
+		</fieldset>
 
-		<p>Average conversion size: <b>{{stats.averagesize}}</b></p>
-		<p>Average conversion time: <b>{{stats.averagetime}}</b></p>
-		<p>Average minutes consumed: <b>{{stats.averageminutes}}</b></p>
-		<p>Extensions converted: {{#each stats.extensions}}<b>{{extension}}</b> - {{./count}}, {{/each}}
+		<fieldset><legend><h3>BitBucket</h3></legend>
+			<p>BitBucket commit notifications are pushed to this server. This can trigger a git-pull of the relevant branch which effectively updates the codebase of this website.</p>
+			<form method="post" action="{{baseurl}}admin/hooks/bitbucket">
+	            <div class="row"><label>Git-Pull on Commit to Branch:</label>
+            	<div><label><input type="radio" name="branch" value=""{{#equals bitbucket.branch ""}} checked{{/equals}}>Disabled</label>
+            		<label><input type="radio" name="branch" value="DEVELOPMENT"{{#equals bitbucket.branch "DEVELOPMENT"}} checked{{/equals}}>Development</label>
+            		<label><input type="radio" name="branch" value="PRODUCTION"{{#equals bitbucket.branch "PRODUCTION"}} checked{{/equals}}>Production</label> </div>
+	            </div>
+	            <div class="row"><label />
+	            	<div><button>Save</button></div>
+	           	</div>
+			</form>
+
+		</fieldset>
 
 </article>
 </div>

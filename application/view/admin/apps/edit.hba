@@ -131,8 +131,8 @@
                   <div><textarea name="documents" rows="4" cols="80" data-markdown="true">{{formdata.documents}}</textarea></div>
             </div>
 
-            <div class="row"><label>Marketing Box: (appears under documents, unstyled)</label>
-                  <div><textarea name="documents" rows="4" cols="80">{{formdata.box}}</textarea></div>
+            <div class="row"><label>Marketing Box: (appears under documents, Markdown is NOT supported here)</label>
+                  <div><textarea name="box" rows="4" cols="80">{{formdata.box}}</textarea></div>
             </div>
 
             <div class="row"><label>MailChimp Signup Form: (modal; e.g. coming soon)</label>

@@ -7,20 +7,23 @@
 		<header>
 			<h2>Product Bundles</h2>
 			<p>A product contains one or more apps, has a price and a store page. Users subscribe to a product bundle.</p>
+			<p><a href="{{@root.baseurl}}admin/product_bundles/update-pricing/">Pull Latest Pricing from FastSpring</a></p>
 		</header>
 		<table>
-			<thead><tr><th colspan="2">Key</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr></thead>
+			<thead><tr><th colspan="2">Key</th><th>Price</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr></thead>
 			<tbody>
 			{{#each index}}
 			<tr>
 				<td>{{#equals active "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
 				<td>{{product_key}}</td>
+				<td>${{price}}</td>
 				<td><a href="{{@root.baseurl}}admin/product_bundles/edit/{{id}}">Edit</a></td>
 				<td><a href="{{@root.baseurl}}admin/product_bundles/delete/{{id}}">Delete</a></td>
 			</tr>
 			{{/each}}
 		</tbody>
-		<tfoot><tr><td><i class='fa fa-plus-circle'></i></td><td colspan="5"><a href="{{@root.baseurl}}admin/product_bundles/new/0">Add a new Product Bundle</a></td></tr></tfoot></table>
+		<tfoot><tr><td><i class='fa fa-plus-circle'></i></td><td colspan="5"><a href="{{@root.baseurl}}admin/product_bundles/new/0">Add a new Product Bundle</a></td></tr></tfoot>
+		</table>
 
 	</article>
 </div>
