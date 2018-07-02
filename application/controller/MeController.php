@@ -6,6 +6,8 @@
  */
 class MeController extends Controller
 {
+
+	private $_base_model;
 	/**
 	 * Construct this object by extending the basic Controller class.
 	 */
@@ -13,6 +15,9 @@ class MeController extends Controller
 	{
 		parent::__construct(true,$action_name);
 		Auth::checkAuthentication();
+		$this->_base_model = [
+			"api_visible" => Config::get("API_VISIBLE")
+		];
 	}
 
 	// internal function for sending the email change verification email
@@ -40,14 +45,41 @@ class MeController extends Controller
 
 	/* --------------------------- MENUBAR ITEMS -------------------------------- */
 	public function orders ($action = "view", $order = "") {
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
+		$feedback = "";
+		$feedback_level = MESSAGE_LEVEL_HAPPY;
+		switch ($action) {
+			case "cancel":
+				if (empty($order)) break;
+				// value is encrypted for safety
+				$fsSubscriptionId = Encryption::decrypt(Text::base64dec($order));
+				if (!empty($fsSubscriptionId)) {
+					$results = FastSpringModel::delete("/subscriptions/{$fsSubscriptionId}");
+					foreach ($results->subscriptions as $item) {
+						if ($item->subscription === $fsSubscriptionId) {
+							if ($item->result === "success") {
+								$feedback = "Order cancelation requested, may take a few minutes to apply.";
+							} else if ($item->result === "error") {
+								$feedback = $item->error->subscription;
+								$feedback_level = MESSAGE_LEVEL_SAD;
+							}
+						}
+					}
+				}
+				$action = "view";
+				break;
+		}
 
-		$model = array();
+		if (!empty($feedback)) {
+			MessageModel::notify_user($feedback, $feedback_level);
+		}
+
+		$model = $this->_base_model;
 		$model["account"] = $account->get_model();
 		$model["csrf_token"] = Csrf::makeToken();
 		$model["selection"] = "orders";
 		$model["subscriptions"] = SubscriptionModel::get_user_subscription_history(Session::CurrentUserId());
-		if ($order > "") $model["orderhistory"] = FastspringModel::get_order_history($order);
+		// if ($order > "") $model["orderhistory"] = FastspringModel::get_order_history($order);
 
 		$this->View->Requires("me/menubar");
 		$this->View->Requires("account.menu.js");
@@ -55,9 +87,9 @@ class MeController extends Controller
 	}
 
 	public function account () {
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
 
-		$model = array();
+		$model = $this->_base_model;
 		$model["account"] = $account->get_model();
 		$model["logons"] = LoginModel::current_logins_model(Session::CurrentUserId());
 		$model["csrf_token"] = Csrf::makeToken();
@@ -69,10 +101,10 @@ class MeController extends Controller
 	}
 
 	public function subscriptions () {
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
 		$mc = new MailChimp(Session::get("user_email"));
 
-		$model = array();
+		$model = $this->_base_model;
 		$model["account"] = $account->get_model();
 		$model["csrf_token"] = Csrf::makeToken();
 		$model["selection"] = "subscriptions";
@@ -84,7 +116,10 @@ class MeController extends Controller
 	}
 
 	public function apikeys ($action = "view", $action_id = 0, ...$params) {
-		$model = array();
+
+		if ($this->_base_model["api_visible"] !== true) Redirect::to("/404");
+
+		$model = $this->_base_model;
 		$action_id_raw = $action_id;
 		$action_id = filter_var(intval($action_id, 10), FILTER_VALIDATE_INT, array('options' => array('min-range' => -1, 'max_range' => PHP_INT_MAX)));
 
@@ -103,9 +138,11 @@ class MeController extends Controller
 			"volumelicence" => Keystore::find("volumelicence")->get("")
 		);
 
-		$this->View->Requires("me/apikeys/features");
-		$this->View->Requires("me/apikeys/addSubAccount");
-		$this->View->Requires("me/apikeys/editSubAccount");
+		$template = "view";
+
+		//$this->View->Requires("me/apikeys/features");
+		//$this->View->Requires("me/apikeys/addSubAccount");
+		//$this->View->Requires("me/apikeys/editSubAccount");
 
 		if (AccountModel::validate_action($action, $action_id, $action_id_raw, $this)) {
 			switch ($action) {
@@ -157,12 +194,14 @@ class MeController extends Controller
 
 				case "edit":
 					$model["sub_heading"] = "Edit sub-account";
-					$account = new AccountModel($action_id);
+					$account = new AccountModel("id",$action_id);
 					$model["account"] = $account->get_model();
+					$template = "SubAccount-edit";
 					break;
 
 				case "add":
 					$model["sub_heading"] = "Add sub-account";
+					$template = "SubAccount-add";
 					break;
 
 				case "features":
@@ -201,6 +240,18 @@ class MeController extends Controller
 							$model["white_label"] = $wm->get_model();
 							break;
 
+						case "publishurl":
+							$wm = new WhiteLabelModel("get", array("subscription_id" => $subscription_id, "app_key" => $app_key));
+							$wmodel = $wm->get_model();
+							$publishToUrl = Request::post("url", false, FILTER_VALIDATE_URL);
+							if ($method === "save") {
+								$wmodel->publish_to = is_bool($publishToUrl) ? null : $publishToUrl;
+								$wm->set_model($wmodel);
+								$wm->save();
+							}
+							$model["white_label"] = $wm->get_model();
+							break;
+
 					}
 					$apiInfo = AppModel::public_info_model($action_id_raw, true);
 					$apiMods = ApiModel::get_api_mods(); // get default settings, apiInfo->app->mods might override it
@@ -212,13 +263,15 @@ class MeController extends Controller
 						}
 					}
 					$model["api_info"] = $apiInfo;
+					$template = "features";
 					break;
 
 				case "view":
-					$account = new AccountModel(Session::CurrentUserId());
+					$account = new AccountModel("id",Session::CurrentUserId());
 					$model["account"] = $account->get_model();
 					$model["apikeys"] = $account->get_apikeys();
 					$model["dropdown"] = ProductBundleModel::get_store_dropdown_model();
+					$model["apikey_text"] = KeyStore::find("apikey_text")->get();
 					// $model["trial_dropdown"] = array(array(
 					// 	"label" => Text::get("TRIAL_API_LABEL"),
 					// 	"value" => Config::get("URL") . "me/apikeys/trial/"
@@ -227,8 +280,9 @@ class MeController extends Controller
 					break;
 			}
 		}
+		$this->View->Requires("apikeys.js");
 		$this->View->Requires("me/menubar");
-		$this->View->renderHandlebars("me/apikeys", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+		$this->View->renderHandlebars("me/apikeys/{$template}", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 	}
 
 	public function support () {
@@ -257,7 +311,7 @@ class MeController extends Controller
 	{
 
 		// get the view model (which is the account)
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
 		$model = $account->get_model();
 
 		// $model->sheets = ["uikit/uikit.min.css"];
@@ -306,7 +360,7 @@ class MeController extends Controller
 		}
 
 		// the user model
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
 		$model = $account->get_model();
 
 		/* ---------------------- email ---------------------- */
@@ -378,7 +432,7 @@ class MeController extends Controller
 	// send the change verification email again
 	public function reverify()
 	{
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
 		$model = $account->get_model();
 		self::sendChangeVerificationEmail($model);
 		MessageModel::notify_user(Text::get("FEEDBACK_USER_EMAIL_CHANGE_VERIFICATION"));
@@ -388,7 +442,7 @@ class MeController extends Controller
 	// cancel an email change
 	public function expunge()
 	{
-		$account = new AccountModel(Session::CurrentUserId());
+		$account = new AccountModel("id",Session::CurrentUserId());
 		$model = $account->get_model();
 		$model["user_email_update"] = NULL;
 		$model["change_verification_hash"] = NULL;
