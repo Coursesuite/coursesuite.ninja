@@ -7,15 +7,22 @@
 // Global variables
 // ========================================================================
 
+@margin-xsmall-margin:                                  (@global-small-margin / 2);
+
 //
 // Typography
 //
+
+@base-blockquote-font-size: inherit;
+@base-blockquote-line-height: inherit;
+@base-blockquote-font-style: inherit;
 
 //
 // Colors
 //
 
 @global-secondary-background: #547d2c;
+em { color: inherit; }
 
 //
 // Backgrounds
@@ -28,6 +35,10 @@
 //
 // Spacings
 //
+
+.hook-base-blockquote {
+	.uk-margin-large-left;
+}
 
 //
 // Controls
