@@ -1,0 +1,8 @@
+<!-- Begin CourseSuite API include -->
+<script id="csn-api"
+    src="{{baseurl}}api/widget/{{version}}/{{publickey}}"
+    type="text/javascript"
+    data-options="{{{json options}}}">
+</script>
+<div id="csn-app"><noscript>Javascript must be enabled for this component to work</noscript></div>
+<!-- End CourseSuite API include -->

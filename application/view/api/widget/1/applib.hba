@@ -1,0 +1,50 @@
+(function() {
+
+  ['localStorage', 'sessionStorage'].forEach(function (fn) {
+    if (!(fn in window)) {
+      window[fn] = {
+        _data       : {},
+        hasOwnProperty: function(name) { return this._data.hasOwnProperty(name); },
+        setItem     : function(id, val) { return this._data[id] = String(val); },
+        getItem     : function(id) { return this._data.hasOwnProperty(id) ? this._data[id] : undefined; },
+        removeItem  : function(id) { return delete this._data[id]; },
+        clear       : function() { return this._data = {}; }
+      };
+    }
+  });
+
+  try {
+    //enabling or disabling debug mode
+    if (window.location.hash) {
+      var action = window.location.hash.substring(1);
+      try {
+        if (action == 'debug-on') {
+          window.localStorage.setItem('debug', true);
+        } else if (action == 'debug-off') {
+          window.localStorage.removeItem('debug');
+        }
+      } catch(e) { /* likely private browsing */ }
+    }
+
+    window.logMessage = window.debug = function _debug() {
+      try {
+        if (window.localStorage.getItem('debug')) {
+          console.log.apply(console, arguments);
+        }
+      } catch(e) { /* likely private browsing */ }
+    };
+  } catch (ignoreErrorsWhileDebugging) { }
+
+  window.addEventListener('DOMContentLoaded', _load, false);
+
+  function _load() {
+    var app = document.querySelector("#csn-app"),
+        publickey = "{{publickey}}",
+        subscription = {{{subscription}}};
+
+    if (app) app.innerHTML = "<fieldset><legend>CourseSuite Widget</legend><p>It Lives! But it doesn't do much yet.</p></fieldset>";
+    console.dir(subscription);
+  }
+
+
+})();
