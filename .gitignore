@@ -1,6 +1,6 @@
-# this is just a demo .gitignore file, put all the files and folders you want to be ignored by git inside
-# if you work with NetBeans: ignore NetBeans project files
-/nbproject/private/
+
+nbproject/private/
+
 public/img/thumb/*
 public/js/admin.*.js
 public/js/main.*.js
@@ -13,23 +13,24 @@ curl.php
 debug.php
 untitled.php
 
+./public/img/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].*
+
 /public/css/admin.*.css
 /public/css/compiled.*.css
 /public/js/admin.*.js
 /public/js/main.*.js
 
-/public/img/apps/
-/precompiled/
-/public/avatars/
-/public/css/mycoursesuite.zip
-/public/error_log
-/public/idx-render.php
-/publix/info.php
+precompiled/
+public/avatars/
+public/css/mycoursesuite.zip
+public/error_log
+public/idx-render.php
+publix/info.php
 
 # don't commit all the dependencies fetched via Composer
 # /vendor/
 
-/application/_installation/
+application/_installation/
 application/_installation/
 application/config/config.development.php
 application/config/config.production.php
@@ -39,3 +40,4 @@ public/apidoc/api_data.js
 public/apidoc/api_data.json
 public/apidoc/api_project.js
 public/apidoc/api_project.json
+testignore.sh
