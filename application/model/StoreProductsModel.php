@@ -25,6 +25,7 @@ class StoreProductsModel
 
 		$model = new stdClass();
 		// $model->Feedback = new stdClass();
+		$model->ContextualStore = Config::get("FASTSPRING_CONTEXTUAL_STORE");
 		$user_email_address = "";
 
 		// don't process certain actions if the user is already logged on (got here via link, back, email, etc)
@@ -85,7 +86,16 @@ class StoreProductsModel
 		//$app->files = json_decode($app->files);
 
 		$model->App = $app;
-		$model->Bundles = (new ProductBundleModel("app_id", $app->app_id))->get_model(true);;
+
+		// bundles return the whole model including active results (no filter on constructor), so ...
+		$pb = (new ProductBundleModel("app_id", $app->app_id))->get_model(true);
+		if (!empty($pb)) {
+			$pb = array_filter($pb, function($v) {
+				if ($v->active !== "1") return false;
+				return true;
+			});
+		}
+		$model->Bundles = $pb;
 
 		$model->IsLoggedIn = Session::userIsLoggedIn();
 		$model->PreloadedEmail = $user_email_address;

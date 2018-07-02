@@ -33,7 +33,7 @@
 			<div class='uk-width-3-5@m'>
 				{{{htmlify content}}}
 			</div>
-			<div class='uk-width-2-5@m'>
+			<div class='uk-width-2-5@m' id='app-info-panels'>
 
 				{{#if @root/Subscriptions}}
 				<div class='uk-panel uk-panel-default cs-background-launch uk-light uk-border-rounded uk-box-shadow-medium uk-padding-small uk-margin-bottom'>
@@ -62,20 +62,34 @@
 						{{#unless @last}}<li class="uk-disabled uk-text-center uk-flex-1 uk-visible@l"><a>OR</a></li>{{/unless}}
 						{{/each}}
 					</ul>
+
 					<ul class="uk-switcher uk-margin-remove">
 						{{#each @root/Bundles}}
 						<li>
 							<div class="cs-bundle-description">
+							{{#hasmorethan Apps 1}}
+							<div class="uk-card uk-card-body uk-float-right uk-margin-small uk-box-shadow-medium uk-card-default uk-card-small uk-border-circle uk-text-center">
+								${{price}}<br><small>USD</small>
+							</div>
+							{{/hasmorethan}}
 							{{{htmlify description}}}
 
 							{{#hasmorethan Apps 1}}<ul>
 							{{#each Apps}}
-							<li><a href="{{url}}">{{name}}</a></li>
+							<li><a href="/home/{{app_key}}">{{name}}</a></li>
 							{{/each}}</ul>
 							{{/hasmorethan}}
 							</div>
 
 							<p class='uk-text-right'>
+							{{#if @root.ContextualStore}}
+								{{#equals @root.App.active 3}}
+								<a href="#" data-fsc-item-path="{{product_key}}" data-fsc-item-path-value="{{product_key}}" data-fsc-action="Reset,Add,Checkout" class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - <span data-fsc-item-path="{{product_key}}" data-fsc-item-pricetotal></span></a>
+								{{else}}
+								{{counter_add "comingsoon"}}
+								<a class='uk-button uk-button-primary ul-button-large' href='#signup-form' uk-toggle><span uk-icon='info' class='uk-margin-small-right'></span> Register Interest!</a>
+								{{/equals}}
+							{{else}}
 								{{#equals @root.App.active 3}}
 									{{#if @root/IsLoggedIn}}
 									<a href='{{store_url}}{{@root/FastspringParams}}' class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now - ${{price}}</a>
@@ -86,6 +100,7 @@
 									{{counter_add "comingsoon"}}
 									<a class='uk-button uk-button-primary ul-button-large' href='#signup-form' uk-toggle><span uk-icon='info' class='uk-margin-small-right'></span> Coming Soon!</a>
 								{{/equals}}
+							{{/if}}
 							</p>
 						</li>
 						{{#unless @last}}<li></li>{{/unless}}

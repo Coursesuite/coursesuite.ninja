@@ -3,8 +3,8 @@
 
 		<div class="cs-colour-aquasqueeze uk-text-center uk-padding uk-margin-small-bottom">
 		<h1>Access to our apps requires a subscription.</h1>
-		<p class='uk-text-lead'>(But the first 7-days after purchase are free on our Direct Access apps. )</p>
-		<p>Your ongoing payments help us continuously refine our apps, and develop new ones.</p>
+		<p class='uk-text-lead'>(But you can get a 7-day free trial to all our apps by accessing the <b>Popular Apps Bundle</b>)</p>
+		<p>Your ongoing payments help us continuously refine our apps, and develop new ones. Prices are shown in USD.</p>
 		</div>
 
 		<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
@@ -18,7 +18,7 @@
 				</ul>
 
 				<table class="uk-table uk-table-divider uk-margin-large-top"><tbody>
-				{{#each ProductBundles}}{{#contains product_key "api-"}}
+				{{#each ProductBundles}}{{#contains product_key "api"}}
 				{{else}}
 					{{> item}}
 				{{/contains}}{{/each}}</tbody></table>
@@ -30,15 +30,20 @@
 					<li>Create authentication tokens for accessing and launching apps</li>
 					<li>Access all apps and features, including future releases</li>
 					<li>Multiple concurrent user licencing</li>
-					<li>Volume Licensing option (multiple accounts)</li>
+					<li>Overflow Licensing (multiple accounts)</li>
 					<li>Add custom templates, white-label apps</li>
-					<li>Custom billing options - contact us for information</li>
+					<li>Custom billing options</li>
 				</ul>
-
+				{{#equals (config_value "API_VISIBLE") "1"}}
 				<table class="uk-table uk-table-divider uk-margin-large-top"><tbody>
 				{{#each ProductBundles}}{{#contains product_key "api-"}}{{#not product_key "api-trial"}}
 					{{> item}}
 				{{/not}}{{/contains}}{{/each}}</tbody></table>
+				{{else}}
+				<hr class="uk-divider-icon">
+				<p class='uk-text-lead'>Coming Soon!</p>
+				<p><a href="/content/contact">Contact Us</a> for more information or pre-release access.</p>
+				{{/equals}}
 			</div>
 
 		</div>
