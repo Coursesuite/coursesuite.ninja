@@ -165,8 +165,14 @@ class Mail
     }
 
     public function sendOneTimePassword($email, $password, $link, $tail = '') {
-        $header = "Your Coursesuite one-time password";
+        $header = "Your Coursesuite password";
         $body = Text::compileHtml(Text::get('EMAIL_ONE_TIME_PASSWORD'), array("link" => $link, "password" => $password));
+        return $this->emailUser($email, $header, $body, $tail);
+    }
+
+    public function sendFastspringSignup($email, $password, $first, $link, $tail = '') {
+        $header = "Your Coursesuite username and password";
+        $body = Text::compileHtml(Text::get('EMAIL_NEW_USER_USERNAME_PASSWORD'), array("email" => $email, "link" => $link, "password" => $password, "first" => $first));
         return $this->emailUser($email, $header, $body, $tail);
     }
 
