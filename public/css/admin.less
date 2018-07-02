@@ -146,6 +146,14 @@ article form {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	div {
+		&.grid {
+			> div {
+				display: inline-block !important;
+				&.grid-1-3 {
+					width: calc(33% - .3em);
+				}
+			}
+		}
 		&.row {
 			&:not(.mde) {
 				> div {

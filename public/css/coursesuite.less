@@ -2,12 +2,18 @@
 @import "uikit/less/uikit.theme.less";
 @import url('https://fonts.googleapis.com/css?family=Montserrat:200,300i');
 
+:root {
+	--cs-logo-blue: rgba(47, 160, 218, 1);
+	--cs-logo-green: rgba(127, 186, 66, 1);
+	--cs-logo-grey: rgba(150, 150, 150, 1);
+}
+
 /*
 	define the colours for each app here
 	note that the body id gets the app_key at the end, so we can leverage that
 */
 body {
-	--pageninja: url("/img/footer_ninjas/ghostly_apparition.png");
+	--pageninja: url("/img/footer_ninjas/master.png");
 }
 body[id$='_docninja'] {
 	--basecolour: var(--docninja);
@@ -45,7 +51,9 @@ body[id$='_coursebuildr'] {
 	--pageninja: url("/img/footer_ninjas/builder.png");
 	--purchaseninja: url("/img/purchase_ninjas/builder.png");
 }
-
+body[id$='_scodebug'] {
+	--pageninja: url("/img/footer_ninjas/preview.png");
+}
 html {
 	background-color: #3d3d3d;
 	body {
@@ -55,6 +63,35 @@ html {
 
 body > header {
 	background-color: #030643;
+}
+
+.cs-vertical-align-middle {
+	vertical-align: middle !important;
+}
+.cs-blog-badge {
+	display: inline-block;
+	border-radius: 25px;
+	background-color: var(--cs-logo-blue);
+	font-size: 8px; line-height:8px;
+	height: 8px; width:8px;
+	color: black;
+	text-align:center;
+	margin-top: -8px;
+	transition:background-color .2s ease;
+}
+a:hover>.cs-blog-badge {
+	background-color:rgb(255,255,0);
+}
+
+.cs-nav-bg {
+	background: transparent url(/img/header-preview.jpg) no-repeat;
+	background-size: cover;
+}
+
+#zodiac {
+	position:absolute;
+	top:0;left:0;
+	width:100%;height:100%;
 }
 
 .video-aspect-ratio {
@@ -147,7 +184,12 @@ body > header {
 	tbody > tr:not(.cs-applist) > td {
 		border-top: @table-striped-border-width solid @table-striped-border;
 	}
+	tfoot > tr > td {
+		border-top: @table-striped-border-width solid @table-striped-border;
+		background-color: @table-striped-row-background;
+	}
 	tr.cs-applist > td:first-of-type {
+
 		.uk-padding-small();
 		p.name span.concurrency {
 			float: right;
@@ -280,6 +322,7 @@ body > header {
 .cs-footer {
 	.uk-padding-remove();
 	.cs-colour-granite();
+	border-bottom: 1px solid rgba(45, 45, 45, 1);
 	//background-image: url(/css/binding_dark.png);
 	font-size: 12px;
 	.uk-container * {
@@ -287,7 +330,7 @@ body > header {
 	}
 	h3 {
 		font-size: 15px;
-		font-family: 'Montserrat', sans-serif;
+//		font-family: 'Montserrat', sans-serif;
 	}
 	a {
 		color: inherit;
@@ -300,16 +343,16 @@ body > header {
 	}
 }
 
-#mc_embed_signup {
-	.uk-light();
-	.uk-padding();
-	label {
-		font-weight: normal;
-	}
-	.button {
-		.uk-button();
-	}
-}
+// #mc_embed_signup {
+// 	.uk-light();
+// 	.uk-padding();
+// 	label {
+// 		font-weight: normal;
+// 	}
+// 	.button {
+// 		.uk-button();
+// 	}
+// }
 
 @media (max-width: @breakpoint-small) {
 	.cs-section-breadcrumb {
@@ -607,4 +650,19 @@ body.mobile .cs-who-we-are {
 .cs-negative-margin-home{
     margin-top: -56px;
     margin-bottom: 40px;
+}
+
+.cs-app-links .uk-button {
+	text-transform: initial;
+	.uk-border-rounded;
+}
+
+.cs-resizable {
+	resize: vertical; /* vertical, horizontal, both */
+	.cs-resize-control {
+		pointer-events: none;
+		border: 5px solid transparent;
+		border-top-color: grey;
+		transform:rotate(-45deg);
+	}
 }

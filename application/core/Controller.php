@@ -64,9 +64,10 @@ class Controller
             $this->View->Requires("admin/menubar");
 
         } else {
-            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.css");
-            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.js");
-            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.js");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/css/uikit.css");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit.js");
+            $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit-icons.js");
+            $this->View->Requires("main.js");
         }
     }
 

@@ -137,6 +137,9 @@ class View
             "replace" => function ($replace_this, $with_that, $in_this) {
                 return str_replace($replace_this, $with_that, $in_this);
             },
+            "scase" => function ($value) {
+                return ucwords($value);
+            },
             "vardump" => function ($arg1) {
                 var_dump($arg1);
                 return "";
@@ -147,6 +150,9 @@ class View
             },
             "escape" => function ($arg1) {
                 return rawurlencode($arg1);
+            },
+            "unescape" => function ($arg1) {
+                return urldecode($arg1);
             },
             "htmlify" => function ($arg1) {
                 return Text::toHtml($arg1);
@@ -276,6 +282,9 @@ class View
                 date_default_timezone_set('UTC');
                 return gmdate("Y-m-d\TH:i:s\Z", strtotime($arg1));
            },
+           "utc2" => function ($arg1) {
+                return date('Y-m-d\TH:i:sP', $arg1);
+           },
             "cheapest" => function ($appId) {
                 $database = DatabaseFactory::getFactory()->getConnection();
                 $query = $database->prepare("select price from product p inner join app_tiers t on p.entity_id = t.id where p.entity = 'app_tiers' and t.app_id = :appid limit 1");
@@ -333,6 +342,19 @@ class View
                 $period = "m";
                 if (strpos((string) $model["product_key"], "api-") !== false && substr($model["product_key"],-1) === "3") $period = "q";
                 return "$<span>{$price}</span><sup>/{$period}</sup>";
+            },
+            "fsStatusHtml" => function ($value) {
+                // "active", "overdue", "canceled", "deactivated", "trial"
+                switch (strtolower($value)) {
+                    case "trial":
+                        return "<span class='uk-label'>{$value}</span>"; break;
+                    case "overdue": case "deactivated":
+                        return "<span class='uk-label uk-label-warning'>{$value}</span>"; break;
+                    case "canceled":
+                        return "<span class='uk-label uk-label-danger'>{$value}</span>"; break;
+                    default:
+                        return "<span class='uk-label uk-label-success'>{$value}</span>"; break;
+                }
             },
             "statusReasonText" => function ($value) {
                 if (empty($value)) return;
@@ -469,6 +491,29 @@ class View
             },
             "strlen" => function ($string) {
                 return strlen($string);
+            },
+            "salted_hash" => function ($algo, $value) {
+                return hash($algo, $value . Config::get("HMAC_SALT"), false);
+            },
+            "mt" => function ($value, $options) {
+                if (empty($value)) {
+                    return $options['fn']();
+                } elseif (isset($options['inverse'])) {
+                    return $options['inverse']();
+                }
+            },
+            "keystore_value" => function ($name) {
+                return KeyStore::find($name)->get();
+            },
+            "config_value" => function ($name) {
+                return Config::get($name);
+            },
+            "ifb" => function ($variable, $options) {
+                if (boolval($variable)) {
+                    return $options['fn']();
+                } elseif (isset($options['inverse'])) {
+                    return $options['inverse']();
+                }
             }
         );
 
@@ -478,6 +523,7 @@ class View
 
         $this->helpers[] = "Text::StaticPageRenderer";
         $this->helpers[] = "Text::base64enc";
+        $this->helpers[] = "Config::get";
 
     }
 
