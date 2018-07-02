@@ -3,26 +3,28 @@
         {{#equals account.user_account_type "7"}}
         <li class='uk-nav-header'>Destinations</li>
         <li class='uk-nav-divider'></li>
-        <li><a href='{{baseurl}}admin/'><span class='uk-margin-small-right' uk-icon='icon: settings'></span> Admin Tools</a></li>
+        <li><a href='{{baseurl}}admin/'><span class='uk-margin-xsmall-right' uk-icon='icon: settings'></span> Admin Tools</a></li>
         {{/equals}}
         <li class='uk-nav-header'>Account</li>
         <li class='uk-nav-divider'></li>
-        <li{{#equals selection "orders"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/orders'><span class='uk-margin-small-right' uk-icon='icon: cart'></span> Orders</a></li>
-        <li{{#equals selection "account"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/account'><span class='uk-margin-small-right' uk-icon='icon: user'></span> Login &amp; Security</a></li>
-        <li{{#equals selection "subscriptions"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/subscriptions'><span class='uk-margin-small-right' uk-icon='icon: bell'></span> Notifications</a></li>
-        <li{{#equals selection "support"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/support'><span class='uk-margin-small-right' uk-icon='icon: lifesaver'></span> Support</a></li>
+        <li{{#equals selection "orders"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/orders'><span class='uk-margin-xsmall-right' uk-icon='icon: cart'></span> Orders</a></li>
+        <li{{#equals selection "account"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/account'><span class='uk-margin-xsmall-right' uk-icon='icon: user'></span> Login &amp; Security</a></li>
+        <li{{#equals selection "subscriptions"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/subscriptions'><span class='uk-margin-xsmall-right' uk-icon='icon: bell'></span> Notifications</a></li>
+        <li{{#equals selection "support"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/support'><span class='uk-margin-xsmall-right' uk-icon='icon: lifesaver'></span> Support</a></li>
+{{#if api_visible}}
         <li class='uk-nav-header'>API</li>
         <li class='uk-nav-divider'></li>
-        <li{{#equals selection "apikeys"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/apikeys'><span class='uk-margin-small-right' uk-icon='icon: server'></span> API Keys</a>
-        <li><a href='/apidoc/' target='_blank'><span class='uk-margin-small-right' uk-icon='icon: bookmark'></span> Documentation</a></li>
+        <li{{#equals selection "apikeys"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/apikeys'><span class='uk-margin-xsmall-right' uk-icon='icon: server'></span> API Keys</a>
+        <li><a href='/apidoc/' target='_blank'><span class='uk-margin-xsmall-right' uk-icon='icon: bookmark'></span> Documentation</a></li>
 {{!--
         {{#equals account.user_parent_id "0"}}
-        <li><a href='{{baseurl}}me/apikeys/add/'><span class='uk-margin-small-right' uk-icon='icon: users'></span> Add sub-account</a></li>
+        <li><a href='{{baseurl}}me/apikeys/add/'><span class='uk-margin-xsmall-right' uk-icon='icon: users'></span> Add sub-account</a></li>
         {{/equals}}
 --}}
         </li>
+{{/if}}
         <li class='uk-nav-header'>Session</li>
         <li class='uk-nav-divider'></li>
-        <li class=''><a href='{{baseurl}}login/logout'><span class='uk-margin-small-right' uk-icon='icon: unlock'></span> Log Out</a></li>
+        <li class=''><a href='{{baseurl}}login/logout'><span class='uk-margin-xsmall-right' uk-icon='icon: unlock'></span> Log Out</a></li>
     </ul>
 </div>

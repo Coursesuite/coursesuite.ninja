@@ -1,3 +1,5 @@
+{{!--
+
 <h3>Guides</h3>
 <p>If you want the full story on how our apps work and what they are capable of, we have comprehensive document for each app as well. Click a link below to view the documentation for a specific app.</p>
 
@@ -22,3 +24,5 @@
 </div>
 {{/if}}
 {{/each}}
+
+--}}

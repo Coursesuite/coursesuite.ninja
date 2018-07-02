@@ -1,0 +1,117 @@
+<div class='uk-section cs-me'>
+	<div class='uk-container'>
+		<div  class="uk-flex" uk-grid>
+
+		{{> menubar}}
+
+		<div class="uk-flex-1">
+			<h2 class="uk-heading-divider">API Keys</h2>
+
+			{{{htmlify apikey_text}}}
+
+			<table class='uk-table uk-table-small  cs-tablesort' width='100%'>
+				<thead>
+					<tr>
+						<th>Account Details</th>
+						<th>Concurrency</th>
+						<th>Statistics</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+{{#each apikeys}}
+					<tr class="cs-row-status">
+						<td><output id="email">{{email}}</output>{{#if primary_account}}<span class='uk-label uk-margin-small-left'>Primary</span>{{else}}<a href="#" class="uk-text-small"><span uk-icon="pencil"></span> Edit</a>{{/if}}</td>
+						<td>{{concurrency}}</td>
+						<td>Hits: 306, Max Concurrency: 3</td>
+						<td>
+						{{#if apikey}}
+						<a href="#" class="uk-button uk-button-default" uk-toggle="target: #details-{{@index}}"><span uk-icon="eye" class="uk-margin-xsmall-left"></span>Show Details</a>
+						{{else}}
+						<a href="#" class="uk-button uk-button-primary"><span uk-icon="credit-card" class="uk-margin-xsmall-left"></span>Buy subscription</a>
+						{{/if}}
+						</td>
+					</tr>
+					<tr hidden id="details-{{@index}}" class="cs-applist">
+						<td colspan="5">
+						<div class="uk-text-center">
+							<ul class="uk-subnav">
+								{{#unless primary_account}}<li><a href="/me/apikeys/edit/{{id}}/"><span uk-icon='pencil' class='uk-margin-small-right'></span>Edit sub-account</a></li>{{/unless}}
+				    			{{#if apikey}}<li><a href="{{@root.baseurl}}me/apikeys/features/{{apikey}}/"><span uk-icon='database' class='uk-margin-small-right'></span>Manage apps</a></li>{{/if}}
+				            	{{#if order_url}}<li><a href='{{order_url}}' target="_blank"><span uk-icon="link" class="uk-margin-small-right"></span>Order Details</a></li>{{/if}}
+								{{#if support_url}}<li><a href='{{support_url}}'><span uk-icon="mail" class="uk-margin-small-right"></span>Email Support</a></li>{{/if}}
+								<li><a href="/me/apikey/cancel/{{encode fsSubscriptionId}}"><span uk-icon='ban' class="uk-margin-small-right"></span>Cancel subscription</a></li>
+								{{#if incomplete}}<li><a href="/me/apikeys/remove/{{id}}/"><span uk-icon='trash' class='uk-margin-small-right'></span>Remove account</a></li>{{/if}}
+							</ul>
+						</div>
+						<div>
+							<p><b>Api Key:</b> {{apikey}}</p>
+							<p><b>Secret:</b> {{#decodable secret}}{{.}}{{/decodable}}</p>
+							<p><b>Widget code:</b></p>
+							<div class="cs-resizable uk-flex uk-position-relative uk-overflow-hidden">
+								<div class="cs-resize-control uk-position-bottom-right"></div>
+								<iframe src="/api/widgetcode/1/{{salted_hash 'md5' referenceId}}" class="uk-flex-1"></iframe>
+							</div>
+						</div>
+						</td>
+					</tr>
+{{/each}}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="5">
+							<form method="post" action="/me/apikeys/add" class="uk-form-horizontal">
+								<div>
+									<label class="uk-form-label" for="form-horizontal-text">Add sub-account:</label>
+									<div class="uk-form-controls">
+										<div class="uk-inline">
+										    <span class="uk-form-icon" uk-icon="icon: user"></span>
+										    <input class="uk-input uk-width-medium" type="email" name="sub_account_email" placeholder="Email address">
+										</div>
+										<button class="uk-button uk-button-default"><span uk-icon="plus"></span></button>
+									</div>
+								</div>
+							</form>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+
+{{!-- <hr>ignore me plz ...
+						<form method="get" id="fregular">
+							<p><select onchange='document.getElementById("fregular").setAttribute("action", this.value);' class='uk-select'>
+								<option value="/me/apikeys">Choose ...</option>
+								{{#each @root/dropdown}}
+									<option value="{{value}}{{../referrer}}">{{label}}</option>
+								{{/each}}
+							</select></p>
+						</form>
+--}}
+
+		<hr class="uk-divider-icon">
+
+		<h3>Plugins</h3>
+		<p>Grab our plugins for your LMS to directly connect to our API and enabled direct publishing. If you are a LMS publisher or want us to develop an intergrated solution for publishing to your platform please <a href="/content/contact">get in touch</a>.</p>
+		<div uk-grid>
+			<div>Moodle 3.1+</div>
+			<div>D2L</div>
+			<div>Custom Portal 1</div>
+			<div>Custom Portal 2</div>
+			<div>Wordpress</div>
+		</div>
+
+		<hr class="uk-divider-icon">
+
+		<h3>Templates</h3>
+		<p>Some of our apps support Download Templates for published packages. This can incorporate custom scripting or styling such as corporate colours and logos. The following base templates are available (you can upload these through 'Show Details' > 'Manage Apps' > 'Template' for your api accounts).</p>
+		<div uk-grid>
+			<div>Document Ninja</div>
+			<div>Presentation Ninja</div>
+			<div>Course Builder Ninja</div>
+			<div>Quiz Ninja</div>
+			<div>Media Ninja</div>
+			<div>Lecture Ninja</div>
+		</div>
+		</div>
+	</div>
+</div>
