@@ -14,6 +14,17 @@ class ApiController extends Controller
 		parent::__construct(false); // passing false avoids initialising a session object
 	}
 
+	public function validateorder($reference) {
+		parent::requiresAjax();
+		$json = json_decode(Text::base64dec($reference));
+		$data = array("ready"=>false);
+		if (Model::exists("subscriptions", "referenceId=:ref", [":ref"=>$json->reference])) {
+			(new AccountModel("id", Model::ReadColumn("subscriptions", "user_id", "referenceId=:ref", [":ref"=>$json->reference])))->log_on();
+			$data = array("ready"=>true);
+		}
+		$this->View->renderJSON($data);
+	}
+
 	/* this method exists because EXZA can't get their shit together
 	* if this method doesn't exist, their their portal BREAKS and shows a white page. OMGROFLNÜBS
 	*/
@@ -163,7 +174,7 @@ class ApiController extends Controller
 			$app_id = Model::ReadColumn("apps","app_id","app_key=:key",array(":key"=>$app_key));
 			$result->app->guide = Model::ReadColumn("apps","guide","app_key=:key",array(":key"=>$app_key));
 
-			$user = new AccountModel($model->user);
+			$user = new AccountModel("id",$model->user);
 			$result->user->email = $user->get_property("user_email");
 			if (!empty($user->get_property("user_container"))) {
 				$result->user->container = $user->get_property("user_container");
@@ -358,7 +369,7 @@ class ApiController extends Controller
 	    $cache = CacheFactory::getFactory()->getCache();
 	    $cacheItem = $cache->getItem("api_info_{$subscription}");
 	    $model = $cacheItem->get();
-	    if (is_null($model)) {
+	    if (true || is_null($model)) {
 // log a cache miss so we can later refine the expiresAfter
 	    	$miss = "cache miss ";
 			$model = AppModel::public_info_model($subscription);
@@ -438,7 +449,9 @@ class ApiController extends Controller
 
 	/* -------------------------------- FASTSPRING -----------------------------------
 
-	Request all have these named parameters (post):
+	there are two versions - classic and contextual
+	contextual is a webhook which can't send auth data, only a hmac sha256 secret and X-FS-Signature header with the json payload (post)
+	classic sends auth and the following parameters as form post
 
 	accountUrl
 	email
@@ -460,88 +473,88 @@ class ApiController extends Controller
 	{
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug());
-		extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables; &security_foo=bob --> $security_foo=>"bob"
-		if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
+        extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables; &security_foo=bob --> $security_foo=>"bob"
+        if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
 
-			// $tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
+            // $tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
 
-			$fastspringProductId = Request::post("productName");
-			// fastspring product pages look like this: http://sites.fastspring.com/coursesuite/product/docninja-pro
-			// the productPath look like this: /docninja-pro or /subscriptions/pro/docninja-pro
-			// we just want the last element, which MUST match the product_id
+            $fastspringProductId = Request::post("productName");
+            // fastspring product pages look like this: http://sites.fastspring.com/coursesuite/product/docninja-pro
+            // the productPath look like this: /docninja-pro or /subscriptions/pro/docninja-pro
+            // we just want the last element, which MUST match the product_id
 
-			// TODO read the id column instead of the whole model
-			$fastspringProductId = array_pop(explode("/", Request::post("productPath"))); //  /api-5-12 => api-5-12
-			$product = (new ProductModel)->load_by_productId($fastspringProductId);
-			$product_id = $product->get_id();
-			unset($product);
+            // TODO read the id column instead of the whole model
+            $fastspringProductId = array_pop(explode("/", Request::post("productPath"))); //  /api-5-12 => api-5-12
+            $product = (new ProductModel)->load_by_productId($fastspringProductId);
+            $product_id = $product->get_id();
+            unset($product);
 
-			$referrer = Request::post("referrer");
-			if (isset($referrer)) {
-				$userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
-			} else {
-				$userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ? wrong email entered during checkout could mess with this
-			}
+            $referrer = Request::post("referrer");
+            if (isset($referrer)) {
+                $userid = (int) Encryption::decrypt(Text::base64dec(Request::post("referrer"))); // passes back whatever we send it during checkout, same re-sent each re-bill
+            } else {
+                $userid = -1; // so we have no definate way of tying this to a real user, maybe look at Request::post("email") ? wrong email entered during checkout could mess with this
+            }
 
-			$endDate = Request::post("subscriptionEndDate"); // date | empty
-			$endDateSet = isset($endDate); // if set then the subscription is inactive after this date
-			$referenceId = Request::post("referenceId"); // unique order id for fastspring dashboard use
-			$subscriptionUrl = Text::base64enc(Encryption::encrypt(Request::post("subscriptionUrl"))); // unique user-facing transaction id for users personal reference
-			$status = Request::post("status"); // active | inactive
-			$statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
-			$testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
+            $endDate = Request::post("subscriptionEndDate"); // date | empty
+            $endDateSet = isset($endDate); // if set then the subscription is inactive after this date
+            $referenceId = Request::post("referenceId"); // unique order id for fastspring dashboard use
+            $subscriptionUrl = Text::base64enc(Encryption::encrypt(Request::post("subscriptionUrl"))); // unique user-facing transaction id for users personal reference
+            $status = Request::post("status"); // active | inactive
+            $statusReason = Request::post("statusReason"); // canceled-non-payment | completed | canceled | ""
+            $testMode = (Request::post("testmode") == "true") ? 1 : 0; // true | false
 
-			switch ($params[0]) {
-				case "activated":
-					$subscription = (new SubscriptionModel)->make();
-					$model = $subscription->get_model();
-					$model["user_id"] = $userid;
-					unset($model["added"]); // allow database default to apply
-					$model["endDate"] = empty($endDate) ? null : $endDate;
-					$model["referenceId"] = $referenceId;
-					$model["subscriptionUrl"] = $subscriptionUrl;
-					$model["status"] = $status;
-					$model["statusReason"] = $statusReason;
-					$model["testMode"] = $testMode;
-					$model["active"] = 1;
-					$model["info"] = null;
-					$model["product_id"] = $product_id;
-					$subscription->set_model($model);
-					$subscription->save();
-					break;
+            switch ($params[0]) {
+                case "activated":
+                    $subscription = (new SubscriptionModel)->make();
+                    $model = $subscription->get_model();
+                    $model->user_id = $userid;
+                    unset($model->added); // allow database default to apply
+                    $model->endDate = empty($endDate) ? null : $endDate;
+                    $model->referenceId = $referenceId;
+                    $model->subscriptionUrl = $subscriptionUrl;
+                    $model->status = $status;
+                    $model->statusReason = $statusReason;
+                    $model->testMode = $testMode;
+                    $model->active = 1;
+                    $model->info = null;
+                    $model->product_id = $product_id;
+                    $subscription->set_model($model);
+                    $subscription->save();
+                    break;
 
-				case "deactivated":
-					// deactivation will remove the subscription entry from the database
-					$subscription = (new SubscriptionModel)->loadByReference($referenceId);
-					$model = $subscription->get_model();
-					$model["active"] = 0;
-					$model["status"] = $status;
-					$model["statusReason"] = $statusReason;
-					$subscription->set_model($model);
-					$subscription->save();
-					break;
+                case "deactivated":
+                    // deactivation will remove the subscription entry from the database
+                    $subscription = (new SubscriptionModel)->loadByReference($referenceId);
+                    $model = $subscription->get_model();
+                    $model->active = 0;
+                    $model->status = $status;
+                    $model->statusReason = $statusReason;
+                    $subscription->set_model($model);
+                    $subscription->save();
+                    break;
 
-				case "failed":
-				case "changed":
-					if ($endDateSet) {
+                case "failed":
+                case "changed":
+                    if ($endDateSet) {
 
-						$subscription = (new SubscriptionModel)->loadByReference($referenceId);
-						$model = $subscription->get_model();
-						$model["status"] = $status;
-						$model["statusReason"] = $statusReason;
-						$subscription->set_model($model);
-						$subscription->save();
+                        $subscription = (new SubscriptionModel)->loadByReference($referenceId);
+                        $model = $subscription->get_model();
+                        $model->status = $status;
+                        $model->statusReason = $statusReason;
+                        $subscription->set_model($model);
+                        $subscription->save();
 
-						if ($status == "inactive") { // has become inactive and will deactivate soon
-							MessageModel::notify_user("Your subscription has lapsed and will deactivate soon.", MESSAGE_LEVEL_MEH, $userid);
-						}
-						if ($statusReason == "canceled") { // we should next or soon see a deactivated
-							MessageModel::notify_user("Your subscription has been cancelled.", MESSAGE_LEVEL_MEH, $userid);
-						}
-					}
-					break;
-			}
-		}
+                        if ($status == "inactive") { // has become inactive and will deactivate soon
+                            MessageModel::notify_user("Your subscription has lapsed and will deactivate soon.", MESSAGE_LEVEL_MEH, $userid);
+                        }
+                        if ($statusReason == "canceled") { // we should next or soon see a deactivated
+                            MessageModel::notify_user("Your subscription has been cancelled.", MESSAGE_LEVEL_MEH, $userid);
+                        }
+                    }
+                    break;
+            }
+        }
 	}
 
 	// when an order goes through the checkout, before a subscription takes place
@@ -554,4 +567,69 @@ class ApiController extends Controller
 		}
 	}
 
+	function licence(...$params)
+	{
+		$username = parent::requiresAuth();
+		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug(), $_REQUEST);
+
+		// this is a hash of all the values of the fields posted in plus a private key ...
+		$security_request_hash = Request::post("security_request_hash");
+
+		// we could concat the data in the request then md5 it and check it ...
+
+		// $privatekey = '3e8466db46f05ed8056527a2174074aa';
+		// $obj = unserialize('a:15:{s:3:"url";s:13:"/api/licence/";s:7:"company";s:11:"FooBar Inc.";s:5:"email";s:28:"vagif.samadoghlu@example.com";s:19:"internalProductName";s:14:"document-ninja";s:7:"periods";s:1:"1";s:7:"product";s:14:"document-ninja";s:11:"productName";s:14:"document-ninja";s:8:"quantity";s:1:"1";s:9:"reference";s:8:"TEST_REF";s:8:"sequence";s:1:"1";s:3:"sku";s:16:"TEST_PRODUCT_SKU";s:12:"subscription";s:11:"TEST_SUB_ID";s:4:"tags";s:2:"{}";s:4:"test";s:4:"true";s:21:"security_request_hash";s:32:"3b13478e187416b4279c7586cefc44e9";}');
+		// $hash = $obj["security_request_hash"];
+		// unset($obj["security_request_hash"]);
+		// ksort($obj);
+		// $implode = implode('', array_values($obj));
+		// echo "\n", "implode=", $implode, md5($implode . $privatekey);
+
+		$email = Request::post("email");
+		$user = new AccountModel("email", $email);
+		if ($user->get_property("user_id") > 0) {
+			// a user exists
+		} else {
+			// create the user
+			// then send the user their password
+			// within a 'welcome to coursesuite you will need this to log in' message
+		}
+
+
+		// ... or just not do that, since security_request_hash already is unique to the user/product/subscription
+
+		// so that's our licence key
+
+        header("Content-Type: text/plain");
+        echo $security_request_hash;
+	}
+
+	function widgetcode($version = 1, $publickey = null) {
+		if (is_null($publickey)) return;
+		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
+
+		$model = new stdClass();
+		$model->version = $version;
+		$model->publickey = $publickey;
+		$model->options = [];
+
+        header("Content-Type: text/plain");
+		$this->View->renderHandlebars("api/widget/{$version}/runtime", $model,null,true);
+	}
+
+	function widget($version = 1, $publickey = null) {
+		if (is_null($publickey)) return;
+		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
+
+		// set some properties about the apps this key can access
+		$model = new stdClass();
+		$model->publickey = $publickey;
+
+		$subscription = (new SubscriptionModel($publickey))->get_model(true, true, true);
+		$model->subscription = json_encode($subscription);
+
+		// render the client facing library as a javascript function
+        header("Content-Type: application/javascript");
+		$this->View->renderHandlebars("api/widget/{$version}/applib", $model, null, true);
+	}
 }
