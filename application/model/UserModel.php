@@ -583,7 +583,7 @@ class UserModel
             ));
             $user_id = intval($query->fetchColumn(0));
             if ($user_id > 0) {
-                return (new AccountModel($user_id));
+                return (new AccountModel("id",$user_id));
             }
         }
         return null;

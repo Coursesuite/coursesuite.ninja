@@ -12,8 +12,12 @@ class AccountModel extends Model
     protected $data_model;
     protected $product_model;
 
+    public function found() {
+        return (!empty($this->data_model));
+    }
+
     public function get_property($name) {
-        return $this->data_model->$name;
+        return is_numeric($this->data_model->$name) ? intval($this->data_model->$name,10) : $this->data_model->$name;
     }
 
     public function get_model($include_sub_accounts = false)
@@ -23,7 +27,7 @@ class AccountModel extends Model
             $idname = self::ID_ROW_NAME;
             $data->SubAccounts = parent::Read(self::TABLE_NAME, "user_parent_id=:id", array(":id" => $data->$idname));
         }
-        return (array) $data;
+        return $data;
     }
 
     public function set_model($data)
@@ -31,11 +35,15 @@ class AccountModel extends Model
         $this->data_model = $data;
     }
 
-    public function __construct($row_id = 0)
+    public function __construct($lookup = "id", $match = "")
     {
         parent::__construct();
-        if ($row_id > 0) {
-        	self::load($row_id);
+        if ($lookup === "id" && is_numeric($match) && intval($match,10) > 0) {
+        	self::load($match);
+        } else if ($lookup === "id" && is_numeric($match) && intval($match,10) === 0) {
+            self::make();
+        } else if ($lookup === "email" && trim($match) > "") {
+            self::loadByEmail($match);
         }
         return $this;
     }
@@ -52,13 +60,19 @@ class AccountModel extends Model
 
     public function load($id)
     {
-    	$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id))[0]; // 0th of a fetchall
+    	$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id),"*",true);
     	return $this;
+    }
+
+    public function loadByEmail($id)
+    {
+        $this->data_model = parent::Read(self::TABLE_NAME, "user_email=:id", array(":id" => $id),"*",true);
+        return $this;
     }
 
     public function make()
     {
-    	$this->data_model = parent::Create(self::TABLE_NAME);
+    	$this->data_model = parent::Create(self::TABLE_NAME, false);
     	return $this;
     }
 
@@ -69,6 +83,13 @@ class AccountModel extends Model
             unset($model->SubAccounts);
         }
         return parent::Update(self::TABLE_NAME, self::ID_ROW_NAME, $model);
+    }
+
+    public function get_id() {
+        if (isset($this->data_model)) {
+            $idrowname = self::ID_ROW_NAME;
+            return $this->data_model->$idrowname;
+        }
     }
 
     public function get_apikeys() {
@@ -82,6 +103,21 @@ class AccountModel extends Model
             self::generate_secret_key($this->data_model->$idname);
         }
     }
+
+    // log on as this user account instance
+    public function log_on() {
+        if (self::found()) {
+            $this->data_model->user_password_reset_hash = NULL;
+            $this->data_model->user_last_login_timestamp = time();
+            $this->data_model->user_last_failed_login = NULL;
+            $this->data_model->user_suspension_timestamp = NULL;
+            $this->data_model->user_password_reset_timestamp = NULL;
+            $this->data_model->user_logon_count = (int) $this->data_model->user_logon_count + 1;
+            $this->save();
+            Auth::set_user_logon_cookie( $this->data_model->user_id);
+        }
+    }
+
 
     public static function generate_secret_key($user_id) {
         $idname = self::ID_ROW_NAME;
@@ -117,8 +153,8 @@ class AccountModel extends Model
             $result["secret"] = $acc->secret_key;
             // $result["secret"] = empty($acc->secret_key) ? "" : Encryption::decrypt(Text::base64dec($acc->secret_key));
             if ($record = $query->fetch()) {
-                 $result["order_url"] = empty($record->subscriptionUrl) ? "" : Encryption::decrypt(Text::base64dec($record->subscriptionUrl));
-                 $result["support_url"] = "mailto:accounts@coursesuite.com.au?subject=Order%20Support%20" . $record->referenceId;
+                // $result["order_url"] = empty($record->subscriptionUrl) ? "" : Encryption::decrypt(Text::base64dec($record->subscriptionUrl));
+                $result["support_url"] = "mailto:accounts@coursesuite.com.au?subject=Order%20Support%20" . $record->referenceId;
                 $result["subscriptionUrl"] = $record->subscriptionUrl;
                 $result["apikey"] = $record->apikey;
                 $result["added"] = $record->added;
@@ -132,6 +168,7 @@ class AccountModel extends Model
                 $result["concurrency"] = $record->concurrency;
                 $result["product_key"] = $record->product_key;
                 $result["incomplete"] = false;
+
             } else {
                 $result["incomplete"] = true;
             }
@@ -140,42 +177,6 @@ class AccountModel extends Model
         }
         return $results;
     }
-                // $query = $database->prepare("
-                //     SELECT at.name, at.description, at.concurrency, p.price
-                //     FROM app_tiers at INNER JOIN product p on (p.entity='app_tiers' and p.entity_id=at.id)
-                //     WHERE p.id=:id
-                //     LIMIT 1
-                // ");
-                // $query->execute([":id" => (int)$record->product_id]);
-                // $apt = $query->fetch();
-                // $result["name"] = $apt->name;
-                // $result["price"] = $apt->price;
-                // // $result["description"] = $apt->description;
-                // $result["concurrency"] = $apt->concurrency;
-//             }
-// //            } else {
-//             //    $result["api_product"] = ;
-// //            }
-//         }
-
-// for each record
-        // primary_account is when user_parent_id == 0
-        // order_url
-        // support_url
-        // order_number
-        // added
-        // endDate
-        // Product.price
-        // status
-        // statusReason
-        // subscriptionUrl
-        // name
-        // concurrency
-        // apikey
-        // secret
-
-    //     return $results;
-    // }
 
     public static function modify_sub_account($sub_user_id, $sub_account_email) {
 

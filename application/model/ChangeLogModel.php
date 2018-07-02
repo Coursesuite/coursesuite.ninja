@@ -8,7 +8,7 @@ class ChangeLogModel extends Model {
 
     public function get_model()
     {
-        return (array) $this->data_model;
+        return $this->data_model;
     }
 
     public function set_model($data)

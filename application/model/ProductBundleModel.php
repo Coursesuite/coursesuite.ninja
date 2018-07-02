@@ -8,6 +8,14 @@ class ProductBundleModel extends Model
 
     protected $data_model;
 
+    public function found() {
+        return (!empty($this->data_model));
+    }
+
+    public function get_property($name) {
+        return is_numeric($this->data_model->$name) ? intval($this->data_model->$name,10) : $this->data_model->$name;
+    }
+
     // in this instance, get_apps are the apps that this bundle references
     public function get_model($include_app_model = false, $active_only = true)
     {
@@ -106,7 +114,7 @@ class ProductBundleModel extends Model
 
     // get the apps that are connected to this product
     public static function get_connected_apps($app_ids, $active_only = true) {
-        $where = ($active_only === true) ? " and active=1" : "";
+        $where = ($active_only === true) ? " and active>1" : "";
         $data = self::Read("apps", "find_in_set(cast(app_id as nchar),:set)>0 $where", array(":set" => $app_ids), "app_id");
         $results = [];
         foreach ($data as $record) {
@@ -145,6 +153,14 @@ class ProductBundleModel extends Model
         $query = $database->prepare($sql);
         $query->execute();
         return $query->fetchAll();
+    }
+
+    public static function set_price($id, $price) {
+        $tablename = self::TABLE_NAME;
+        $idrowname = self::ID_ROW_NAME;
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare("UPDATE {$tablename} SET price = :p WHERE {$idrowname}=:i");
+        $query->execute([":p"=>$price,":i"=>$id]);
     }
 
 }

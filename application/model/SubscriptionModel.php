@@ -32,7 +32,7 @@ class SubscriptionModel extends Model
 	public function get_account()
 	{
 		if (!isset($this->account_model)) {
-			$this->account_model = (new AccountModel($this->data_model->user_id))->get_model();
+			$this->account_model = (new AccountModel("id",$this->data_model->user_id))->get_model();
 		}
 		return $this->account_model;
 	}
@@ -48,9 +48,11 @@ class SubscriptionModel extends Model
 	{
 		parent::__construct();
 		if (preg_match('/^[a-f0-9]{32}$/', $row)) {
-			$this->data_model = parent::Read(self::TABLE_NAME, "md5(referenceId)=:hash", array(":hash" => $row))[0]; // 0th of a fetchall
+			$this->data_model = parent::Read(self::TABLE_NAME, "md5(referenceId)=:hash OR md5(concat(referenceId,:salt))=:hash", array(":hash"=>$row,":salt"=>Config::get("HMAC_SALT")),"*",true); // [0]; // 0th of a fetchall
 		} else if (is_numeric($row) && $row > 0) {
 			self::load($row);
+		} else if (is_numeric($row) && $row === 0) {
+			self::create();
 		}
 		return $this;
 	}
@@ -67,7 +69,7 @@ class SubscriptionModel extends Model
 
 	public function load($id)
 	{
-		$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id))[0]; // 0th of a fetchall
+		$this->data_model = parent::Read(self::TABLE_NAME, self::ID_ROW_NAME . "=:id", array(":id" => $id),"*",true); // [0]; // 0th of a fetchall
 		return $this;
 	}
 
@@ -402,7 +404,7 @@ class SubscriptionModel extends Model
 			$result = (new SubscriptionModel($row->$idname))->get_model(true,false, true);
 			$rowClass = "cs-active";
 			$orderNumber = $result["referenceId"]; // TODO revise security of exposing this
-			$result["order_history"] = "/me/orders/history/{$orderNumber}";
+//			$result["order_history"] = "/me/orders/history/{$orderNumber}";
 			$result["order_number"] = $orderNumber;
 			$result["support_url"] = "mailto:accounts@coursesuite.com.au?subject=Order Support:- " . $orderNumber;
 			if (!empty($result["endDate"])) {
@@ -468,7 +470,7 @@ class SubscriptionModel extends Model
 		// TODO: does the user have more than some threshold of previous demo subscription products in recent weeks?
 		//$subs = self::get_user_api_subscription_records($account->user_id);
 
-		$am = new AccountModel($user_id);
+		$am = new AccountModel("id",$user_id);
 		if (is_null($am->get_property("secret_key"))) {
 			$am->add_secret_key();
 		}

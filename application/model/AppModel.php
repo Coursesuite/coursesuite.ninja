@@ -62,7 +62,7 @@ class AppModel extends Model
 
     public function make()
     {
-        $this->data_model = parent::Create(self::TABLE_NAME);
+        $this->data_model = parent::Create(self::TABLE_NAME, true);
         return $this;
     }
 
@@ -82,10 +82,10 @@ class AppModel extends Model
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$sql = "SELECT app_key, app_id
 				FROM apps
-				WHERE active = :active and trim(coalesce(launch, '')) <>''
+				WHERE active > 1 and trim(coalesce(launch, '')) <>''
 		";
 		$query = $database->prepare($sql);
-		$query->execute(array(':active' => true));
+		$query->execute(); // array(':active' => true));
 		return $query->fetchAll();
 	}
 
@@ -128,6 +128,11 @@ class AppModel extends Model
 	*/
 	public static function public_info_model($hash, $include_mods = false) {
 
+		$matcher = " md5(s.referenceId) = :hash";
+		if (is_numeric($hash)) {
+			$matcher = " s.subscription_id=:hash";
+		}
+
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$extras = "";
 		if ($include_mods === true) {
@@ -138,7 +143,7 @@ class AppModel extends Model
 			$extras
 			FROM apps a
 				INNER JOIN product_bundle pb ON find_in_set(cast(a.app_id AS CHAR), pb.app_ids)
-				INNER JOIN subscriptions s on pb.id = s.product_id and md5(s.referenceId) = :hash
+				INNER JOIN subscriptions s on pb.id = s.product_id and {$matcher}
 			WHERE a.active = 3
 		");
 		//	UNION

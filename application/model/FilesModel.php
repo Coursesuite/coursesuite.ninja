@@ -12,8 +12,8 @@ class FilesModel {
         foreach ($files as $entry) {
             $file = [
             	"path" => "/files/{$area}/{$key}/",
-                "name" => $entry,
-                "label" => preg_replace("/\.[^.]+$/", "", $entry),
+                "name" => str_replace(" ", "%20", $entry),
+                "label" => preg_replace("/\.[^.]+$/", "", str_replace("_", " ", $entry)),
                 "mime" => mime_content_type($fpath.$entry),
                 "size" => Text::byteConvert(filesize($fpath.$entry)),
                 "modified" => date ("M d Y H:i:s.",filemtime($fpath.$entry))

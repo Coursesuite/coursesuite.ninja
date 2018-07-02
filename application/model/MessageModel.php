@@ -113,16 +113,25 @@ class MessageModel extends Model
 				return;
 			}
 		}
-		$model = self::Make();
-		$model["user_id"] = $user_id;
-		unset($model["created"]); // allow database default to apply
-		$model["level"] = intval($level); // e.g. MESSAGE_LEVEL_HAPPY
-		$model["text"] = $message;
-		if ($expires > 0) {
-			$model["expires"] = $expires;
+		$message = new dbRow("message");
+		$message->user_id = $user_id;
+		$message->level = intval($level);
+		$message->text = $message;
+		if ($expires>0) {
+			$message->expires = $expires;
 		}
+		$message->save();
+		return $message->PRIMARY_KEY;
+		// $model = self::Make();
+		// $model["user_id"] = $user_id;
+		// unset($model["created"]); // allow database default to apply
+		// $model["level"] = intval($level); // e.g. MESSAGE_LEVEL_HAPPY
+		// $model["text"] = $message;
+		// if ($expires > 0) {
+		// 	$model["expires"] = $expires;
+		// }
 
-		return self::Save("message_id", $model);
+		// return self::Save("message_id", $model);
 	}
 
 	public static function notify_all($message, $level, $expires = 0)
