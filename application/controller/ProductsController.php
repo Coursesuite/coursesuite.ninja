@@ -76,6 +76,7 @@ class ProductsController extends Controller
         $this->View->Requires("products/youtube");
         $this->View->Requires("products/fineprint");
         $this->View->Requires("main.js");
+        // $this->View->Requires("fastspring.js");
 
         $this->View->renderHandlebars("products/info", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
     }
