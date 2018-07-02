@@ -199,4 +199,24 @@ class LoginController extends Controller
 		$this->View->renderHandlebars('login/admin', $data, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 	}
 
+	public function callback($object) {
+		$json = json_decode(Text::base64dec($object));
+		$logto = "/me/orders";
+		$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : die("0xFF");
+		$host = $_SERVER['HTTP_HOST'];
+		$i = strpos($referer, $host); if ($i === false) die("0xFE");
+		if (Config::get("AUTO_LOGON_TO") === "self") {
+			$logto = substr($referer, $i + strlen($_SERVER['HTTP_HOST']));
+		}
+		if (!empty($json->reference)) {
+			$uid = Model::ReadColumn("subscriptions", "user_id", "referenceId=:r", [":r"=>$json->reference]);
+			if ($uid > 0) {
+				Session::reset();
+				Auth::set_user_logon_cookie($uid);
+				Redirect::to($logto,"meta");// redirect after sending cookie
+				exit;
+			}
+		}
+	}
+
 }

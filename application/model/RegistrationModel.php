@@ -75,7 +75,7 @@ class RegistrationModel
 				$result->sent = true;
 				$result->className = "uk-text-success";
 				$result->graph = self::graph(2);
-				$result->message = "Check your email for the password.";
+				$result->message = "Check your email for the password (check your spam folder if you don't see it)";
 			}
 		} elseif ($email == "" && $password > "") {
 			$result->graph = self::graph(-1);
@@ -159,6 +159,23 @@ class RegistrationModel
 		$mail_sent = (new Mail)->sendOneTimePassword($email, $password, $linkUrl);
 		return $mail_sent;
 
+	}
+
+	public static function register_via_fastspring_hook($contact) {
+
+		$password = (new Sayable(9))->generate();
+
+		$user = new dbRow("users");
+		$user->user_email = $contact->email;
+		$user->user_active = 1;
+		$user->user_account_type = USER_TYPE_STANDARD;
+		$user->user_creation_timestamp = time();
+		$user->user_password_hash = password_hash($password, PASSWORD_DEFAULT);
+		$user->save();
+
+		$linkUrl = Config::get('URL') . 'me/orders/';
+		$mail_sent = (new Mail)->sendFastspringSignup($contact->email, $password, $contact->first, $linkUrl);
+		return $user;
 	}
 
 	public static function register_sub_account($owner_user_id, $sub_account_email) {

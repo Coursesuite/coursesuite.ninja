@@ -38,12 +38,24 @@ class Redirect
 	}
 
 	// go TO a page that is on this site
-	public static function to($path)
+	public static function to($path, $kind = "location")
 	{
 		if (0===strpos($path,"/")) {
 			$path = substr($path,1);
 		}
-		header("location: " . Config::get('URL') . $path);
+		$url = Config::get('URL') . $path;
+		switch ($kind) {
+			case "meta":
+				die("<meta http-equiv=\"refresh\" content=\"0;URL='{$url}'\" />");
+				break;
+
+			case "refresh":
+				header("Refresh: 0;url='{$url}'");
+				break;
+
+			default:
+				header("Location: {$url}");
+		}
 		die();
 	}
 

@@ -104,6 +104,7 @@ return array(
     "EMAIL_TRIAL_VERIFICATION_CONTENT" => "Thank you for registering for a trial account. Click the link to activate your 14 day trial: ",
 
     "EMAIL_ONE_TIME_PASSWORD" => "Hi!\n\nSomeone (probably you) wants to <a href='{{link}}'>log on to CourseSuite</a> with this email address. You can now use the following password:\n\n#{{password}}\n\nNote: You will remain logged in until you go to My Account then press Logout. Logging on to our service indicates that you have read and accept our <a href='" . Config::get('URL') . "/content/terms'>Terms and Conditions</a>.\n\nHave a great day!",
+    "EMAIL_NEW_USER_USERNAME_PASSWORD" => "Hi {{first}},\n\nThanks for your recent purchase. In order to access your app(s) in the future you'll first need to log on to CourseSuite to launch the apps. Your details are as follows:\n\n**Email:** {{email}}\n\n**Password:** {{password}}\n\nNote: You will remain logged in until you go to My Account then press Logout. Logging on to our service indicates that you have read and accept our <a href='" . Config::get('URL') . "/content/terms'>Terms and Conditions</a>.\n\nHave a great day!",
 
     "TIER_MATRIX_HEADER" => "<h4>One subscription <i class='cs-loader cs-super'></i>.</h4>
 							 <h3>Multiple products.</h3>",

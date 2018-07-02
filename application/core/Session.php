@@ -96,7 +96,7 @@ class Session
         session_destroy();
         session_write_close();
         setcookie(session_name(),'',0,'/');
-        session_regenerate_id(true);
+        @session_regenerate_id(true);
 	}
 
 	public static function userIsLoggedIn()
