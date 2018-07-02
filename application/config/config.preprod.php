@@ -108,12 +108,22 @@ return array(
     ),
     'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
     'CLOUDCONVERT_API_KEY' => '8pxT0DHRE5lpcVzildrPoEbztL9rc5Es89xG0incUfPNB93LLZueEr7zTK7PTuZmcV1hXkRMITbhjS-U1NnnzQ',
+
     'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
     'FASTSPRING_PARAM_APPEND' => '&mode=test',
     'FASTSPRING_STORE' => 'coursesuite',
     'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
     'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
+    'FASTSPRING_CONTEXTUAL_STORE' => true,
+    'FASTSPRING_BASICAUTH_ENDPOINT' => 'https://api.fastspring.com',
+    'FASTSPRING_BASICAUTH_USERNAME' => 'DGY_8C__SHWBAMH9QNPKXA',
+    'FASTSPRING_BASICAUTH_PASSWORD' => 'iMeSxVDkSy6z55TAyvaYNg',
+
     'STORE_INFO_SHOW_PRICING' => true,
+    'API_ENABLED' => true,
+    'API_VISIBLE' => false,
+    'AUTO_LOGON_TO' => "orders",
+
     'GLOBAL_FOOTER_COLUMN_1' => '<h3>About Us</h3><p>We are a small Australian team focused on developing a suite of great online web apps that allow rapid creation of interactive and intuitive HTML5-based SCORM courses. We also release Open Source plugins for Moodle, and produce online course content.</p>',
     'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/privacy">Privacy</a> <a href="http://forum.coursesuite.ninja/categories/">Forum</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
     'GLOBAL_FOOTER_COLUMN_3' => '<h3>all rights reserved</h3><p>&copy; CourseSuite 2016-3016<br/><a href="mailto:&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;">&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;</a></p>',
