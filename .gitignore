@@ -13,6 +13,11 @@ curl.php
 debug.php
 untitled.php
 
+/public/css/admin.*.css
+/public/css/compiled.*.css
+/public/js/admin.*.js
+/public/js/main.*.js
+
 /public/img/apps/
 /precompiled/
 /public/avatars/
