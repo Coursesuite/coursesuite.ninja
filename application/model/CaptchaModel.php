@@ -40,9 +40,8 @@ class CaptchaModel
         //if ($captcha == Session::get('captcha')) {
         //    return true;
         //}
-
         //return false;
-        $recaptcha = new \ReCaptcha\ReCaptcha(Config::get('GOOGLE_INVISIBLE_CAPTCHA_SECRET'));
+        $recaptcha = new \ReCaptcha\ReCaptcha(Config::get('GOOGLE_CAPTCHA_SECRET'));
         $resp = $recaptcha->verify($captcha, Environment::remoteIp());
         // LoggingModel::logInternal("ReCaptcha", var_export($resp, true), $captcha, Environment::remoteIp());
         if ($resp->isSuccess()) {

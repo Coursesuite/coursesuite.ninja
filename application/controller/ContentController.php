@@ -10,16 +10,39 @@ class ContentController extends Controller
 
    public function index($route)
     {
-        $feedback = "";
+        $replace = [
+            "email" => "",
+            "fullname" => "",
+            "phone" => "",
+            "message" => "",
+            "feedback" => "",
+        ];
         $model = new stdClass();
         $page = (new StaticPageModel("page_key", $route))->get_model();
         if ($this->Method === "POST" && Csrf::isTokenValid() && $route === "contact") {
+            $captcha = Request::post("g-recaptcha-response");
             $email = Request::post("email", false, FILTER_VALIDATE_EMAIL);
-            $fullname = Request::post("fullname");
-            $phone = Request::post("phone", false, FILTER_VALIDATE_EMAIL);
+            $fullname = Request::post("fullname", true);
+            $phone = Request::post("phone", true);
             $message = Request::post("message", true);
-            HelpdeskModel::create_ticket($email, $fullname, $phone, "CourseSuite Contact Form", $message);
-            $feedback = "<p class='uk-text-success'>Your message was sent.</p>";
+            $replace["email"] = $email;
+            $replace["fullname"] = $fullname;
+            $replace["phone"] = $phone;
+            $replace["message"] = $message;
+            if (($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true) {
+                if (empty(trim($email))) {
+                    $replace["feedback"] = "<p class='uk-text-warning'>Please enter your email address.</p>";
+                } else {
+                    if (BlacklistModel::isBlacklisted($email)) {
+                        $replace["feedback"] = "<p class='uk-text-warning'>Sorry this email address is blacklisted or invalid.</p>";
+                    } else {
+                        HelpdeskModel::create_ticket($email, $fullname, $phone, "CourseSuite Contact Form", $message);
+                        $replace["feedback"] = "<p class='uk-text-success'>Your message was sent.</p>";
+                    }
+                }
+            } else {
+                $replace["feedback"] = "<p class='uk-text-danger'>Please correct your mistake and try again.</p>";
+            }
         }
         if (!isset($page->content)) {
             Redirect::to("404");
@@ -27,7 +50,13 @@ class ContentController extends Controller
 
         // make a csrf token in case the page wants a form; may extend this later
         $tok = Csrf::makeToken();
-        $page->content = str_replace(["{{csrf}}","{{feedback}}"],[$tok, $feedback],$page->content); // vsprintf has escaping issues
+        $replace["csrf"] = $tok;
+
+        // handlebars-like replacements TODO replace WITH a handlebars instance renderer
+        foreach ($replace as $key => $value) {
+            $page->content = str_replace('{{' . $key . '}}', $value, $page->content);
+        }
+        // $page->content = str_replace(["{{csrf}}","{{feedback}}"],[$tok, $feedback],$page->content); // vsprintf has escaping issues
 
         $this->View->page_title = $page->meta_title;
         $this->View->page_keywords = $page->meta_keywords;
