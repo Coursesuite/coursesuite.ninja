@@ -115,21 +115,9 @@ if (empty($body_id)) $body_id = "default";
     </script>
     <!-- End Piwik Code -->
 
-<?php
-    }
-    if (Session::userIsLoggedIn()) { ?>
-    <script type="text/javascript">var fscSession = {'paymentContact': {'email': '<?php echo Session::CurrentUsername(); ?>', 'firstName':'Your', 'lastName':'Name'}}</script>
 <?php } ?>
     <script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=58ba5cc8535b950011d4059a&product=inline-share-buttons' async='async'></script>
-    <script
-        id="fsc-api"
-        src="https://d1f8f9xcsvx3ha.cloudfront.net/sbl/0.7.5/fastspring-builder.min.js"
-        type="text/javascript"
-        data-storefront="coursesuite.test.onfastspring.com/popup-coursesuite"
-        data-debug="false"
-        data-popup-closed="fsPopupClosed">
-    </script>
-
+<?php echo KeyStore::find("fastspring_sbl")->get(); ?>
     </head>
 <body id="<?php echo $body_id; ?>" class="<?php echo ($is_mobile_browser) ? 'mobile' : 'desktop'; ?>">
 
