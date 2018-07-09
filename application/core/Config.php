@@ -50,7 +50,7 @@ class Config
         return self::$menu;
     }
 
-    public static function CustomCss() {
+    public static function CustomCss($minify = false) {
         $cache = CacheFactory::getFactory()->getCache();
         $cacheItem = $cache->getItem("custom_css");
         $css = $cacheItem->get();
@@ -59,6 +59,6 @@ class Config
             $cacheItem->set($css)->expiresAfter(86400)->addTags(["coursesuite","css"]); // 1 day
             $cache->save($cacheItem);
         }
-        return $css;
+        return str_replace(["; ",": ",PHP_EOL," !"], [";",":","","!"],$css);
     }
 }

@@ -663,6 +663,9 @@ class AdminController extends Controller
                 KeyStore::find("customcss")->put(Request::post("customcss"));
                 KeyStore::find("volumelicence")->put(Request::post("volumelicence"));
                 KeyStore::find("apikey_text")->put(Request::post_html("apikey_text"));
+
+                KeyStore::find("head_javascript")->put(Request::post("head_javascript", false));
+
                 Redirect::to("admin/storeSettings"); // to ensure it reloads
                 break;
         }
@@ -679,6 +682,7 @@ class AdminController extends Controller
         $model->customcss = KeyStore::find("customcss")->get();
         $model->volumelicence = KeyStore::find("volumelicence")->get("");
         $model->apikey_text = KeyStore::find("apikey_text")->get();
+        $model->head_javascript = KeyStore::find("head_javascript")->get();
 
         $model->mailchimp_subscribe =KeyStore::find("mailchimp_subscribe")->get();
         $model->mailchimp_stylesheet = KeyStore::find("mailchimp_stylesheet")->get();
