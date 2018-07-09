@@ -116,6 +116,7 @@ class SubscriptionModel extends Model
 		    INNER JOIN product_bundle pb ON s.product_id = pb.id
 		    INNER JOIN apps a on 1 = (find_in_set(cast(a.app_id AS nchar), pb.app_ids) > 0)
 		    WHERE a.app_key = :app_key
+		    AND s.status = 'active'
 		    AND s.user_id = :user_id
 		    $filter
 		    ORDER BY pb.concurrency DESC

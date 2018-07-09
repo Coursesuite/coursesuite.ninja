@@ -63,14 +63,14 @@ if (empty($body_id)) $body_id = "default";
 <?php
 
     $headerVideo = "/img/header_dark.mp4";
-    echo "<style>", AppModel::apps_colours_css(), Config::CustomCss(), "</style>", PHP_EOL; // AppModel::apps_colours_css() also now in less
+    echo "<style>", AppModel::apps_colours_css(), Config::CustomCss(true), "</style>", PHP_EOL; // AppModel::apps_colours_css() also now in less
     if (isset($this->sheets)) {
         foreach ($this->sheets as $sheet) {
             echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
         }
     }
     if (Config::get("debug") === false) {
-        echo "<link rel='stylesheet' href='" . APP_CSS . "'>" . PHP_EOL;
+        echo "    <link rel='stylesheet' href='" . APP_CSS . "'>" . PHP_EOL;
         // $headerVideo = KeyStore::find("headerVideo")->get("");
     } else {
         // $headerVideo = "";
@@ -79,45 +79,15 @@ if (empty($body_id)) $body_id = "default";
         echo "<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.3/less.min.js'></script>" . PHP_EOL;
         echo "<script>less.watch()</script>" . PHP_EOL;
     }
-    $google_analytics_id = Config::get('GOOGLE_ANALYTICS_ID');
-    if (isset($google_analytics_id) && (!empty($google_analytics_id))) {
-        echo "<script>
-      		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-          ga('create', '" . $google_analytics_id . "', 'auto');
-          ga('send', 'pageview');
-        </script>" . PHP_EOL;
-    }
-
     $blog_badge = "";
     $blog_recent = BlogModel::recent_entry_count();
     if ($blog_recent > 0) {
         $blog_badge = "<span class='cs-blog-badge'>$blog_recent</span>";
     }
-    if (false) {
+    echo KeyStore::find("fastspring_sbl")->get(), PHP_EOL;
+    echo KeyStore::find("head_javascript")->get(), PHP_EOL;
 ?>
-    <!-- Piwik -->
-    <script type="text/javascript">
-      var _paq = _paq || [];
-      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function() {
-        var u="//stats.coursesuite.ninja/";
-        _paq.push(['setTrackerUrl', u+'piwik.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-      })();
-    </script>
-    <!-- End Piwik Code -->
-
-<?php } ?>
     <script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=58ba5cc8535b950011d4059a&product=inline-share-buttons' async='async'></script>
-<?php echo KeyStore::find("fastspring_sbl")->get(); ?>
     </head>
 <body id="<?php echo $body_id; ?>" class="<?php echo ($is_mobile_browser) ? 'mobile' : 'desktop'; ?>">
 

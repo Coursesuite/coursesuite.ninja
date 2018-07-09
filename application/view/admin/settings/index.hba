@@ -51,6 +51,10 @@
 			<div><textarea name="customcss" rows="10">{{{customcss}}}</textarea></div>
 		</div>
 
+		<div class="row"><label>Head Javascript (analytics scripts, etc)</label>
+			<div><textarea name="head_javascript" rows="10">{{{head_javascript}}}</textarea></div>
+		</div>
+
 		<div class="row"><label>Homepage Subscription (e.g. mailchimp)</label>
 			<div><textarea name="mailchimp_subscribe" rows="10">{{{mailchimp_subscribe}}}</textarea></div>
 		</div>
