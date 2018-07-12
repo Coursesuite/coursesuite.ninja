@@ -35,6 +35,7 @@
 		{"route":"admin/storeSettings","label":"General Settings"},
 		{"route":"admin/crud/keystore","label":"KeyStore Editor"},
 		{"route":"admin/hooks","label":"Hooks"},
+		{"route":"admin/sitemap/rebuild","label":"Rebuild Sitemap"},
 		{"route":"admin/purge/css","label":"Purge CSS Caches"},
 		{"route":"admin/purge/model","label":"Purge DB Caches"},
 		{"route":"admin/purge/disk","label":"Purge Disk Caches"},
