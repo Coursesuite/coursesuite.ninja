@@ -12,10 +12,10 @@ DEFINE('USER_TYPE_STANDARD', 1);
 DEFINE('USER_TYPE_TRIAL', 3);
 DEFINE('USER_TYPE_ADMIN', 7);
 
-DEFINE("APP_CSS", "/css/compiled.20180702151743.css");
-DEFINE("APP_JS", "/js/main.20180702151743.js");
-DEFINE("ADMIN_CSS", "/css/admin.20180702151743.css");
-DEFINE("ADMIN_JS", "/js/admin.20180702151743.js");
+DEFINE("APP_CSS", "/css/compiled.20180704141358.css");
+DEFINE("APP_JS", "/js/main.20180704141358.js");
+DEFINE("ADMIN_CSS", "/css/admin.20180704141358.css");
+DEFINE("ADMIN_JS", "/js/admin.20180704141358.js");
 
 date_default_timezone_set('Australia/Sydney');
 
@@ -46,17 +46,25 @@ class Application
     public function __construct()
     {
          // $this->mem = memory_get_usage();
-
-        \phpFastCache\CacheManager::setDefaultConfig(array(
-            "storage" => "redis",
-            "redis" => array(
-                "host" => Config::get('REDIS_HOST'),
-                "port" => Config::get('REDIS_PORT'),
-                "password" => "",
-                "database" => "",
-                "timeout" => ""
-            )
-        ));
+        $cacheConfig = [
+            "host" => Config::get('REDIS_HOST'),
+            "port" => (int) Config::get('REDIS_PORT'),
+            "password" => Config::get('REDIS_PASS'),
+            "database" => (int) Config::get('REDIS_DATABASE'),
+            "timeout" => 30
+        ];
+        \phpFastCache\CacheManager::setDefaultConfig($cacheConfig);
+        // $cacheConfig = array(
+        //     "storage" => "redis",
+        //     "redis" => array(
+        //         "host" => Config::get('REDIS_HOST'),
+        //         "port" => Config::get('REDIS_PORT'),
+        //         "password" => "",
+        //         "database" => (int) Config::get('REDIS_DATABASE'),
+        //         "timeout" => ""
+        //     )
+        // );
+        // \phpFastCache\CacheManager::setDefaultConfig($cacheConfig);
 
         // create array with URL parts in $url
         $this->splitUrl();

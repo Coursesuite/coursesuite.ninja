@@ -47,6 +47,7 @@ class Driver implements ExtendedCacheItemPoolInterface
         } else {
             $this->driverConnect();
         }
+
     }
 
     /**
@@ -149,7 +150,6 @@ class Driver implements ExtendedCacheItemPoolInterface
                 if ($database) {
                     $this->instance->select((int)$database);
                 }
-
                 return true;
             }
         }

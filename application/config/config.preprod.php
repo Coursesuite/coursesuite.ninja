@@ -38,6 +38,7 @@ return array(
     'REDIS_PORT' => '6379',
     'REDIS_PASS' => null,
     'REDIS_PREFIX' => 'NinjaSuiteDev:',
+    'REDIS_DATABASE' => 1, // 0 = prod, 1 = preprod, 2 = tim
 
     /**
     * Licencing server WebSocket
