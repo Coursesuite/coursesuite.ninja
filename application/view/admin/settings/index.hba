@@ -64,7 +64,7 @@
 		</div>
 
 		<div class="row"><label>Head Javascript (analytics scripts, etc)</label>
-			<div><textarea name="head_javascript" rows="10">{{{head_javascript}}}</textarea></div>
+			<div><textarea name="sitemap_template" rows="10">{{{sitemap_template}}}</textarea></div>
 			<p>Apparently site maps assist search engines to know what you value on your site. See <a href="https://www.sitemaps.org/protocol.html" target=_blank>https://www.sitemaps.org/protocol.html</a>. Below is the template (handlebars) which gets an object applied to it to rebuild it on demand. The object looks like:</p>
 			<details><summary>Expand details</summary><pre>
 {
