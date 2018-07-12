@@ -63,6 +63,11 @@ class HooksController//  doesn't extend Controller
                     git checkout $destination
                     git pull
 
+                    or
+                    git clone --depth 1 -b PRODUCTION <repo_url>
+
+
+
                     this would assume that the root url is already initialised and has been cloned from the desired branch
 
                 */

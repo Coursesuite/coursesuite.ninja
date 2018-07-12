@@ -469,7 +469,7 @@ class ApiController extends Controller
 
 	 */
 
-	function subscription(...$params)
+	public function subscription(...$params)
 	{
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug());
@@ -558,7 +558,7 @@ class ApiController extends Controller
 	}
 
 	// when an order goes through the checkout, before a subscription takes place
-	function orders(...$params) {
+	public function orders(...$params) {
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug());
 		extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables
@@ -567,7 +567,7 @@ class ApiController extends Controller
 		}
 	}
 
-	function licence(...$params)
+	public function licence(...$params)
 	{
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug(), $_REQUEST);
@@ -604,7 +604,7 @@ class ApiController extends Controller
         echo $security_request_hash;
 	}
 
-	function widgetcode($version = 1, $publickey = null) {
+	public function widgetcode($version = 1, $publickey = null) {
 		if (is_null($publickey)) return;
 		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
 
@@ -617,7 +617,7 @@ class ApiController extends Controller
 		$this->View->renderHandlebars("api/widget/{$version}/runtime", $model,null,true);
 	}
 
-	function widget($version = 1, $publickey = null) {
+	public function widget($version = 1, $publickey = null) {
 		if (is_null($publickey)) return;
 		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
 
@@ -631,5 +631,10 @@ class ApiController extends Controller
 		// render the client facing library as a javascript function
         header("Content-Type: application/javascript");
 		$this->View->renderHandlebars("api/widget/{$version}/applib", $model, null, true);
+	}
+
+	public function apps_colours_css() {
+		 // AppModel::apps_colours_css() generates colours.less when it re-caches
+		$this->View->output(AppModel::apps_colours_css(), "text/css");
 	}
 }
