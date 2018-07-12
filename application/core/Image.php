@@ -5,6 +5,17 @@ use ColorThief\ColorThief;
 class Image
 {
 
+    public static function get_external_url($url) {
+        $root = Config::get("URL");
+        if (strpos($url,"/") === 0) {
+            return $root . substr($url,1);
+        } else if (strpos($url,"://") !== false) {
+            return $url;
+        } else {
+            return str_replace("//","/", $root . $url);
+        }
+    }
+
     public static function getBaseColour($sourceImage)
     {
         return ColorThief::getColor($sourceImage);

@@ -16,7 +16,7 @@ class FilesModel {
                 "label" => preg_replace("/\.[^.]+$/", "", str_replace("_", " ", $entry)),
                 "mime" => mime_content_type($fpath.$entry),
                 "size" => Text::byteConvert(filesize($fpath.$entry)),
-                "modified" => date ("M d Y H:i:s.",filemtime($fpath.$entry))
+                "modified" => date ("M d Y H:i:s",filemtime($fpath.$entry))
             ];
             if (strpos($file["mime"],"image/")!==false) {
                 $file["thumb"] = "/content/image/" . Text::base64_urlencode("/files/{$area}/{$key}/{$entry}"). "/100";

@@ -33,6 +33,6 @@ function CurrentMenu($page, $routes, $classnames = '') {
 </head>
 <body id="coursesuite-admin">
 <header>
-	<h1><i class="fa fa-plug"></i> Coursesuite Back End</h1>
+	<h1><i class="fa fa-plug"></i> Coursesuite Back End : (<?php echo Config::get("DB_NAME"), " database"; ?>)</h1>
 	<p><a href="<?php echo $baseurl; ?>login/logout">Log Out</a></p>
 </header>

@@ -37,9 +37,9 @@ class View
     }
 
     // $this->View->requires(anything)
-    public function requires($name, $param = null)
+    public function requires($name, $param = null, $type = null)
     {
-        if (strpos($name, ".css") !== false) { // e.g third-party/tool/file.css, https://cdnjs.com/something/foo.css
+        if (strpos($name, ".css") !== false || $type === "css") { // e.g third-party/tool/file.css, https://cdnjs.com/something/foo.css
 
             if ($name[0] === "/" || strpos($name, "://") !== false) {
                 $this->css[] = $name;
@@ -47,7 +47,7 @@ class View
                 $this->css[] = "/css/$name";
             }
 
-        } else if (strpos($name, ".js") !== false) { // e.g. third-party/jstree/treeview.js, https://cdnjs.com/something/foo.js
+        } else if (strpos($name, ".js") !== false || $type === "js") { // e.g. third-party/jstree/treeview.js, https://cdnjs.com/something/foo.js
 
             if ($name === "main.js" && Config::get("debug") !== true) $name = APP_JS;
             if ($name === "admin.js" && Config::get("debug") !== true) $name = ADMIN_JS;
@@ -65,7 +65,7 @@ class View
 
             $this->tmpl[] = $name;
 
-        } else if ($name === "init") {
+        } else if ($name === "init" || $type === "init") {
 
             $this->initjs[] = $param;
 
@@ -312,6 +312,9 @@ class View
             },
             "ucfirst" => function ($string) {
                 return ucfirst($string);
+            },
+            "datetotime" => function ($date) {
+                return strtotime($date);
             },
             "humandate" => function ($time, $suffix) {
                 $time = time() - $time; // to get the time since that moment
@@ -594,6 +597,38 @@ class View
         return $results;
     }
 
+    public function getHandlbarsString($template,$data) {
+
+        if (is_array($data)) $data = (object) $data;
+        if (is_null($data)) $data = new stdClass();
+
+        $data->baseurl = Config::get("URL");
+        $data->userIsLoggedIn = Session::userIsLoggedIn();
+        $data->sheets = $this->css;
+        $data->scripts = $this->js;
+        $data->page = $this->page;
+        $data->action = $this->action;
+        $data->IsMobile = $this->IsMobile;
+
+        if (isset($this->page_title) && !empty($this->page_title)) $data->meta_title = $this->page_title;
+        if (isset($this->page_keywords) && !empty($this->page_keywords)) $data->meta_keywords = $this->page_keywords;
+        if (isset($this->page_description) && !empty($this->page_description)) $data->meta_description = $this->page_description;
+
+
+        $assoc = json_decode(json_encode($data), true); // data is now an associative array
+        $assoc["feedback_area"] = Session::get("feedback_area");
+        $phpStr = LightnCandy::compile($template, array(
+            "flags" => LightnCandy::FLAG_PARENT | LightnCandy::FLAG_ADVARNAME | LightnCandy::FLAG_HANDLEBARS,
+            "helpers" => $this->helpers,
+            "partials" => $this->partials,
+        ));
+
+        $renderer = LightnCandy::prepare($phpStr);
+        $result = $renderer($assoc);
+        return $result;
+
+    }
+
     public function renderHandlebars($filename, $data = null, $template_folder = false, $force = null, $return = false)
     {
 
@@ -616,7 +651,6 @@ class View
         if (isset($this->page_title) && !empty($this->page_title)) $data->meta_title = $this->page_title;
         if (isset($this->page_keywords) && !empty($this->page_keywords)) $data->meta_keywords = $this->page_keywords;
         if (isset($this->page_description) && !empty($this->page_description)) $data->meta_description = $this->page_description;
-
 
         $precompiled = Config::get('PATH_VIEW_PRECOMPILED') . $hashname . '.php';
         $assoc = json_decode(json_encode($data), true); // data is now an associative array
@@ -707,8 +741,9 @@ class View
 
     }
 
-    public function output($output)
+    public function output($output, $contentType = "text/html")
     {
+        header("Content-Type: $contentType");
         echo $output;
     }
 

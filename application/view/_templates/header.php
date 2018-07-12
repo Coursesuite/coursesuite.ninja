@@ -3,6 +3,7 @@ $start = microtime(true);
 $meta_description = isset($this->meta_description) ? $this->meta_description : Config::get('DEFAULT_META_DESCRIPTION');
 $meta_keywords = isset($this->meta_keywords) ? $this->meta_keywords : Config::get('DEFAULT_META_KEYWORDS');
 $meta_title = isset($this->meta_title) ? $this->meta_title : Config::get('DEFAULT_META_TITLE');
+$meta_image = "https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg";
 
 $baseurl = Config::get('URL');
 
@@ -10,7 +11,12 @@ if (isset($this->App)) {
     if (!empty($this->App->meta_description)) $meta_description = $this->App->meta_description;
     if (!empty($this->App->meta_keywords)) $meta_keywords = $this->App->meta_keywords;
     if (!empty($this->App->meta_title)) $meta_title = $this->App->meta_title;
+    if (!empty($this->App->icon)) $meta_image = Image::get_external_url($this->App->icon);
 }
+
+$og_title = isset($this->card_title) ? $this->card_title : $meta_title;
+$og_description = isset($this->card_description) ? $this->card_description : $meta_description;
+$og_image = isset($this->card_icon) ? Image::get_external_url($this->card_icon) : $meta_image;
 
 function CurrentMenu($page, $routes, $classnames = '') {
     $classes = [$classnames];
@@ -21,7 +27,6 @@ function CurrentMenu($page, $routes, $classnames = '') {
 $is_mobile_browser = ($this->MobileDetect->isMobile() && !$this->MobileDetect->isTablet());
 $body_id = trim(substr(str_replace("/", "_", $_SERVER['REQUEST_URI']),1));
 if (empty($body_id)) $body_id = "default";
-
 ?><!doctype html><?php include "art.txt" ?><html lang="en">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -38,32 +43,35 @@ if (empty($body_id)) $body_id = "default";
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <?php } ?>
 
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:site" content="">
-    <meta name="twitter:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="<?php echo $og_image; ?>">
+    <meta name="twitter:description" content="<?php echo $og_description; ?>">
+    <meta name="twitter:title" content="<?php echo $meta_title; ?>">
+
     <meta property="og:locale" content="en_AU">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="CourseSuite">
-    <meta property="og:description" content="<?php echo $meta_description; ?>">
-    <meta property="og:url" content="https://www.coursesuite.ninja/">
     <meta property="og:site_name" content="<?php echo $meta_title; ?>">
-    <meta property="og:image" content="https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg">
+    <meta property="og:url" content="<?php echo Config::get('URL'), substr($_SERVER['REQUEST_URI'],1); ?>">
+    <meta property="og:title" content="<?php echo $og_title; ?>">
+    <meta property="og:description" content="<?php echo $og_description; ?>">
+    <meta property="og:image" content="<?php echo $og_image; ?>">
+
     <link rel="shortcut icon" href="/img/coursesuite_logo_discourse_square.png">
     <link rel="apple-touch-icon-precomposed" href="/img/coursesuite_logo_discourse_square.png">
 <?php if (0) { ?>
     <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTUPjIg1_i6t8kCHKm459WxZYgzz_PZwjimrqw.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://fonts.gstatic.com/s/montserrat/v12/JTURjIg1_i6t8kCHKm45_aZA3gnD_vx3rCs.woff2" as="font" type="font/woff2" crossorigin>
 <?php } ?>
-    <link rel="dns-prefetch" href="https://document.scormification.ninja/">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
     <link rel="dns-prefetch" href="https://d1f8f9xcsvx3ha.cloudfront.net">
+    <link rel="dns-prefetch" href="https://platform-api.sharethis.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 <?php
 
     $headerVideo = "/img/header_dark.mp4";
-    echo "<style>", AppModel::apps_colours_css(), Config::CustomCss(true), "</style>", PHP_EOL; // AppModel::apps_colours_css() also now in less
     if (isset($this->sheets)) {
         foreach ($this->sheets as $sheet) {
             echo "    <link rel='stylesheet' type='text/css' href='$sheet' />". PHP_EOL;
@@ -79,6 +87,7 @@ if (empty($body_id)) $body_id = "default";
         echo "<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.3/less.min.js'></script>" . PHP_EOL;
         echo "<script>less.watch()</script>" . PHP_EOL;
     }
+    echo "<style>", Config::CustomCss(true), "</style>", PHP_EOL; // after other styles
     $blog_badge = "";
     $blog_recent = BlogModel::recent_entry_count();
     if ($blog_recent > 0) {

@@ -37,14 +37,13 @@
 		</div>
 
 		<div class="row"><label for="emailTemplate">Template</label>
-		<div><textarea id="emailTemplate" name="emailTemplate" rows="10">{{{emailTemplate}}}</textarea></div>
-				<p>Email templates can be made <a href="https://beefree.io/" target="_blank">here</a>. There are only a few variables you have to deal with:</p>
-		<ul>
-			<li>&#123;&#123;header&#125;&#125; - (required) Both the subject of the email, plus the Header of the email.</li>
-			<li>&#123;&#123;body&#125;&#125; - (required) Markdown version of your html to be sent.</li>
-			<li>&#123;&#123;link&#125;&#125; - (optional) Hyperlink to send, if any (e.g. for verification emails, etc)</li>
-		</ul>
-
+			<div><textarea id="emailTemplate" name="emailTemplate" rows="10">{{{emailTemplate}}}</textarea></div>
+			<p>Email templates can be made <a href="https://beefree.io/" target="_blank">here</a>. There are only a few variables you have to deal with:</p>
+			<ul>
+				<li>&#123;&#123;header&#125;&#125; - (required) Both the subject of the email, plus the Header of the email.</li>
+				<li>&#123;&#123;body&#125;&#125; - (required) Markdown version of your html to be sent.</li>
+				<li>&#123;&#123;link&#125;&#125; - (optional) Hyperlink to send, if any (e.g. for verification emails, etc)</li>
+			</ul>
 		</div>
 
 		<div class="row"><label>Custom Css</label>
@@ -62,6 +61,44 @@
 		<div class="row">
 			<label for="foobar">Homepage Subscription Stylesheet</label>
 			<input type="text" value="{{mailchimp_stylesheet}}" name="mailchimp_stylesheet" size="80">
+		</div>
+
+		<div class="row"><label>Head Javascript (analytics scripts, etc)</label>
+			<div><textarea name="head_javascript" rows="10">{{{head_javascript}}}</textarea></div>
+			<p>Apparently site maps assist search engines to know what you value on your site. See <a href="https://www.sitemaps.org/protocol.html" target=_blank>https://www.sitemaps.org/protocol.html</a>. Below is the template (handlebars) which gets an object applied to it to rebuild it on demand. The object looks like:</p>
+			<details><summary>Expand details</summary><pre>
+{
+	now: now(),
+	content: [
+		page: "static-page-title",
+		date: "lastmodified"
+	],
+	section: [
+		{
+			route: "label",
+			date: now(),
+			app: [
+				{
+					app_key: "value",
+					date: now(),
+					files: [
+						{
+							filename: "file-name.pdf",
+							date: "lastmodified"
+						}
+					]
+				}
+			]
+		}
+	],
+	blogentry: [
+		{
+			slug: "string",
+			date: "entry-date"
+		}
+	]
+}
+			</pre></details>
 		</div>
 
 		{{!-- <div class="row"><label for="volumelicence">volume licence url</label>

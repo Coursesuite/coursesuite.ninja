@@ -663,6 +663,7 @@ class AdminController extends Controller
                 KeyStore::find("customcss")->put(Request::post("customcss"));
                 KeyStore::find("volumelicence")->put(Request::post("volumelicence"));
                 KeyStore::find("apikey_text")->put(Request::post_html("apikey_text"));
+                KeyStore::find("sitemap_template")->put(Request::post("sitemap_template"));
 
                 KeyStore::find("head_javascript")->put(Request::post("head_javascript", false));
 
@@ -683,7 +684,7 @@ class AdminController extends Controller
         $model->volumelicence = KeyStore::find("volumelicence")->get("");
         $model->apikey_text = KeyStore::find("apikey_text")->get();
         $model->head_javascript = KeyStore::find("head_javascript")->get();
-
+        $model->sitemap_template = KeyStore::find("sitemap_template")->get();
         $model->mailchimp_subscribe =KeyStore::find("mailchimp_subscribe")->get();
         $model->mailchimp_stylesheet = KeyStore::find("mailchimp_stylesheet")->get();
 
@@ -723,11 +724,14 @@ class AdminController extends Controller
         $this->View->renderJSON($model);
     }
 
+    // uploading the same image twice should yield the same path
     public function uploadFDImage() {
         $rootpath = Config::get("PATH_IMG_MEDIA");
-        $fold = uniqid();
+        $fold = md5(file_get_contents('php://input')); // uniqid();
         $fpath = $rootpath . $fold . '/';
-        $fname = $_SERVER['HTTP_X_FILE_NAME'];
+        $fname = urldecode($_SERVER['HTTP_X_FILE_NAME']);
+        $fname = preg_replace('/\.(?=.*\.)/', '', $fname); // remove all dots except the last
+        $fname = preg_replace('/[^a-z0-9_.]/', '', strtolower($fname)); // normalise remaining name
         $serverurl = $fpath . $fname;
         if (!file_exists($fpath)) {
             mkdir($fpath,0775,true);
@@ -842,6 +846,17 @@ class AdminController extends Controller
                 $db->meta_description = Request::post("meta_description");
                 $db->entry_date = Request::post("entry_date");
                 $db->published = Request::post("published");
+
+                $db->card_description = Request::post("card_description");
+                $cardIcon = trim(Request::post("card_icon"));
+                if (!empty($cardIcon)) {
+                    if (strpos($cardIcon,"://")===false) $cardIcon = substr($cardIcon,1);
+                    $db->card_icon = Config::get('URL') . $cardIcon;
+                } else {
+                    $db->card_icon = null;
+                }
+                $db->card_title = Request::post("card_title");
+
                 $db->save();
 
                 $model->formdata = (new BlogModel($entry))->get_model();
@@ -884,6 +899,70 @@ class AdminController extends Controller
         }
         $model->method = $type;
         $this->View->renderHandlebars("admin/encoder", $model, "_admin", true);
+    }
+
+    public function sitemap($action = "view") {
+        $model = $this->model;
+        $model->feedback = "😶 I don't know what you are doing";
+        switch ($action) {
+            case "rebuild":
+                date_default_timezone_set('UTC');
+                $json = new stdClass();
+                $json->last_timestamp_date = gmdate("Y-m-d\TH:i:s\Z", strtotime(str_replace(['/js/main.','.js'], "", APP_JS)));
+
+                foreach (StaticPageModel::get_all_models() as $content) {
+                    $iter = new stdClass();
+                    $iter->page = $content->page_key;
+                    $iter->lastmod = $json->last_timestamp_date;
+                    $contents[] = $iter;
+                }
+                $json->content = $contents;
+
+                foreach(BlogModel::get_all_models() as $entry) {
+                    if ($entry['published']===1) {
+                        $iter = new stdClass();
+                        $iter->slug = $entry['slug'];
+                        $iter->lastmod = gmdate("Y-m-d\TH:i:s\Z", strtotime($entry['entry_date']));
+                        $entries[] = $iter;
+                    }
+                }
+                $json->blogentry = $entries;
+
+                $rows = Model::raw("select s.route, a.app_key, a.added from store_sections s join apps a on find_in_set(cast(a.app_id as char), s.app_ids) > 0 order by route, added desc");
+                foreach ($rows as $row) {
+                    $loop[] = $row->route;
+                }
+                $loop = array_unique($loop);
+                foreach($loop as $iter) {
+                    $section = new stdClass();
+                    $section->route = $iter;
+                    $section->lastmod = $json->last_timestamp_date;
+                    foreach ($rows as $row) {
+                        if ($row->route === $iter) {
+                            $app = new stdClass();
+                            $app->app_key = $row->app_key;
+                            $app->lastmod = gmdate("Y-m-d\TH:i:s\Z", strtotime($row->added));
+                            foreach ((new FilesModel("app",$row->app_key))->get_model() as $file) {
+                                $inst = new stdClass();
+                                $inst->filename = $file['name'];
+                                $inst->lastmod = gmdate("Y-m-d\TH:i:s\Z", strtotime($file['modified']));
+                                $app->files[] = $inst;
+                            }
+                            $section->app[] = $app;
+                        }
+                    }
+                    $sections[] = $section;
+                }
+                $json->section = $sections;
+                $template = KeyStore::find("sitemap_template")->get();
+                $xml = $this->View->getHandlbarsString($template, $json);
+                file_put_contents(Config::get("PATH_PUBLIC_ROOT") . "sitemap.xml", $xml);
+                $model->feedback = "rebuilt <code>sitemap.xml</code> in the root folder";
+            $action = "view";
+            break;
+        }
+        $this->View->renderHandlebars("admin/sitemap/{$action}", $model, "_admin", true);
+
     }
 
 }

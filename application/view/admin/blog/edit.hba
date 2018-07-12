@@ -32,8 +32,26 @@
             </div>
             <div class="row"><label for="meta_description">Meta Description</label>
 				<div><input type="text" id="meta_description" name="meta_description" value="{{meta_description}}"></div>
-
             </div>
+            <div class="row"><label>Embedding/Tweet Image</label>
+				<p>
+					A URL to a unique image representing the content of the page. You should not use a generic image such as your website logo, author photo, or other image that spans multiple pages. Images for this Card support an aspect ratio of 2:1, be less than 5MB in size, and be JPG, PNG, WEBP or GIF (SVG is not allowed).
+				</p>
+				<div><input type="text" name="card_icon" value="{{card_icon}}" data-dnd="url"></div>
+			</div>
+            <div class="row"><label>Embedding/Tweet Title</label>
+				<p>
+					A concise title for the related content. iOS, Android: Truncated to two lines in timeline and expanded tweets. Web: Truncated to one line in timeline and expanded tweets.
+				</p>
+				<div><input type="text" name="card_title" value="{{card_title}}" maxlength="100"></div>
+			</div>
+            <div class="row"><label>Embedding/Tweet Description</label>
+				<p>
+					A description that concisely summarizes the content as appropriate for presentation within a tweets. You should not re-use the title as the description or use this field to describe the general services provided by the website. iOS, Android: Not displayed, Web: Truncated to three lines in timeline and expanded tweets.
+				</p>
+				<div><input type="text" name="card_description" value="{{card_description}}" maxlength="255"></div>
+			</div>
+
 			<div class="row"><label />
 				<div><button>Save</button> <a href="{{@root.baseurl}}admin/blog/" class='button'>Cancel</a></div>
 			</div>

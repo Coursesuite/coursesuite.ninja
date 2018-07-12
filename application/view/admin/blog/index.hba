@@ -10,20 +10,21 @@
 
 		<table>
 			<thead>
-				<tr><th colspan="2">Slug</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr>
+				<tr><th colspan="2">Slug</th><th>Age</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr>
 			</thead>
 			<tbody>
 			{{#each index}}
 			<tr>
 				<td>{{#equals published "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
-				<td>{{slug}}</td>
+				<td>{{@root.baseurl}}blog/{{slug}}</td>
+				<td>{{humandate (datetotime entry_date) "ago"}}</td>
 				<td><a href="{{@root.baseurl}}admin/blog/edit/{{entry_id}}">Edit</a></td>
 				<td><a href="{{@root.baseurl}}admin/blog/delete/{{entry_id}}">Delete</a></td>
 			</tr>
 			{{/each}}
 		</tbody>
 		<tfoot>
-			<tr><td colspan="4"><i class='fa fa-plus-circle'></i><a href="{{@root.baseurl}}admin/blog/new/0">Add a new blog entry</a></td></tr>
+			<tr><td><i class='fa fa-plus-circle'></i></td><td colspan="4"><a href="{{@root.baseurl}}admin/blog/new/0">Add a new blog entry</a></td></tr>
 		</tfoot>
 		</table>
 

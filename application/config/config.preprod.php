@@ -14,6 +14,7 @@ return array(
     'PATH_IMG_MEDIA' => realpath(dirname(__FILE__) . '/../../') . '/public/img/',
     'PATH_ATTACHMENTS' => realpath(dirname(__FILE__) . '/../../') . '/public/files/',
     'PATH_CSS_ROOT' => realpath(dirname(__FILE__) . '/../../') . '/public/css/',
+    'PATH_PUBLIC_ROOT' => realpath(dirname(__FILE__) . '/../../') . '/public/',
 
     'DEFAULT_CONTROLLER' => 'home',
     'DEFAULT_ACTION' => 'index',

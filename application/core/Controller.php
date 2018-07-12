@@ -68,6 +68,7 @@ class Controller
             $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit.js");
             $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit-icons.js");
             $this->View->Requires("main.js");
+            $this->View->Requires("/api/apps_colours_css", null, "css");
         }
     }
 

@@ -118,7 +118,7 @@ class BlogModel extends Model
 	}
 
     public static function get_all_models() {
-    	$rows = Model::ReadColumn(self::TABLE_NAME, self::ID_ROW_NAME, "", [], false);
+    	$rows = Model::ReadColumn(self::TABLE_NAME, self::ID_ROW_NAME, "", [], false, "entry_date desc");
         $results = [];
     	foreach ($rows as $id) {
 			$results[] = (new dbRow(self::TABLE_NAME, $id))->view();
