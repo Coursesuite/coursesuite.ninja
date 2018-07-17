@@ -11,6 +11,7 @@
 	            </div>
 	            <div class="uk-flex uk-flex-middle" uk-height-viewport>
 		            <div class="uk-padding-large">
+				        <img src="<?php echo $baseurl; ?>img/coursesuite-black.svg" class="uk-hidden@m uk-margin-small">
 <?php if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) { ?>
 		                <h1>Login to access apps.</h1>
 		                <p>When you purchased an app we sent you a password so you can log in. Leave the field empty if you can't remember it and we will send you a new password to use.</p>

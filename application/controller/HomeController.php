@@ -31,9 +31,9 @@ class HomeController extends Controller
 
         $model->login_label = Config::get("FASTSPRING_CONTEXTUAL_STORE") ? "login here" : "register / login";
 
-        $this->View->page_title = "Elearning software tools to build interactive SCORM courses | CourseSuite";
-        $this->View->page_keywords = "elearning software, online learning software, online e-learning software, scorm html5, scorm wrapper, CourseSuite, Course Suite";
-        $this->View->page_description = "Ninja Suite by CourseSuite are a simple and powerful set of web-bases authoring apps that allow you to rapidly create interactive HTML5-based SCORM courses. Try free for 7 days.";
+        $this->View->page_title = KeyStore::find("DEFAULT_META_TITLE")->get(Config::get('DEFAULT_META_TITLE')); // "Elearning software tools to build interactive SCORM courses | CourseSuite";
+        $this->View->page_keywords = KeyStore::find("DEFAULT_META_KEYWORDS")->get(Config::get('DEFAULT_META_KEYWORDS')); // "elearning software, online learning software, online e-learning software, scorm html5, scorm wrapper, CourseSuite, Course Suite";
+        $this->View->page_description = KeyStore::find("DEFAULT_META_DESCRIPTION")->get(Config::get('DEFAULT_META_DESCRIPTION')); // "Ninja Suite by CourseSuite are a simple and powerful set of web-bases authoring apps that allow you to rapidly create interactive HTML5-based SCORM courses. Try free for 7 days.";
 
         $this->View->Requires("home/who_we_are");
         $this->View->Requires("home/featured_products");

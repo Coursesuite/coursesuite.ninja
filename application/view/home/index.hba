@@ -1,23 +1,11 @@
-<div class="uk-section cs-store-lead uk-background-cover uk-light uk-height-large" style="background-image: url(/img/intro-header.jpg);">
-	<div class="uk-container cs-negative-margin-home"><div class='uk-clearfix'>
-	    <div class='uk-float-right'>
-	    {{#if userIsLoggedIn}}
-	        <a class='uk-button uk-button-default uk-button-small' href='{{$baseurl}}me'>my account</a>
-	    {{else}}
-	        <a class='uk-button uk-button-default uk-button-small uk-visible@s' href='#login-required' uk-toggle>{{login_label}}</a>
-	    {{/if}}
-	    </div>
-	</div></div>
-	<div uk-parallax="opacity: 1,0">
-		{{> who_we_are}}
-	</div>
+<div class="uk-section cs-store-lead uk-light uk-padding-small uk-padding-remove-bottom">
+	{{> who_we_are}}
 </div>
 
 <div class="uk-section cs-store-intro">
 	<div class="uk-container uk-padding-remove-horizontal" id="introduction">
 		{{{htmlify Intro}}}
 	</div>
-
 </div>
 
 <div class="uk-section cs-store-featured cs-colour-sage">

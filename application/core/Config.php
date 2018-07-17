@@ -6,7 +6,7 @@ class Config
     private static $crud;
     private static $menu;
 
-    public static function get($key, $suffix = "")
+    public static function get($key)
     {
 
         if ($key === "debug") {
@@ -25,7 +25,7 @@ class Config
             self::$config = require $config_file;
         }
 
-        return self::$config[$key] . $suffix;
+        return self::$config[$key];
     }
 
     public static function Crud() {

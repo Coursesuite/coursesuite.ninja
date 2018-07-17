@@ -1,6 +1,6 @@
 @import "colours.less";
 @import "uikit/less/uikit.theme.less";
-@import url('https://fonts.googleapis.com/css?family=Montserrat:200,300i');
+@import url('https://fonts.googleapis.com/css?family=Josefin+Slab|Montserrat:100');
 
 :root {
 	--cs-logo-blue: rgba(47, 160, 218, 1);
@@ -337,12 +337,12 @@ a:hover>.cs-blog-badge {
 	a {
 		color: inherit;
 	}
-	.uk-grid > div {
-		.uk-padding-small();
-		&:last-of-type {
-			.uk-text-right();
-		}
-	}
+	// .uk-grid > div {
+	// 	.uk-padding-small();
+	// 	&:last-of-type {
+	// 		.uk-text-right();
+	// 	}
+	// }
 }
 
 // #mc_embed_signup {
@@ -370,32 +370,50 @@ a:hover>.cs-blog-badge {
 }
 
 .cs-store-lead {
+	background: url(/img/who-we-are/background.jpg) no-repeat center;
+	background-size: cover;
+
 	.uk-light();
-	h1, p {
+	h1, h2 {
 		font-family: 'Montserrat', sans-serif;
-		@media (max-width: @breakpoint-small) {
-			font-family: @global-font-family;
+		font-weight: 100;
+		&:before {
+			content: 'the';
+			display: block;
+			font-size: 12px;
+			font-style: italic;
+		}
+	}
+	p {
+		font-weight:100;
+	}
+	p.uk-text-large {
+		letter-spacing:1.1px;
+	}
+	@media (max-width: @breakpoint-small) {
+		#cs-home-ninjas {
+			display:none;
+		}
+	}
+/*
+	@global-font-family
+			font-family: ;
 			font-size: 2rem;
 			color: white;
 		}
-	}
 	h1 {
 		font-size: 6rem;
 		@media (max-width: @breakpoint-small) {
 			font-size: 3rem;
 		}
 		text-shadow: 1px 1px 1px rgba(63,63,63,.5);
-		&:before {
-			content: 'the';
-			display: block;
-			font-size: 15px;
-			font-style: italic;
-		}
 	}
+*/
 	p.like-a-ninja {
 		font-style: italic;
 	}
 }
+
 .cs-store-featured .uk-card {
 	a, p {
 		color: @global-color !important;
@@ -606,14 +624,16 @@ a:hover>.cs-blog-badge {
 	.uk-margin-bottom();
 }
 
-body:not(.mobile) .cs-who-we-are {
+/* body:not(.mobile) .cs-who-we-are {
 	width: 50%;
 	margin: 0 0 0 50%;
 }
+
+body.tablet .cs-who-we-are,
 body.mobile .cs-who-we-are {
 	width: 100%;
 	margin: 0;
-}
+} */
 
 #eyes,#eyes>*{box-sizing: border-box;}
 #eyes {
@@ -651,7 +671,7 @@ body.mobile .cs-who-we-are {
 
 .cs-negative-margin-home{
     margin-top: -56px;
-    margin-bottom: 40px;
+/*    margin-bottom: 40px; */
 }
 
 .cs-app-links .uk-button {
@@ -667,4 +687,11 @@ body.mobile .cs-who-we-are {
 		border-top-color: grey;
 		transform:rotate(-45deg);
 	}
+}
+
+.cs-z1 {
+	z-index:1;
+}
+.cs-z2 {
+	z-index:2;
 }

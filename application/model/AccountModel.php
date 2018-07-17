@@ -118,6 +118,17 @@ class AccountModel extends Model
         }
     }
 
+    public function notify($message, $level = MESSAGE_LEVEL_MEH) {
+        $uid = $this->get_id();
+        if ($uid > 0) {
+            MessageModel::notify_user($message, $level, $uid);
+        }
+    }
+
+
+
+
+    /* -------------------------------- static functions ------------------------------- */
 
     public static function generate_secret_key($user_id) {
         $idname = self::ID_ROW_NAME;

@@ -8,6 +8,16 @@ function clippy(i) {
 
 $(function () {
 
+	// window.cms=[];
+	// $("textarea[data-codemirror]").each(function(index,el) {
+	// 	console.info(el);
+	// 	window.cms.push(CodeMirror.fromTextArea(el, {
+	// 			lineNumbers:true,
+	// 			lineWrapping: true
+	// 		}
+	// 	));
+	// });
+
 	// admin file-upload controls (when inside iframe)
 	window.fd={logging:false};
 	var pfd = document.querySelector('#filedrop');

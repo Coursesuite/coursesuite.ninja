@@ -14,7 +14,9 @@ class Environment
         // else return "development"
         if ($_SERVER['HTTP_HOST'] === "dev.coursesuite.ninja") {
             return "preprod";
-        }
+        } else if ($_SERVER['HTTP_HOST'] === "www.coursesuite.ninja") {
+            return "production";
+	}
         return (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : "development");
     }
 

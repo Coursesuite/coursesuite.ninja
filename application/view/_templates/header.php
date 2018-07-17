@@ -1,8 +1,8 @@
 <?php
 $start = microtime(true);
-$meta_description = isset($this->meta_description) ? $this->meta_description : Config::get('DEFAULT_META_DESCRIPTION');
-$meta_keywords = isset($this->meta_keywords) ? $this->meta_keywords : Config::get('DEFAULT_META_KEYWORDS');
-$meta_title = isset($this->meta_title) ? $this->meta_title : Config::get('DEFAULT_META_TITLE');
+$meta_description = isset($this->meta_description) ? $this->meta_description : KeyStore::find("DEFAULT_META_DESCRIPTION")->get(Config::get('DEFAULT_META_DESCRIPTION'));
+$meta_keywords = isset($this->meta_keywords) ? $this->meta_keywords : KeyStore::find("DEFAULT_META_KEYWORDS")->get(Config::get('DEFAULT_META_KEYWORDS'));
+$meta_title = isset($this->meta_title) ? $this->meta_title : KeyStore::find("DEFAULT_META_TITLE")->get(Config::get('DEFAULT_META_TITLE'));
 $meta_image = "https://fonts.coursesuite.ninja/coursesuite-card-meta.jpg";
 
 $baseurl = Config::get('URL');
@@ -25,6 +25,7 @@ function CurrentMenu($page, $routes, $classnames = '') {
 }
 
 $is_mobile_browser = ($this->MobileDetect->isMobile() && !$this->MobileDetect->isTablet());
+$is_tablet_browser = $this->MobileDetect->isTablet();
 $body_id = trim(substr(str_replace("/", "_", $_SERVER['REQUEST_URI']),1));
 if (empty($body_id)) $body_id = "default";
 ?><!doctype html><?php include "art.txt" ?><html lang="en">
@@ -98,10 +99,10 @@ if (empty($body_id)) $body_id = "default";
 ?>
     <script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=58ba5cc8535b950011d4059a&product=inline-share-buttons' async='async'></script>
     </head>
-<body id="<?php echo $body_id; ?>" class="<?php echo ($is_mobile_browser) ? 'mobile' : 'desktop'; ?>">
+<body id="<?php echo $body_id; ?>" class="<?php echo ($is_mobile_browser) ? 'mobile' : ($is_tablet_browser) ? 'tablet' : 'desktop'; ?>">
 
 <?php
-if ($is_mobile_browser) {
+if ($is_mobile_browser || $is_tablet_browser) {
 include "nav_mobile.php";
 } else {
 include "nav_desktop.php";

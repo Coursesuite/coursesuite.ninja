@@ -80,7 +80,7 @@ class LoggingModel
         $sql = "INSERT INTO applog(" . implode(", ", array_keys($params)) . ") VALUES (";
         $modded = array();
         foreach ($params as $param => $value) {
-            $modded[":$param"] = is_array($value) ? serialize($value) : $value;
+            $modded[":$param"] = is_object($value) || is_array($value) ? serialize($value) : $value;
         }
         unset($params);
         $sql .= implode(", ", array_keys($modded)) . ")";
