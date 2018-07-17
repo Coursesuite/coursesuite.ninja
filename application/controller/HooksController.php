@@ -84,11 +84,11 @@ class HooksController//  doesn't extend Controller
 
         $postbody = file_get_contents("php://input");
 
-        // $hashofbody = hash("sha256", $postbody);
-        // should equal
+        // fastspring secret key hashes content for payload verification
         $signature =  base64_encode( hash_hmac( 'sha256', $postbody , Config::get("FASTSPRING_SECRET_KEY"), true ) );
-        // X-FS-Signature header
-        // if ($hashofbody !== fsSignature) die("Bad data");
+        // $fsSignature = $_SERVER['HTTP_X_FS_SIGNATURE'];
+
+        // if ($hashofbody !== $fsSignature) die("Bad data");
 
         // record the entire event
         LoggingModel::logMethodCall(__METHOD__, "", $event, $status, $postbody, $_SERVER, $signature);
@@ -98,7 +98,6 @@ class HooksController//  doesn't extend Controller
 
         foreach ($json->events as $event) {
             $data = $event->data;
-            $item = reset($data->items); // items[0]; assume a subscription is for one product only; may change
 
             // if (!isset($data->account->contact->email)) die("Invalid account");
             // if (!isset($data->reference)) die("Invalid order");
@@ -107,6 +106,7 @@ class HooksController//  doesn't extend Controller
                 case "order.completed": // purchase came in
 
                     // TODO: differentiate between a subscription and a standalone product such as a template
+                    $item = reset($data->items); // items[0]; assume a subscription is for one product only; may change
 
                     // create and welcome a new user if required
                     if (!Model::Exists("users","user_email=:e",[":e"=>$data->account->contact->email])) {
@@ -145,11 +145,13 @@ class HooksController//  doesn't extend Controller
                 break;
                 case "subscription.charge.completed": // a new payment has been made on this account
 
+                    $item = reset($data->items); // items[0]; assume a subscription is for one product only; may change
+
                     // get existing account
                     $account = new AccountModel("email", $data->account->contact->email);
 
                     // update existing subscription by reference
-                    $subscription = new dbRow("subscription", ["fsOrderId=:id", [":id" => $data->id]]);
+                    $subscription = new dbRow("subscriptions", ["fsOrderId=:id", [":id" => $data->id]]);
                     $subscription->fsNextDue = date('Y-m-d', $item->subscription->nextInSeconds);
                     $subscription->active = $item->subscription->active;
                     $subscription->fsState = $item->subscription->state;
@@ -170,10 +172,10 @@ class HooksController//  doesn't extend Controller
                     $account = new AccountModel("email", $data->account->contact->email);
 
                     // update existing subscription by reference
-                    $subscription = new dbRow("subscription", ["fsSubscriptionId=:id", [":id" => $data->id]]);
-                    $subscription->endDate = date('Y-m-d', $item->subscription->endInSeconds);
-                    $subscription->active = $item->subscription->active;
-                    $subscription->fsState = $item->subscription->state;
+                    $subscription = new dbRow("subscriptions", ["fsSubscriptionId=:id", [":id" => $data->id]]);
+                    $subscription->endDate = date('Y-m-d', $data->deactivationDateInSeconds);
+                    $subscription->active = $data->active;
+                    $subscription->fsState = $data->state;
                     $subscription->statusReason = 'canceled';
                     $subscription->save();
 
@@ -183,6 +185,9 @@ class HooksController//  doesn't extend Controller
                     $subevent->subscription_id = $subscription->PRIMARY_KEY;
                     $subevent->payload = $event; // just this event
                     $subevent->save();
+
+                    // notify the user in case they miss other notifications
+                    // $account->notify(Text::get("FEEDBACK_FASTSPRING_ORDER_CANCELLED", array("id" => $subscription->referenceId)), MESSAGE_LEVEL_HAPPY);
 
                 break;
 

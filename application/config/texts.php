@@ -135,6 +135,9 @@ return array(
     "FEEDBACK_MAILCHIMP_UNSUBSCRIBE_FAILED" => "Something went wrong, failed to unscubscribe from mailing list",
     "FEEDBACK_MAILCHIMP_UNSUBSCRIBE_SUCCESS" => "Successfully unsubscribed from mailing list",
 
+    "FEEDBACK_ORDER_CANCELLATION_REQUESTED" => "Order cancelation requested, may take a few minutes to apply.",
+    "FEEDBACK_FASTSPRING_ORDER_CANCELLED" => "Order " . (isset($id) ? $id : "") . " has been cancelled",
+
     "EXCEEDED_MONTHLY_CAP" => "Monthly usage cap exceeded",
     "MISSING_PARAMETERS" => "Missing expected parameters",
 

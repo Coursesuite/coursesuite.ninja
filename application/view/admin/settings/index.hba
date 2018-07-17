@@ -21,6 +21,11 @@
 			<input type="number" min="0" max="99" value="{{freetrialdays}}" step="1" id="foobar" name="freeTrialDays">
 		</div> --}}
 
+		<div class="row"><label for="page_footer">Page Footer</label>
+			<div><textarea id="page_footer" name="page_footer" rows="5" cols="80" data-codemirror="true">{{page_footer}}</textarea></div>
+		</div>
+
+{{!--
 		<div class="grid row">
 			<div class="grid-1-3">
 				<div class="mde"><label for="description">Footer left column</label>
@@ -35,6 +40,7 @@
 				<div><textarea id="footer_col1" name="footer_col3" rows="5" cols="80" data-markdown="true">{{footer.2}}</textarea></div></div>
 			</div>
 		</div>
+--}}
 
 		<div class="row"><label for="emailTemplate">Template</label>
 			<div><textarea id="emailTemplate" name="emailTemplate" rows="10">{{{emailTemplate}}}</textarea></div>
@@ -54,8 +60,8 @@
 			<div><textarea name="head_javascript" rows="10">{{{head_javascript}}}</textarea></div>
 		</div>
 
-		<div class="row"><label>Homepage Subscription (e.g. mailchimp)</label>
-			<div><textarea name="mailchimp_subscribe" rows="10">{{{mailchimp_subscribe}}}</textarea></div>
+		<div class="row mde"><label>Homepage Subscription (e.g. mailchimp)</label>
+			<div><textarea name="mailchimp_subscribe" rows="10" data-codemirror="true">{{{mailchimp_subscribe}}}</textarea></div>
 		</div>
 
 		<div class="row">
@@ -63,7 +69,7 @@
 			<input type="text" value="{{mailchimp_stylesheet}}" name="mailchimp_stylesheet" size="80">
 		</div>
 
-		<div class="row"><label>Head Javascript (analytics scripts, etc)</label>
+		<div class="row"><label>Sitemap Template (XML)</label>
 			<div><textarea name="sitemap_template" rows="10">{{{sitemap_template}}}</textarea></div>
 			<p>Apparently site maps assist search engines to know what you value on your site. See <a href="https://www.sitemaps.org/protocol.html" target=_blank>https://www.sitemaps.org/protocol.html</a>. Below is the template (handlebars) which gets an object applied to it to rebuild it on demand. The object looks like:</p>
 			<details><summary>Expand details</summary><pre>

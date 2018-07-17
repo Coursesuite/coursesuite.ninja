@@ -8,6 +8,14 @@
 			<h2 class='uk-heading-divider'>Order History</h2>
 			<p>This page lists all your current and past orders.</p>
 
+			{{#if feedback}}
+			<div uk-alert class="{{feedback.class}}">
+			    <a class="uk-alert-close" uk-close></a>
+			    <h3>{{feedback.heading}}</h3>
+			    <p>{{feedback.text}}</p>
+			</div>
+			{{/if}}
+
 			<div class="uk-overflow-auto">
 			<table class='uk-table uk-table-small cs-tablesort ' width='100%'>
 			<thead><tr>
@@ -46,7 +54,7 @@
 	            	{{#if fsInvoiceUrl}}<li><a target="_blank" href="{{fsInvoiceUrl}}"><span uk-icon="push" class="uk-margin-xsmall-right"></span>Latest Invoice</a></li>{{/if}}
 	            	{{#decodable subscriptionUrl}}<li><a href='{{.}}' target="_blank"><span uk-icon="link" class="uk-margin-xsmall-right"></span>Order Details</a></li>{{/decodable}}
 					{{#if support_url}}<li><a href='{{support_url}}'><span uk-icon="mail" class="uk-margin-xsmall-right"></span>Email Support</a></li>{{/if}}
-					{{#unless ended}}{{#if fsSubscriptionId}}<li><a href="/me/orders/cancel/{{encode fsSubscriptionId}}"><span uk-icon='ban' class="uk-margin-xsmall-right"></span>Cancel subscription</a></li>{{/if}}{{/unless}}
+					{{#equals fsState "canceled"}}{{else}}{{#unless ended}}{{#if fsSubscriptionId}}<li><a href="/me/orders/cancel/{{encode fsSubscriptionId}}"><span uk-icon='ban' class="uk-margin-xsmall-right"></span>Cancel subscription</a></li>{{/if}}{{/unless}}{{/equals}}
 				</ul></td>
 			</tr>
 			{{#contains Product.product_key 'api-'}}{{else}}

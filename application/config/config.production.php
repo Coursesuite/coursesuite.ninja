@@ -47,8 +47,8 @@ return array(
     'WEBSOCKET_SCHEMA' => "wss://",
     'WEBSOCKET_HOST' => 'www.coursesuite.ninja/licence',
     'WEBSOCKET_PORT' => '', // 9000
-    'WEBSOCKET_LAYER' => "window.onbeforeunload = function(){ Layer.onclose=function(){}; Layer.close(); }; Layer.onmessage = function(event) { console.dir(event); var msg = JSON.parse(event.data); switch (msg.command) { case 'open':case 'close':location.href = App.Home; window.close(); break; default: console.log(msg); }}",
-    'WEBSOCKET_LAYER_MINIFIED' => "eval(function(p,a,c,k,e,d){while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+c.toString(a)+'\\b','g'),k[c])}}return p}('9.a=b(1){8 0=7.4(1.6);c(0.d){3\"j\":3\"2\":l.i=h.e;f.2();m;g:k.5(0)}}',23,23,'msg|event|close|case|parse|log|data|JSON|var|Layer|onmessage|function|switch|command|Home|window|default|App|href|open|console|location|break'.split('|')))",
+    'WEBSOCKET_LAYER' => "window.onbeforeunload = function(){ Layer.onclose=function(){}; Layer.close(); }; Layer.onmessage = function(event) { var msg = JSON.parse(event.data); switch (msg.command) { case 'open':case 'close':location.href = App.Home; window.close(); break; default: console.log(msg); }}",
+    'WEBSOCKET_LAYER_MINIFIED' => "window.onbeforeunload = function(){ Layer.onclose=function(){}; Layer.close(); }; Layer.onmessage = function(event) { console.dir(event); var msg = JSON.parse(event.data); switch (msg.command) { case 'open':case 'close':location.href = App.Home; window.close(); break; default: console.log(msg); }}",
 
 
     'CAPTCHA_WIDTH' => 359,

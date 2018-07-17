@@ -655,9 +655,10 @@ class AdminController extends Controller
                 KeyStore::find("mailchimp_subscribe")->put(Request::post("mailchimp_subscribe"));
                 KeyStore::find("mailchimp_stylesheet")->put(Request::post("mailchimp_stylesheet"));
 
-                KeyStore::find("footer_col1")->put(Request::post("footer_col1"));
-                KeyStore::find("footer_col2")->put(Request::post("footer_col2"));
-                KeyStore::find("footer_col3")->put(Request::post("footer_col3"));
+                KeyStore::find("page_footer")->put(Request::post("page_footer"));
+                // KeyStore::find("footer_col1")->put(Request::post("footer_col1"));
+                // KeyStore::find("footer_col2")->put(Request::post("footer_col2"));
+                // KeyStore::find("footer_col3")->put(Request::post("footer_col3"));
                 KeyStore::find("freeTrialDays")->put(Request::post("freeTrialDays"));
                 KeyStore::find("emailTemplate")->put(Request::post("emailTemplate"));
                 KeyStore::find("customcss")->put(Request::post("customcss"));
@@ -671,12 +672,13 @@ class AdminController extends Controller
                 break;
         }
 
-        $footer_1 = KeyStore::find("footer_col1")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_1");
-        $footer_2 = KeyStore::find("footer_col2")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_2");
-        $footer_3 = KeyStore::find("footer_col3")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_3");
+        // $footer_1 = KeyStore::find("footer_col1")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_1");
+        // $footer_2 = KeyStore::find("footer_col2")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_2");
+        // $footer_3 = KeyStore::find("footer_col3")->get() ?: Config::get("GLOBAL_FOOTER_COLUMN_3");
 
         $model = $this->model;
-        $model->footer = [$footer_1, $footer_2, $footer_3];
+        $model->page_footer = KeyStore::find("page_footer")->get();
+        // $model->footer = [$footer_1, $footer_2, $footer_3];
         $model->homepage_intro = KeyStore::find("homepage_intro")->get();
         $model->emailTemplate = KeyStore::find("emailTemplate")->get();
         $model->freetrialdays = KeyStore::find("freeTrialDays")->get(3);

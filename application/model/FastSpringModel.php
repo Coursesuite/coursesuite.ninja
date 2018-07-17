@@ -6,8 +6,12 @@ class FastSpringModel {
 
 	private static function init($endpoint, $method = "GET") {
         self::$ch = curl_init();
+        global $PAGE;
+        $useragent = $PAGE->last_browser;
+        if (empty($useragent)) { $useragent = "CourseSuite/1.0"; }
         curl_setopt(self::$ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Accept: application/json, text/javascript, */*'));
         curl_setopt(self::$ch, CURLOPT_USERPWD, Config::get("FASTSPRING_BASICAUTH_USERNAME") . ":" . Config::get("FASTSPRING_BASICAUTH_PASSWORD"));
+        curl_setopt(self::$ch, CURLOPT_USERAGENT, $useragent);
         curl_setopt(self::$ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt(self::$ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt(self::$ch, CURLOPT_SSL_VERIFYPEER, 2);

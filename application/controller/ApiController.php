@@ -115,6 +115,7 @@ class ApiController extends Controller
 	public function validate($app_key, $token_encoded) {
 
 		$authtoken = parent::requiresAuth();
+//$authtoken = "timdebug";
 		$token_raw = Text::base64dec($token_encoded);
 
 		LoggingModel::logMethodCall(__METHOD__, $authtoken, $app_key, $token_raw, $token_encoded);

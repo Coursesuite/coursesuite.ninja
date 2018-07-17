@@ -4,7 +4,7 @@
             <button class="uk-offcanvas-close" type="button" uk-close></button>
 
             <?php if (!Session::userIsLoggedIn()) { ?>
-            <p><a class='uk-button uk-button-default' href='#login-required' uk-toggle>register / login</a></p>
+            <p><a class='uk-button uk-button-default' href='#login-required' uk-toggle>login here</a></p>
             <?php } ?>
 
             <ul class="uk-nav uk-nav-default uk-margin-small-top">
@@ -31,11 +31,12 @@
                     <a href="<?php echo $baseurl; ?>pricing/" class='uk-link-reset'><span class="uk-margin-small-right" uk-icon="icon: credit-card"></span> Pricing</a>
                 </li>
                 <li<?php CurrentMenu($this->page(),"support"); ?>>
-                    <a href="#" class='uk-link-reset'><span class="uk-margin-small-right" uk-icon="icon: lifesaver"></span> Support</a>
+                    <a href='<?php echo (Session::userIsLoggedIn()) ? "/me/support/" : "#"; ?>' class='uk-link-reset'><span uk-icon="lifesaver"></span>Support</a>
                     <ul class="uk-sub-nav uk-margin-left">
                         <li><a href="https://help.coursesuite.ninja/">Helpdesk</a></li>
                         <li><a href="https://guide.coursesuite.ninja/">User Guides</a></li>
-                        <li><a href="https://www.youtube.com/channel/UCxjmLClwzsyhaBshrZ1FYyA">YouTube channel</a></li>
+                        <li><a href="https://www.youtube.com/channel/UCxjmLClwzsyhaBshrZ1FYyA" target="_blank">YouTube channel</a></li>
+                        <?php if (Config::get("API_VISIBLE")) { ?><li><a href="/apidoc" target="_blank">API Documentation</a></li><?php } ?>
                     </ul>
                 </li>
                 <li<?php CurrentMenu($this->page(),"blog,about,testimonials,services"); ?>>
@@ -43,7 +44,7 @@
                     <ul class="uk-sub-nav uk-margin-left">
                         <li><a href="<?php echo $baseurl; ?>blog">Blog<?php echo $blog_badge; ?></a></li>
                         <li><a href="<?php echo $baseurl; ?>content/about">About CourseSuite</a></li>
-                        <li><a href="<?php echo $baseurl; ?>services">Contact Us</a></li>
+                        <li><a href="<?php echo $baseurl; ?>content/contact">Contact Us</a></li>
                         <li><a href="https://www.avide.com.au">Avide eLearning</a></li>
                     </ul>
                 </li>

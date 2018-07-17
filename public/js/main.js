@@ -516,6 +516,43 @@ $(function () {
 	});
 
 
+  // smooth scroll links starting with an octothorp
+  $('a[href*="#"]')
+  // Remove links that don't actually link to anything
+  .not('[href="#"]')
+  .not('[href="#0"]')
+  .click(function(event) {
+    // On-page links
+    if (
+      location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+      &&
+      location.hostname == this.hostname
+    ) {
+      // Figure out element to scroll to
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+      // Does a scroll target exist?
+      if (target.length) {
+        // Only prevent default if animation is actually gonna happen
+        event.preventDefault();
+        $('html, body').animate({
+          scrollTop: target.offset().top
+        }, 1000, function() {
+          // Callback after animation
+          // Must change focus!
+          var $target = $(target);
+          $target.focus();
+          if ($target.is(":focus")) { // Checking if the target was focused
+            return false;
+          } else {
+            $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+            $target.focus(); // Set focus again
+          };
+        });
+      }
+    }
+  });
+
 	// $("#store_index .timeline-heading h4").on("click", function (e) {
 	// 	var subject = $(this).text();
 	// 	e.preventDefault();
@@ -619,12 +656,25 @@ var searchObject = function (object, matchCallback, currentPath, result, searche
     return result;
 }
 
+// watch/callback for localised pricing data, which may or may not execute after DOMContentLoaded/load/onload/readyState etc
 function fsCallbackFunction(data) {
-    [].forEach.call(document.querySelectorAll("span[data-fsc-item-pricetotal-callback]"), function (node) {
+console.dir(data);
+  var fn = function() {
+      [].forEach.call(document.querySelectorAll("span[data-fsc-item-pricetotal-callback]"), function (node) {
         var dObj = searchObject(data,function(value) {
-            return value!=null && value!=undefined && value.productPath===node.dataset.fscItemPath;
+          return value!=null && value!=undefined && value.productPath===node.dataset.fscItemPath;
         });
         // lets pull the price from the last in the series
-        node.innerHTML = dObj[dObj.length-1].value.unitPrice+" "+data.currency;
-    });
+        node.innerHTML = ['','-',dObj[dObj.length-1].value.unitPrice,data.currency].join(' ');
+      });
+    },
+    t = function () {
+console.info(document.readyState);
+      if(document.readyState==='complete') {
+        fn();
+      } else {
+        setTimeout(t,100);
+      }
+    };
+  t();
 }

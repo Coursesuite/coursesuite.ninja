@@ -9,10 +9,14 @@
 	        <div class="uk-flex uk-flex-middle" uk-height-viewport>
 	            <div class="uk-padding-small">
 <?php if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) { ?>
-	                <h1>Login here.</h1>
+	                <h1>Login to access apps.</h1>
+	                <p>When you purchased an app we sent you a password so you can log in. Leave the field empty if you can't remember it and we will send you a new password to use.</p>
 <?php } else {  ?>
 	                <h1>Register or Login here.</h1>
+	                <?php echo $this->Registration->graph; ?>
+	                <p>Register or Log below. If you don't yet have a password we'll send you one.</p>
 <?php } ?>
+	            	<p>You'll remain logged on until you log off (uses a cookie).</p>
 					<form method="post" class="uk-form-stacked">
 						<input type="hidden" name="csrf_token" value="<?php echo $this->Registration->csrf_token; ?>">
 						<div class="uk-margin">

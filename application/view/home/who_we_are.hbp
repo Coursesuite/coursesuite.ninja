@@ -1,9 +1,20 @@
-<div class='uk-container'>
-	<div class='cs-who-we-are'>
+<div class='uk-container uk-position-relative'>
+    <div class='uk-position-top-right'>
+    {{#if userIsLoggedIn}}
+        <a class='uk-button uk-button-default uk-button-small' href='{{$baseurl}}me'>my account</a>
+    {{else}}
+        <a class='uk-button uk-button-default uk-button-small uk-visible@s' href='#login-required' uk-toggle>{{login_label}}</a>
+    {{/if}}
+    </div>
+
+	<img src="/img/who-we-are/foreground.png" class="uk-position-bottom-left uk-width-1-3 cs-z1" id="cs-home-ninjas">
+
+	<div class="cs-z2">
 		<h1 class='uk-heading-primary uk-text-center'>NinjaSuite</h1>
-		<p class='uk-text-lead uk-text-center'>eLearning software tools to build SCORM courses.</p>
+		<p class='uk-text-large uk-text-center'>eLearning software tools to build SCORM courses.</p>
 		<p class='uk-text-center cs-like-a-ninja'>Like a Ninja.</p>
 		<div class='uk-margin uk-padding-top-large uk-text-center'><a class='uk-button uk-button-primary' href='{{baseurl}}products'>Explore apps</a></div>
 		<p class='uk-text-center'><a href="#introduction"><span uk-icon="triangle-down"></span><span uk-icon="triangle-down"></span> find out more <span uk-icon="triangle-down"></span><span uk-icon="triangle-down"></span></a></p>
 	</div>
+
 </div>

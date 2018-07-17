@@ -8,10 +8,9 @@
 		<li>Your subscription will be charged quarterly until cancelled.</li>
 		<li>API documentation is available <a href="/apidoc/" target="_blank">here</a>.</li>
 		{{else}}
-		<li>For a risk-free 7-day trial, purchase access to the <b>Popular Apps Bundle</b>, you will not be billed for the first 7 days.</li>
-		<li>Standalone purchases do not have a free trial period.</li>
+		<li>You will not be billed for the first 7 days and you can cancel before the trial period ends.</li>
 		<li>Your subscription will be charged monthly starting on the date shown at the checkout, until cancelled by you or if payments fails after the payment reminder period.</li>
-		<li>Apps are desktop browser-based and require Firefox, Safari, Chrome, or Opera. Other browsers may work but are not supported at this time. CourseSuite reccomends Firefox or Chrome for the best all-round experience.</li>
+		<li>Apps are <b>desktop browser-based</b> and require Firefox, Safari, Chrome, or Opera. Other browsers, including Mobile and Tablet-based browsers <i>may</i> work but are not supported at this time. CourseSuite reccomends Firefox or Chrome for the best all-round experience.</li>
 		<li>Registration and use of this service implies you have read and agree to our <a href="/content/terms">Terms & Conditions</a> and <a href="/content/privacy">Privacy</a> policies.</li>
 		{{/equals}}
 		{{#if @root/editlink}}<li><a href="{{@root/editlink}}">Edit this app</a>.</li>{{/if}}

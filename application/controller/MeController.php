@@ -46,22 +46,43 @@ class MeController extends Controller
 	/* --------------------------- MENUBAR ITEMS -------------------------------- */
 	public function orders ($action = "view", $order = "") {
 		$account = new AccountModel("id",Session::CurrentUserId());
-		$feedback = "";
-		$feedback_level = MESSAGE_LEVEL_HAPPY;
+		$feedback = null;
 		switch ($action) {
 			case "cancel":
-				if (empty($order)) break;
+				if (empty($order)) {
+					$feedback = array(
+						"class" => "uk-alert-danger",
+						"text" => "Order cancellation failed [BAD_ORDER_ID]",
+						"heading" => "Error"
+					);
+					break;
+				}
 				// value is encrypted for safety
 				$fsSubscriptionId = Encryption::decrypt(Text::base64dec($order));
+				// LoggingModel::logInternal(__METHOD__, $action, "decrypt", $fsSubscriptionId);
 				if (!empty($fsSubscriptionId)) {
 					$results = FastSpringModel::delete("/subscriptions/{$fsSubscriptionId}");
+					LoggingModel::logInternal(__METHOD__, $action, $results);
 					foreach ($results->subscriptions as $item) {
 						if ($item->subscription === $fsSubscriptionId) {
-							if ($item->result === "success") {
-								$feedback = "Order cancelation requested, may take a few minutes to apply.";
-							} else if ($item->result === "error") {
-								$feedback = $item->error->subscription;
-								$feedback_level = MESSAGE_LEVEL_SAD;
+							if (isset($item->error)) {
+								$feedback = array(
+									"class" => "uk-alert-warning",
+									"text" => $item->error->subscription,
+									"heading" => "Order Cancellation"
+								);
+							} else if ($item->result === "success") {
+								$feedback = array(
+									"class" => "uk-alert-primary",
+									"text" => Text::get("FEEDBACK_ORDER_CANCELLATION_REQUESTED"),
+									"heading" => "Order Cancellation"
+								);
+							} else {
+								$feedback = array(
+									"class" => "uk-alert-danger",
+									"text" => "Unsure what just happened, please try again",
+									"heading" => "Order Cancellation"
+								);
 							}
 						}
 					}
@@ -70,11 +91,12 @@ class MeController extends Controller
 				break;
 		}
 
-		if (!empty($feedback)) {
-			MessageModel::notify_user($feedback, $feedback_level);
-		}
+		// if (!empty($feedback)) {
+		//  	MessageModel::notify_user($feedback, $feedback_level);
+		// }
 
 		$model = $this->_base_model;
+		$model["feedback"] = $feedback;
 		$model["account"] = $account->get_model();
 		$model["csrf_token"] = Csrf::makeToken();
 		$model["selection"] = "orders";

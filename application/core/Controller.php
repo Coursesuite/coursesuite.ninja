@@ -54,14 +54,14 @@ class Controller
             $this->View->Requires("/js/inline-attachment/inline-attachment.js");
             $this->View->Requires("/js/inline-attachment/codemirror.inline-attachment.js");
             $this->View->Requires("markdown.js");
-            $this->View->Requires("admin.js");
             if (Config::get("debug") === false) {
                 $this->View->Requires(ADMIN_CSS);
             }
 
             $this->View->Requires("filedrop.js");
-
             $this->View->Requires("admin/menubar");
+
+            $this->View->Requires("admin.js");
 
         } else {
             $this->View->Requires("https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/css/uikit.css");
