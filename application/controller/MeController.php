@@ -40,7 +40,24 @@ class MeController extends Controller
 
 	/* --------------------------- DEFAULT VIEW -------------------------------- */
 	public function index() {
-		self::orders();
+		if (SubscriptionModel::user_has_active_subscription_to_launchable_app(Session::CurrentUserId())) {
+			self::apps();
+		} else {
+			self::orders();
+		}
+	}
+
+	public function apps() {
+		$model = $this->_base_model;
+		$account = new AccountModel("id",Session::CurrentUserId());
+		$model["account"] = $account->get_model();
+		$model["apps"] = MeModel::LaunchPageModel(Session::CurrentUserId());
+		$model["selection"] = "apps";
+
+		$this->View->Requires("me/menubar");
+		$this->View->Requires("account.menu.js");
+		$this->View->renderHandlebars("me/apps", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+
 	}
 
 	/* --------------------------- MENUBAR ITEMS -------------------------------- */

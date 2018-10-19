@@ -27,7 +27,10 @@ var CONST_IMGUR_UPLOAD = {
 	CONST_INTERNAL_UPLOAD = {
 		uploadUrl: "/admin/uploadMDE/"
 	};
-
+var _current_editor_reference;
+function replace_in_editor(value) {
+	_current_editor_reference.codemirror.replaceSelection(value);
+}
 $(function() {
 	$("textarea[data-markdown]").each(function (index, el) {
 		el.simplemde = new SimpleMDE({
@@ -37,6 +40,7 @@ $(function() {
 			toolbar: ["bold","italic","heading","|","code","quote","unordered-list","ordered-list","table","|","link","image",{
 				name: "slideshow",
 				action: function customFunction(editor) {
+					_current_editor_reference = editor;
 					var txt = editor.codemirror.getSelection().trim();
 					if (txt.length === 0 || txt.indexOf("![") === -1) { alert("Drag one or more images to the editor and then select them (triple-click the line they are on), then press this button again."); return; }
 					var anim = ["slide","fade","scale"],
@@ -52,11 +56,21 @@ $(function() {
 						html.push("</div>");
 					}
 					html.push("</div>");
-					editor.codemirror.replaceSelection(html.join("\n"));
+					replace_in_editor(html.join("\n"));
+					// editor.codemirror.replaceSelection(html.join("\n"));
 				},
 				className: "fa fa-fast-forward",
 				title: "Lightbox / Slideshow"
-			},"|","preview","side-by-side","fullscreen","|","guide"],
+			},{
+	          name: "browse",
+	          action: function(editor) {
+	          	_current_editor_reference = editor;
+            	var w = window.open("/admin/browser/","mdebrowser","width=1024,height=768,resizable");
+            	w.focus();
+          	  },
+          	  className: "fa fa-tree",
+          	  title: "Browse files"
+        },"|","preview","side-by-side","fullscreen","|","guide"],
 
 		});
 		inlineAttachment.editors.codemirror4.attach(el.simplemde.codemirror, CONST_INTERNAL_UPLOAD);

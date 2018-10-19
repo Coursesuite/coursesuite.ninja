@@ -25,8 +25,11 @@
             <div class="row"><label>user-facing label</label>
                   <div><input type="text" name="label" value="{{formdata.label}}"></div>
             </div>
-            <div class="row mde"><label>user-facing description</label>
-                  <div><textarea id="description" name="description" rows="10" cols="80" data-markdown="true">{{{formdata.description}}}</textarea></div>
+            <div class="row mde"><label>app-page description</label>
+                  <div><textarea id="description" name="description" rows="5" cols="80" data-markdown="true">{{{formdata.description}}}</textarea></div>
+            </div>
+            <div class="row mde"><label>pricing-page description</label>
+                  <div><textarea id="pricing_description" name="pricing_description" rows="5" cols="80" data-markdown="true">{{{formdata.pricing_description}}}</textarea></div>
             </div>
             <div class="row"><label>price (00.00)</label>
                   <div><input type="number" min="00.00" max="999999.99" step="0.01" name="price" value="{{formdata.price}}"></div>

@@ -214,7 +214,6 @@ class ApiController extends Controller
 			}
 			// ws://coursesuite.ninja.dev/"
 		}
-
 		$this->View->renderJSON((array) $result);
 	}
 
@@ -311,14 +310,19 @@ class ApiController extends Controller
 	*/
 	public function hashinfo($token_encoded) {
 		$authtoken = parent::requiresAuth();
-		$token = Text::base64dec($token_encoded);
-		LoggingModel::logMethodCall(__METHOD__, $authtoken, $token, $token_encoded);
+
+		$token_raw = Text::base64dec($token_encoded);
+		$tokens = str_split($token_raw,60); // every 60 characters represents a new token
+		$token = $tokens[0]; // first token is the most relevant hash, only deal with it
+
+		LoggingModel::logMethodCall(__METHOD__, $authtoken, $token, $token_raw);
+
 		$result = new stdClass();
 		$result->token = "";
 		if ($model = ApiModel::find_model_for_token($token)) {
 			$result->token = $model->hash;
 		}
-		return $result;
+		$this->View->renderJSON($result);
 	}
 
 	/**

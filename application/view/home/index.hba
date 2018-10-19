@@ -1,4 +1,4 @@
-<div class="uk-section cs-store-lead uk-light uk-padding-small uk-padding-remove-bottom">
+<div class="uk-section cs-store-lead uk-light uk-padding-small cs-curve-over">
 	{{> who_we_are}}
 </div>
 
@@ -8,7 +8,7 @@
 	</div>
 </div>
 
-<div class="uk-section cs-store-featured cs-colour-sage">
+<div class="uk-section cs-store-featured cs-curve-under">
 {{> featured_products}}
 </div>
 
@@ -20,6 +20,6 @@
 {{> trusted_by}}
 </div>
 
-<div class="uk-section cs-subscription cs-colour-stone">
+<div class="uk-section cs-subscription">
 {{> subscribe_link}}
 </div>

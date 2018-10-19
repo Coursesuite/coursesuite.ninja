@@ -1,21 +1,27 @@
+<?php if (false) { ?>
 <header class="uk-position-relative">
-    <div class="uk-cover-container cs-nav-height cs-nav-bg">
-        <?php if (0) { ?><video autoplay loop muted playsinline uk-cover>
+        <div class="uk-cover-container cs-nav-height cs-nav-bg">
+        <video autoplay loop muted playsinline uk-cover>
             <source src="<?php echo $headerVideo; ?>" type="video/mp4">
             <img src="/img/header-preview.jpg">
-        </video><?php } ?>
-        <?php if (0) { ?><img src="/img/header-preview.jpg" uk-cover><?php } ?>
+        </video>
+        <img src="/img/header-preview.jpg" uk-cover>
         <canvas id="zodiac" width="100%" height="118"></canvas>
     </div>
     <nav class="uk-navbar-container uk-navbar-transparent cs-navbar-container uk-position-top uk-light" uk-navbar>
-        <div class="uk-navbar-left uk-visible@m">
+<?php } ?>
+<header>
+    <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+        <div class="uk-navbar-left">
             <a href="<?php echo $baseurl; ?>" class="uk-navbar-item uk-logo">
                 <img src="<?php echo $baseurl; ?>img/coursesuite.svg" uk-svg width="300" height="53">
             </a>
         </div>
         <div class="uk-navbar-right">
             <ul class="uk-navbar-nav">
-                <li<?php CurrentMenu($this->page(),"home", "uk-visible@s"); ?>><a href="<?php echo $baseurl; ?>" uk-icon="home"></a></li>
+                <?php if ($this->page() !== "root") { ?>
+                <li<?php CurrentMenu($this->page(),"root", "uk-visible@m"); ?>><a href="<?php echo $baseurl; ?>"><span uk-icon="home" class='uk-margin-xsmall-right'></span>Home</a></li>
+                <?php } ?>
                 <li<?php CurrentMenu($this->page(),"products"); ?>>
                     <a href="<?php echo $baseurl; ?>products/"><span uk-icon="thumbnails" class='uk-margin-xsmall-right'></span>Products</a>
 <?php
@@ -81,29 +87,39 @@ if (!is_null($cached_html = NavModel::products_dropdown_get())) {
                         </ul>
                     </div>
                 </li>
-                <?php if (Session::userIsAdmin()) { ?>
-                    <li<?php CurrentMenu($this->page(),"admin"); ?>><a href="<?php echo $baseurl; ?>admin" class="admin-link" title="Site Admin"><i class='cs-spanner'></i></a></li>
-                <?php } ?>
             </ul>
+            <div class="uk-navbar-item">
+                <?php
+                // if (Session::userIsAdmin()) {
+                //     echo "<li", CurrentMenu($this->page(),"admin", '', true), "><a href='", $baseurl, "admin' class='admin-link' title='Site administration'><i class='cs-spanner'></i></a></li>";
+                // }
+                if (Session::userIsLoggedIn()) {
+                    echo "<a class='uk-button uk-button-primary uk-button-small' href='{$baseurl}me'><span uk-icon='user' class='uk-margin-xsmall-right'></span>my account</a>";
+                } else {
+                    echo "<a class='uk-button uk-button-primary uk-button-small' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>login here</a>";
+                }
+                ?>
+            </div>
         </div>
     </nav>
 </header>
-<?php if ($this->page() !== "home") { ?>
+<?php if ($this->page() !== "root") { ?>
 <nav class='uk-section uk-section-xsmall cs-section-breadcrumb<?php echo ($this->page() === "products" && isset($this->App)) ? " cs-bgcolour-{$this->App->app_key} uk-light" : " uk-section-muted"; ?>'><div class='uk-container'>
 <div class='uk-clearfix'>
     <div class='uk-float-right'>
 <?php
+
 if (Session::userIsLoggedIn()) {
     if ($this->page() === "products" && isset($this->App) && intval($this->App->auth_type,10) === 1 ) {
         echo "<a class='uk-button uk-button-primary uk-button-small' href='{$this->App->launch}'>launch app</a> ";
     } else if ($this->page() === "products" && !empty($this->Subscriptions)) {
         echo "<a class='uk-button uk-button-primary uk-button-small' href='{$baseurl}launch/{$this->App->app_key}' target='{$this->App->app_key}'><span uk-icon='bolt' class='uk-margin-xsmall-right'></span>launch app</a> ";
     }
-    echo "<a class='uk-button uk-button-default uk-button-small' href='{$baseurl}me'><span uk-icon='user' class='uk-margin-xsmall-right'></span>my account</a>";
-} else if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) {
-    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>login here</a>";
-} else {
-    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>register / login</a>";
+//    echo "<a class='uk-button uk-button-default uk-button-small' href='{$baseurl}me'><span uk-icon='user' class='uk-margin-xsmall-right'></span>my account</a>";
+//} else if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) {
+//    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>login here</a>";
+//} else {
+//    echo "<a class='uk-button uk-button-primary uk-button-small uk-visible@s' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>register / login</a>";
 }
 ?>
     </div>

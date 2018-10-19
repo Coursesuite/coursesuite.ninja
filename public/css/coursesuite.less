@@ -1,12 +1,13 @@
 @import "colours.less";
 @import "uikit/less/uikit.theme.less";
-@import url('https://fonts.googleapis.com/css?family=Josefin+Slab|Montserrat:100');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100');
 
 :root {
 	--cs-logo-blue: rgba(47, 160, 218, 1);
 	--cs-logo-green: rgba(127, 186, 66, 1);
 	--cs-logo-grey: rgba(150, 150, 150, 1);
 }
+
 
 /*
 	define the colours for each app here
@@ -20,6 +21,10 @@ body[id$='_docninja'] {
 	--fadecolour: fade(@docninja, 10%);
 	--pageninja: url("/img/footer_ninjas/document.png");
 	--purchaseninja: url("/img/purchase_ninjas/document.png");
+	/*
+	this is neat but svg backgrounds can't be stretched easily
+	--svg: svg-gradient(to top right, darken(@docninja, 5%), darken(@docninja, 5%) 33.3333334%, @docninja 33.3333334%,  @docninja 66.6666667%, lighten(@docninja, 5%) 66.6666667%, lighten(@docninja, 5%));
+	*/
 }
 body[id$='_vidninja'] {
 	--basecolour: var(--vidninja);
@@ -56,6 +61,46 @@ body[id$='_scormninja'] {
 	--fadecolour: fade(@coursebuildr, 10%);
 	--pageninja: url("/img/footer_ninjas/preview.png");
 }
+body#pricing_ {
+	.uk-slidenav {
+		border: 1px solid rgba(102,102,102,.5);
+	}
+}
+
+.cs-gradient-fn (@base; @strength: 10%) {
+	background: repeating-linear-gradient(
+	    45deg,
+	    darken(@base, @strength),
+	    darken(@base, @strength) 33.333334%,
+	    @base 33.333334%,
+	    @base 66.666667%,
+	    lighten(@base, @strength) 66.666667%,
+	    lighten(@base, @strength) 100%
+	);
+}
+
+.cs-bg-fn(@base) {
+	color:  if((luma(@base)>50%),black,white) !important;
+//	color: if ((luma(@base) > 50%), black, white);
+	background-color: @base;
+	border: 1px solid #999;
+	border-width: if((luma(@base)>80%),1px,0);
+}
+
+
+.cs-gradient-bundle {
+	.cs-gradient-fn(@base:#aaaaaa);
+}
+.cs-bg-bundle {
+	.cs-bg-fn(@base:#aaaaaa);
+}
+.cs-gradient-api {
+	.cs-gradient-fn(@base:#464274);
+}
+.cs-gradient-unavailable {
+	.cs-gradient-fn(@base:#dddddd)
+}
+
 html {
 	background-color: #3d3d3d;
 	body {
@@ -64,7 +109,29 @@ html {
 }
 
 body > header {
-	background-color: #030643;
+	background: #313131;
+	background: -moz-linear-gradient(top, #232323 0%, #313131 100%);
+	background: -webkit-linear-gradient(top, #232323 0%,#313131 100%);
+	background: linear-gradient(to bottom, #232323 0%,#313131 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#232323', endColorstr='#313131',GradientType=0 );
+	.uk-navbar-nav > li {
+		> a {
+			color: var(--cs-logo-grey);
+			&:hover {
+				color: white;
+			}
+		}
+		&.uk-active > a {
+			color: white;
+		}
+	}
+	.cs-button-account {
+		background-color: var(--cs-logo-green);
+		color: #f4f4f4;
+		&:hover {
+			color: white;
+		}
+	}
 }
 
 .cs-vertical-align-middle {
@@ -101,6 +168,18 @@ a:hover>.cs-blog-badge {
 	width: 100%;
 	height: 0;
 	padding-bottom: 56.25%;
+}
+
+.square-aspect-ratio {
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-bottom: 100%;
+	> div {
+		position: absolute;
+		top: 0; left: 0;
+		right: 0; bottom: 0;
+	}
 }
 
 .video-aspect-ratio iframe {
@@ -260,6 +339,11 @@ a:hover>.cs-blog-badge {
     .uk-flex-first\@S { order: -1; }
 }
 
+.cs-pricing-slider-buttons {
+	background-color: var(--cs-logo-blue);
+	.uk-light();
+}
+
 .cs-colour-barleycorn {
 	background-color: #9b9952;
 }
@@ -304,6 +388,7 @@ a:hover>.cs-blog-badge {
 	background-attachment: fixed;
 	background-size: cover;
 	background-position: center;
+	.uk-light();
 }
 
 .cs-mobile-nav {
@@ -370,10 +455,9 @@ a:hover>.cs-blog-badge {
 }
 
 .cs-store-lead {
-	background: url(/img/who-we-are/background.jpg) no-repeat center;
-	background-size: cover;
-
-	.uk-light();
+	background: #2fa0da;
+	background: linear-gradient(to top, #b1dcf1 0%, #2fa0da 33%, #313131 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( endColorstr='#313131', startColorstr='#0571b2',GradientType=0 );
 	h1, h2 {
 		font-family: 'Montserrat', sans-serif;
 		font-weight: 100;
@@ -395,22 +479,36 @@ a:hover>.cs-blog-badge {
 			display:none;
 		}
 	}
-/*
-	@global-font-family
-			font-family: ;
-			font-size: 2rem;
-			color: white;
-		}
-	h1 {
-		font-size: 6rem;
-		@media (max-width: @breakpoint-small) {
-			font-size: 3rem;
-		}
-		text-shadow: 1px 1px 1px rgba(63,63,63,.5);
-	}
-*/
 	p.like-a-ninja {
 		font-style: italic;
+	}
+}
+.cs-curve-over {
+	position:relative;
+	&::after {
+		position: absolute;
+		bottom:0;
+		left:0;
+		width:100%;
+		height:16px;
+	    content: '';
+	    background: url(/img/home-curve-over.svg) bottom center no-repeat;
+	    background-size: contain;
+		z-index: 1;
+	}
+}
+.cs-curve-under {
+	position:relative;
+	&::after {
+		position: absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height:16px;
+	    content: '';
+	    background: url(/img/home-curve-under.svg) bottom center no-repeat;
+	    background-size: contain;
+		z-index: 1;
 	}
 }
 
@@ -694,4 +792,44 @@ body.mobile .cs-who-we-are {
 }
 .cs-z2 {
 	z-index:2;
+}
+
+.cs-price-text {
+	font-size: 48px;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 100;
+}
+
+.cs-app-launcher {
+	> svg {
+		width:100%;
+		path {
+			fill: white;
+		}
+	}
+}
+
+.cs-subscription {
+	background-color: var(--cs-logo-blue);
+	.uk-light();
+}
+
+.cs-waggle > * {
+	animation-delay: 1s;
+	animation-name: waggle;
+	animation-duration: .5s;
+	&:nth-child(1) { animation-delay: .7s; }
+	&:nth-child(2) { animation-delay: .77s; }
+	&:nth-child(3) { animation-delay: .89s; }
+	&:nth-child(4) { animation-delay: .99s; }
+	&:nth-child(5) { animation-delay: 1.1s; }
+}
+
+@keyframes waggle {
+	0% { transform: none; }
+	35% { transform: rotate(-2deg); }
+	45% { transform: rotate(2deg); }
+	55% { transform: rotate(-1deg); }
+	65% { transform: rotate(1deg); }
+	70% { transform: none; }
 }

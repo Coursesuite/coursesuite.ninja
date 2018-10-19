@@ -16,6 +16,14 @@
 		<div class="row mde"><label for="apikey_text">API KEY page intro</label>
 		<div><textarea id="apikey_text" name="apikey_text" rows="5" cols="80" data-markdown="true">{{apikey_text}}</textarea></div></div>
 
+		<div class="row mde"><label for="pricing_text">Pricing Page intro text</label>
+		<div><textarea id="pricing_text" name="pricing_text" rows="5" cols="80" data-markdown="true">{{pricing_text}}</textarea></div></div>
+
+		<div class="row mde"><label for="pricing_products">Pricing Page product ids (csv)</label>
+		<div><input type="text" id="pricing_products" name="pricing_products" value="{{pricing_products}}"></div>
+		<p>A comma-separated list of the product_bundle ids that you want to show on the pricing page, in the order you want them to appear. </p>
+		</div>
+
 		{{!-- <div class="row">
 			<label for="foobar">FastSpring Trial Days</label>
 			<input type="number" min="0" max="99" value="{{freetrialdays}}" step="1" id="foobar" name="freeTrialDays">
@@ -60,7 +68,7 @@
 			<div><textarea name="head_javascript" rows="10">{{{head_javascript}}}</textarea></div>
 		</div>
 
-		<div class="row mde"><label>Homepage Subscription (e.g. mailchimp)</label>
+		<div class="row"><label>Homepage Subscription (e.g. mailchimp)</label>
 			<div><textarea name="mailchimp_subscribe" rows="10" data-codemirror="true">{{{mailchimp_subscribe}}}</textarea></div>
 		</div>
 

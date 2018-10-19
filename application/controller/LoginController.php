@@ -201,7 +201,7 @@ class LoginController extends Controller
 
 	public function callback($object) {
 		$json = json_decode(Text::base64dec($object));
-		$logto = "/me/orders";
+		$logto = "/me/apps";
 		$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : die("0xFF");
 		$host = $_SERVER['HTTP_HOST'];
 		$i = strpos($referer, $host); if ($i === false) die("0xFE");

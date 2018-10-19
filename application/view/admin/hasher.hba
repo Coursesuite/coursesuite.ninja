@@ -1,0 +1,28 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+
+		<h2>Hasher Utility</h2>
+
+		<form method="post" action="/admin/hasher/generate">
+			<p><input type="submit" value="Generate password + hash"></p>
+			{{#equals method "generate"}}
+			<p><b>Password:</b> {{raw}}</p>
+			<p><b>Hash:</b> {{hash}}</p>
+			{{/equals}}
+		</form>
+
+		<form method="post" action="/admin/hasher/hash">
+			<p>Input string: <input type="text" name="value" value="{{raw}}"></p>
+			<p><input type="submit" value="Hash"></p>
+			{{#equals method "hash"}}
+			<p><b>Value:</b> {{raw}}</p>
+			<p><b>Hash:</b> {{hash}}</p>
+			{{/equals}}
+		</form>
+
+	</article>
+</div>

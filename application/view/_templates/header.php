@@ -18,10 +18,14 @@ $og_title = isset($this->card_title) ? $this->card_title : $meta_title;
 $og_description = isset($this->card_description) ? $this->card_description : $meta_description;
 $og_image = isset($this->card_icon) ? Image::get_external_url($this->card_icon) : $meta_image;
 
-function CurrentMenu($page, $routes, $classnames = '') {
+
+function CurrentMenu($page, $routes, $classnames = '', $return = false) {
     $classes = [$classnames];
     if (strpos($routes,$page)!==false) $classes[] = "uk-active";
-    echo " class='" . implode(' ', $classes) . "'";
+    $code = " class='" . implode(' ', $classes) . "'";
+    $code .= " data-pos='" . strpos($routes,$page) . "' data-page='{$page}' data-routes='{$routes}'";
+    if ($return === true) return $code;
+    echo $code;
 }
 
 $is_mobile_browser = ($this->MobileDetect->isMobile() && !$this->MobileDetect->isTablet());
@@ -85,7 +89,8 @@ if (empty($body_id)) $body_id = "default";
         // $headerVideo = "";
         echo "<link rel='stylesheet/less' type='text/css' href='/css/coursesuite.less' />" . PHP_EOL;
         echo "<script>less = { env: 'development', dumpLineNumbers: 'comments', poll: 99999999 }</script>" . PHP_EOL;
-        echo "<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.3/less.min.js'></script>" . PHP_EOL;
+        echo "<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/less.js/3.8.0/less.min.js'></script>" . PHP_EOL;
+        // echo "<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.3/less.min.js'></script>" . PHP_EOL;
         echo "<script>less.watch()</script>" . PHP_EOL;
     }
     echo "<style>", Config::CustomCss(true), "</style>", PHP_EOL; // after other styles

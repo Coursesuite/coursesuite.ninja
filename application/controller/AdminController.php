@@ -180,6 +180,51 @@ class AdminController extends Controller
 
     }
 
+   public function hax($action = "new", $row_id = 0) {
+
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $model = $this->model;
+
+        switch ($action) {
+            case "deactivate":
+                $query = $database->prepare("UPDATE subscriptions SET status='inactive',statusReason=:r,info=:i,endDate=:d,active=0 WHERE subscription_id=:id");
+                $query->execute([
+                    ":id" => $row_id,
+                    ":d" => date("Y-m-d"),
+                    ":i" => "Deactivated by " . Session::CurrentUsername(),
+                    ":r" => "deactivated"
+                ]);
+                Redirect::to("/admin/users/special/");
+                break;
+
+            case "add":
+                $user_id = AccountModel::quick_create_account_id(Request::post("email"));
+                $endDate = Request::post("enddate");
+                $ed = empty($endDate) ? null : date("Y-m-d", strtotime($endDate));
+                $obj = new dbRow("subscriptions");
+                $obj->user_id = $user_id;
+                $obj->endDate = empty($endDate) ? null : date("Y-m-d", strtotime($endDate));
+                $obj->referenceId = Request::post("reference");
+                $obj->subscriptionUrl = null;
+                $obj->status = 'active';
+                $obj->active = 1;
+                $obj->product_id = Request::post("product");
+                $obj->save();
+                Redirect::to("/admin/users/special/");
+                break;
+
+            default:
+                $model->enddates = ["", "tomorrow", "+3 days", "+1 week", "+2 weeks", "+1 month", "first day of next month", "+3 months", "+1 year", "first day of next year", "+2 years"];
+                $model->products = ProductBundleModel::get_all_models(false);
+                $id = strtoupper(UUID::uniqid_base36(true));
+                $pos = strlen($id)/2;
+                list($beg, $end) = preg_split('/(?<=.{'.$pos.'})/', $id, 2);
+                $model->reference = "CUSTOM-$end-$beg";
+        }
+        $this->View->renderHandlebars('admin/subscriptions/hax', $model, "_admin", true);
+    }
+
     public function users($tab = "recent")
     {
 
@@ -188,10 +233,16 @@ class AdminController extends Controller
         $subsql = "";
 
         $model = $this->model;
+        $model->tab = $tab;
         $model->search = Request::post("q", false, FILTER_SANITIZE_STRING);
         if (strpos($model->search, '*') === false) $model->search .= "%";
         $model->tableheaders = ["id","Email","Last login","Login Count","Browser","Status","Starts","Ends","Reference","Product"];
         switch ($tab) {
+            case "special":
+                $users = Model::Read("users", "user_id IN (SELECT user_id FROM subscriptions WHERE subscriptionUrl IS NULL) ORDER BY user_last_login_timestamp DESC, user_email");
+                $subsql = "SELECT subscription_id, status, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user AND subscriptionUrl IS NULL ORDER BY endDate DESC, added DESC LIMIT 1";
+                break;
+
             case "search":
                 $users = Model::Read("users", "user_email LIKE :match", array(":match" => str_replace('*','%', $model->search)));
                 $subsql = "SELECT status, added, endDate, referenceId, product_id FROM subscriptions WHERE user_id=:user ORDER BY endDate DESC, added DESC LIMIT 1";
@@ -239,6 +290,7 @@ class AdminController extends Controller
                 $user->impersonate = Text::base64_urlencode(Encryption::encrypt("{$user->user_id},{$my_user_id}"));
             }
             if ($subresult = $subquery->fetch()) {
+                if (isset($subresult->subscription_id)) $user->subscription_id = $subresult->subscription_id;
                 $user->subscription_status = $subresult->status;
                 if ($tab === "inactive") $user->subscription_reason = $subresult->statusReason;
                 $user->subscription_starts = $subresult->added;
@@ -273,6 +325,7 @@ class AdminController extends Controller
                     "active" => Request::post("active", false, FILTER_SANITIZE_NUMBER_INT),
                     "label" => Request::post("label", false, FILTER_SANITIZE_STRING),
                     "description" => Request::post("description"),
+                    "pricing_description" => Request::post("pricing_description"),
                     "price" => Request::post("price", false, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
                     "concurrency" => Request::post("concurrency", false, FILTER_SANITIZE_NUMBER_INT),
                     "app_ids" => implode(',', Request::post("app_ids")),
@@ -666,6 +719,11 @@ class AdminController extends Controller
                 KeyStore::find("apikey_text")->put(Request::post_html("apikey_text"));
                 KeyStore::find("sitemap_template")->put(Request::post("sitemap_template"));
 
+                KeyStore::find("pricing_text")->put(Request::post("pricing_text", false));
+                $pricing = trim(Request::post("pricing_products"));
+                $pricing = str_replace(' ', '', $pricing);
+                KeyStore::find("pricing_products")->put($pricing);
+
                 KeyStore::find("head_javascript")->put(Request::post("head_javascript", false));
 
                 Redirect::to("admin/storeSettings"); // to ensure it reloads
@@ -689,6 +747,8 @@ class AdminController extends Controller
         $model->sitemap_template = KeyStore::find("sitemap_template")->get();
         $model->mailchimp_subscribe =KeyStore::find("mailchimp_subscribe")->get();
         $model->mailchimp_stylesheet = KeyStore::find("mailchimp_stylesheet")->get();
+        $model->pricing_text = KeyStore::find("pricing_text")->get();
+        $model->pricing_products = KeyStore::find("pricing_products")->get();
 
         $cache = CacheFactory::getFactory()->getCache();
         $cacheItem = $cache->deleteItem("custom_css");
@@ -903,6 +963,23 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/encoder", $model, "_admin", true);
     }
 
+    public function hasher($type = "view") {
+        $model = $this->model;
+        switch ($type) {
+            case "generate":
+                $model->raw = (new Sayable(9))->generate(true);
+                $model->hash = password_hash($model->raw, PASSWORD_DEFAULT);
+                break;
+
+            case "hash":
+                $model->raw = Request::post("value");
+                $model->hash = password_hash($model->raw, PASSWORD_DEFAULT);
+                break;
+        }
+        $model->method = $type;
+        $this->View->renderHandlebars("admin/hasher", $model, "_admin", true);
+    }
+
     public function sitemap($action = "view") {
         $model = $this->model;
         $model->feedback = "😶 I don't know what you are doing";
@@ -965,6 +1042,11 @@ class AdminController extends Controller
         }
         $this->View->renderHandlebars("admin/sitemap/{$action}", $model, "_admin", true);
 
+    }
+
+
+    public function browser() {
+        include (Config::get("PATH_VIEW") . "admin/files/image_browser.php");
     }
 
 }

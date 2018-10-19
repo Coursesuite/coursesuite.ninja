@@ -10,12 +10,13 @@
 			<p><a href="{{@root.baseurl}}admin/product_bundles/update-pricing/">Pull Latest Pricing from FastSpring</a></p>
 		</header>
 		<table>
-			<thead><tr><th colspan="2">Key</th><th>Price</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr></thead>
+			<thead><tr><th colspan="2">Key</th><th>id</th><th>Price</th><th><i class='fa fa-pencil'></i> Edit</th><th><i class='fa fa-trash'></i> Removal</th></tr></thead>
 			<tbody>
 			{{#each index}}
 			<tr>
 				<td>{{#equals active "1"}}<i class='fa fa-eye'></i>{{else}}<i class='fa fa-eye-slash fa-muted'></i>{{/equals}}</td>
 				<td>{{product_key}}</td>
+				<td>{{id}}</td>
 				<td>${{price}}</td>
 				<td><a href="{{@root.baseurl}}admin/product_bundles/edit/{{id}}">Edit</a></td>
 				<td><a href="{{@root.baseurl}}admin/product_bundles/delete/{{id}}">Delete</a></td>

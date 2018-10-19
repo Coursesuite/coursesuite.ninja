@@ -105,6 +105,7 @@ class ApiModel
 	// find the subscription and user info for an app token (used by /api/validate/)
 	// returns the row values if found, otherwise false
 	public static function find_model_for_token($hash) {
+		LoggingModel::logMethodCall(__METHOD__, $hash);
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$query = $database->prepare("
 			select s.subscription_id, md5(s.referenceId) refId, u.user_id, s.product_id from subscriptions s
@@ -118,6 +119,7 @@ class ApiModel
 		$query->execute();
 		foreach ($query->fetchAll() as $row) {
 			if (password_verify($row->refId, $hash)) { // kinda slow since it's a bcrypt hash function
+// error_log("API MODEL\nfind_model_for_token\n{$hash}\nrow\n" . print_r($row,true), 1,"debug@coursesuite.com.au");
 
 				$result = new stdClass();
 				$result->subscription = $row->subscription_id;

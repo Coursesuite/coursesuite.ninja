@@ -1,50 +1,65 @@
 <div class='uk-section cs-pricing-index'>
 	<div class='uk-container'>
 
-		<div class="cs-colour-aquasqueeze uk-text-center uk-padding uk-margin-small-bottom">
-		<h1>Access to our apps requires a subscription.</h1>
-		<p class='uk-text-lead'>(But you can get a 7-day free trial to all our apps by accessing the <b>Popular Apps Bundle</b>)</p>
-		<p>Your ongoing payments help us continuously refine our apps, and develop new ones. Prices are shown in USD.</p>
-		</div>
+		{{{Heading}}}
 
-		<div class="uk-grid-collapse uk-child-width-expand@s" uk-grid>
-			<div class="cs-colour-barleycorn uk-light uk-padding">
-				<h2 class="uk-heading-line uk-text-center"><span>Direct Access</span></h2>
-				<ul class="uk-list uk-list-divider">
-					<li>Buy the apps you need separately, or in a bundle to receive a discount</li>
-					<li>Single concurrent user licencing</li>
-					<li>Access apps through your desktop web browser</li>
-					<li>Add-ons and plugins for selected apps sold separately</li>
-				</ul>
+		<div uk-slider="sets: true; center: false;">
 
-				<table class="uk-table uk-table-divider uk-margin-large-top"><tbody>
-				{{#each ProductBundles}}{{#contains product_key "api"}}
-				{{else}}
-					{{> item}}
-				{{/contains}}{{/each}}</tbody></table>
-			</div>
+		    <div class="uk-position-relative uk-visible-toggle">
 
-			<div class='cs-colour-romancoffee uk-light uk-padding'>
-				<h2 class="uk-heading-line uk-text-center"><span>API Access</span></h2>
-				<ul class="uk-list uk-list-divider">
-					<li>Create authentication tokens for accessing and launching apps</li>
-					<li>Access all apps and features, including future releases</li>
-					<li>Multiple concurrent user licencing</li>
-					<li>Overflow Licensing (multiple accounts)</li>
-					<li>Add custom templates, white-label apps</li>
-					<li>Custom billing options</li>
-				</ul>
-				{{#equals (config_value "API_VISIBLE") "1"}}
-				<table class="uk-table uk-table-divider uk-margin-large-top"><tbody>
-				{{#each ProductBundles}}{{#contains product_key "api-"}}{{#not product_key "api-trial"}}
-					{{> item}}
-				{{/not}}{{/contains}}{{/each}}</tbody></table>
-				{{else}}
-				<hr class="uk-divider-icon">
-				<p class='uk-text-lead'>Coming Soon!</p>
-				<p><a href="/content/contact">Contact Us</a> for more information or pre-release access.</p>
-				{{/equals}}
-			</div>
+		        <div class="uk-slider-container">
+		            <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-3@s uk-child-width-1-4@m uk-grid" uk-height-match>
+		            	{{#each Pricing}}
+		            	<li class="uk-flex uk-flex-column">
+							<div class="cs-gradient-{{key}} square-aspect-ratio uk-border-rounded">
+								<div class="uk-light">
+									<img src='{{icon}}' width='96' height='96' class="uk-position-top-center uk-position-large" {{icon_tag}}>
+									{{#if @root.ContextualStore}}
+									<div data-fsc-item-path="{{fs_key}}" data-fsc-item-pricetotal-callback data-format="%price <span class='uk-text-small'>%currency</span>" class="uk-position-bottom-center uk-position-medium cs-price-text">${{price}} USD</div>
+									{{else}}
+									<div class="uk-position-bottom-center uk-position-medium cs-price-text">${{price}}</div>
+									{{/if}}
+								</div>
+							</div>
+							<div class="uk-margin uk-text-large uk-text-center">{{label}}</div>
+							<div class="uk-margin uk-text-center">
+								<p>{{#if buy}}{{#if @root.ContextualStore}}
+								<a href="#" data-fsc-item-path="{{product_key}}" data-fsc-item-path-value="{{fs_key}}" data-fsc-action="Reset,Add,Checkout" class='uk-button uk-border-rounded cs-bg-{{key}}'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now</a>
+								{{else}}
+								<a href='{{fs_url}}' class='uk-button uk-border-rounded cs-bg-{{key}}'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now</a></a>
+								{{/if}}{{else}}{{#equals key "bundle"}}
+								<a href="{{home}}" class="uk-button uk-background-muted"><span uk-icon='arrow-right' class='uk-margin-small-right'></span>More info</a>
+								{{else}}
+								<button class="uk-button uk-background-muted"><span uk-icon='future' class='uk-margin-small-right'></span>Coming soon</button>
+								{{/equals}}{{/if}}
+								</p>
+							</div>
+							<hr class="uk-divider-icon">
+							<div class="uk-margin uk-flex-1 uk-flex uk-flex-column">
+								<p class="uk-text-meta">{{tag}}</p>
+								<div class='uk-flex-1'>
+								{{{replace features "<ul>" "<ul class='uk-list uk-list-divider'>"}}}
+								</div>
+								<p class="uk-text-center"><hr><a href="{{home}}" class="uk-button uk-button-text">More info</a></p>
+							</div>
+		            	</li>
+		            	{{/each}}
+		            </ul>
+		        </div>
+
+		        <div class="uk-hidden@s uk-light">
+		            <a class="uk-position-center-left uk-position-small" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+		            <a class="uk-position-center-right uk-position-small" href="#" uk-slidenav-next uk-slider-item="next"></a>
+		        </div>
+
+		        <div class="uk-visible@s">
+		            <a class="uk-position-top-left-out uk-position-small cs-pricing-slider-buttons uk-border-rounded" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+		            <a class="uk-position-top-right-out uk-position-small cs-pricing-slider-buttons uk-border-rounded" href="#" uk-slidenav-next uk-slider-item="next"></a>
+		        </div>
+
+		    </div>
+
+		    <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
 
 		</div>
 

@@ -257,4 +257,18 @@ class AccountModel extends Model
         return $query->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
+    public static function quick_create_account_id($email) {
+        $model = Model::Read("users", "user_email=:email", array(":email" => $email),"*",true);
+        if (empty($model)) { // user with this email address was not found
+            $model = (object) Model::Create("users");
+            $model->user_email = $email;
+            $model->user_active = 1;
+            $model->user_creation_timestamp = time();
+            $user_id = Model::Update("users", "user_id", $model);
+        } else {
+            $user_id = $model->user_id;
+        }
+        return $user_id;
+    }
+
 }

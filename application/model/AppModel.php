@@ -309,6 +309,10 @@ class AppModel extends Model
         return Model::Read("apps", "app_key=:key", array(":key"=>$app_key),"app_id",true)->app_id;
 	}
 
+	public static function app_key_for_id($app_id)
+	{
+        return Model::Read("apps", "app_id=:id", array(":id"=>$app_id),"app_key",true)->app_key;
+	}
 	public static function app_name_for_key($app_key)
 	{
         return Model::Read("apps", "app_key=:key", array(":key"=>$app_key),"name",true)->name;
@@ -321,6 +325,46 @@ class AppModel extends Model
 	    $css = $cacheItem->get();
 	    if ($force || is_null($css)) {
 			$database = DatabaseFactory::getFactory()->getConnection();
+
+			/*
+			apps store their colour in the database
+			we want the colours to be exposed to CSS VARIABLES as well as LESS VARIABLES
+			we also want the colours to be used by LESS MIXINS (which compile before runtime)
+			we use CONCAT on apps to build PRE-MINIFIED css rules based on the app names
+			then use GROUP_CONCAT on the concats to flatten the rows into a single cell
+			then pluck the cells using their array index from the resulting pdo::fetch
+
+			The LESS code is embedded in a file called /css/colours.less which is included into the coursesuite.less file
+			then compiled before the site is deployed. This means the less variables are available to the coursesuite.less file
+			after this function is run (e.g. clear the css cache, let this file regenerate the colours.less, then compile the coursesuite less)
+
+			note: the sql below is not readable code, here is an example
+
+			    SELECT GROUP_CONCAT(
+			    	CONCAT(
+			    		'.cs-colour-',
+			    		app_key,
+			    		'{color:',
+			    		case when colour is null
+			    			then 'grey'
+			    			else colour
+			    		end,
+			    		'}.cs-bgcolour-',
+			    		app_key,
+			    		'{background-color:',
+			    		case when colour is null
+			    			then 'grey'
+			    			else colour
+			    		end,
+			    		'}'
+			    	)
+			    	SEPARATOR ''
+			    )
+			    FROM apps
+
+			*/
+
+
 			$query = $database->prepare("
 					SELECT CONCAT(':root{',GROUP_CONCAT(CONCAT(
 						'--', lower(app_key), ':',
@@ -335,35 +379,23 @@ class AppModel extends Model
 						case when colour is null
 			    			then 'grey'
 			    			else colour
-			    		end,';') SEPARATOR '')
-			    FROM apps			");
-			// $query = $database->prepare("
-			//     SELECT GROUP_CONCAT(
-			//     	CONCAT(
-			//     		'.cs-colour-',
-			//     		app_key,
-			//     		'{color:',
-			//     		case when colour is null
-			//     			then 'grey'
-			//     			else colour
-			//     		end,
-			//     		'}.cs-bgcolour-',
-			//     		app_key,
-			//     		'{background-color:',
-			//     		case when colour is null
-			//     			then 'grey'
-			//     			else colour
-			//     		end,
-			//     		'}'
-			//     	)
-			//     	SEPARATOR ''
-			//     )
-			//     FROM apps
-			// ");
+			    		end,';') SEPARATOR ''),
+			    	GROUP_CONCAT(CONCAT('.cs-gradient-', app_key, '{.cs-gradient-fn(@base:',
+			    	    case when colour is null
+			    			then 'grey'
+			    			else colour
+			    		end, ')}') SEPARATOR '\n'),
+					GROUP_CONCAT(CONCAT('.cs-bg-', app_key, '{.cs-bg-fn(@base:',
+							case when colour is null
+								then 'grey'
+								else colour
+							end, ')}') SEPARATOR '\n')
+					FROM apps
+		    ");
 			$query->execute();
 			$data = $query->fetch(PDO::FETCH_NUM);
 			$css = $data[0];//$query->fetchColumn(0);
-			$less = $data[1];//$query->fetchColumn(1);
+			$less = $data[1] . PHP_EOL . $data[2] . PHP_EOL . $data[3];//$query->fetchColumn(1);
 	        file_put_contents(Config::get("PATH_CSS_ROOT") . 'colours.less',$less);
 			$cacheItem->set($css)->expiresAfter(86400)->addTags(["coursesuite","css"]); // 1 day
 			$cache->save($cacheItem);

@@ -59,7 +59,7 @@ Class Sayable {
 		return $arr[mt_rand(0, count($arr) - 1)];
 	}
 
-	public function generate() {
+	public function generate($secure = false) {
 		$result = [];
 		$curr = 0;
 		$attempts = 0;
@@ -74,6 +74,20 @@ Class Sayable {
 			$attempts = $attempts + 1;
 		}
 		$result = (string) substr(implode("", $result),0,$this->length);
+
+		if ($secure) {
+			for ($i=0;$i<strlen($result);$i++) {
+				$c = $result[$i];
+				if (mt_rand(1,10) < 3) {
+					if (mt_rand(1,10)<5) {
+						$result[$i] = strtoupper($result[$i]);
+					} else {
+						$result[$i] = chr(mt_rand(33,47));
+					}
+				}
+			}
+		}
+
 		return $result;
 	}
 	public function __toString() {

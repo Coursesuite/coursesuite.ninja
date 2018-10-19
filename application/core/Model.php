@@ -248,6 +248,12 @@ class Model
     }
 
     /* utility methods */
+    final public static function ReadColumnRaw($sql,$params=[],$fetchOne=true) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $query = $database->prepare($sql);
+        $query->execute($params);
+        return ($fetchOne === true) ? $query->fetchColumn() : $query->fetchAll(PDO::FETCH_COLUMN);
+    }
 
     final public static function ReadColumn($table, $column, $where = "", $params = array(), $fetchOne = true, $order = "") {
         $database = DatabaseFactory::getFactory()->getConnection();

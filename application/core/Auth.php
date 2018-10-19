@@ -52,7 +52,7 @@ class Auth
             ":user"=>md5($user_id),
             ":cookie"=>$hash,
             ":ip"=>$ip,
-            ":source"=>md5($source . Config::get('HMAC_SALT'))
+            ":source"=> (null === $source) ? null : md5($source . Config::get('HMAC_SALT'))
         ]);
     }
 

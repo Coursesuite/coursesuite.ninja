@@ -12,3 +12,22 @@
 // ========================================================================
 
 .hook-position-misc() {}
+
+[class*='uk-position-top-left'],
+[class*='uk-position-top-right'] {
+    top: 0%;
+    transform: translateY(0);
+}
+
+.uk-position-top-left { left: 0; }
+.uk-position-top-right { right: 0; }
+
+.uk-position-top-left-out {
+    right: 100%;
+    width: max-content;
+}
+
+.uk-position-top-right-out {
+    left: 100%;
+    width: max-content;
+}

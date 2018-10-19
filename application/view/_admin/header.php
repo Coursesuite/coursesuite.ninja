@@ -1,10 +1,13 @@
 <?php
 $start = microtime(true);
 $baseurl = Config::get('URL');
-function CurrentMenu($page, $routes, $classnames = '') {
+function CurrentMenu($page, $routes, $classnames = '', $return = false) {
     $classes = [$classnames];
     if (strpos($routes,$page)!==false) $classes[] = "uk-active";
-    echo " class='" . implode(' ', $classes) . "'";
+    $code = " class='" . implode(' ', $classes) . "'";
+    $code .= " data-pos='" . strpos($routes,$page) . "'";
+    if ($return === true) return $code;
+    echo $code;
 }
 
 ?><!doctype html><html lang="en">

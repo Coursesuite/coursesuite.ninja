@@ -8,6 +8,10 @@
             <h2>Users</h2>
         </header>
 
+{{#equals tab "special"}}
+<p>Special Subscriptions are those without a FastSpring store id, which are put there manually for one reason or another. You can also <a href="/admin/hax/">add one</a>.</p>
+{{/equals}}
+
         <table><thead><tr>
             {{#each tableheaders}}<th>{{.}}</th>{{/each}}
         </tr></thead><tbody>
@@ -22,12 +26,13 @@
                 <td>{{tsdatetime user_last_login_timestamp}}</td>
                 <td>{{user_logon_count}}</td>
                 <td>{{last_browser}}</th>
-                <td>{{subscription_status}}</td>
+                <td>{{subscription_status}}{{#if subscription_id}}<br><a href="/admin/hax/deactivate/{{subscription_id}}">Deactivate</a>{{/if}}</td>
             {{#isin "Reason" @root.tableheaders}} <td>{{subscription_reason}}</td>{{/isin}}
                 <td>{{subscription_starts}}</td>
                 <td>{{subscription_ends}}</td>
                 <td>{{order_id}}</td>
-                <td>{{#if product}}{{product.label}}<br><small>{{product.description}}</small>{{/if}}</td>
+                <td>{{#if product}}{{product.label}} ({{product.product_key}})<br><small>{{product.description}}</small>{{/if}}</td>
+
             </tr>
 
             {{/each}}

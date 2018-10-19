@@ -1,0 +1,34 @@
+<div class="admin-flex">
+    <aside>
+        {{> menubar}}
+    </aside>
+
+    <article>
+        <header>
+            <h2>Create a Special Subscription</h2>
+        </header>
+
+        <form method="post" action="/admin/hax/add/">
+            <div class="row">
+                <label>User Email</label>
+                <div><input type="text" name="email" placeholder="New or Existing account"></div>
+            </div>
+            <div class="row">
+                <label>Product</label>
+                <div><select name="product">{{#each products}}{{#if active}}<option value="{{id}}">{{product_key}}</option>{{/if}}{{/each}}</select></div>
+            </div>
+            <div class="row">
+                <label>End Date</label>
+                <div><select name="enddate">{{#each enddates}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+            </div>
+            <div class="row">
+                <label>Reference Id</label>
+                <div><input type="text" maxlength="50" value="{{reference}}" name="reference"></div>
+            </div>
+            <div class="row"><label />
+                <div><button>Save</button> <a href="https://coursesuite.ninja.test/admin/users/special/" class='button'>Cancel</a></div>
+            </div>
+        </form>
+
+ </article>
+</div>

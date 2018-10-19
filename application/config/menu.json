@@ -11,7 +11,8 @@
 		{"route":"admin/users/current","label":"Current"},
 		{"route":"admin/users/cancelled","label":"Cancelled"},
 		{"route":"admin/users/inactive","label":"Inactive"},
-		{"route":"admin/subscriptions/api","label":"API's"}
+		{"route":"admin/subscriptions/api","label":"API's"},
+		{"route":"admin/users/special","label":"Special Subs"}
 	],
 	"reports": [
 		{"route":"admin/reports/api_limits","label":"API Limits"},
@@ -41,6 +42,8 @@
 		{"route":"admin/purge/disk","label":"Purge Disk Caches"},
 		{"route":"admin/purge/html","label":"Purge Page Caches"},
 		{"route":"admin/purge/coursesuite","label":"Purge All Caches"},
-		{"route":"admin/encoder","label":"Encoder Utility"}
+		{"route":"admin/encoder","label":"Encoder Utility"},
+		{"route":"admin/hasher","label":"Hasher Utility"},
+		{"route":"admin/browser","label":"File Browser","target":"_blank"}
 	]
 }

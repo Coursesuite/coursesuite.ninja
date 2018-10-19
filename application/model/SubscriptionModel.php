@@ -52,7 +52,7 @@ class SubscriptionModel extends Model
 		} else if (is_numeric($row) && $row > 0) {
 			self::load($row);
 		} else if (is_numeric($row) && $row === 0) {
-			self::create();
+			self::create(self::TABLE_NAME);
 		}
 		return $this;
 	}
@@ -454,6 +454,10 @@ class SubscriptionModel extends Model
 			$results[] = (new SubscriptionModel($row->$idname))->get_model(true);
 		}
 		return $results;
+	}
+
+	public static function user_has_active_subscription_to_launchable_app($user_id) {
+		return Model::Exists("subscriptions", "user_id=:uid and product_id in (select id from product_bundle where active=1 and product_key not like 'api-%') and status='active'", [":uid"=>$user_id]);
 	}
 
 	// user has a record for a subscription that links to a particular product key (past or present)

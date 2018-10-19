@@ -6,7 +6,7 @@
     {{#if search}}
     <li><form method="post" action="{{@root.baseurl}}{{route}}"><input type="search" name="q" title="Search by {{label}}" value="{{replace '%' '*' @root.search}}"><button><i class='fa fa-search'></i></button></form></li>
     {{else}}
-    <li><a href='{{@root.baseurl}}{{route}}'>{{label}}</a></li>
+    <li><a href='{{@root.baseurl}}{{route}}'{{#if target}} target='{{target}}'{{/if}}>{{label}}</a></li>
     {{/if}}
     {{/each}}
     {{/each}}

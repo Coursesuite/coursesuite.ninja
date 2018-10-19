@@ -86,6 +86,7 @@ class View
 
         $view = Config::get('PATH_VIEW');
         $this->IsMobile = $this->MobileDetect->isMobile() && !$this->MobileDetect->isTablet();
+        if ($page === "home") $page = "root";
         $this->page = $page;
         $this->action = $action;
         $this->helpers = array(
@@ -517,6 +518,9 @@ class View
                 } elseif (isset($options['inverse'])) {
                     return $options['inverse']();
                 }
+            },
+            "replace" => function ($haystack, $needle, $value) {
+                return str_replace($needle, $value, $haystack);
             }
         );
 

@@ -1,4 +1,5 @@
 <div class='uk-container uk-position-relative'>
+{{!--
     <div class='uk-position-top-right'>
     {{#if userIsLoggedIn}}
         <a class='uk-button uk-button-default uk-button-small' href='{{$baseurl}}me'>my account</a>
@@ -6,10 +7,11 @@
         <a class='uk-button uk-button-default uk-button-small uk-visible@s' href='#login-required' uk-toggle>{{login_label}}</a>
     {{/if}}
     </div>
+--}}
+	<img src="/img/who-we-are/left-ninjas.png" class="uk-position-bottom-left uk-width-1-3 cs-z1" id="cs-home-ninjas">
+	<img src="/img/who-we-are/right-ninjas.png" class="uk-position-bottom-right uk-width-1-3 cs-z1" id="cs-home-ninjas-2">
 
-	<img src="/img/who-we-are/foreground.png" class="uk-position-bottom-left uk-width-1-3 cs-z1" id="cs-home-ninjas">
-
-	<div class="cs-z2">
+	<div class="cs-z2 cs-waggle">
 		<h1 class='uk-heading-primary uk-text-center'>NinjaSuite</h1>
 		<p class='uk-text-large uk-text-center'>eLearning software tools to build SCORM courses.</p>
 		<p class='uk-text-center cs-like-a-ninja'>Like a Ninja.</p>
