@@ -1,0 +1,18 @@
+<div class="admin-flex">
+	<aside>
+		{{> menubar}}
+	</aside>
+
+	<article>
+		<header>
+			<h2>Test Sending Email</h2>
+			<p>Put in a basic email and we'll send it using the internal code to see if it works!</p>
+		</header>
+		<form method="post" action="/admin/testemail/send/">
+
+			<div><label>Send To: <input type="text" name="to" value="{{formdata.to}}"></label></div>
+			<div><input type="submit" value="send"></div>
+
+		</form>
+	</article>
+</div>

@@ -45,5 +45,8 @@
 		{"route":"admin/encoder","label":"Encoder Utility"},
 		{"route":"admin/hasher","label":"Hasher Utility"},
 		{"route":"admin/browser","label":"File Browser","target":"_blank"}
+	],
+	"testing": [
+		{"route":"admin/testemail","label":"Send Test Email"}
 	]
 }

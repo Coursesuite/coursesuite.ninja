@@ -1049,4 +1049,23 @@ class AdminController extends Controller
         include (Config::get("PATH_VIEW") . "admin/files/image_browser.php");
     }
 
+    public function testemail($action = "view") {
+        $model = new stdClass();
+        $model->formdata = new stdClass();
+        switch ($action) {
+            case "send":
+                $action = "view";
+                $to = Request::post("to");
+                $model->formdata->to = $to;
+                $mail = new Mail;
+                $mail->emailUser($to, "CourseSuite Admin Test Email", "If you can read this, then email is working the way it should be.");
+
+                break;
+        }
+        $model->action = $action;
+        $this->View->renderHandlebars("admin/testing/email", $model, "_admin", true);
+
+
+    }
+
 }
