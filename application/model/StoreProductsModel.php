@@ -98,7 +98,7 @@ class StoreProductsModel
 		$model->Bundles = $pb;
 
 		$model->IsLoggedIn = Session::userIsLoggedIn();
-		$model->PreloadedEmail = $user_email_address;
+		$model->PreloadedEmail = Session::CurrentUsername();
 		$model->FreeTrialDays = KeyStore::find("freeTrialDays")->get(3);
 
 		if (Session::userIsLoggedIn()) {
@@ -108,6 +108,8 @@ class StoreProductsModel
 
 			// fastspring store link querystring parameters
 			$model->FastspringParams = "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
+
+
 
 			// page edit link for admins
 			if (Session::userIsAdmin()) {

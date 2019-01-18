@@ -79,6 +79,12 @@ function fsPopupClosed(evnt) {
 	}
 }
 
+function fsPrepopulate (email) {
+  fastspring.builder.recognize({
+    "email" : email
+  });
+}
+
 function str_replace (search, replace, subject, countObj) {
   //  discuss at: http://locutus.io/php/str_replace/
   // original by: Kevin van Zonneveld (http://kvz.io)
