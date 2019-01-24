@@ -80,13 +80,13 @@ return array(
     'HMAC_SALT' => 'SP27uVe^zujNW9apqg#kaqA(BAx',
 
     'EMAIL_USED_MAILER' => 'phpmailer',
-    'EMAIL_USE_SMTP' => false, // because I can't make true work because of some wierd cerificate error
-    'EMAIL_SMTP_HOST' => 'mail.coursesuite.com.au',
+    'EMAIL_USE_SMTP' => true,
+    'EMAIL_SMTP_HOST' => 'smtp.gmail.com',
     'EMAIL_SMTP_AUTH' => true,
-    'EMAIL_SMTP_USERNAME' => 'no.user',
-    'EMAIL_SMTP_PASSWORD' => 'iuh@943^f',
-    'EMAIL_SMTP_PORT' => 465, // false=25, tls=587, // ssl=465
-    'EMAIL_SMTP_ENCRYPTION' => false, // 'tls', // 'ssl',
+    'EMAIL_SMTP_USERNAME' => 'info@coursesuite.com',
+    'EMAIL_SMTP_PASSWORD' => '6Jcf28Aa4wC}O5TBYMtLHxfo3g',
+    'EMAIL_SMTP_PORT' => 587, // false=25, tls=587, // ssl=465
+    'EMAIL_SMTP_ENCRYPTION' => 'tls', // 'tls', // 'ssl',
 
     'EMAIL_PASSWORD_RESET_URL' => 'login/verifypasswordreset',
     'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@coursesuite.ninja',
