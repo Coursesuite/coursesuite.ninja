@@ -79,11 +79,11 @@ function fsPopupClosed(evnt) {
 	}
 }
 
-function fsPrepopulate (email, id) {
+function fsPrepopulate (email, token) {
   fastspring.builder.recognize({
     "email" : email
   });
-  fastspring.builder.tag('userId',id);
+  fastspring.builder.tag('token',token);
 }
 
 function str_replace (search, replace, subject, countObj) {

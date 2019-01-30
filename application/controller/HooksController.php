@@ -107,12 +107,14 @@ class HooksController//  doesn't extend Controller
                     // TODO: differentiate between a subscription and a standalone product such as a template
                     $item = reset($data->items); // items[0]; assume a subscription is for one product only; may change
 
+                    $uid = PageFactory::getFactory($data->tags->token)->user_id;
+
                     // create and welcome a new user if required
-                    if (!Model::Exists("users","user_id=:e",[":e"=>$data->tags->userId])) {
+                    if (!Model::Exists("users","user_id=:e",[":e"=>$uid])) {
                         RegistrationModel::register_via_fastspring_hook($data->account->contact);
                         $account = new AccountModel("email", $data->account->contact->email);
                     } else {
-                        $account = new AccountModel("user_id", $data->tags->userId);
+                        $account = new AccountModel("user_id", $uid);
                     }
 
                     // find the product that this purchase relates to
