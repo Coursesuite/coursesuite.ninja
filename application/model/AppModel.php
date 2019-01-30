@@ -33,8 +33,8 @@ class AppModel extends Model
     public function __construct($key = "app_id", $match = "")
     {
         parent::__construct();
-		if ($match === "0") {
-			$this->data_model = parent::Create(self::TABLE_NAME);
+		if (strval($match) === "0") {
+			$this->data_model = parent::Create(self::TABLE_NAME, false);
 		} else {
 			$data = parent::Read(self::TABLE_NAME, "{$key} = :key", array(":key"=>$match), '*', true);
 			if (!empty($data)) {

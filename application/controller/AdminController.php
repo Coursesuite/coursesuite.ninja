@@ -79,7 +79,9 @@ class AdminController extends Controller
 
     // }
 
-    public function files($area,$key,$action = "view",$fname="") {
+    public function files($area, $key = "", $action = "view", $fname="") {
+
+        if (empty($key)) die("Must be saved at least once before you can use this");
 
         $model = new stdClass();
         $rootpath = Config::get("PATH_ATTACHMENTS");
