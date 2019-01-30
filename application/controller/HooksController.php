@@ -81,7 +81,6 @@ class HooksController//  doesn't extend Controller
     // also FS might/can package multiple events into a single call
     // http://docs.fastspring.com/integrating-with-fastspring/order-flow/subscription-integration
     public function fastspring($event = "order", $status = "failed") {
-
         $postbody = file_get_contents("php://input");
 
         // fastspring secret key hashes content for payload verification
@@ -109,10 +108,12 @@ class HooksController//  doesn't extend Controller
                     $item = reset($data->items); // items[0]; assume a subscription is for one product only; may change
 
                     // create and welcome a new user if required
-                    if (!Model::Exists("users","user_email=:e",[":e"=>$data->account->contact->email])) {
+                    if (!Model::Exists("users","user_id=:e",[":e"=>$data->tags->userId])) {
                         RegistrationModel::register_via_fastspring_hook($data->account->contact);
+                        $account = new AccountModel("email", $data->account->contact->email);
+                    } else {
+                        $account = new AccountModel("user_id", $data->tags->userId);
                     }
-                    $account = new AccountModel("email", $data->account->contact->email);
 
                     // find the product that this purchase relates to
                     $product = new ProductBundleModel("product_key", $item->product);

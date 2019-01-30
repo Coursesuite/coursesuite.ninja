@@ -99,6 +99,7 @@ class StoreProductsModel
 
 		$model->IsLoggedIn = Session::userIsLoggedIn();
 		$model->PreloadedEmail = Session::CurrentUsername();
+		$model->UserId = Session::CurrentUserId();
 		$model->FreeTrialDays = KeyStore::find("freeTrialDays")->get(3);
 
 		if (Session::userIsLoggedIn()) {

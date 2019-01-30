@@ -79,10 +79,11 @@ function fsPopupClosed(evnt) {
 	}
 }
 
-function fsPrepopulate (email) {
+function fsPrepopulate (email, id) {
   fastspring.builder.recognize({
     "email" : email
   });
+  fastspring.builder.tag('userId',id);
 }
 
 function str_replace (search, replace, subject, countObj) {
@@ -454,17 +455,17 @@ console.dir(data);
   var fn = function() {
       [].forEach.call(document.querySelectorAll("[data-fsc-item-pricetotal-callback]"), function (node) {
         var dObj = searchObject(data,function(value) {
-          return value!=null && value!=undefined && value.productPath===node.dataset.fscItemPath;
+          return value!=null && value!=undefined && value.productPath===node.dataset.fscItemPath && value.length > 0;
         });
         // lets pull the price from the last in the series
-        var format = node.dataset.format ? node.dataset.format : " - %price %currency",
-            price = dObj[dObj.length-1].value.unitPrice.replace(".00",""),
-            text = format.replace("%price", price).replace("%currency", data.currency);
+        var format = node.dataset.format ? node.dataset.format : " - %price %currency";
+        var price = dObj[dObj.length-1].value.unitPrice.replace(".00","");
+        var text = format.replace("%price", price).replace("%currency", data.currency);
         node.innerHTML = text;
       });
     },
     t = function () {
-console.info(document.readyState);
+      console.info(document.readyState);
       if(document.readyState==='complete') {
         fn();
       } else {

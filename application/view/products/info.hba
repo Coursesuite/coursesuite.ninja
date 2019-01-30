@@ -84,7 +84,7 @@
 							<p class='uk-text-right'>
 							{{#if @root.ContextualStore}}
 								{{#equals @root.App.active 3}}
-								<a href="#" onclick="fsPrepopulate('{{@root/PreloadedEmail}}')" data-fsc-item-path="{{product_key}}" data-fsc-item-path-value="{{product_key}}" data-fsc-action="Reset,Add,Checkout" class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now<span data-fsc-item-path="{{product_key}}" data-fsc-item-pricetotal-callback data-format=" - %price %currency"></span></a>
+								<a href="#" onclick="fsPrepopulate('{{@root/PreloadedEmail}}', {{@root/UserId}})" data-fsc-item-path="{{product_key}}" data-fsc-item-path-value="{{product_key}}" data-fsc-action="Reset,Add,Checkout" class='uk-button uk-button-secondary uk-button-large'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now<span data-fsc-item-path="{{product_key}}" data-fsc-item-pricetotal-callback data-format=" - %price %currency"></span></a>
 								{{else}}
 								{{counter_add "comingsoon"}}
 								<a class='uk-button uk-button-primary ul-button-large' href='#signup-form' uk-toggle><span uk-icon='info' class='uk-margin-small-right'></span> Register Interest!</a>
