@@ -626,11 +626,30 @@ class ApiController extends Controller
 		if (is_null($publickey)) return;
 		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
 
+		Licence::refresh_licencing_info();
+
 		// set some properties about the apps this key can access
 		$model = new stdClass();
 		$model->publickey = $publickey;
 
-		$subscription = (new SubscriptionModel($publickey))->get_model(true, true, true);
+		$base_model = (new SubscriptionModel($publickey))->get_model(true, true, true);
+		$subscription = new stdClass();
+		$subscription->user_email = $base_model["Account"]->user_email;
+		$subscription->user_id = md5($base_model["Account"]->user_id . Config::get("HMAC_SALT")); // abstract id
+		$subscription->active = ($base_model["active"] !== "0");
+		$subscription->trial = ($base_model["Product"]->product_key === "api-trial");
+		$subscription->seats = Licence::seats_remaining(md5($base_model["referenceId"]));
+		$subscription->theme = 1; // some kind of flag to switch clientside renderer
+		foreach ($base_model["Product"]->Apps as $app) {
+			$obj = new stdClass();
+			$obj->name = $app->name;
+			$obj->description = $app->tagline;
+			$obj->icon = $app->glyph;
+			$obj->key = $app->app_key;
+			$obj->colour= $app->colour;
+			$obj->guide = $app->guide;
+			$subscription->apps[] = $obj;
+		}
 		$model->subscription = json_encode($subscription);
 
 		// render the client facing library as a javascript function
