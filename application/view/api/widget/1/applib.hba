@@ -48,7 +48,7 @@
                '.csn-gr1>*{padding:.25em}'+
                '.csn-gr2{display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));grid-gap:1em;}'+
                '.csn-gr3{display:grid;grid-template-columns:1fr 1fr;grid-gap:1em;}'+
-               '.csn-btn{cursor:pointer;color:white;border-radius:.5em;border-width:1px;border-style:solid;border-color:rgba(255,255,255,.5) rgba(0,0,0,.5) rgba(0,0,0,.5) rgba(255,255,255,.5);padding:1em;box-shadow:0 0 0 rgba(0,0,0,0);transition:box-shadow .3s ease; display:flex;flex-direction:column;align-items:center;justify-content:center;}'+
+               '.csn-btn{cursor:pointer;color:white;border-radius:.5em;border-width:1px;border-style:solid;border-color:rgba(255,255,255,.5) rgba(0,0,0,.5) rgba(0,0,0,.5) rgba(255,255,255,.5);padding:.5em;box-shadow:0 0 0 rgba(0,0,0,0);transition:box-shadow .3s ease; display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}'+
                '.csn-btn:hover{box-shadow:0 0 1em rgba(0,0,0,.25);}'+
                '.csn-btn>a{color:white}'+
                '.csn-btn>a>svg{width:40px;fill:white}',
@@ -72,7 +72,7 @@
           "<div class='csn-gr1'><b>Seats</b><span>[[seats]]</span></div>"+
           "<div class='csn-gr1'><b>Active</b><span>[[active]]</span></div>"+
           "<div class='csn-gr1'><b>Trial</b><span>[[trial]]</span></div>"+
-          "<div class='csn-gr2'>[[launchers]]</div>"+
+          "<div class='csn-gr3'>[[launchers]]</div>"+
           "</div>", subscription);
         if(app)app.innerHTML = tmpl;
   }

@@ -249,28 +249,27 @@ class MeController extends Controller
 					$subscription_id = Model::ReadColumn("subscriptions", "subscription_id", "subscription_id IN (SELECT subscription_id FROM subscriptions WHERE md5(referenceId)=:hash)", [":hash"=>$action_id_raw]);
 					switch ($function) {
 						case "customtemplate":
-							$wm = new WhiteLabelModel("get", ["subscription_id" => $subscription_id, "app_key" => $app_key]);
-							$model["white_label"] = $wm->get_model();
+							// files are stored in an abstract hash folder to make them harder to guess
+							$path = Config::get("PATH_ATTACHMENTS") . md5($action_id_raw . Config::get("HMAC_SALT")) . "/" . $app_key . "/";
 							if ($method === "save") {
 								list($filetype, $filename, $tmpname) = [strtolower($_FILES["file"]["type"]), strtolower($_FILES["file"]["name"]), $_FILES["file"]["tmp_name"]];
 								if (strpos($filetype,"zip")!==false && strpos($filename,".zip")!==false) {
-									Model::WriteBlob("whitelabel", "template", $tmpname, "id=:id", [":id"=>$wm->get_id()]);
-									$model["white_label"]->template = true;
+									if (!file_exists($path)) mkdir($path,0775, true);
+									move_uploaded_file($_FILES["file"]["tmp_name"], $path . "template.zip");
 								}
 							} else if ($method === "remove") {
-								$model["white_label"]->template = null;
-								$wm->set_model($model["white_label"]);
-								$wm->save();
-							} else {
-								// $template is binary, which crashes lightncandy, so fudge the property
-								$model["white_label"]->template = empty($model["white_label"]->template) ? false : true;
+								$path = Config::get("PATH_ATTACHMENTS") . md5($action_id_raw . Config::get("HMAC_SALT")) . "/" . $app_key . "/template/";
+								if (file_exists($path)) unlink($path);
 							}
+							$wm = new WhiteLabelModel("get", array("subscription_id" => $subscription_id, "app_key" => $app_key));
+							$model["white_label"] = $wm->get_model();
+							$model["white_label"]->template = file_exists($path);
 							break;
 
 						case "whitelabel":
 							$wm = new WhiteLabelModel("get", array("subscription_id" => $subscription_id, "app_key" => $app_key));
-							$wmodel = $wm->get_model();
 							if ($method === "save") {
+								$wmodel = $wm->get_model();
 								$wmodel->html = Request::post_html("html"); // sanitized html
 								$wmodel->css = Request::post("css", true);
 								$wm->set_model($wmodel);
@@ -281,9 +280,9 @@ class MeController extends Controller
 
 						case "publishurl":
 							$wm = new WhiteLabelModel("get", array("subscription_id" => $subscription_id, "app_key" => $app_key));
-							$wmodel = $wm->get_model();
 							$publishToUrl = Request::post("url", false, FILTER_VALIDATE_URL);
 							if ($method === "save") {
+								$wmodel = $wm->get_model();
 								$wmodel->publish_to = is_bool($publishToUrl) ? null : $publishToUrl;
 								$wm->set_model($wmodel);
 								$wm->save();
