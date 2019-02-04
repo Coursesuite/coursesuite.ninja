@@ -288,15 +288,21 @@ class Model
         ");
         $query->execute($params);
         $blob = null;
-        $query->bindColumn(1, $blob, PDO::PARAM_LOB, 0, PDO::SQLSRV_ENCODING_BINARY);
-        if ($query->fetch()) {
+        $query->bindColumn(1, $blob, PDO::PARAM_LOB); //, 0, PDO::SQLSRV_ENCODING_BINARY);
+        if ($query->fetch(PDO::FETCH_BOUND)) {
             return $blob;
         } else {
-            return false;
+            return null; // false;
         }
     }
 
     final public static function WriteBlob($table, $column, $filename, $where = "", $params = array()) {
+        $time_limit = ini_get('max_execution_time');
+        $memory_limit = ini_get('memory_limit');
+
+        set_time_limit(0);
+        ini_set('memory_limit', '-1');
+
         $database = DatabaseFactory::getFactory()->getConnection();
         $query = $database->prepare("
             UPDATE $table
@@ -309,11 +315,17 @@ class Model
         $file = new SplFileObject($filename,"r");
         $blob = $file->fread($file->getSize());
         $file = null;
-        // $handle = fopen($filename, "rb");
-        // $blob = fread($handle, filesize($filename));
-        // fclose($handle);
+
         $query->bindParam(":blob", $blob, PDO::PARAM_LOB);
-        return $query->execute();
+
+        $database->beginTransaction();
+        $result = $query->execute();
+        $database->commit();
+
+        set_time_limit($time_limit);
+        ini_set('memory_limit', $memory_limit);
+
+        return $result;
     }
 
 }
