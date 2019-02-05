@@ -461,6 +461,7 @@ class ApiController extends Controller
 	}
 
 	public function dl($hash,$app_key,$file = "template") {
+		parent::allowCORS(); // important
 		$file = Config::get("PATH_ATTACHMENTS") . md5($hash . Config::get("HMAC_SALT")) . "/" . $app_key . "/template.zip";
 		if (file_exists($file)) {
 		    header('Content-Description: File Transfer');
@@ -635,6 +636,7 @@ class ApiController extends Controller
 	}
 
 	public function widgetcode($version = 1, $publickey = null) {
+		parent::allowCORS();
 		if (is_null($publickey)) return;
 		// if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
 		if (!Model::exists("subscriptions","md5(referenceId)=:key",[":key"=>$publickey])) return;
@@ -649,6 +651,7 @@ class ApiController extends Controller
 	}
 
 	public function widget($version = 1, $publickey = null) {
+		parent::allowCORS();
 		if (is_null($publickey)) return;
 		// if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
 		if (!Model::exists("subscriptions","md5(referenceId)=:key",[":key"=>$publickey])) return;
