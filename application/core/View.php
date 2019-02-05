@@ -600,6 +600,9 @@ class View
                     $results[] = ["route"=>implode('/',array_slice($url,0,2)), "label"=> $url[1] ];
                 }
                 $results[] = ["route"=>false, "label"=>$PAGE->user_email];
+            case "intergrations":
+                $results[] = ["route"=>"intergrations", "label"=>"Intergrations"];
+                break;
         }
         return $results;
     }
