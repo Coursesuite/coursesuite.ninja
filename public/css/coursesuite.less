@@ -833,3 +833,28 @@ body.mobile .cs-who-we-are {
 	65% { transform: rotate(1deg); }
 	70% { transform: none; }
 }
+
+.cs-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+.cs-spinner:after {
+  content: " ";
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  border-color: #909090 transparent #909090 transparent;
+  animation: cs-spinner 1.2s linear infinite;
+}
+@keyframes cs-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

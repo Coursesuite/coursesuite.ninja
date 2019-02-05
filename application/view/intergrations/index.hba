@@ -1,0 +1,18 @@
+<div class='uk-section cs-me'>
+	<div class='uk-container'>
+		<div  class='uk-flex' uk-grid>
+			<div class="uk-child-width-1-2@s uk-child-width-1-4@m" uk-grid="masonary:true">
+			<!-- for each intergrations -->
+			<div>
+				<div class="uk-inline">
+					<img src='https://i.imgur.com/S32m5Cp.jpg' class='uk-position-cover'>
+				</div>
+				<div class="uk-text-center">
+					<p class="uk-text-lead">Moodle</p>
+				</div>
+			</div>
+			<!-- /for each -->
+			</div>
+		</div>
+	</div>
+</div>

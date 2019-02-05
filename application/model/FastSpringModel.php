@@ -58,4 +58,33 @@ class FastSpringModel {
         return json_decode($result);
 	}
 
+
+	// ---------------------------------------------
+
+	public static function applyCoupon($code, $subId) {
+		$sub = self::get('/subscriptions/'.$subId);
+		// Check if subscription exists
+		if (isset($sub->error)) {
+			return array('status'=>'Error, subscription does not exist.');
+		}
+		// Check if subscription already has discount applied
+		if (isset($sub->discounts)) {
+			return array('status'=>'Error, subscription already has discount applied.');
+		} 
+		// Check if coupon is valid
+		if (isset(self::get('/coupons/'.$code)->error)) {
+			return array('status'=>'Error, invalid coupon code.');
+		}
+		// Apply coupon
+		$apply = self::post('/subscriptions', "{'subscriptions': [
+                {
+                    'subscription': $subId,
+                    'coupons': [$code]
+                }
+            ]
+        }"
+    	);
+		return array('status'=>'Coupon code successfully applied. Your next charge will be discounted.');
+	}
+
 }
