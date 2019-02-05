@@ -48,7 +48,8 @@ class SubscriptionModel extends Model
 	{
 		parent::__construct();
 		if (preg_match('/^[a-f0-9]{32}$/', $row)) {
-			$this->data_model = parent::Read(self::TABLE_NAME, "md5(referenceId)=:hash OR md5(concat(referenceId,:salt))=:hash", array(":hash"=>$row,":salt"=>Config::get("HMAC_SALT")),"*",true); // [0]; // 0th of a fetchall
+			// $this->data_model = parent::Read(self::TABLE_NAME, "md5(referenceId)=:hash OR md5(concat(referenceId,:salt))=:hash", array(":hash"=>$row,":salt"=>Config::get("HMAC_SALT")),"*",true); // [0]; // 0th of a fetchall
+			$this->data_model = parent::Read(self::TABLE_NAME, "md5(referenceId)=:hash", [":hash"=>$row], "*", true); // [0]; // 0th of a fetchall
 		} else if (is_numeric($row) && $row > 0) {
 			self::load($row);
 		} else if (is_numeric($row) && $row === 0) {

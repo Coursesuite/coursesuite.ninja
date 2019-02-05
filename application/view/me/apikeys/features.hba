@@ -13,8 +13,8 @@
 				<ul class="uk-navbar-nav">
 				{{#each @root.api_info}}
 					{{counter_reset "enabled_mods"}}
-					<li><a href="#">{{app_key}}</a>
-						<div class="uk-navbar-dropdown">
+					<li class="uk-parent"><a href="#">{{app_key}}</a>
+						<div class="uk-navbar-dropdown" uk-dropdown="duration:0; animation: none">
 							<ul class="uk-nav uk-navbar-dropdown-nav">
 								{{#each mods}}{{#if enabled}}
 						        <li><a href="{{@root.baseurl}}me/apikeys/features/{{@root.command_id_raw}}/{{../app_key}}/{{@key}}">{{label}}</a></li>
@@ -30,7 +30,6 @@
 				{{/each}}
 				</ul>
 			</nav>
-
 			{{#if param_array}}
 			<form method="post" class="uk-form-stacked uk-margin-large-top" action="{{baseurl}}me/apikeys/features/{{command_id_raw}}/{{array_item param_array 0}}/{{array_item param_array 1}}/save" enctype="multipart/form-data">
 				{{#equals (array_item param_array 1) "whitelabel"}}

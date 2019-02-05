@@ -45,12 +45,12 @@
 							</ul>
 						</div>
 						<div>
-							<p><b>Api Key:</b> {{apikey}}</p>
-							<p><b>Secret:</b> {{#decodable secret}}{{.}}{{/decodable}}</p>
+							<p><b>Public Key:</b> {{apikey}}</p>
+							<p><b>Private Key:</b> {{#decodable secret}}{{.}}{{/decodable}}</p>
 							<p><b>Widget code:</b></p>
 							<div class="cs-resizable uk-flex uk-position-relative uk-overflow-hidden">
 								<div class="cs-resize-control uk-position-bottom-right"></div>
-								<iframe src="/api/widgetcode/1/{{salted_hash 'md5' referenceId}}" class="uk-flex-1"></iframe>
+								<iframe src="/api/widgetcode/1/{{unsalted_hash 'md5' referenceId}}" class="uk-flex-1"></iframe>
 							</div>
 						</div>
 						</td>
@@ -77,41 +77,33 @@
 				</tfoot>
 			</table>
 
-{{!-- <hr>ignore me plz ...
-						<form method="get" id="fregular">
-							<p><select onchange='document.getElementById("fregular").setAttribute("action", this.value);' class='uk-select'>
-								<option value="/me/apikeys">Choose ...</option>
-								{{#each @root/dropdown}}
-									<option value="{{value}}{{../referrer}}">{{label}}</option>
-								{{/each}}
-							</select></p>
-						</form>
---}}
+{{!--
+not yet ready
+			<hr class="uk-divider-icon">
 
-		<hr class="uk-divider-icon">
+			<h3>Plugins</h3>
+			<p>Grab our plugins for your LMS to directly connect to our API and enabled direct publishing. If you are a LMS publisher or want us to develop an intergrated solution for publishing to your platform please <a href="/content/contact">get in touch</a>.</p>
+			<div uk-grid>
+				<div>Moodle 3.1+</div>
+				<div>D2L</div>
+				<div>Custom Portal 1</div>
+				<div>Custom Portal 2</div>
+				<div>Wordpress</div>
+			</div>
 
-		<h3>Plugins</h3>
-		<p>Grab our plugins for your LMS to directly connect to our API and enabled direct publishing. If you are a LMS publisher or want us to develop an intergrated solution for publishing to your platform please <a href="/content/contact">get in touch</a>.</p>
-		<div uk-grid>
-			<div>Moodle 3.1+</div>
-			<div>D2L</div>
-			<div>Custom Portal 1</div>
-			<div>Custom Portal 2</div>
-			<div>Wordpress</div>
-		</div>
+			<hr class="uk-divider-icon">
 
-		<hr class="uk-divider-icon">
-
-		<h3>Templates</h3>
-		<p>Some of our apps support Download Templates for published packages. This can incorporate custom scripting or styling such as corporate colours and logos. The following base templates are available (you can upload these through 'Show Details' > 'Manage Apps' > 'Template' for your api accounts).</p>
-		<div uk-grid>
-			<div>Document Ninja</div>
-			<div>Presentation Ninja</div>
-			<div>Course Builder Ninja</div>
-			<div>Quiz Ninja</div>
-			<div>Media Ninja</div>
-			<div>Lecture Ninja</div>
-		</div>
+			<h3>Templates</h3>
+			<p>Some of our apps support Download Templates for published packages. This can incorporate custom scripting or styling such as corporate colours and logos. The following base templates are available (you can upload these through 'Show Details' > 'Manage Apps' > 'Template' for your api accounts).</p>
+			<div uk-grid>
+				<div>Document Ninja</div>
+				<div>Presentation Ninja</div>
+				<div>Course Builder Ninja</div>
+				<div>Quiz Ninja</div>
+				<div>Media Ninja</div>
+				<div>Lecture Ninja</div>
+			</div>
+}}
 		</div>
 	</div>
 </div>

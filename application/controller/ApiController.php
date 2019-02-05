@@ -198,13 +198,25 @@ class ApiController extends Controller
 			if ($product->is_api() === true) {
 				$result->api = new stdClass();
 				$result->api->bearer = md5($model->hash . Encryption::decrypt(Text::base64dec($user->get_property("secret_key")))); // bearer = md5 of apikey + secret key
-				$result->api->publish = ApiModel::get_publish_url($model->hash, $token); // since token is a unique version of hash this is an easy match
-				$white_label = ApiModel::get_white_label($app_key, $model->subscription);
+
+				// publish url and whitelabel can both be set via api at runtime, or configured through the interface
+
+				$white_label = ApiModel::get_white_label($app_key, $model);
 				$result->api->header = new stdClass();
 				$result->api->header->html = $white_label["html"];
 				$result->api->header->css = $white_label["css"];
-			}
+				$publish_url = $white_label["publish_to"];
+				if (empty($publish_url)) {
+					$publish_url = ApiModel::get_publish_url($model->hash, $token);
+				}
+				$result->api->publish = $publish_url;
 
+				if ($white_label["template"]) {
+					$result->api->template = Config::get("URL") . "api/dl/{$model->hash}/{$app_key}/template";
+				} else {
+					$result->api->template = false;
+				}
+			}
 			// removed . ":" . Config::get("WEBSOCKET_PORT") - you want it to connect on the ssl port THEN have a proxy redirect it to the local port
 				$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $model->hash;
 			if ($bypass_licencing) {
@@ -448,8 +460,21 @@ class ApiController extends Controller
 		SubscriptionModel::validateSubscriptions();
 	}
 
-	public function dl($hash,$app_key,$file) {
-
+	public function dl($hash,$app_key,$file = "template") {
+		$file = Config::get("PATH_ATTACHMENTS") . md5($hash . Config::get("HMAC_SALT")) . "/" . $app_key . "/template.zip";
+		if (file_exists($file)) {
+		    header('Content-Description: File Transfer');
+		    header('Content-Type: application/zip');
+		    header('Content-Disposition: attachment; filename="'.basename($file).'"');
+		    header('Expires: 0');
+		    header('Cache-Control: must-revalidate');
+		    header('Pragma: public');
+		    header('Content-Length: ' . filesize($file));
+		    readfile($file);
+		    exit;
+		} else {
+			http_response_code(204); die();
+		}
 	}
 
 	/* -------------------------------- FASTSPRING -----------------------------------
@@ -611,7 +636,8 @@ class ApiController extends Controller
 
 	public function widgetcode($version = 1, $publickey = null) {
 		if (is_null($publickey)) return;
-		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
+		// if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
+		if (!Model::exists("subscriptions","md5(referenceId)=:key",[":key"=>$publickey])) return;
 
 		$model = new stdClass();
 		$model->version = $version;
@@ -624,13 +650,33 @@ class ApiController extends Controller
 
 	public function widget($version = 1, $publickey = null) {
 		if (is_null($publickey)) return;
-		if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
+		// if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
+		if (!Model::exists("subscriptions","md5(referenceId)=:key",[":key"=>$publickey])) return;
+
+		Licence::refresh_licencing_info();
 
 		// set some properties about the apps this key can access
 		$model = new stdClass();
 		$model->publickey = $publickey;
 
-		$subscription = (new SubscriptionModel($publickey))->get_model(true, true, true);
+		$base_model = (new SubscriptionModel($publickey))->get_model(true, true, true);
+		$subscription = new stdClass();
+		$subscription->user_email = $base_model["Account"]->user_email;
+		$subscription->user_id = md5($base_model["Account"]->user_id . Config::get("HMAC_SALT")); // abstract id
+		$subscription->active = ($base_model["active"] !== "0");
+		$subscription->trial = ($base_model["Product"]->product_key === "api-trial");
+		$subscription->seats = Licence::seats_remaining(md5($base_model["referenceId"]));
+		$subscription->theme = 1; // some kind of flag to switch clientside renderer
+		foreach ($base_model["Product"]->Apps as $app) {
+			$obj = new stdClass();
+			$obj->name = $app->name;
+			$obj->description = $app->tagline;
+			$obj->icon = $app->glyph;
+			$obj->key = $app->app_key;
+			$obj->colour= $app->colour;
+			$obj->guide = $app->guide;
+			$subscription->apps[] = $obj;
+		}
 		$model->subscription = json_encode($subscription);
 
 		// render the client facing library as a javascript function

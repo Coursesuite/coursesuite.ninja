@@ -499,6 +499,9 @@ class View
             "salted_hash" => function ($algo, $value) {
                 return hash($algo, $value . Config::get("HMAC_SALT"), false);
             },
+            "unsalted_hash" => function ($algo, $value) {
+                return hash($algo, $value, false);
+            },
             "mt" => function ($value, $options) {
                 if (empty($value)) {
                     return $options['fn']();
