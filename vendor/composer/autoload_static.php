@@ -51,6 +51,9 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         'L' => 
         array (
             'LightnCandy\\' => 12,
+            'League\\OAuth2\\Server\\' => 21,
+            'League\\Event\\' => 13,
+            'Lcobucci\\JWT\\' => 13,
         ),
         'G' => 
         array (
@@ -62,6 +65,10 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+        ),
+        'D' => 
+        array (
+            'Defuse\\Crypto\\' => 14,
         ),
         'C' => 
         array (
@@ -127,6 +134,18 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         array (
             0 => __DIR__ . '/..' . '/zordius/lightncandy/src',
         ),
+        'League\\OAuth2\\Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/oauth2-server/src',
+        ),
+        'League\\Event\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/event/src',
+        ),
+        'Lcobucci\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
+        ),
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
@@ -146,6 +165,10 @@ class ComposerStaticInit11dbfb6a54a44f9def62d52ba2467c6e
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Defuse\\Crypto\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
         ),
         'Cviebrock\\DiscoursePHP\\' => 
         array (
