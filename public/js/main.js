@@ -474,3 +474,28 @@ console.dir(data);
     };
   t();
 }
+
+function fsApplyCoupon(code, subId) {
+  var couponInput = document.getElementById('couponInput');
+  var spinner = document.getElementById('couponSpinner');
+  spinner.style.opacity = 1;
+  $.ajax({
+    type: 'POST',
+    url: '/me/applyCoupon/',
+    async: true,
+    data: {
+      'coupon_code': code,
+      'sub_id': subId
+    },
+    complete: function(resp) {
+      spinner.style.opacity = 0;
+      couponInput.style.display = 'none';
+      couponInput.firstChild.value = '';
+      alert(resp.responseJSON.status);
+    },
+    error: function(jq, status, err) {
+      console.warn(status);
+      console.warn(err);
+    }
+  });
+}

@@ -55,6 +55,8 @@
 	            	{{#decodable subscriptionUrl}}<li><a href='{{.}}' target="_blank"><span uk-icon="link" class="uk-margin-xsmall-right"></span>Order Details</a></li>{{/decodable}}
 					{{#if support_url}}<li><a href='{{support_url}}'><span uk-icon="mail" class="uk-margin-xsmall-right"></span>Email Support</a></li>{{/if}}
 					{{#equals fsState "canceled"}}{{else}}{{#unless ended}}{{#if fsSubscriptionId}}<li><a href="/me/orders/cancel/{{encode fsSubscriptionId}}"><span uk-icon='ban' class="uk-margin-xsmall-right"></span>Cancel subscription</a></li>{{/if}}{{/unless}}{{/equals}}
+					<li><a onclick="document.getElementById('couponInput').style.display='';"><span uk-icon="tag" class="uk-margin-xsmall-right"></span>Apply Coupon</a></li>
+					<li id="couponInput" style="display:none;"><input type="text" onkeyup="if (arguments[0].code === 'Enter'){fsApplyCoupon(this.value, '{{fsSubscriptionId}}');}"><div id="couponSpinner" class="cs-spinner" style="opacity: 0;"></div></li>
 				</ul></td>
 			</tr>
 			{{#contains Product.product_key 'api-'}}{{else}}

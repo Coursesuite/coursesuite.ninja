@@ -506,6 +506,17 @@ class SubscriptionModel extends Model
 
 	}
 
-
+	public static function get_fs_subscription_id($userId) {
+		$tablename = self::TABLE_NAME;
+		$database = DatabaseFactory::getFactory()->getConnection();
+		$query = $database->prepare("
+			SELECT fsSubscriptionId
+			FROM $tablename
+			WHERE user_id = :uid");
+	 	$query->execute(array(
+			':uid' => $userId
+		));
+		return $query->fetch();
+	}
 
 }

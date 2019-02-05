@@ -38,6 +38,16 @@ class MeController extends Controller
 		MessageModel::markAsRead($message_id);
 	}
 
+	public function applyCoupon() {
+		self::requiresAjax();
+		$couponCode = Request::post("coupon_code", true);
+		$subId = Request::post("sub_id", true);
+		if ($subId && $couponCode) {
+			$result = FastSpringModel::applyCoupon($couponCode, $subId);
+			$this->View->renderJSON($result);
+		}
+	}
+
 	/* --------------------------- DEFAULT VIEW -------------------------------- */
 	public function index() {
 		if (SubscriptionModel::user_has_active_subscription_to_launchable_app(Session::CurrentUserId())) {
