@@ -14,7 +14,16 @@ class ApiController extends Controller
 		parent::__construct(false); // passing false avoids initialising a session object
 	}
 
+	/**
+	* @api {get} /api/validateorder/ find out if a given order id exists in the database
+	* @apiPrivate
+	* @apiName App Colours CSS
+	* @apiGroup Ajax
+	* @apiVersion 1.0.0
+	* @apiDescription used by store page to wait until fastspring notifies us of the purchase
+	*/
 	public function validateorder($reference) {
+		// parent::allowCORS(); // actually, no, this is internal only
 		parent::requiresAjax();
 		$json = json_decode(Text::base64dec($reference));
 		$data = array("ready"=>false);
@@ -25,16 +34,30 @@ class ApiController extends Controller
 		$this->View->renderJSON($data);
 	}
 
+	public function validatelicence($key) {
+		parent::allowCORS(); // called from fetch on other domains
+		parent::requiresAjax();
+		$data = array("status"=>"missing");
+		if ($licencekeys = preg_grep('/^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){4}$/', [$key])) {
+			$match = trim($licencekeys[0]);
+			$licence = new LicenceModel("licencekey",$match);
+			if ($licence->loaded()) {
+				if (time() > $licence->ends) {
+					$data = array("status"=>"expired");
+				} else {
+					$data = array("status"=>"ready");
+				}
+			}
+		}
+		$this->View->renderJSON($data);
+	}
+
 	/* this method exists because EXZA can't get their shit together
 	* if this method doesn't exist, their their portal BREAKS and shows a white page. OMGROFLNÜBS
 	*/
 	public function generateApiKey() {
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, file_get_contents("php://input"), "Depreciated method call");
-		//if ($username === "apianmf") {
-		//	$hash = md5("api-anmf-special-order");
-		//	$token = ApiModel::generate_token_for_subscription($hash);
-		//} else
 
 		if ($username === "apikaplan") {
 			$hash = md5("api-kaplan-special-order");
@@ -43,10 +66,6 @@ class ApiController extends Controller
 		} elseif ($username === "apimatrix") {
 			$hash = md5("api-matrix-special-order");
 			$token = ApiModel::generate_token_for_subscription($hash);
-
-		// } elseif ($username === "apiwvphn") {
-		// 	$hash = md5("api-wvphn-special-order");
-		// 	$token = ApiModel::generate_token_for_subscription($hash);
 
 		} else {
 			$data = array("error" => "This method is depreciated.");
@@ -115,8 +134,11 @@ class ApiController extends Controller
 	public function validate($app_key, $token_encoded) {
 
 		$authtoken = parent::requiresAuth();
-//$authtoken = "timdebug";
-		$token_raw = Text::base64dec($token_encoded);
+		if (Text::isBase64($token_encoded)) {
+			$token_raw = Text::base64dec($token_encoded);
+		} else {
+			$token_raw = $token_encoded;
+		}
 
 		LoggingModel::logMethodCall(__METHOD__, $authtoken, $app_key, $token_raw, $token_encoded);
 
@@ -130,7 +152,8 @@ class ApiController extends Controller
 		$result->licence = new stdClass();
 		$result->licence->tier = 99; // depreciated
 		$result->licence->seats = 0;
-		$result->licence->remaining = 0;
+		$result->licence->remaining = 1;
+		$result->licence->error = "bad-token";
 
 		$result->user = new stdClass();
 		$result->user->container = "";
@@ -142,89 +165,116 @@ class ApiController extends Controller
 		$result->app->layer = "";
 		$result->app->guide = "";
 
-		$tokens = str_split($token_raw,60); // every 60 characters represents a new token
-		$token = $tokens[0]; // first token is the most relevant hash
-		unset($tokens[0]); // now we can check the remaining hashes
-		$admins = AccountModel::get_admin_users(); // list of site admin salted md5's
+		// are we validating a licence key? e.g. CAA21-597B9-83D2C-4D606-E5AB6
+		if ($licencekeys = preg_grep('/^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){4}$/', [$token_raw])) {
 
-		// when there are multiple tokens you check the 2nd, 3rd, etc to see if it trumps the first, or if the first has run out of seats
-		$bypass_licencing = false;
-		$seats = null;
-		foreach ($tokens as $parent_token) {
-
-			// hash might be the salted md5 of a user_id who is an admin - e.g. impersonation
-			foreach ($admins as $admin_hash) {
-				if (password_verify($admin_hash, $parent_token)) {
-					$bypass_licencing = true;
-					$seats = [5,5]; // enough
-					break 2; // inner foreach
-				}
-			}
-
-			// token might be a parent hash; model will be set if the token is valid and active
-			if (($model = ApiModel::find_model_for_token($parent_token)) !== false) {
-				$seats = [Licence::total_seats($model->hash), Licence::seats_remaining($model->hash)];
-				break 1; // outer foreach
-			}
-		}
-
-		if ($model = ApiModel::find_model_for_token($token)) {
-
-			$result->valid = true;
-
-			$app_id = Model::ReadColumn("apps","app_id","app_key=:key",array(":key"=>$app_key));
-			$result->app->guide = Model::ReadColumn("apps","guide","app_key=:key",array(":key"=>$app_key));
-
-			$user = new AccountModel("id",$model->user);
-			$result->user->email = $user->get_property("user_email");
-			if (!empty($user->get_property("user_container"))) {
-				$result->user->container = $user->get_property("user_container");
-			} else {
-				list($name,$_) = explode('@',$result->user->email);
+			$match = trim($licencekeys[0]);
+			$licence = new LicenceModel("licencekey",$match);
+			if ($licence->loaded()) {
+				$result->user->email = $licence->email;
+				list($name,$_) = explode('@',$licence->email);
 				$result->user->container = preg_replace('/[^a-zA_Z0-9]/', '', $name);
-			}
+				$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $licence->licencekey;
 
-			$result->licence->seats = Licence::total_seats($model->hash); // total seats you are licensed for
-			$result->licence->remaining = Licence::seats_remaining($model->hash); // comes from from the concurrency database (redis)
+				// no layer on a courseassembler app
+				// $result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
 
-			// in the case you are out of licences and there is a parent a
-			if ($bypass_licencing || ($result->licence->remaining === 0 && $seats !== null)) {
-				$result->licence->seats = $seats[0];
-				$result->licence->remaining = $seats[1];
-			}
-
-			$product = new ProductBundleModel("id", $model->product); // what they bought, which we know includes this app_key (otherwise the has wouldn't have validated)
-
-			if ($product->is_api() === true) {
-				$result->api = new stdClass();
-				$result->api->bearer = md5($model->hash . Encryption::decrypt(Text::base64dec($user->get_property("secret_key")))); // bearer = md5 of apikey + secret key
-
-				// publish url and whitelabel can both be set via api at runtime, or configured through the interface
-
-				$white_label = ApiModel::get_white_label($app_key, $model);
-				$result->api->header = new stdClass();
-				$result->api->header->html = $white_label["html"];
-				$result->api->header->css = $white_label["css"];
-				$publish_url = $white_label["publish_to"];
-				if (empty($publish_url)) {
-					$publish_url = ApiModel::get_publish_url($model->hash, $token);
-				}
-				$result->api->publish = $publish_url;
-
-				if ($white_label["template"]) {
-					$result->api->template = Config::get("URL") . "api/dl/{$model->hash}/{$app_key}/template";
+				$result->licence->seats = 1;
+				if (time() < $licence->ends) {
+					$result->valid = true;
+					$result->licence->error = "";
 				} else {
-					$result->api->template = false;
+					$result->licence->error = "licence-key-expired";
 				}
 			}
-			// removed . ":" . Config::get("WEBSOCKET_PORT") - you want it to connect on the ssl port THEN have a proxy redirect it to the local port
-				$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $model->hash;
-			if ($bypass_licencing) {
-				$result->app->layer = "";
-			} else {
-				$result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
+
+		} else { // validating one or more hashes
+
+			$tokens = str_split($token_raw,60); // every 60 characters represents a new token
+			$token = $tokens[0]; // first token is the most relevant hash
+			unset($tokens[0]); // now we can check the remaining hashes
+			$admins = AccountModel::get_admin_users(); // list of site admin salted md5's
+
+			// when there are multiple tokens you check the 2nd, 3rd, etc to see if it trumps the first, or if the first has run out of seats
+			$bypass_licencing = false;
+			$seats = null;
+			foreach ($tokens as $parent_token) {
+
+				// hash might be the salted md5 of a user_id who is an admin - e.g. impersonation
+				foreach ($admins as $admin_hash) {
+					if (password_verify($admin_hash, $parent_token)) {
+						$bypass_licencing = true;
+						$seats = [5,5]; // enough
+						break 2; // inner foreach
+					}
+				}
+
+				// token might be a parent hash; model will be set if the token is valid and active
+				if (($model = ApiModel::find_model_for_token($parent_token)) !== false) {
+					$seats = [Licence::total_seats($model->hash), Licence::seats_remaining($model->hash)];
+					break 1; // outer foreach
+				}
 			}
-			// ws://coursesuite.ninja.dev/"
+
+			if ($model = ApiModel::find_model_for_token($token)) {
+
+				$result->valid = true;
+				$result->licence->error = "";
+
+				$app_id = Model::ReadColumn("apps","app_id","app_key=:key",array(":key"=>$app_key));
+				$result->app->guide = Model::ReadColumn("apps","guide","app_key=:key",array(":key"=>$app_key));
+
+				$user = new AccountModel("id",$model->user);
+				$result->user->email = $user->get_property("user_email");
+				if (!empty($user->get_property("user_container"))) {
+					$result->user->container = $user->get_property("user_container");
+				} else {
+					list($name,$_) = explode('@',$result->user->email);
+					$result->user->container = preg_replace('/[^a-zA_Z0-9]/', '', $name);
+				}
+
+				$result->licence->seats = Licence::total_seats($model->hash); // total seats you are licensed for
+				$result->licence->remaining = Licence::seats_remaining($model->hash); // comes from from the concurrency database (redis)
+
+				// in the case you are out of licences and there is a parent a
+				if ($bypass_licencing || ($result->licence->remaining === 0 && $seats !== null)) {
+					$result->licence->seats = $seats[0];
+					$result->licence->remaining = $seats[1];
+				}
+
+				$product = new ProductBundleModel("id", $model->product); // what they bought, which we know includes this app_key (otherwise the has wouldn't have validated)
+
+				if ($product->is_api() === true) {
+					$result->api = new stdClass();
+					$result->api->bearer = md5($model->hash . Encryption::decrypt(Text::base64dec($user->get_property("secret_key")))); // bearer = md5 of apikey + secret key
+
+					// publish url and whitelabel can both be set via api at runtime, or configured through the interface
+
+					$white_label = ApiModel::get_white_label($app_key, $model);
+					$result->api->header = new stdClass();
+					$result->api->header->html = $white_label["html"];
+					$result->api->header->css = $white_label["css"];
+					$publish_url = $white_label["publish_to"];
+					if (empty($publish_url)) {
+						$publish_url = ApiModel::get_publish_url($model->hash, $token);
+					}
+					$result->api->publish = $publish_url;
+
+					if ($white_label["template"]) {
+						$result->api->template = Config::get("URL") . "api/dl/{$model->hash}/{$app_key}/template";
+					} else {
+						$result->api->template = false;
+					}
+				}
+				// removed . ":" . Config::get("WEBSOCKET_PORT") - you want it to connect on the ssl port THEN have a proxy redirect it to the local port
+					$result->app->socket = Config::get("WEBSOCKET_SCHEMA") . Config::get("WEBSOCKET_HOST") . "/" . $model->hash;
+				if ($bypass_licencing) {
+					$result->app->layer = "";
+				} else {
+					$result->app->layer = ($result->code->debug) ? Config::get("WEBSOCKET_LAYER") : Config::get("WEBSOCKET_LAYER_MINIFIED");
+				}
+				// ws://coursesuite.ninja.dev/"
+			}
 		}
 		$this->View->renderJSON((array) $result);
 	}
@@ -264,10 +314,11 @@ class ApiController extends Controller
 	public function createToken($context = null)
 	{
 
-// need to first get the token associated with the user that logged on using digest
+		// LoggingModel::logInternal(__METHOD__, $context, file_get_contents("php://input"));
+
+		// need to first get the token associated with the user that logged on using digest
 		$hash = parent::requiresAuth();
 
-// lets remember this
 		LoggingModel::logMethodCall(__METHOD__, $hash, file_get_contents("php://input"));
 
 		if (!preg_match('/^[a-f0-9]{32}$/', $hash)) {
@@ -275,35 +326,33 @@ class ApiController extends Controller
 			return false;
 		}
 
-// we want to return the number of seats this license is for
+		// we want to return the number of seats this license is for
 		$seats = Licence::total_seats($hash);
 
-// we then check the number of license places (seats) remaining for this app; the username is the hash
+		// we then check the number of license places (seats) remaining for this app; the username is the hash
 		$remaining =  Licence::seats_remaining($hash);
 
-// we need to check to see if the usage cap for this subscription
+		// we need to check to see if the usage cap for this subscription
 		if (false === ApiModel::usage_cap_remaining($hash)) {
 			$this->View->renderJSON(array("error" => Text::get("EXCEEDED_MONTHLY_CAP")));
 			return false;
 		}
 
-// the token itself can be generated now too. This will be different every time, so no point logging it
+		// the token itself can be generated now too. This will be different every time, so no point logging it
 		$token = ApiModel::generate_token_for_subscription($hash);
 
-// well, lets finally look up the user and see if it is a sub-account of a sub that has volume licensing .. whew!
+		// well, lets finally look up the user and see if it is a sub-account of a sub that has volume licensing .. whew!
 
-
-// if they gave us a publish_url, grab and validate it ising the xss filter (I mean we trust them, right, but only so far)
+		// if they gave us a publish_url, grab and validate it ising the xss filter (I mean we trust them, right, but only so far)
 		$publish_url = Request::post("publish_url", true);
 		if (!empty($publish_url)) {
-			$this->View->renderJSON(array("error" => Text::get("INVALID_URL")));
-			return false;
+		//	$this->View->renderJSON(array("error" => Text::get("INVALID_URL")));
+		//	return false;
 		}
 
-// record the api_request
+		// record the api_request, so that later processes can grab parameters such as the publish url
 		ApiModel::record_api_request($hash, $token, $publish_url);
 
-// that's all we have to do
 		$this->View->renderJSON(array(
 			"token" => Text::base64enc($token),
 			"seats" => $seats,
@@ -376,24 +425,22 @@ class ApiController extends Controller
 	*	}
 	*	]
 	*/
-
 	public function info()
 	{
 		$subscription = parent::requiresBearer();
 		$miss = null;
+		$debug = Config::get("debug");
 
-// todo: cache the product_key version that this info() relates to instead of the actual subscription
 	    $cache = CacheFactory::getFactory()->getCache();
 	    $cacheItem = $cache->getItem("api_info_{$subscription}");
 	    $model = $cacheItem->get();
-	    if (true || is_null($model)) {
-// log a cache miss so we can later refine the expiresAfter
-	    	$miss = "cache miss ";
+	    if ($debug || is_null($model)) {
+	    		$miss = "cache miss";
 			$model = AppModel::public_info_model($subscription);
 			$cacheItem->set($model)->expiresAfter(3600)->addTags(["coursesuite","api"]); // 1 hour cache
 			$cache->save($cacheItem);
 		}
-		LoggingModel::logInternal(__METHOD__, $subscription,$miss);
+		LoggingModel::logInternal(__METHOD__,$subscription,$miss);
 		$this->View->renderJSON($model);
 	}
 
@@ -455,11 +502,36 @@ class ApiController extends Controller
 		ApiModel::set_white_label($app_key, $sub_id, $html, $css);
 	}
 
+	/**
+	* @api {get} /api/tasks/
+	* @apiPrivate
+	* @apiName tasks
+	* @apiGroup Internal
+	* @apiVersion 1.0.0
+	* @apiDescription Internal method for revalidating subscrptions
+	*/
 	public function tasks()
 	{
 		SubscriptionModel::validateSubscriptions();
 	}
 
+	/**
+	* @api {post} /api/dl/ Get the download template that has been set for an app
+	* @apiName Download App Template
+	* @apiGroup Customisation
+	* @apiVersion 0.9.2
+	* @apiPermission none
+	* @apiDescription Download the template, if set, for a given app. Typically used by the app itself internally.
+	* @apiParam {String} hash Your API Key.
+	* @apiParam {String} app_key App Key to set.
+	* @apiParam {String} file set to "template", reserved for future expansion
+	* @apiSuccessExample {binary} Success-Response
+	*    Content-Description: File Transfer
+	*    Content-Type: application/zip
+	*    Content-Disposition: attachment; filename="template.zip"
+	* @apiErrorExample {json} Error-Response:
+	*    HTTP/1.1 204
+	*/
 	public function dl($hash,$app_key,$file = "template") {
 		parent::allowCORS(); // important
 		$file = Config::get("PATH_ATTACHMENTS") . md5($hash . Config::get("HMAC_SALT")) . "/" . $app_key . "/template.zip";
@@ -500,14 +572,13 @@ class ApiController extends Controller
 
 	 */
 
+	// NOTE: USED ONLY BY CLASSIC STORE ... DEPRECIATED
 	public function subscription(...$params)
 	{
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug());
         extract($_POST, EXTR_OVERWRITE, "security_"); // extract security_* as variables; &security_foo=bob --> $security_foo=>"bob"
         if (md5($security_data . Config::get('FASTSPRING_SECRET_KEY') == $security_hash)) {
-
-            // $tierid = (int) TierModel::getTierIdByProductName(Request::post("productName")); // short name of subscription in fastspring system
 
             $fastspringProductId = Request::post("productName");
             // fastspring product pages look like this: http://sites.fastspring.com/coursesuite/product/docninja-pro
@@ -588,7 +659,16 @@ class ApiController extends Controller
         }
 	}
 
-	// when an order goes through the checkout, before a subscription takes place
+	//
+	/**
+	* @api {post} /api/orders/ record a store order api call in the log
+	* @apiPrivate
+	* @apiName orders
+	* @apiGroup Licencing
+	* @apiVersion 1.0.0
+	* @apiDescription when an order goes through the checkout, before a subscription takes place
+	* @apiParam {String} params ignored
+	*/
 	public function orders(...$params) {
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug());
@@ -598,43 +678,76 @@ class ApiController extends Controller
 		}
 	}
 
+	/**
+	* @api {post} /api/licence/ Generate a licence key for a store order
+	* @apiPrivate
+	* @apiName licence
+	* @apiGroup Licencing
+	* @apiVersion 1.0.0
+	* @apiDescription Method called from FastSpring to create a licence key during PRODUCT purchase (not subscription)
+	* @apiParam {String} params ignored
+	*/
 	public function licence(...$params)
 	{
+		parent::requiresPost();
 		$username = parent::requiresAuth();
 		LoggingModel::logMethodCall(__METHOD__, $username, $params, Request::post_debug(), $_REQUEST);
 
 		// this is a hash of all the values of the fields posted in plus a private key ...
 		$security_request_hash = Request::post("security_request_hash");
+		$product = Request::post("internalProductName"); // course-assembler, course-engine-10, quizzard-30, builder
 
-		// we could concat the data in the request then md5 it and check it ...
+		$spl = explode('-',$product);
+		$days = (is_numeric(end($spl))) ? array_pop($spl) : 10; // default to 10 days if product doesn't set it
+		$id = implode('',array_map(function($v){return $v[0];}, $spl));
+		$licence = strtoupper(implode('',[
+			$id,
+			substr($security_request_hash, strlen($id),5-strlen($id)),
+			'-',
+			substr($security_request_hash, 6,5),
+			'-',
+			substr($security_request_hash, 12,5),
+			'-',
+			substr($security_request_hash, 18,5),
+			'-',
+			substr($security_request_hash, 24,5)
+		]));
 
-		// $privatekey = '3e8466db46f05ed8056527a2174074aa';
-		// $obj = unserialize('a:15:{s:3:"url";s:13:"/api/licence/";s:7:"company";s:11:"FooBar Inc.";s:5:"email";s:28:"vagif.samadoghlu@example.com";s:19:"internalProductName";s:14:"document-ninja";s:7:"periods";s:1:"1";s:7:"product";s:14:"document-ninja";s:11:"productName";s:14:"document-ninja";s:8:"quantity";s:1:"1";s:9:"reference";s:8:"TEST_REF";s:8:"sequence";s:1:"1";s:3:"sku";s:16:"TEST_PRODUCT_SKU";s:12:"subscription";s:11:"TEST_SUB_ID";s:4:"tags";s:2:"{}";s:4:"test";s:4:"true";s:21:"security_request_hash";s:32:"3b13478e187416b4279c7586cefc44e9";}');
-		// $hash = $obj["security_request_hash"];
-		// unset($obj["security_request_hash"]);
-		// ksort($obj);
-		// $implode = implode('', array_values($obj));
-		// echo "\n", "implode=", $implode, md5($implode . $privatekey);
-
-		$email = Request::post("email");
-		$user = new AccountModel("email", $email);
-		if ($user->get_property("user_id") > 0) {
-			// a user exists
-		} else {
-			// create the user
-			// then send the user their password
-			// within a 'welcome to coursesuite you will need this to log in' message
-		}
-
-
-		// ... or just not do that, since security_request_hash already is unique to the user/product/subscription
-
-		// so that's our licence key
+		$record = new LicenceModel();
+		$record->email = Request::post("email");
+		$record->name = Request::post("name");
+		$record->product = $product;
+		$record->reference = Request::post("reference");
+		$record->store = Request::post("referrer");
+		$record->testmode = (Request::post("test") === "true") ? 1 : 0;
+		$record->starts = time();
+		$record->ends = strtotime("+{$days} days");
+		$record->licencekey = $licence;
+		$record->save();
 
         header("Content-Type: text/plain");
-        echo $security_request_hash;
+        echo $licence;
 	}
 
+	/**
+	* @api {get} /api/widgetcode/1/key Generate clientside script tag for referencing script
+	* @apiName Widget Code Statement
+	* @apiGroup Customisation
+	* @apiVersion 1.0.0
+	* @apiPermission none
+	* @apiDescription Generate the client-side javascript tag for connecting to the api.
+	* @apiParam {String} version API version, e.g. 1.
+	* @apiParam {String} publickey The public key of the subscription.
+	* @apiSuccessExample {html} Success-Response
+	* 	<!-- Begin CourseSuite API include -->
+	* 	<script id="csn-api"
+	*   	src="{{baseurl}}api/widget/{{version}}/{{publickey}}"
+	*   	type="text/javascript"
+	*   	data-options="{{{json options}}}">
+	* 	</script>
+	* 	<div id="csn-app"><noscript>Javascript must be enabled for this component to work</noscript></div>
+	* 	<!-- End CourseSuite API include -->
+	*/
 	public function widgetcode($version = 1, $publickey = null) {
 		parent::allowCORS();
 		if (is_null($publickey)) return;
@@ -650,9 +763,20 @@ class ApiController extends Controller
 		$this->View->renderHandlebars("api/widget/{$version}/runtime", $model,null,true);
 	}
 
+	/**
+	* @api {get} /api/widget/1/key Generate clientside library script for generating app launch buttons
+	* @apiName Widget Code Library
+	* @apiGroup Customisation
+	* @apiVersion 1.0.0
+	* @apiPermission none
+	* @apiDescription Javascript library and initiailiser for rendering app launch buttons for this subscription
+	* @apiParam {String} version API version, e.g. 1.
+	* @apiParam {String} publickey The public key of the subscription.
+	*/
 	public function widget($version = 1, $publickey = null) {
 		parent::allowCORS();
 		if (is_null($publickey)) return;
+
 		// if (!Model::exists("subscriptions","md5(concat(referenceId,:salt))=:key",[":key"=>$publickey,":salt"=>Config::get("HMAC_SALT")])) return;
 		if (!Model::exists("subscriptions","md5(referenceId)=:key",[":key"=>$publickey])) return;
 
@@ -687,8 +811,15 @@ class ApiController extends Controller
 		$this->View->renderHandlebars("api/widget/{$version}/applib", $model, null, true);
 	}
 
+	/**
+	* @api {post} /api/apps_colours_css/ list stored app colours
+	* @apiPrivate
+	* @apiName App Colours CSS
+	* @apiGroup Customisation
+	* @apiVersion 1.0.0
+	* @apiDescription internal method used by some apps to find out the current colour of store pages
+	*/
 	public function apps_colours_css() {
-		 // AppModel::apps_colours_css() generates colours.less when it re-caches
 		$this->View->output(AppModel::apps_colours_css(), "text/css");
 	}
 }
