@@ -44,7 +44,8 @@
 		{"route":"admin/purge/coursesuite","label":"Purge All Caches"},
 		{"route":"admin/encoder","label":"Encoder Utility"},
 		{"route":"admin/hasher","label":"Hasher Utility"},
-		{"route":"admin/browser","label":"File Browser","target":"_blank"}
+		{"route":"admin/browser","label":"File Browser","target":"_blank"},
+		{"route":"admin/digestUsers","label":"digest users"}
 	],
 	"testing": [
 		{"route":"admin/testemail","label":"Send Test Email"}

@@ -1051,6 +1051,12 @@ class AdminController extends Controller
         include (Config::get("PATH_VIEW") . "admin/files/image_browser.php");
     }
 
+    public function digestUsers() {
+        $model = DigestModel::get_users();
+        $this->View->renderHandlebars("admin/users/digest", $model, "_admin", true);
+    }
+
+
     public function testemail($action = "view") {
         $model = new stdClass();
         $model->formdata = new stdClass();
