@@ -1,0 +1,14 @@
+<div class="admin-flex">
+    <aside>
+        {{> menubar}}
+    </aside>
+
+    <article>
+        <header>
+            <h2>Digest Users</h2>
+        </header>
+
+		{{dump .}}
+
+ </article>
+</div>

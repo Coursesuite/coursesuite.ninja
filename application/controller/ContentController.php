@@ -14,21 +14,35 @@ class ContentController extends Controller
             "email" => "",
             "fullname" => "",
             "phone" => "",
+            "company" => "",
             "message" => "",
+            "topic" => "",
             "feedback" => "",
+            "subject" => ""
         ];
         $model = new stdClass();
         $page = (new StaticPageModel("page_key", $route))->get_model();
-        if ($this->Method === "POST" && Csrf::isTokenValid() && $route === "contact") {
+        if ($this->Method === "POST" && Csrf::isTokenValid() && strpos($route, 'contact') !== false) {
             $captcha = Request::post("g-recaptcha-response");
             $email = Request::post("email", false, FILTER_VALIDATE_EMAIL);
             $fullname = Request::post("fullname", true);
             $phone = Request::post("phone", true);
             $message = Request::post("message", true);
+            if ($route === "contactservices") {
+                $topic  = Request::post("topic", true);
+                $company = Request::post("company", true);
+                $replace["subject"] = "Service inquiry: ".$topic;
+                $replace["company"] = $company;
+            } else {
+                $topic = "";
+                $replace["subject"] = "CourseSuite Contact Form";
+            }
             $replace["email"] = $email;
             $replace["fullname"] = $fullname;
             $replace["phone"] = $phone;
             $replace["message"] = $message;
+            $replace["topic"] = $topic;
+            $pre = ($route === 'contactservices') ? $replace['company']."\n".$replace['phone']."\n".$replace['topic']."\n" : '';
             if (($captcha_check = CaptchaModel::checkCaptcha($captcha)) === true) {
                 if (empty(trim($email))) {
                     $replace["feedback"] = "<p class='uk-text-warning'>Please enter your email address.</p>";
@@ -36,7 +50,7 @@ class ContentController extends Controller
                     if (BlacklistModel::isBlacklisted($email)) {
                         $replace["feedback"] = "<p class='uk-text-warning'>Sorry this email address is blacklisted or invalid.</p>";
                     } else {
-                        HelpdeskModel::create_ticket($email, $fullname, $phone, "CourseSuite Contact Form", $message);
+                        HelpdeskModel::create_ticket($email, $fullname, $phone, $replace["subject"], $pre.$message);
                         $replace["feedback"] = "<p class='uk-text-success'>Your message was sent.</p>";
                     }
                 }

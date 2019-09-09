@@ -53,7 +53,7 @@
 
 				{{#gte @root.App.active 2}}
 
-				{{#if @root/Bundles}}
+				{{#if @root/Bundles}}{{#equals @root.App.app_key "docninja"}}{{else}}
 				<div class='uk-panel uk-panel-default cs-background-purchase uk-border-rounded uk-padding-small uk-margin-bottom'>
 					<h3 class='uk-h3 cs-heading-line'><span uk-icon="cart" class='uk-margin-small-right'></span>Purchase access</h3>
 					<ul  class="cs-price-tab uk-margin-remove-bottom uk-flex-nowrap" uk-flex uk-tab anim="animation: uk-animation-fade">
@@ -107,7 +107,7 @@
 						{{/each}}
 					</ul>
 					{{> fineprint}}
-				</div>
+				</div>{{/equals}}
 
 				{{/if}}
 				{{/gte}}

@@ -113,6 +113,14 @@ class Text
 		return base64_decode(strtr($val, '-_,', '+/='));
 	}
 
+	public static function isBase64($string) {
+	    $decoded = base64_decode($string, true);
+	    if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $string)) return false;
+	    if (!base64_decode($string, true)) return false;
+	    if (base64_encode($decoded) != $string) return false;
+	    return true;
+	}
+
 	public static function StaticPageRenderer($route)
 	{
 		$page = new StaticPageModel("page_key", $route);

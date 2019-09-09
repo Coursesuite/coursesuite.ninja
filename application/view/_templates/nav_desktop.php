@@ -26,7 +26,7 @@
                     <a href="<?php echo $baseurl; ?>products/"><span uk-icon="thumbnails" class='uk-margin-xsmall-right'></span>Products</a>
 <?php
 // do some caching of the rendered html to avoid these db lookups, which are also cached
-if ( !is_null($cached_html = NavModel::products_dropdown_get())) {
+if (!is_null($cached_html = NavModel::products_dropdown_get())) {
     echo $cached_html;
 } else {
     ob_start();

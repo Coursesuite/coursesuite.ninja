@@ -24,7 +24,11 @@
 							<div class="uk-margin uk-text-large uk-text-center">{{label}}</div>
 							<div class="uk-margin uk-text-center">
 								<p>{{#if buy}}{{#if @root.ContextualStore}}
+									{{#equals key "docninja"}}
+								<a href="https://www.courseassembler.com" class='uk-button uk-border-rounded cs-bg-{{key}}' target="_blank">Go to store</a>
+									{{else}}
 								<a href="#" data-fsc-item-path="{{product_key}}" data-fsc-item-path-value="{{fs_key}}" data-fsc-action="Reset,Add,Checkout" class='uk-button uk-border-rounded cs-bg-{{key}}'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now</a>
+									{{/equals}}
 								{{else}}
 								<a href='{{fs_url}}' class='uk-button uk-border-rounded cs-bg-{{key}}'><span uk-icon='credit-card' class='uk-margin-small-right'></span>Buy Now</a></a>
 								{{/if}}{{else}}{{#equals key "bundle"}}

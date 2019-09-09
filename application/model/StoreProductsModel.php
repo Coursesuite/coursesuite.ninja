@@ -110,8 +110,6 @@ class StoreProductsModel
 			// fastspring store link querystring parameters
 			$model->FastspringParams = "?referrer=" . Text::base64enc(Encryption::encrypt(Session::CurrentUserId())) . Config::get('FASTSPRING_PARAM_APPEND');
 
-
-
 			// page edit link for admins
 			if (Session::userIsAdmin()) {
 				$model->editlink = Config::get("URL") . 'admin/editApps/' . $app->app_id . '/edit';

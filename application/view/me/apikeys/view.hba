@@ -45,8 +45,8 @@
 							</ul>
 						</div>
 						<div>
-							<p><b>Public Key:</b> {{apikey}}</p>
-							<p><b>Private Key:</b> {{#decodable secret}}{{.}}{{/decodable}}</p>
+							<p><b>Api Key:</b> {{apikey}}</p>
+							<p><b>Secret:</b> {{#decodable secret}}{{.}}{{/decodable}}</p>
 							<p><b>Widget code:</b></p>
 							<div class="cs-resizable uk-flex uk-position-relative uk-overflow-hidden">
 								<div class="cs-resize-control uk-position-bottom-right"></div>

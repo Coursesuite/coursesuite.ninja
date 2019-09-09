@@ -17,6 +17,11 @@
         <li class='uk-nav-divider'></li>
         <li{{#equals selection "apikeys"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/apikeys'><span class='uk-margin-xsmall-right' uk-icon='icon: server'></span> API Keys</a>
         <li><a href='/apidoc/' target='_blank'><span class='uk-margin-xsmall-right' uk-icon='icon: bookmark'></span> Documentation</a></li>
+{{!--
+        {{#equals account.user_parent_id "0"}}
+        <li><a href='{{baseurl}}me/apikeys/add/'><span class='uk-margin-xsmall-right' uk-icon='icon: users'></span> Add sub-account</a></li>
+        {{/equals}}
+--}}
         </li>
 {{/if}}
         <li class='uk-nav-header'>Session</li>

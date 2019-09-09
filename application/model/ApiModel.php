@@ -190,8 +190,17 @@ class ApiModel
 
 	public static function get_publish_url($hash, $token) {
 		$database = DatabaseFactory::getFactory()->getConnection();
-		$query = $database->prepare("SELECT publish_url FROM api_requests WHERE digest_user=:hash AND token=:token LIMIT 1");
-		$query->execute([":hash" => $hash, ":token" => $token]);
+		$query = $database->prepare("
+			SELECT publish_url
+			FROM api_requests
+			WHERE digest_user = :hash
+			AND token = :token
+			LIMIT 1
+		");
+		$query->execute(array(
+			":hash" => $hash,
+			":token" => $token
+		));
 		return $query->fetchColumn();
 	}
 

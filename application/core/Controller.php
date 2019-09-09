@@ -84,9 +84,26 @@ class Controller
         return $digest->user;
     }
 
+private function getAuthorizationHeader(){
+        $headers = null;
+        if (isset($_SERVER['Authorization'])) {
+            $headers = trim($_SERVER["Authorization"]);
+        } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+            $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+        } elseif (function_exists('apache_request_headers')) {
+            $requestHeaders = apache_request_headers();
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+            if (isset($requestHeaders['Authorization'])) {
+                $headers = trim($requestHeaders['Authorization']);
+            }
+        }
+        return $headers;
+}
+
     public function requiresBearer() {
-        if (!isset($_SERVER['HTTP_BEARER'])) return false;
-        $bearer = $_SERVER['HTTP_BEARER'];
+		$h = $this->getAuthorizationHeader();
+        if (!isset($h)) return false;
+        $bearer = str_replace('Bearer: ', '', $h);
         if (!preg_match('/^[a-f0-9]{32}$/', $bearer)) return false;
         $id = SubscriptionModel::get_subscription_id_for_hash($bearer);
         if ($id === 0) die("Bearer Token was missing or invalid");
