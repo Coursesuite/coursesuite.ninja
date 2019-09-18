@@ -75,7 +75,6 @@ class Controller
     public function requiresAuth($key = null) {
         $digest = new \Rakshazi\Digestauth;
         $digestUsers = DigestModel::get_users($key);
-        // $valid = $digest->setUsers(Config::get('DIGEST_USERS'))->setRealm("CourseSuite")->enable();
         $valid = $digest->setUsers($digestUsers)->setRealm("CourseSuite")->enable();
         if (!$valid) {
             header('HTTP/1.1 401 Unauthorized');
@@ -84,26 +83,37 @@ class Controller
         return $digest->user;
     }
 
-private function getAuthorizationHeader(){
-        $headers = null;
+    private function getAuthorizationHeader(){
+        $header = null;
         if (isset($_SERVER['Authorization'])) {
-            $headers = trim($_SERVER["Authorization"]);
+            $header = trim($_SERVER["Authorization"]);
         } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-            $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+            $header = trim($_SERVER["HTTP_AUTHORIZATION"]);
         } elseif (function_exists('apache_request_headers')) {
             $requestHeaders = apache_request_headers();
             $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
             if (isset($requestHeaders['Authorization'])) {
-                $headers = trim($requestHeaders['Authorization']);
+                $header = trim($requestHeaders['Authorization']);
             }
         }
-        return $headers;
-}
+        // LoggingModel::logInternal(__METHOD__, $_SERVER, $header);
+        return $header;
+    }
+
+    private function getBearerHeader() {
+        $header = null;
+        if (isset($_SERVER['HTTP_BEARER'])) {
+            $header = $_SERVER['HTTP_BEARER'];
+        }
+        // LoggingModel::logInternal(__METHOD__, $_SERVER, $header);
+        return $header;
+    }
 
     public function requiresBearer() {
-		$h = $this->getAuthorizationHeader();
-        if (!isset($h)) return false;
-        $bearer = str_replace('Bearer: ', '', $h);
+        $h = $this->getAuthorizationHeader();
+        if (empty($h)) $h = $this->getBearerHeader();
+        if (empty($h)) return false;
+        $bearer = str_ireplace('Bearer: ', '', $h);
         if (!preg_match('/^[a-f0-9]{32}$/', $bearer)) return false;
         $id = SubscriptionModel::get_subscription_id_for_hash($bearer);
         if ($id === 0) die("Bearer Token was missing or invalid");

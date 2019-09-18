@@ -17,7 +17,7 @@ class BlogModel extends Model
 		$this->data_model = $data;
 	}
 
-	public function __construct($entry = null, $page_index = 0)
+	public function __construct($entry = null, $page_index = 0, $pagesize = 10)
 	{
 		parent::__construct();
 		if (is_numeric($entry) && (($entry_id = intval($entry,10)) > 0)) {
@@ -25,7 +25,7 @@ class BlogModel extends Model
 		} else if (!empty($entry) && self::verify_slug($entry)) {
 			self::loadBySlug($entry);
 		} else {
-			self::load_summary($page_index);
+			self::load_summary($page_index, $pagesize);
 		}
 		return $this;
 	}

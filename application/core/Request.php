@@ -19,7 +19,7 @@ class Request
      * @param mixed null or http://php.net/manual/en/filter.filters.sanitize.php
      * @return mixed the key's value or nothing
      */
-    public static function post($key, $clean = false, $filter = null, $filteroption = null)
+    public static function post($key, $clean = false, $filter = null, $filteroption = null, $default = null)
     {
         if (isset($_POST[$key])) {
             if ($filter !== null) {
@@ -29,6 +29,7 @@ class Request
             }
             return ($clean) ? trim(strip_tags($value)) : $value;
         }
+        if (isset($default)) return $default;
     }
 
     // return the html purified version of a post value

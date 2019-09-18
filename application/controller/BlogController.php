@@ -33,4 +33,5 @@ class BlogController extends Controller
 		$this->View->Requires("https://coursesuite-ninja.disqus.com/count.js");
 		$this->View->renderHandlebars("blog/index", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 	}
+
 }

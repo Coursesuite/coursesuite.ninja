@@ -716,6 +716,7 @@ class ApiController extends Controller
 		$record = new LicenceModel();
 		$record->email = Request::post("email");
 		$record->name = Request::post("name");
+		$record->company = Request::post("company");
 		$record->product = $product;
 		$record->reference = Request::post("reference");
 		$record->store = Request::post("referrer");

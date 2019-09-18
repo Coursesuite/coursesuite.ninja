@@ -1056,7 +1056,6 @@ class AdminController extends Controller
         $this->View->renderHandlebars("admin/users/digest", $model, "_admin", true);
     }
 
-
     public function testemail($action = "view") {
         $model = new stdClass();
         $model->formdata = new stdClass();

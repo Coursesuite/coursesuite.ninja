@@ -25,6 +25,7 @@ class LoginController extends Controller
 			// 	'ajax' => true
 			// );
 			$this->View->Requires("login.js");
+			$this->View->Requires("login/logon_partial");
 			$this->View->renderHandlebars('login/index', [], "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 		}
 	}

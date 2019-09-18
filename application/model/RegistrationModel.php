@@ -41,11 +41,8 @@ class RegistrationModel
 		$result->graph = "";
 		$result->reset = false;
 
-		$email 		= trim(Request::post("email", false, FILTER_SANITIZE_EMAIL));
+		$email 		= trim(Request::post("email")); // , false, FILTER_SANITIZE_EMAIL));
 		$password 	= trim(Request::post("onetimepassword"));
-
-		$result->show = ($password > "" || $email > "");
-		$result->sent = false;
 
 		Response::cookie("login", null);
 
@@ -53,11 +50,20 @@ class RegistrationModel
 			$email = Session::get("otp_email", "");
 		}
 
+		$is_email = filter_var($email, FILTER_VALIDATE_EMAIL);
+
+		if (!$is_email) {
+			$email = self::figure_out_possible_email($email);
+		}
+
+		$result->show = ($password > "" || $email > "");
+		$result->sent = false;
+
 		if ($result->show && !Csrf::validateToken(Request::post("csrf_token"))) {
 			$result->className = "uk-text-danger";
 			$result->message = "Invalid CSRF token. Please refresh and try again. ";
 
-		} elseif (BlacklistModel::isBlacklisted($email)) {
+		} elseif ($is_email && BlacklistModel::isBlacklisted($email)) {
 			$result->message = Text::get('REGISTRATION_DOMAIN_BLACKLISTED');
 			$result->className = "uk-text-danger";
 
@@ -65,7 +71,7 @@ class RegistrationModel
 			$result->graph = self::graph(1);
 			$result->message = "";
 
-		} elseif (Auth::is_administrator_email($email)) {
+		} elseif ($is_email && Auth::is_administrator_email($email)) {
 			$result->graph = self::graph(0);
 			$result->message = "Please logon using the appropriate method for this account.";
 
@@ -122,6 +128,38 @@ class RegistrationModel
 
 		$result->email = $email;
 		return $result;
+	}
+
+	// what else might the user-entered detail be?
+	private static function figure_out_possible_email($detail) {
+		if (preg_match('/^[a-f0-9]{32}$/', $detail)) {
+			// its a hash whcih probably means apikey
+			// COU170316-7294-14127S = 2237fb391c1e23d7db901acb082a0dfc (martin)
+			// TIM-API-5-3 = e4bfbedcb7e3ad77140daee7d9523f12 (tim)
+			// check the subscriptions table
+			$addr = Model::ReadColumnRaw("select u.user_email from users u inner join subscriptions s on s.user_id = u.user_id where md5(s.referenceId) = :detail", [":detail"=>$detail]);
+			if (!empty($addr)) return $addr;
+
+		} else if (preg_match('/^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){4}$/', $detail)) {
+			// CA4C2-5B98D-2ED1D-53261-8EFA7
+
+			// it's a licence key, check the licence table
+			$addr = Model::ReadColumnRaw("select email from licence where email=:detail", [":detail"=>$detail]);
+			if (!empty($addr)) return $addr;
+
+		} else if (preg_match('/^[C][O][U](?:[0-9]){6}[-](?:[0-9]{4})[-](?:[A-Z0-9]{5,})$/', $detail)) {
+			// COU190902-2799-88123
+
+			// check the licence table
+			$addr = Model::ReadColumnRaw("select email from licence where reference=:detail", [":detail"=>$detail]);
+			if (!empty($addr)) return $addr;
+
+			// check the subscriptions table
+			$addr = Model::ReadColumnRaw("select u.user_email from users u inner join subscriptions s on s.user_id = u.user_id where s.referenceId = :detail", [":detail"=>$detail]);
+			if (!empty($addr)) return $addr;
+
+		}
+		return "";
 	}
 
 	// create or update a user account and set the password; email the user that password

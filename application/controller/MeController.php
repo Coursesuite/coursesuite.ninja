@@ -164,6 +164,28 @@ class MeController extends Controller
 		$this->View->renderHandlebars("me/subscriptions", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
 	}
 
+	public function connect($action = "view", ...$params) {
+		if ($this->_base_model["api_visible"] !== true) Redirect::to("/404");
+		$model = $this->_base_model;
+		$model["csrf_token"] = Csrf::makeToken();
+		$model["param_array"] = $params;
+		$model["command"] = $action;
+		$model["command_feedback"] = "";
+
+		$template = $action;
+		$junk = [];
+		$files = glob(Config::get("PATH_IMG_MEDIA") . "connect/*.{jpg,png,gif}", GLOB_BRACE);
+		foreach ($files as $file) {
+			$junk[] = ["src"=>"/img/connect/" . basename($file)];
+		}
+		$model["integrator"] = $junk;
+
+		$this->View->Requires("connect.js");
+		$this->View->Requires("me/menubar");
+		$this->View->renderHandlebars("me/connect/{$template}", $model, "_templates", Config::get('FORCE_HANDLEBARS_COMPILATION'));
+
+	}
+
 	public function apikeys ($action = "view", $action_id = 0, ...$params) {
 
 		if ($this->_base_model["api_visible"] !== true) Redirect::to("/404");
@@ -184,7 +206,7 @@ class MeController extends Controller
 		$model["showtrial"] = (!SubscriptionModel::user_has_subscription(Session::CurrentUserId()));
 		$model["urls"] = array(
 			"trial" => Config::get("URL") . "me/apikeys/trial/",
-			"volumelicence" => Keystore::find("volumelicence")->get("")
+			"volumelicence" => KeyStore::find("volumelicence")->get("")
 		);
 
 		$template = "view";
@@ -335,6 +357,8 @@ class MeController extends Controller
 
 	public function support () {
 		global $PAGE;
+		$model = $this->_base_model;
+
 		$model["selection"] = "support";
 		$model["helpdesk"] = HelpdeskModel::get_my_tickets($PAGE->user_email);
 		$model["AppsBySection"] = StoreProductsModel::get_store_section_products_model("index");

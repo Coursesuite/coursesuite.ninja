@@ -1,15 +1,6 @@
 <div class='uk-section cs-app-slides'>
-	<div class='uk-container'>
-		<h1>Our site requires logging on</h1>
-		<p>Our site requires you to log on using your email address in order to purchase or launch products. Your <a href="/content/privacy">privacy</a> and security and of great concern to us, and as such we do not allow you to set your own password (or in fact store one at all). Registering and Logging on are the same thing. Here's what we do:</p>
-		<ul class="uk-list uk-list-large uk-list-striped">
-			<li><b>You</b> enter your email adress (<i>we don't allow "one-time" or "throwaway" email domains, sorry</i>).</li>
-			<li><b>We</b> send a randomised password to that email address. This confirms that it exists, and that you have the ability to check it.</li>
-			<li><b>You</b> enter that password, then forget about it forever - there's no point remembering it or having your browser save it as you won't be able to use it ever again.</li>
-			<li><b>We</b> will have set a cookie on your computer which keeps you logged in for up to 2 weeks.</li>
-			<li><b>You</b> can log out at any time from <i>My Account</i>.</li>
-		</ul>
-		<p>If you become a subscriber to our tools, you'll need to log in at CourseSuite in order to launch our apps. If you happen log out of CourseSuite whilst using our apps, the apps will remain functioning so long as your subscription is still valid.</p>
-		<p class='uk-text-lead uk-text-center'>Please press the <b>Register/Login</b> button to continue</p>
+	<div class='uk-container uk-text-center'>
+		<p class="uk-text-lead">You need to log on to this site to do anything</p>
+    	<a class='uk-button uk-button-primary uk-button-small' href='#login-required' uk-toggle><span uk-icon='lock' class='uk-margin-xsmall-right'></span>login here</a>
 	</div>
 </div>

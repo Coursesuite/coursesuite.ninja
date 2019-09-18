@@ -6,140 +6,146 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
   <loc>https://www.coursesuite.ninja/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>0.8</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/pricing/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/privacy/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/about/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/howelse/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/contact/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/cookiepolicy/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/terms/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/contactservices/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/fullcourseexamples/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/content/rapidbuildservices/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/content/CourseAssemblerTemplates/</loc>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.50</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>1</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/comingsoon/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/comingsoon/lectureninja/</loc>
-  <lastmod>2018-07-19T07:16:45Z</lastmod>
+  <lastmod>2019-08-07T03:34:12Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/home/lectureninja/</loc>
-  <lastmod>2018-07-19T07:16:45Z</lastmod>
+  <lastmod>2019-08-07T03:34:12Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/comingsoon/quizninja/</loc>
-  <lastmod>2018-07-16T11:52:28Z</lastmod>
+  <lastmod>2019-08-07T03:34:03Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/home/quizninja/</loc>
-  <lastmod>2018-07-16T11:52:28Z</lastmod>
+  <lastmod>2019-08-07T03:34:03Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/freebies/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
-  <loc>https://www.coursesuite.ninja/products/freebies/presninja/</loc>
-  <lastmod>2019-02-04T04:02:26Z</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.91</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/home/presninja/</loc>
-  <lastmod>2019-02-04T04:02:26Z</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.91</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/products/freebies/scormninja/</loc>
-  <lastmod>2019-02-04T04:02:05Z</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.91</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/home/scormninja/</loc>
-  <lastmod>2019-02-04T04:02:05Z</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.91</priority>
-</url>
-<url>
   <loc>https://www.coursesuite.ninja/products/freebies/wp2moodle/</loc>
-  <lastmod>2018-07-19T14:12:38Z</lastmod>
+  <lastmod>2019-08-08T05:14:19Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/home/wp2moodle/</loc>
-  <lastmod>2018-07-19T14:12:38Z</lastmod>
+  <lastmod>2019-08-08T05:14:19Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.91</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/products/freebies/presninja/</loc>
+  <lastmod>2019-08-07T03:34:06Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.91</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/home/presninja/</loc>
+  <lastmod>2019-08-07T03:34:06Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.91</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/products/freebies/scormninja/</loc>
+  <lastmod>2019-03-15T23:18:46Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.91</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/home/scormninja/</loc>
+  <lastmod>2019-03-15T23:18:46Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
@@ -169,89 +175,74 @@
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/ninja/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/ninja/coursebuildr/</loc>
-  <lastmod>2019-02-13T04:20:56Z</lastmod>
+  <lastmod>2019-08-07T03:33:56Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/home/coursebuildr/</loc>
-  <lastmod>2019-02-13T04:20:56Z</lastmod>
+  <lastmod>2019-08-07T03:33:56Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
-  <loc>https://www.coursesuite.ninja/files/app/coursebuildr/Brochure_Course_Builder.pdf</loc>
-  <lastmod>2018-07-02T23:30:04Z</lastmod>
-  <priority>0.9</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/files/app/coursebuildr/Quick_Guide_Course_Builder.pdf</loc>
-  <lastmod>2018-07-02T23:30:04Z</lastmod>
-  <priority>0.9</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/products/ninja/docninja/</loc>
-  <lastmod>2019-01-31T04:14:29Z</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.91</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/home/docninja/</loc>
-  <lastmod>2019-01-31T04:14:29Z</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.91</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/files/app/docninja/Brochure_Document_Ninja.pdf</loc>
-  <lastmod>2018-07-02T23:30:04Z</lastmod>
-  <priority>0.9</priority>
-</url>
-<url>
-  <loc>https://www.coursesuite.ninja/files/app/docninja/Quick_Guide_Document_Ninja.pdf</loc>
-  <lastmod>2018-07-17T03:33:27Z</lastmod>
+  <loc>https://www.coursesuite.ninja/files/app/coursebuildr/Brochure.pdf</loc>
+  <lastmod>2018-06-14T01:40:57Z</lastmod>
   <priority>0.9</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/ninja/vidninja/</loc>
-  <lastmod>2018-07-19T14:01:53Z</lastmod>
+  <lastmod>2019-08-07T03:33:50Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/home/vidninja/</loc>
-  <lastmod>2018-07-19T14:01:53Z</lastmod>
+  <lastmod>2019-08-07T03:33:50Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
-  <loc>https://www.coursesuite.ninja/files/app/vidninja/Brochure_Media_Ninja.pdf</loc>
-  <lastmod>2018-07-02T23:30:04Z</lastmod>
+  <loc>https://www.coursesuite.ninja/files/app/vidninja/Brochure.pdf</loc>
+  <lastmod>2018-06-14T01:40:57Z</lastmod>
   <priority>0.9</priority>
 </url>
 <url>
-  <loc>https://www.coursesuite.ninja/files/app/vidninja/Quick_Guide_Media_Ninja.pdf</loc>
-  <lastmod>2018-07-02T23:30:04Z</lastmod>
+  <loc>https://www.coursesuite.ninja/products/ninja/docninja/</loc>
+  <lastmod>2019-08-07T03:33:46Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.91</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/home/docninja/</loc>
+  <lastmod>2019-08-07T03:33:46Z</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.91</priority>
+</url>
+<url>
+  <loc>https://www.coursesuite.ninja/files/app/docninja/Document%20Ninja%20Brochure.pdf</loc>
+  <lastmod>2018-06-14T01:40:57Z</lastmod>
   <priority>0.9</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/services/</loc>
-  <lastmod>2018-08-10T13:39:09Z</lastmod>
+  <lastmod>2018-09-21T11:21:28Z</lastmod>
   <priority>0.70</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/products/services/customcontent/</loc>
-  <lastmod>2019-02-15T03:06:44Z</lastmod>
+  <lastmod>2019-02-18T04:09:14Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>
 <url>
   <loc>https://www.coursesuite.ninja/home/customcontent/</loc>
-  <lastmod>2019-02-15T03:06:44Z</lastmod>
+  <lastmod>2019-02-18T04:09:14Z</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.91</priority>
 </url>

@@ -16,7 +16,10 @@ return array(
     'PATH_CSS_ROOT' => realpath(dirname(__FILE__) . '/../../') . '/public/css/',
     'PATH_PUBLIC_ROOT' => realpath(dirname(__FILE__) . '/../../') . '/public/',
 
-    'DEFAULT_CONTROLLER' => 'home',
+    /**
+     * Configuration for: Default controller and action
+     */
+    'DEFAULT_CONTROLLER' => 'me',
     'DEFAULT_ACTION' => 'index',
 
     'DEFAULT_META_TITLE' => 'CourseSuite Ninja',
@@ -113,6 +116,7 @@ return array(
 
     'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
     'FASTSPRING_PARAM_APPEND' => '',
+    'FASTSPRING_KEYGEN_PK' => '3e8466db46f05ed8056527a2174074aa',
     'FASTSPRING_STORE' => 'coursesuite',
     'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
     'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
@@ -123,7 +127,7 @@ return array(
 
     'STORE_INFO_SHOW_PRICING' => true,
     'API_ENABLED' => true,
-    'API_VISIBLE' => false,
+    'API_VISIBLE' => true,
     'AUTO_LOGON_TO' => "orders",
 
     'GLOBAL_FOOTER_COLUMN_1' => '<h3>About Us</h3><p>We are a small Australian team focused on developing a suite of great online web apps that allow rapid creation of interactive and intuitive HTML5-based SCORM courses. We also release Open Source plugins for Moodle, and produce online course content.</p>',
@@ -163,4 +167,18 @@ return array(
     'API_TRIAL_PRODUCT_ID' => 'api-trial',
     'OST_APIKEY' => '5FC2364AEFA6F6BC8B34463E71B1F4F1', // dev.coursesuite.ninja key
     'OST_SECRET_SALT' => 'jZMglLS5w9ARCNzfdUIt7bWK=O0erJ1g',
+    'DISABLED_CONTROLLERS' => [
+        'BlogController',
+        'ContentController',
+        'DataController',
+        'EmailController',
+        'FreebiesController',
+        'HomeController',
+        'IntegrationsController',
+        'MessageController',
+        'PricingController',
+        'ProductsController',
+        'ServicesController',
+        'TempController'
+    ],
 );

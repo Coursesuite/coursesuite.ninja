@@ -10,7 +10,6 @@
         <li{{#equals selection "apps"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/apps'><span class='uk-margin-xsmall-right' uk-icon='icon: grid'></span> Apps</a></li>
         <li{{#equals selection "orders"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/orders'><span class='uk-margin-xsmall-right' uk-icon='icon: cart'></span> Orders</a></li>
         <li{{#equals selection "account"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/account'><span class='uk-margin-xsmall-right' uk-icon='icon: user'></span> Login &amp; Security</a></li>
-        <li{{#equals selection "subscriptions"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/subscriptions'><span class='uk-margin-xsmall-right' uk-icon='icon: bell'></span> Notifications</a></li>
         <li{{#equals selection "support"}} class='uk-active'{{/equals}}><a href='{{baseurl}}me/support'><span class='uk-margin-xsmall-right' uk-icon='icon: lifesaver'></span> Support</a></li>
 {{#if api_visible}}
         <li class='uk-nav-header'>API</li>

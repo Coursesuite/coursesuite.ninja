@@ -1,0 +1,5 @@
+{{#if loggedon}}
+welcome user
+{{else}}
+you need to log on
+{{/if}}

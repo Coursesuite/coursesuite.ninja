@@ -65,7 +65,10 @@ class Mail
             // set PHPMailer to use SMTP
             $mail->IsSMTP();
             // 0 = off, 1 = commands, 2 = commands and data, perfect to see SMTP errors
-            $mail->SMTPDebug = 2;
+            // https://www.digitalocean.com/community/questions/unable-to-send-mail-through-smtp-gmail-com
+            // need to turn on LESS SECURE APPS on the sending account
+            // also need to DISPLAY UNLOCK CAPTCHA on that account after trying once
+            $mail->SMTPDebug = Config::get('debug') ? 2 : 0;
             // enable SMTP authentication
             $mail->SMTPAuth = Config::get('EMAIL_SMTP_AUTH');
             // encryption

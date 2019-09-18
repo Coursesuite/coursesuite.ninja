@@ -138,8 +138,9 @@ class AppModel extends Model
 		if ($include_mods === true) {
 			$extras = ", a.mods";
 		}
+//			SELECT a.app_key, a.name, a.tagline, a.guide, concat(:url, 'launch/', a.app_key, '/{token}/') launch, concat(left(:url,length(:url)-1), a.icon) icon, a.colour, a.glyph
 		$query = $database->prepare("
-			SELECT a.app_key, a.name, a.tagline, a.guide, concat(:url, 'launch/', a.app_key, '/{token}/') launch, concat(left(:url,length(:url)-1), a.icon) icon, a.colour, a.glyph
+			SELECT a.app_key, a.name, a.tagline, a.guide, concat(:url, 'launch/', a.app_key, '/{token}/') launch, concat(:url, a.icon) icon, a.colour, a.glyph
 			$extras
 			FROM apps a
 				INNER JOIN product_bundle pb ON find_in_set(cast(a.app_id AS CHAR), pb.app_ids)
@@ -260,7 +261,7 @@ class AppModel extends Model
 		return ($query->fetch(PDO::FETCH_COLUMN, 0) == 1); // FETCH_ASSOC);
 	}
 
-	public static function getLaunchUrl($app_key, $subscription, $token = null) {
+	public static function getLaunchUrl($app_key, $subscription, $token = null, $platform = null) {
 		// does this app_key exist
 		$database = DatabaseFactory::getFactory()->getConnection();
 		$query = $database->prepare('
@@ -296,6 +297,7 @@ class AppModel extends Model
 					break;
 			}
 		}
+		if (!empty($platform)) $url .= (substr($url,-1)!=='/' ? '/':'')."{$platform}/";
 		return $url;
 	}
 

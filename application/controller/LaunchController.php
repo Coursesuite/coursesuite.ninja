@@ -14,6 +14,8 @@ class LaunchController extends Controller
         // when length = 1, we are doing /launch/docninja/ - authenticated
         // when length is 2, we are doing /launch/docninja/md5hashvalue/ - maybe unauthenticated
         // when length is 3, we are using the depreciated method for launching, /launch/docninja/apikey/hash
+        //                   or we are appending the platform /launch/docninja/hash/platform
+        //                       so args[1][2] !== "apikey"
         // if length is > 3 then there is a problem, bail
         // so we only need to check auth when length is 1
 
@@ -46,10 +48,15 @@ class LaunchController extends Controller
     {
         $hash = null;
         $token = null;
+        $platform = "";
 
         // args might be the token, or a deprecated method, or might contain multiple parameters... ugh
         if (!empty($args)) { // args is always an array, but might be empty if not specified
-            if ($args[0]==="apikey") array_shift($args); // depreciated method access, allowable
+            if ($args[0]==="apikey") {
+                array_shift($args); // depreciated method access, allowable
+            } else if (count($args) === 3) { // 3 args but first wasn't apikey, so probably a platform identifier
+                $platform = end($args);
+            }
             if (substr($args[0],0,1)==='$') { // might be an older-style token
                 $token = substr(implode('/',$args), 0, 60); // hash value might contain / so concat the arguments to form a string, and trim to the first significant hash
                 if (password_get_info($token)['algo'] === PASSWORD_BCRYPT) { // seems like bcrypt to me
@@ -104,7 +111,7 @@ class LaunchController extends Controller
 
 
         // build the url
-        $url = AppModel::getLaunchUrl($app_key, $hash, $token);
+        $url = AppModel::getLaunchUrl($app_key, $hash, $token, $platform);
 
         if (!empty($url)) {
             Redirect::external($url);

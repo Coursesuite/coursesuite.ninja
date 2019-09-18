@@ -1,4 +1,4 @@
 			<h3>Account support</h3>
 			<p>For bugs, feedback and suggestions, please <a href="https://help.coursesuite.ninja/open.php">raise a ticket</a>.</p>
 			<p>For product support, please consult our <a href="https://guide.coursesuite.ninja/">guides</a>, or if you can't find what you need, <a href="https://help.coursesuite.ninja/open.php">raise a ticket</a>.</p>
-			<p>For purchase or account support, please use the <a href="{{baseurl}}me/orders">orders page</a> and click the <span uk-icon="mail"></span> icon next to an order for more actions, or use our <a href="{{baseurl}}services">services page</a> to send a message.</p>
+			<p>For purchase or account support, please use the <a href="{{baseurl}}me/orders">orders page</a> and click the <span uk-icon="mail"></span> icon next to an order for more actions.</p>

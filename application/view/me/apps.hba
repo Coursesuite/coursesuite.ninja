@@ -5,23 +5,18 @@
 		{{> menubar}}
 
 		<div class='uk-flex-1'>
-			<h2 class='uk-heading-divider'>Apps</h2>
-			<p>Use this page to launch the apps!</p>
+			<h2 class='uk-heading-divider'>Apps in your subscription / licence</h2>
 
 			<div class="uk-child-width-1-2@s uk-child-width-1-4@m" uk-grid="masonary:true">
 			{{#each apps}}
 				<div>
-					<div class="uk-inline {{class}} cs-app-launcher{{#if launch}} cs-pointer" onclick="document.location='{{launch}}'{{/if}}">
-						{{{glyph}}}
-						<img src='{{mask}}' class='uk-position-cover'>
-					</div>
 					<div class="uk-text-center">
 						<p class="uk-text-lead">{{name}}</p>
 						<p>
 						{{#if launch}}
 						<a href="{{launch}}" class="uk-button uk-button-primary" target="{{app_key}}">Launch App</a>
 						{{else}}
-						<a href="/home/{{app_key}}" class="uk-button uk-button-default">You don't own it yet</a>
+						<a href="#" class="uk-button uk-button-default">You don't own it yet</a>
 						{{/if}}
 						</p>
 					</div>

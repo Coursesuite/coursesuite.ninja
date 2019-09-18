@@ -1,4 +1,4 @@
-<?php if (false) { ?>
+<?php if (true) { ?>
 <header class="uk-position-relative">
         <div class="uk-cover-container cs-nav-height cs-nav-bg">
         <video autoplay loop muted playsinline uk-cover>

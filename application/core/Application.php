@@ -12,10 +12,10 @@ DEFINE('USER_TYPE_STANDARD', 1);
 DEFINE('USER_TYPE_TRIAL', 3);
 DEFINE('USER_TYPE_ADMIN', 7);
 
-DEFINE("APP_CSS", "/css/compiled.20180921112128.css");
-DEFINE("APP_JS", "/js/main.20180921112128.js");
-DEFINE("ADMIN_CSS", "/css/admin.20180921112128.css");
-DEFINE("ADMIN_JS", "/js/admin.20180921112128.js");
+DEFINE("APP_CSS", "/css/compiled.20190918130519.css");
+DEFINE("APP_JS", "/js/main.20190918130519.js");
+DEFINE("ADMIN_CSS", "/css/admin.20190918130519.css");
+DEFINE("ADMIN_JS", "/js/admin.20190918130519.js");
 
 date_default_timezone_set('Australia/Sydney');
 
@@ -80,6 +80,13 @@ class Application
             // so store/info/docninja/ becomes store::info(docninja)
             // When we have a non-standard route
             // we have to handle it here by modifying the action_name and parameters objects.
+
+            if (in_array($this->controller_name, Config::get("DISABLED_CONTROLLERS"))) {
+                require Config::get('PATH_CONTROLLER') . 'ErrorController.php';
+                $this->controller = new ErrorController;
+                $this->controller->error404();
+                die();
+            }
 
             switch ($this->controller_name) {
                 case "ContentController": // content/foo becomes content/index (foo), but content/image/foo stays content/image/foo .. hmm

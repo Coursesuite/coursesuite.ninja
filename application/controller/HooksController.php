@@ -92,9 +92,7 @@ class HooksController//  doesn't extend Controller
         // record the entire event
         LoggingModel::logMethodCall(__METHOD__, "", $event, $status, $postbody, $_SERVER, $signature);
         $json = json_decode($postbody);
-
         if (!isset($json->events)) die("Missing model");
-
         foreach ($json->events as $event) {
             $data = $event->data;
 
@@ -104,10 +102,11 @@ class HooksController//  doesn't extend Controller
             switch ($event->type) {
                 case "order.completed": // purchase came in
 
-                    // TODO: differentiate between a subscription and a standalone product such as a template
                     $item = reset($data->items); // items[0]; assume a subscription is for one product only; may change
 
-                    $uid = PageFactory::getFactory($data->tags->token)->user_id;
+                    if (!isset($item->subscription)) break; // not a subscription, skip it
+
+                    $uid = PageFactory::getFactory($data->tags->token)->user_id; // ? $data->tags will always be null
 
                     // create and welcome a new user if required
                     if (!Model::Exists("users","user_id=:e",[":e"=>$uid])) {
@@ -141,7 +140,7 @@ class HooksController//  doesn't extend Controller
                         $subevent = new dbRow("subscription_event");
                         $subevent->user_id = $account->get_id();
                         $subevent->subscription_id = $subscription->PRIMARY_KEY;
-                        $subevent->payload = $event; // just this event
+                        $subevent->payload = $event;
                         $subevent->save();
                     }
 
@@ -166,11 +165,11 @@ class HooksController//  doesn't extend Controller
                     $subevent = new dbRow("subscription_event");
                     $subevent->user_id = $account->get_id();
                     $subevent->subscription_id = $subscription->PRIMARY_KEY;
-                    $subevent->payload = $event; // just this event
+                    $subevent->payload = $event;
                     $subevent->save();
 
                 break;
-                case "subscription.canceled": // /delete subscription -> subscription.deactivated -> subscription.canceled
+                case "subscription.canceled": // delete subscription -> subscription.deactivated -> subscription.canceled
                     // get existing account
                     $account = new AccountModel("email", $data->account->contact->email);
 
@@ -186,7 +185,7 @@ class HooksController//  doesn't extend Controller
                     $subevent = new dbRow("subscription_event");
                     $subevent->user_id = $account->get_id();
                     $subevent->subscription_id = $subscription->PRIMARY_KEY;
-                    $subevent->payload = $event; // just this event
+                    $subevent->payload = $event;
                     $subevent->save();
 
                     // notify the user in case they miss other notifications
