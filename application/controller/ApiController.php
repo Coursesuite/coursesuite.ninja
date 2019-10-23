@@ -371,18 +371,34 @@ class ApiController extends Controller
 	*/
 	public function hashinfo($token_encoded) {
 		$authtoken = parent::requiresAuth();
+		$result = new stdClass();
+		$result->token = "";
+		$token = "";
 
-		$token_raw = Text::base64dec($token_encoded);
-		$tokens = str_split($token_raw,60); // every 60 characters represents a new token
-		$token = $tokens[0]; // first token is the most relevant hash, only deal with it
+		if (Text::isBase64($token_encoded)) {
+			$token_raw = Text::base64dec($token_encoded);
+		} else {
+			$token_raw = $token_encoded;
+		}
+
+		// are we getting the hash token for a licence key or a regular hash?
+		if ($licencekeys = preg_grep('/^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){4}$/', [$token_raw])) {
+			$token = trim($licencekeys[0]);
+			$licence = new LicenceModel("licencekey",$token);
+			if ($licence->loaded()) {
+				// if (time() > $licence->ends) { // expired, but who cares?
+				$result->token = md5($token); // something unique that fits the token format
+			}
+		} else {
+			$tokens = str_split($token_raw,60); // every 60 characters represents a new token
+			$token = $tokens[0]; // first token is the most relevant hash, only deal with it
+			if ($model = ApiModel::find_model_for_token($token)) {
+				$result->token = $model->hash;
+			}
+		}
 
 		LoggingModel::logMethodCall(__METHOD__, $authtoken, $token, $token_raw);
 
-		$result = new stdClass();
-		$result->token = "";
-		if ($model = ApiModel::find_model_for_token($token)) {
-			$result->token = $model->hash;
-		}
 		$this->View->renderJSON($result);
 	}
 
