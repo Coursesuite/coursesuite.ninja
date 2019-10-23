@@ -16,7 +16,13 @@
 						{{#if launch}}
 						<a href="{{launch}}" class="uk-button uk-button-primary" target="{{app_key}}">Launch App</a>
 						{{else}}
-						<a href="#" class="uk-button uk-button-default">You don't own it yet</a>
+						{{#equals active "1"}}
+							<a href="#" class="uk-button uk-button-default">Depreciated</a>
+						{{else}}{{#equals active "2"}}
+							<a href="#" class="uk-button uk-button-default">Coming Soon</a>
+						{{else}}
+							<a href="#" class="uk-button uk-button-default">You don't own it yet</a>
+						{{/equals}}{{/equals}}
 						{{/if}}
 						</p>
 					</div>

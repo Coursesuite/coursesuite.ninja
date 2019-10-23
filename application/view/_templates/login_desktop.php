@@ -11,7 +11,6 @@
 	            </div>
 	            <div class="uk-flex uk-flex-middle uk-width-2-3@s" uk-height-viewport>
 		            <div class="uk-padding-large">
-				        <img src="<?php echo $baseurl; ?>img/coursesuite-black.svg" class="uk-hidden@m uk-margin-small">
 <?php if (Config::get("FASTSPRING_CONTEXTUAL_STORE")) { ?>
 		                <h1>Log in to access your account details.</h1>
 		                <p>When you purchased an app we sent you some details - it might have been a Licence Key, an Order Number (e.g. COU123456-ABCD-1234), an API KEY (e.g. 84b906030d48527ce05c36820f94c9a3) or a password. Enter what you have in the box below and click Send Password and we'll give you a password. If you already have a password, use your email address and password to continue.</p>

@@ -11,14 +11,14 @@ class MeModel {
 		$apps = implode(',',$all_launchable_app_ids);
 
 		$query = $database->prepare("
-			SELECT app_id, app_key, name, glyph
+			SELECT app_id, app_key, name, glyph, active
 			FROM apps
 			WHERE app_id in ({$apps})
 			ORDER BY name
 		");
 		$query->execute();
 		$i = 0;
-		while (list($app_id, $app_key, $name, $glyph) = $query->fetch(PDO::FETCH_NUM)) {  //, PDO::FETCH_ORI_NEXT)) {
+		while (list($app_id, $app_key, $name, $glyph, $active) = $query->fetch(PDO::FETCH_NUM)) {  //, PDO::FETCH_ORI_NEXT)) {
 			$launchable = in_array($app_id, $app_ids);
 			$results[] =array(
 				"app_key" => $app_key,
@@ -27,6 +27,7 @@ class MeModel {
 				"glyph" => $glyph, // 'data:image/svg+xml,' . rawurlencode($glyph),
 				"launch" => $launchable ? $baseUrl . "launch/" . $app_key : "",
 				"class" => $launchable ? "cs-gradient-{$app_key}" : "cs-gradient-unavailable",
+				"active" => $active
 			);
 		}
 
