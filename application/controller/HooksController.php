@@ -77,6 +77,12 @@ class HooksController//  doesn't extend Controller
         }
     }
 
+    // hook receiver for application postback of app settings statistics
+    public function manifest() {
+        parent::allowCORS();
+        LoggingModel::logMethodCall(__METHOD__, "", file_get_contents("php://input"));
+    }
+
     // hook from fastspring after a purchase, should be considered idempotent
     // also FS might/can package multiple events into a single call
     // http://docs.fastspring.com/integrating-with-fastspring/order-flow/subscription-integration
