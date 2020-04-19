@@ -79,8 +79,16 @@ class HooksController//  doesn't extend Controller
 
     // hook receiver for application postback of app settings statistics
     public function manifest() {
-        parent::allowCORS();
-        LoggingModel::logMethodCall(__METHOD__, "", file_get_contents("php://input"));
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-Requested-With");
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+                header("Access-Control-Allow-Methods: POST, OPTIONS");
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+                header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+            exit(0);
+        }
+        LoggingModel::logMethodCall(__METHOD__, "", file_get_contents("php://input"), serialize($_POST));
     }
 
     // hook from fastspring after a purchase, should be considered idempotent
