@@ -29,9 +29,9 @@ return array(
     'PATH_VIEW_PRECOMPILED' => realpath(dirname(__FILE__) . '/../../') . '/precompiled/',
     'DB_TYPE' => 'mysql',
     'DB_HOST' => '127.0.0.1',
-    'DB_NAME' => 'cs_prod',
-    'DB_USER' => 'cs_prod',
-    'DB_PASS' => '&fuRR3#911_9)#xx13@',
+    'DB_NAME' => 'prod',
+    'DB_USER' => 'prod',
+    'DB_PASS' => 'password',
     'DB_PORT' => '3306',
     'DB_CHARSET' => 'utf8',
 
@@ -57,8 +57,8 @@ return array(
     'CAPTCHA_WIDTH' => 359,
     'CAPTCHA_HEIGHT' => 100,
 
-    'GOOGLE_CAPTCHA_SECRET' => '6LerkRcTAAAAAEUuS9ihNcY5m1cal1atUwl3iPTa',
-    'GOOGLE_CAPTCHA_SITEKEY' => '6LerkRcTAAAAAE9yKd7WVCXGDlhhvN_MqGH7vwwe',
+    'GOOGLE_CAPTCHA_SECRET' => '',
+    'GOOGLE_CAPTCHA_SITEKEY' => '',
     'GOOGLE_ANALYTICS_ID' => null,
 
     /**
@@ -79,15 +79,15 @@ return array(
     'SLIDE_PREVIEW_HEIGHT' => 300,
     'SLIDE_THUMB_WIDTH' => 120,
     'SLIDE_THUMB_HEIGHT' => 90,
-    'ENCRYPTION_KEY' => 'gQTwyP#HpXWS%5cWjMT#yUzT!UAN',
-    'HMAC_SALT' => 'SP27uVe^zujNW9apqg#kaqA(BAx',
+    'ENCRYPTION_KEY' => '',
+    'HMAC_SALT' => '',
 
     'EMAIL_USED_MAILER' => 'phpmailer',
     'EMAIL_USE_SMTP' => true,
     'EMAIL_SMTP_HOST' => 'smtp.gmail.com',
     'EMAIL_SMTP_AUTH' => true,
-    'EMAIL_SMTP_USERNAME' => 'info@coursesuite.com',
-    'EMAIL_SMTP_PASSWORD' => '6Jcf28Aa4wC}O5TBYMtLHxfo3g',
+    'EMAIL_SMTP_USERNAME' => '',
+    'EMAIL_SMTP_PASSWORD' => '',
     'EMAIL_SMTP_PORT' => 587, // false=25, tls=587, // ssl=465
     'EMAIL_SMTP_ENCRYPTION' => 'tls', // 'tls', // 'ssl',
 
@@ -106,24 +106,21 @@ return array(
     'EMAIL_STANDARD_NO_REPLY' => 'no-reply@coursesuite.ninja',
     'DIGEST_USERS' => array(
         'admin' => 'nT5YyYb233WB',
-        'apiuser' => 'rpxC5kCmYuFn',
-        'tokenuser' => 'GEv6mJ7wJgWR',
-        'fastspring' => 'e93NcNdpntFq',
         'discourse' => '3kurpzSGRAq4',
     ),
     'DISCOURSE_SSO_SECRET' => 'supersecretkeythatnoonewilleverknow',
-    'CLOUDCONVERT_API_KEY' => '8pxT0DHRE5lpcVzildrPoEbztL9rc5Es89xG0incUfPNB93LLZueEr7zTK7PTuZmcV1hXkRMITbhjS-U1NnnzQ',
+    'CLOUDCONVERT_API_KEY' => '',
 
-    'FASTSPRING_SECRET_KEY' => '263c9f8ead6933f5794bf79dc19e48fc',
+    'FASTSPRING_SECRET_KEY' => '',
     'FASTSPRING_PARAM_APPEND' => '',
-    'FASTSPRING_KEYGEN_PK' => '3e8466db46f05ed8056527a2174074aa',
-    'FASTSPRING_STORE' => 'coursesuite',
-    'FASTSPRING_API_USER' => 'admin@coursesuite.ninja',
-    'FASTSPRING_API_PASSWORD' => 'I9AN2on42Tom',
+    'FASTSPRING_KEYGEN_PK' => '',
+    'FASTSPRING_STORE' => '',
+    'FASTSPRING_API_USER' => '',
+    'FASTSPRING_API_PASSWORD' => '',
     'FASTSPRING_CONTEXTUAL_STORE' => true,
     'FASTSPRING_BASICAUTH_ENDPOINT' => 'https://api.fastspring.com',
-    'FASTSPRING_BASICAUTH_USERNAME' => 'DGY_8C__SHWBAMH9QNPKXA',
-    'FASTSPRING_BASICAUTH_PASSWORD' => 'iMeSxVDkSy6z55TAyvaYNg',
+    'FASTSPRING_BASICAUTH_USERNAME' => '',
+    'FASTSPRING_BASICAUTH_PASSWORD' => '',
 
     'STORE_INFO_SHOW_PRICING' => true,
     'API_ENABLED' => true,
@@ -133,9 +130,9 @@ return array(
     'GLOBAL_FOOTER_COLUMN_1' => '<h3>About Us</h3><p>We are a small Australian team focused on developing a suite of great online web apps that allow rapid creation of interactive and intuitive HTML5-based SCORM courses. We also release Open Source plugins for Moodle, and produce online course content.</p>',
     'GLOBAL_FOOTER_COLUMN_2' => '<h3>More information</h3><p><a href="/content/privacy">Privacy</a> <a href="http://forum.coursesuite.ninja/categories/">Forum</a> <a href="http://sites.fastspring.com/coursesuite/order/contact">Contact Us</a> <a href="http://avide.com.au/">Avide eLearning</a></p>',
     'GLOBAL_FOOTER_COLUMN_3' => '<h3>all rights reserved</h3><p>&copy; CourseSuite 2016-3016<br/><a href="mailto:&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;">&#105;&#110;&#102;&#111;&#64;&#99;&#111;&#117;&#114;&#115;&#101;&#115;&#117;&#105;&#116;&#101;&#46;&#99;&#111;&#109;&#46;&#97;&#117;</a></p>',
-    'MAILCHIMP_API_KEY' => '0803286b6f9c681c80d7ad751d6beec3-us11',
-    'MAILCHIMP_LIST_ID' => '08344979e7', // '2f5671f29b',
-    'MAILCHIMP_INTEREST_ID' => 'd3a65e22a1',
+    'MAILCHIMP_API_KEY' => '-us11',
+    'MAILCHIMP_LIST_ID' => '',,
+    'MAILCHIMP_INTEREST_ID' => '',
 
     'FORCE_HANDLEBARS_COMPILATION' => true,
 
@@ -165,7 +162,7 @@ return array(
     ),
 
     'API_TRIAL_PRODUCT_ID' => 'api-trial',
-    'OST_APIKEY' => '5FC2364AEFA6F6BC8B34463E71B1F4F1', // dev.coursesuite.ninja key
+    'OST_APIKEY' => '5FC2364AEFA6F6BC8B34463E71B1F4F1',
     'OST_SECRET_SALT' => 'jZMglLS5w9ARCNzfdUIt7bWK=O0erJ1g',
     'DISABLED_CONTROLLERS' => [
         'BlogController',
