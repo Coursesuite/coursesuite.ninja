@@ -1,4 +1,8 @@
-#CourseSuite
+# CourseSuite
+
+CourseSuite was retired at the beginning of 2020. The server and back end was turned off. The code for the site is now open source.
+
+## Setup
 
 To make this project run:
 
