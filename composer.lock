@@ -1224,16 +1224,16 @@
         },
         {
             "name": "phpfastcache/phpfastcache",
-            "version": "6.0.8",
+            "version": "6.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPSocialNetwork/phpfastcache.git",
-                "reference": "606c29476bd21d907dcd535716d66b31aa999538"
+                "reference": "cab4e79f1ad353302c82d7b73de0aa4b6b00144c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPSocialNetwork/phpfastcache/zipball/606c29476bd21d907dcd535716d66b31aa999538",
-                "reference": "606c29476bd21d907dcd535716d66b31aa999538",
+                "url": "https://api.github.com/repos/PHPSocialNetwork/phpfastcache/zipball/cab4e79f1ad353302c82d7b73de0aa4b6b00144c",
+                "reference": "cab4e79f1ad353302c82d7b73de0aa4b6b00144c",
                 "shasum": ""
             },
             "require": {
@@ -1248,6 +1248,7 @@
             },
             "suggest": {
                 "ext-apc": "*",
+                "ext-couchbase": "*",
                 "ext-intl": "*",
                 "ext-leveldb": "*",
                 "ext-memcache": "*",
@@ -1316,7 +1317,21 @@
                 "zend memory cache",
                 "zend server"
             ],
-            "time": "2017-12-15T22:11:25+00:00"
+            "support": {
+                "issues": "https://github.com/PHPSocialNetwork/phpfastcache/issues",
+                "source": "https://github.com/PHPSocialNetwork/phpfastcache/tree/6.1.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/geolim4",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/geolim4",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-08-12T11:55:27+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -1454,6 +1469,9 @@
                 "psr",
                 "psr-6"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/cache/tree/master"
+            },
             "time": "2016-08-06T20:24:11+00:00"
         },
         {
@@ -1555,16 +1573,16 @@
         },
         {
             "name": "psr/simple-cache",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/simple-cache.git",
-                "reference": "753fa598e8f3b9966c886fe13f370baa45ef0e24"
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/753fa598e8f3b9966c886fe13f370baa45ef0e24",
-                "reference": "753fa598e8f3b9966c886fe13f370baa45ef0e24",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
                 "shasum": ""
             },
             "require": {
@@ -1599,7 +1617,10 @@
                 "psr-16",
                 "simple-cache"
             ],
-            "time": "2017-01-02T13:31:39+00:00"
+            "support": {
+                "source": "https://github.com/php-fig/simple-cache/tree/master"
+            },
+            "time": "2017-10-23T01:57:42+00:00"
         },
         {
             "name": "rakshazi/digestauth",
@@ -1873,5 +1894,6 @@
     "platform": [],
     "platform-dev": {
         "php": ">=5.5.0"
-    }
+    },
+    "plugin-api-version": "2.1.0"
 }
